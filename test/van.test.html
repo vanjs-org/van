@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="icon" href="/logo.svg">
+    <title>Van Tests</title>
+    <meta charset="UTF-8">
+    <style>
+      .testMsg > div {
+        display: table-row;
+      }
+
+      .testMsg > div > pre {
+        display: table-cell;
+      }
+
+      .testMsg > div > pre:first-child {
+        width: 500px;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Van Tests</h1>
+    <div id="msgPanel"></div>
+    <div id="endMsg" style="display: none">
+      <h2>The End</h2>
+      <p>✅ <span id="numTests">0</span> tests passed</p>
+    </div>
+    
+    <script type="module">
+      import {testVanFile} from "./van.test.js"
+
+      let es6TestingBlockerResolve
+      window.es6TestingBlocker = new Promise(resolve => es6TestingBlockerResolve = resolve)
+
+      const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      })
+
+      const version = params.version ?? "latest";
+
+      (async () => {
+        await testVanFile(`../public/van-${version}.js`, "es6")
+        await testVanFile(`../public/van-${version}.min.js`, "es6")
+        await testVanFile(`../public/van-${version}.debug.js`, "es6")
+        es6TestingBlockerResolve()
+      })()
+    </script>
+    <script type="text/javascript" src="van.test.nomodule.js"></script>
+    <script>
+      const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      })
+
+      const version = params.version ?? "latest"
+
+      const sleep = millisec => new Promise(resolve => setTimeout(resolve, millisec));
+
+      (async () => {
+        while (!window.es6TestingBlocker) await sleep(10)
+        await window.es6TestingBlocker
+        await testVanFile(`../public/van-${version}.nomodule.js`, "nomodule")
+        await testVanFile(`../public/van-${version}.nomodule.min.js`, "nomodule")
+        await testVanFile(`../public/van-${version}.nomodule.debug.js`, "nomodule")
+        document.getElementById("numTests").innerText = window.numTests
+        document.getElementById("endMsg").style.display = ""
+      })()
+    </script>
+  </body>
+</html>

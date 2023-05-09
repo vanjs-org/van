@@ -1,0 +1,32 @@
+{
+  "name": "van-dom",
+  "version": "0.11.9",
+  "description": "VanJS. A minimalist React-like UI library based on vanilla JavaScript and DOM.",
+  "main": "src/van.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Van",
+    "UI",
+    "React",
+    "DOM",
+    "Vanilla"
+  ],
+  "author": "Tao Xin",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.17.12",
+    "terser": "^5.17.1",
+    "typescript": "^5.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexander-xin/van.git"
+  },
+  "bugs": {
+    "url": "https://vanjs.org/issues"
+  },
+  "homepage": "https://github.com/alexander-xin/van#readme"
+}

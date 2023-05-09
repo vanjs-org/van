@@ -1,0 +1,89 @@
+(() => {
+  // van.js
+  var Obj = Object;
+  var Null = null;
+  var addAndScheduleOnFirst = (set, s, func, waitMs) => (set ?? (setTimeout(func, waitMs), /* @__PURE__ */ new Set())).add(s);
+  var changedStates;
+  var State = class {
+    constructor(v) {
+      let s = this;
+      s._val = s.oldVal = v;
+      s.bindings = [];
+      s.listeners = [];
+    }
+    get "val"() {
+      return this._val;
+    }
+    set "val"(v) {
+      let s = this, curV = s._val;
+      if (v !== curV) {
+        if (s.oldVal === curV)
+          changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms);
+        else if (v === s.oldVal)
+          changedStates.delete(s);
+        s._val = v;
+        s.listeners.forEach((l) => l(v, curV));
+      }
+    }
+    "onnew"(l) {
+      this.listeners.push(l);
+    }
+  };
+  var state = (initVal) => new State(initVal);
+  var toDom = (v) => v.nodeType ? v : new Text(v);
+  var add = (dom, ...children) => children.flat(Infinity).forEach((child) => dom.appendChild(
+    child instanceof State ? bind(child, (v) => v) : toDom(child)
+  ));
+  var tags = new Proxy((name, ...args) => {
+    let [props, ...children] = args[0]?.constructor === Obj ? args : [{}, ...args];
+    let dom = document.createElement(name);
+    Obj.entries(props).forEach(([k, v]) => {
+      let setter = dom[k] !== void 0 ? (v2) => dom[k] = v2 : (v2) => dom.setAttribute(k, v2);
+      if (v instanceof State)
+        bind(v, (v2) => (setter(v2), dom));
+      else if (v.constructor === Obj)
+        bind(...v["deps"], (...deps) => (setter(v["f"](...deps)), dom));
+      else
+        setter(v);
+    });
+    add(dom, ...children);
+    return dom;
+  }, { get: (tag, name) => tag.bind(Null, name) });
+  var filterBindings = (s) => s.bindings = s.bindings.filter((b) => b.dom?.isConnected);
+  var updateDoms = () => {
+    let changedStatesArray = [...changedStates];
+    changedStates = Null;
+    new Set(changedStatesArray.flatMap(filterBindings)).forEach((b) => {
+      let { _deps, dom, func } = b;
+      let newDom = func(..._deps.map((d) => d._val), dom, ..._deps.map((d) => d.oldVal));
+      if (newDom !== dom)
+        if (newDom !== Null)
+          dom.replaceWith(b.dom = toDom(newDom));
+        else
+          dom.remove(), b.dom = Null;
+    });
+    changedStatesArray.forEach((s) => s.oldVal = s._val);
+  };
+  var bindingGcCycleInMs = 1e3;
+  var statesToGc;
+  var bind = (...args) => {
+    let deps = args.slice(0, -1), func = args[args.length - 1];
+    let result = func(...deps.map((d) => d._val));
+    if (result === Null)
+      return [];
+    let binding = { _deps: deps, dom: toDom(result), func };
+    deps.forEach((s) => {
+      statesToGc = addAndScheduleOnFirst(
+        statesToGc,
+        s,
+        () => (statesToGc.forEach(filterBindings), statesToGc = Null),
+        bindingGcCycleInMs
+      );
+      s.bindings.push(binding);
+    });
+    return binding.dom;
+  };
+
+  // van.forbundle.js
+  window.van = { add, tags, state, bind };
+})();
