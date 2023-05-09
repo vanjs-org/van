@@ -23,10 +23,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alexander-xin/van.git"
+    "url": "git+https://github.com/vanjs-org/van.git"
   },
   "bugs": {
-    "url": "https://vanjs.org/issues"
+    "url": "https://github.com/vanjs-org/van/issues"
   },
-  "homepage": "https://github.com/alexander-xin/van#readme"
+  "homepage": "https://vanjs.org"
 }
