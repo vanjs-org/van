@@ -18,6 +18,8 @@ van.add(document.body, Hello())
 // document.body.appendChild(Hello())
 ```
 
+[Try on jsfiddle](https://jsfiddle.net/gh/get/library/pure/vanjs-org/vanjs-org.github.io/tree/master/jsfiddle/home/hello)
+
 **VanJS** helps you manage state and UI binding as well, with a more natural API:
 
 ```javascript
@@ -32,6 +34,8 @@ const Counter = () => {
 
 van.add(document.body, Counter())
 ```
+
+[Try on jsfiddle](https://jsfiddle.net/gh/get/library/pure/vanjs-org/vanjs-org.github.io/tree/master/jsfiddle/home/counter)
 
 ## Why VanJS?
 
@@ -69,3 +73,7 @@ Declarative DOM tree composition, reusable components, reative state binding - *
 * Learn from the [Tutorial](https://vanjs.org/tutorial)
 * Learn by [Examples](https://vanjs.org/demo)
 * Convert HTML snippet to **VanJS** code with our online [HTML to **VanJS** Converter](https://vanjs.org/convert)
+
+## Contact Us
+
+[tao@vanjs.org](mailto:tao@vanjs.org)
