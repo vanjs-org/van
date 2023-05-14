@@ -1,4 +1,4 @@
-# 🍦 **VanJS**: A 1.2kB Grab 'n Go Reactive UI Framework without React/JSX
+# 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
 **VanJS** (abbr. **Van**illa **J**ava**S**cript) is an ***ultra-lightweight***, ***zero-dependency*** and ***unopinionated*** Reactive UI framework based on pure vanilla JavaScript and DOM. Programming with **VanJS** feels a lot like React. Check-out the `Hello World` code below:
 
