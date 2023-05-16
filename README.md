@@ -20,6 +20,8 @@ van.add(document.body, Hello())
 
 [Try on jsfiddle](https://jsfiddle.net/gh/get/library/pure/vanjs-org/vanjs-org.github.io/tree/master/jsfiddle/home/hello)
 
+You can convert any HTML snippet into **VanJS** code with our online [converter](https://vanjs.org/convert).
+
 **VanJS** helps you manage state and UI binding as well, with a more natural API:
 
 ```javascript
