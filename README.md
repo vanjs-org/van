@@ -78,7 +78,7 @@ Declarative DOM tree composition, reusable components, reative state binding - *
 
 ## Support & Feedback
 
-🙏 **VanJS** aims to build a better world by reducing the entry barrier for UI programming, with no intention or plan on commercialization whatsoever. If you find **VanJS** interesting, or could be useful for you some day, please consider starring the project. It takes just one seconds but your support means the world to us and helps spread **VanJS** to a wider audience.
+🙏 **VanJS** aims to build a better world by reducing the entry barrier for UI programming, with no intention or plan on commercialization whatsoever. If you find **VanJS** interesting, or could be useful for you some day, please consider starring the project. It takes just a few seconds but your support means the world to us and helps spread **VanJS** to a wider audience.
 
 We're looking for the 1.0 milestone (commitment to API stability) soon, your precious feedback will be greatly appreciated. You can submit your feedback by [creating issues](https://github.com/vanjs-org/van/issues/new).
 
