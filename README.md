@@ -45,7 +45,7 @@ van.add(document.body, Counter())
 
 ### Reative Programming without React/JSX
 
-Declarative DOM tree composition, reusable components, reative state binding - **VanJS** offers every good aspect that React does, but without the need of React, JSX, transpiling, virtual DOM, or any hidden logic. Everything is built with simple JavaScript functions and DOM.
+Declarative DOM tree composition, reusable components, reactive state binding - **VanJS** offers every good aspect that React does, but without the need of React, JSX, transpiling, virtual DOM, or any hidden logic. Everything is built with simple JavaScript functions and DOM.
 
 ### Grab 'n Go
 
