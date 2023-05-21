@@ -43,9 +43,9 @@ van.add(document.body, Counter())
 
 **VanJS** has the vision to be the [scripting language](https://vanjs.org/about#story) for UI, just like `bash` is the scripting language for terminal. **VanJS** empowers frontend engineers, backend engineers, system engineers, data scientists, and anyone else to build comprehensive user interfaces. You can code with **VanJS** anywhere, any time, and on any device – _even on your smartphone!_ 👏👏👏
 
-### Reative Programming without React/JSX
+### Reactive Programming without React/JSX
 
-Declarative DOM tree composition, reusable components, reative state binding - **VanJS** offers every good aspect that React does, but without the need of React, JSX, transpiling, virtual DOM, or any hidden logic. Everything is built with simple JavaScript functions and DOM.
+Declarative DOM tree composition, reusable components, reactive state binding - **VanJS** offers every good aspect that React does, but without the need of React, JSX, transpiling, virtual DOM, or any hidden logic. Everything is built with simple JavaScript functions and DOM.
 
 ### Grab 'n Go
 
