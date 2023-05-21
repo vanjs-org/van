@@ -86,5 +86,8 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 
 ## Contributors
 
+*Ordered chronologically by first contribution:*
+
 * [Tao Xin](https://github.com/Tao-VanJS)
 * [Ryan Olson](https://github.com/ryanolsonx)
+* [Tamotsu Takahashi](https://github.com/tamo)
