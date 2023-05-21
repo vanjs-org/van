@@ -82,7 +82,7 @@ Declarative DOM tree composition, reusable components, reative state binding - *
 
 We're looking for the 1.0 milestone (commitment to API stability) soon, your precious feedback will be greatly appreciated. You can submit your feedback by [creating issues](https://github.com/vanjs-org/van/issues/new).
 
-Contact us: [tao@vanjs.org](mailto:tao@vanjs.org)
+Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linkedin.com/in/tao-xin-64234920/)
 
 ## Contributors
 
