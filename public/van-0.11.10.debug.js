@@ -1,4 +1,4 @@
-import van from "./van-latest.js"
+import van from "./van-0.11.10.js"
 
 // If this variable is set to an Array, we will push the error message into the array instead of
 // throwing an error. This is useful in testing, to capture the error occurred asynchronous to the initiating

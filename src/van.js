@@ -76,8 +76,8 @@ let updateDoms = () => {
 let bindingGcCycleInMs = 1000
 let statesToGc
 
-let bind = (...args) => {
-  let deps = args.slice(0, -1), func = args[args.length - 1]
+let bind = (...deps) => {
+  let [func] = deps.splice(-1, 1)
   let result = func(...deps.map(d => d._val))
   if (result == _undefined) return []
   let binding = {_deps: deps, dom: toDom(result), func}

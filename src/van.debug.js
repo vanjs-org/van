@@ -1,4 +1,4 @@
-import van from "./van.js" 
+import van from "./van.js"
 
 // If this variable is set to an Array, we will push the error message into the array instead of
 // throwing an error. This is useful in testing, to capture the error occurred asynchronous to the initiating
@@ -95,8 +95,8 @@ const tags = new Proxy(van.tags, {
   },
 })
 
-const bind = (...args) => {
-  const deps = args.slice(0, -1), func = args[args.length - 1]
+const bind = (...deps) => {
+  let [func] = deps.splice(-1, 1)
   expect(deps.length > 0, "`bind` must be called with 1 or more states as dependencies")
   deps.forEach(d => expect(protoOf(d) === stateProto, "Dependencies in `bind` must be states"))
   expect(typeof func === "function", "The last argument of `bind` must be the generation function")
