@@ -60,9 +60,11 @@ let tagsFactory = (createElement) => new Proxy((name, ...args) => {
 
 let elements = {
   html: tagsFactory(document.createElement),
-  svg: tagsFactory(name => document.createElementNS("http://www.w3.org/2000/svg", name)),
-  ns: (uri) => tagsFactory(name => document.createElementNS(uri, name))
-}
+  svg: tagsFactory((name) =>
+    document.createElementNS("http://www.w3.org/2000/svg", name)
+  ),
+  ns: (uri) => tagsFactory((name) => document.createElementNS(uri, name)),
+};
 
 let tags = elements.html;
 
