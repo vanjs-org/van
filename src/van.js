@@ -46,9 +46,14 @@ let add = (dom, ...children) => (
     protoOf(child) === stateProto ? bind(child, v => v) : toDom(child))),
   dom)
 
-let tags = new Proxy((name, ...args) => {
+let tags = {
+  html: tagsFactory(document.createElement),
+  svg: tagsFactory(name => document.createElementNS("http://www.w3.org/2000/svg", name)),
+  ns: tagsFactory
+}
+let tagsFactory = (createElement) = new Proxy((name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
-  let dom = document.createElement(name)
+  let dom = createElement(name)
   Obj.entries(props).forEach(([k, v]) => {
     let setter = dom[k] !== _undefined ? v => dom[k] = v : v => dom.setAttribute(k, v)
     if (protoOf(v) === stateProto) bind(v, v => (setter(v), dom))
