@@ -96,4 +96,4 @@ let bind = (...deps) => {
   return binding.dom
 }
 
-export default {add, tags, state, bind}
+export default {add, elements, tags, state, bind}
