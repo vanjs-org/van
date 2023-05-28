@@ -46,11 +46,12 @@ let add = (dom, ...children) => (
     protoOf(child) === stateProto ? bind(child, v => v) : toDom(child))),
   dom)
 
-let tags = {
+let elements = {
   html: tagsFactory(document.createElement),
   svg: tagsFactory(name => document.createElementNS("http://www.w3.org/2000/svg", name)),
   ns: (uri) => tagsFactory(name => document.createElementNS(uri, name))
 }
+let tags = elements.html;
 let tagsFactory = (createElement) => new Proxy((name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
   let dom = createElement(name)
