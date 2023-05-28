@@ -51,7 +51,7 @@ let tags = {
   svg: tagsFactory(name => document.createElementNS("http://www.w3.org/2000/svg", name)),
   ns: (uri) => tagsFactory(name => document.createElementNS(uri, name))
 }
-let tagsFactory = (createElement) => (new Proxy((name, ...args) => {
+let tagsFactory = (createElement) => new Proxy((name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
   let dom = createElement(name)
   Obj.entries(props).forEach(([k, v]) => {
@@ -61,7 +61,7 @@ let tagsFactory = (createElement) => (new Proxy((name, ...args) => {
     else setter(v)
   })
   return add(dom, ...children)
-}, {get: (tag, name) => tag.bind(_undefined, name)}))
+}, {get: (tag, name) => tag.bind(_undefined, name)})
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
