@@ -140,7 +140,7 @@ type BindFuncArgs<T extends StateView[]> = T extends [infer OnlyOne extends Stat
 
 type BindFunc<T extends StateView[]> = (...arg: [...BindFuncArgs<T>, Element, ...BindFuncArgs<T>]) => Primitive | Node | null | undefined
 
-declare function bind<StateViews extends StateView[]>(...args: [...StateViews, BindFunc<StateViews>]): any
+declare function bind<StateViews extends StateView[]>(...args: [...StateViews, BindFunc<StateViews>]): Node | []
 
 export type Van = {
   readonly state: <T>(initVal: T) => State<T>
