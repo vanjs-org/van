@@ -67,6 +67,7 @@ let elements = {
 };
 
 let tags = elements.html;
+let tagsNS = elements.ns;
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
@@ -100,4 +101,4 @@ let bind = (...deps) => {
   return binding.dom
 }
 
-export default {add, elements, tags, state, bind}
+export default {add, elements, tags, tagsNS, state, bind}
