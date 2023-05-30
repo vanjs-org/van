@@ -60,12 +60,10 @@ let tagsFactory = (createElement) => new Proxy((name, ...args) => {
 
 let tags = tagsFactory(document.createElement);
 
-let svgs = tagsFactory((name) =>
-  document.createElementNS("http://www.w3.org/2000/svg", name)
-);
-
 let tagsNS = (uri) =>
   tagsFactory((name) => document.createElementNS(uri, name));
+
+let svgs = tagsNS("http://www.w3.org/2000/svg");
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
@@ -99,4 +97,4 @@ let bind = (...deps) => {
   return binding.dom
 }
 
-export default {add, svgs, tags, tagsNS, state, bind}
+export default {add, tags, tagsNS, svgs, state, bind}
