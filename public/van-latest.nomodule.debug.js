@@ -36,9 +36,9 @@
   var add = (dom, ...children) => (children.flat(Infinity).forEach((child) => dom.appendChild(
     protoOf(child) === stateProto ? bind(child, (v) => v) : toDom(child)
   )), dom);
-  var tags = new Proxy((name, ...args) => {
+  var tagsFactory = (createElement) => new Proxy((name, ...args) => {
     let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args];
-    let dom = document.createElement(name);
+    let dom = createElement(name);
     Obj.entries(props).forEach(([k, v]) => {
       let setter = dom[k] !== _undefined ? (v2) => dom[k] = v2 : (v2) => dom.setAttribute(k, v2);
       if (protoOf(v) === stateProto)
@@ -50,6 +50,9 @@
     });
     return add(dom, ...children);
   }, { get: (tag, name) => tag.bind(_undefined, name) });
+  var tags = tagsFactory((name) => document.createElement(name));
+  var tagsNS = (uri) => tagsFactory((name) => document.createElementNS(uri, name));
+  var svgs = tagsNS("http://www.w3.org/2000/svg");
   var filterBindings = (s) => s.bindings = s.bindings.filter((b) => b.dom?.isConnected);
   var updateDoms = () => {
     let changedStatesArray = [...changedStates];
@@ -84,7 +87,7 @@
     });
     return binding.dom;
   };
-  var van_default = { add, tags, state, bind };
+  var van_default = { add, tags, tagsNS, svgs, state, bind };
 
   // van.debug.js
   var capturedErrors;
