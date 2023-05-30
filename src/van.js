@@ -58,16 +58,14 @@ let tagsFactory = (createElement) => new Proxy((name, ...args) => {
   return add(dom, ...children)
 }, {get: (tag, name) => tag.bind(_undefined, name)})
 
-let elements = {
-  html: tagsFactory(document.createElement),
-  svg: tagsFactory((name) =>
-    document.createElementNS("http://www.w3.org/2000/svg", name)
-  ),
-  ns: (uri) => tagsFactory((name) => document.createElementNS(uri, name)),
-};
+let tags = tagsFactory(document.createElement);
 
-let tags = elements.html;
-let tagsNS = elements.ns;
+let svgs = tagsFactory((name) =>
+  document.createElementNS("http://www.w3.org/2000/svg", name)
+);
+
+let tagsNS = (uri) =>
+  tagsFactory((name) => document.createElementNS(uri, name));
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
@@ -101,4 +99,4 @@ let bind = (...deps) => {
   return binding.dom
 }
 
-export default {add, elements, tags, tagsNS, state, bind}
+export default {add, svgs, tags, tagsNS, state, bind}
