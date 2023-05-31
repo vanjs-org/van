@@ -51,7 +51,8 @@ let tags = new Proxy((name, ...args) => {
   let dom = document.createElement(name)
   Obj.entries(props).forEach(([k, v]) => {
     let setter = dom[k] !== _undefined ? v => dom[k] = v : v => dom.setAttribute(k, v)
-    if (protoOf(v) === stateProto) bind(v, v => (setter(v), dom))
+    if(v == undefined){} 
+    else if (protoOf(v) === stateProto) bind(v, v => (setter(v), dom))
     else if (protoOf(v) === objProto) bind(...v["deps"], (...deps) => (setter(v["f"](...deps)), dom))
     else setter(v)
   })

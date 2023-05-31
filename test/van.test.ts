@@ -564,7 +564,6 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
 
     tagsTest_invalidProp_nonPrimitiveValue: () => {
       assertError(/Only.*are valid prop value types/, () => a({href: null}))
-      assertError(/Only.*are valid prop value types/, () => a(<any>{href: undefined}))
       assertError(/Only.*are valid prop value types/, () => a(<any>{href: (x: number) => x * 2}))
 
       // State as property
@@ -749,7 +748,10 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       const List = ({items}) => ul(items.map(it => li(it)))
       assertEq(List({items: ["Item 1", "Item 2", "Item 3"]}).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
     },
-
+    propUndefined: () => {
+      const Comp = () => div(<any>{myprop: undefined});
+      assertEq(Comp().outerHTML, "<div></div>");
+    },
     table: () => {
       const Table = ({head, data}:
         {head?: readonly string[], data: readonly (string | number)[][]}) => table(
