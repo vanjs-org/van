@@ -53,10 +53,10 @@ const isDomOrPrimitive = v => v instanceof Node || isValidPrimitive(v)
 
 const checkChildValid = child => {
   expect(
-    isDomOrPrimitive(child) || protoOf(child ?? 0) === stateProto && isValidPrimitive(child.val),
-    "Only DOM Node, string, number, boolean, bigint, and state of string, number, boolean or bigint are valid child of a DOM Node"
+    child == undefined ||  isDomOrPrimitive(child) || protoOf(child ?? 0) === stateProto && isValidPrimitive(child.val),
+    "Only DOM Node, string, number, boolean, bigint, and state of string, number, boolean, bigint, null or undefined are valid child of a DOM Node"
   )
-  expect(!child.isConnected, "You can't add a DOM Node that is already connected to document")
+  expect(!child || !child.isConnected, "You can't add a DOM Node that is already connected to document")
 }
 
 const add = (dom, ...children) => {

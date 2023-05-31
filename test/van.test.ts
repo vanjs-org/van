@@ -583,8 +583,6 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
 
     tagsTest_invalidChild: () => {
       assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>{}, p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>null, p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>undefined, p()))
       assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>((x: number) => x * 2), p()))
 
       assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(<any>{}), p()))
@@ -608,8 +606,6 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       const dom = div()
 
       assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>{}, p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>null, p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>undefined, p()))
       assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>((x: number) => x * 2), p()))
 
       assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(<any>{}), p()))
@@ -744,7 +740,10 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       await sleep(waitMsOnDomUpdates)
       assertEq((<Element>hiddenDom.firstChild).querySelector("div")!.innerText, "❤️: 1")
     }),
-
+    nullChildren: () => {
+      const List = () => div("one", undefined, null)
+      assertEq(List().outerHTML, "<div>one</div>")
+    },
     bulletList: () => {
       const List = ({items}) => ul(items.map(it => li(it)))
       assertEq(List({items: ["Item 1", "Item 2", "Item 3"]}).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
