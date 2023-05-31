@@ -744,6 +744,10 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       const List = () => div("one", undefined, null)
       assertEq(List().outerHTML, "<div>one</div>")
     },
+    childrenWith0: () => {
+      const List = () => div([div(0), null])
+      assertEq(List().outerHTML, "<div><div>0</div></div>")
+    },
     bulletList: () => {
       const List = ({items}) => ul(items.map(it => li(it)))
       assertEq(List({items: ["Item 1", "Item 2", "Item 3"]}).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
