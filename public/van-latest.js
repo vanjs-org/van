@@ -46,9 +46,9 @@ let add = (dom, ...children) => (
     protoOf(child) === stateProto ? bind(child, v => v) : toDom(child))),
   dom)
 
-let tagsFactory = (createElement) => new Proxy((name, ...args) => {
+let tags = new Proxy((name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
-  let dom = createElement(name)
+  let dom = document.createElement(name)
   Obj.entries(props).forEach(([k, v]) => {
     let setter = dom[k] !== _undefined ? v => dom[k] = v : v => dom.setAttribute(k, v)
     if (protoOf(v) === stateProto) bind(v, v => (setter(v), dom))
@@ -57,13 +57,6 @@ let tagsFactory = (createElement) => new Proxy((name, ...args) => {
   })
   return add(dom, ...children)
 }, {get: (tag, name) => tag.bind(_undefined, name)})
-
-let tags = tagsFactory((name) => document.createElement(name));
-
-let tagsNS = (uri) =>
-  tagsFactory((name) => document.createElementNS(uri, name));
-
-let svgs = tagsNS("http://www.w3.org/2000/svg");
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
@@ -97,4 +90,4 @@ let bind = (...deps) => {
   return binding.dom
 }
 
-export default {add, tags, tagsNS, svgs, state, bind}
+export default {add, tags, state, bind}

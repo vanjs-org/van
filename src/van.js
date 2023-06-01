@@ -58,7 +58,7 @@ let tagsFactory = (createElement) => new Proxy((name, ...args) => {
   return add(dom, ...children)
 }, {get: (tag, name) => tag.bind(_undefined, name)})
 
-let tags = tagsFactory((name) => document.createElement(name));
+let tags = tagsFactory(document.createElement);
 
 let tagsNS = (uri) =>
   tagsFactory((name) => document.createElementNS(uri, name));

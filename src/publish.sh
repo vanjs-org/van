@@ -26,8 +26,8 @@ cp ../public/van-$VER.nomodule.js ../public/van-latest.nomodule.js
 cp ../public/van-$VER.nomodule.min.js ../public/van-latest.nomodule.min.js
 cp ../public/van-$VER.nomodule.debug.js ../public/van-latest.nomodule.debug.js
 
-sed -i.bak s/van\\.js/van-$VER\\.js/ ../public/van-$VER.debug.js
-sed -i.bak s/van\\.js/van-latest\\.js/ ../public/van-latest.debug.js
+sed -i .bak s/van\\.js/van-$VER\\.js/ ../public/van-$VER.debug.js
+sed -i .bak s/van\\.js/van-latest\\.js/ ../public/van-latest.debug.js
 
 rm ../public/*.bak
 
