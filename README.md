@@ -53,7 +53,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Ultra-Lightweight
 
-**VanJS** is a very thin layer on top of Vanilla JavaScript and DOM, barely enough to make the DOM manipulation and state binding as ergonomic as (if not more than) React, and it delegates most of work to standard browser APIs implemented in native code. As a result, the bundled size of **VanJS** is just 1.2kB, which is **more than 100 times** smaller than most popular UI frameworks:
+**VanJS** is a very thin layer on top of Vanilla JavaScript and DOM, barely enough to make the DOM manipulation and state binding as ergonomic as (if not more than) React, and it delegates most of work to standard browser APIs implemented in native code. As a result, the bundled size of **VanJS** is just 1.2kB, which is **more than 100 times** smaller than most popular UI frameworks, making it the smallest reactive UI framework in the world:
 
 ![Size comparison](doc/size_comp.png)
 
