@@ -2,7 +2,7 @@
 
 > Enable everyone to build useful UI apps with a few lines of code, anywhere, any time, on any device.
 
-**VanJS** (abbr. **Van**illa **J**ava**S**cript) is an ***ultra-lightweight***, ***zero-dependency*** and ***unopinionated*** Reactive UI framework based on pure vanilla JavaScript and DOM. Programming with **VanJS** feels like building React apps in a [scripting language](https://vanjs.org/about#story), without JSX. Check-out the `Hello World` code below:
+**VanJS** is an ***ultra-lightweight***, ***zero-dependency*** and ***unopinionated*** Reactive UI framework based on pure vanilla JavaScript and DOM. Programming with **VanJS** feels like building React apps in a [scripting language](https://vanjs.org/about#story), without JSX. Check-out the `Hello World` code below:
 
 ```javascript
 // Reusable components can be just pure vanilla JavaScript functions.
@@ -93,3 +93,5 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 * [Tao Xin](https://github.com/Tao-VanJS)
 * [Ryan Olson](https://github.com/ryanolsonx)
 * [Tamotsu Takahashi](https://github.com/tamo)
+* [icecream17](https://github.com/icecream17)
+* [enpitsuLin](https://github.com/enpitsulin)

@@ -1,11 +1,11 @@
-export type State<T> = {
+export type State<T = any> = {
   val: T
   onnew(l: (val: T, oldVal: T) => void): void
 }
 
 // Defining readonly view of State<T> for covariance.
 // Basically we want State<string> implements StateView<string | number>
-export interface StateView<T> {
+export interface StateView<T = any> {
   readonly val: T
 }
 
@@ -133,16 +133,14 @@ type Tags = {
   readonly template: TagFunc<HTMLTemplateElement>
 }
 
-declare function bind<T1>(d1: StateView<T1>, f: (v1: T1, dom: Element, oldV1: T1) => Primitive | Node | null | undefined): Node | []
-declare function bind<T1, T2>(d1: StateView<T1>, d2: StateView<T2>, f: (v1: T1, v2: T2, dom: Element, oldV1: T1, oldV2: T2) => Primitive | Node | null | undefined): Node | []
-declare function bind<T1, T2, T3>(d1: StateView<T1>, d2: StateView<T2>, d3: StateView<T3>, f: (v1: T1, v2: T2, v3: T3, dom: Element, oldV1: T1, oldV2: T2, oldV3: T3) => Primitive | Node | null | undefined): Node | []
-declare function bind<T1, T2, T3, T4>(d1: StateView<T1>, d2: StateView<T2>, d3: StateView<T3>, d4: StateView<T4>, f: (v1: T1, v2: T2, v3: T3, v4: T4, dom: Element, oldV1: T1, oldV2: T2, oldV3: T3, oldV4: T4) => Primitive | Node | null | undefined): Node | []
-declare function bind<T1, T2, T3, T4, T5>(d1: StateView<T1>, d2: StateView<T2>, d3: StateView<T3>, d4: StateView<T4>, d5: StateView<T5>, f: (v1: T1, v2: T2, v3: T3, v4: T4, v5: T5, dom: Element, oldV1: T1, oldV2: T2, oldV3: T3, oldV4: T4, oldV5: T5) => Primitive | Node | null | undefined): Node | []
-declare function bind<T1, T2, T3, T4, T5, T6>(d1: StateView<T1>, d2: StateView<T2>, d3: StateView<T3>, d4: StateView<T4>, d5: StateView<T5>, d6: StateView<T6>, f: (v1: T1, v2: T2, v3: T3, v4: T4, v5: T5, v6: T6, dom: Element, oldV1: T1, oldV2: T2, oldV3: T3, oldV4: T4, oldV5: T5, oldV6: T6) => Primitive | Node | null | undefined): Node | []
-declare function bind<T1, T2, T3, T4, T5, T6, T7>(d1: StateView<T1>, d2: StateView<T2>, d3: StateView<T3>, d4: StateView<T4>, d5: StateView<T5>, d6: StateView<T6>, d7: StateView<T7>, f: (v1: T1, v2: T2, v3: T3, v4: T4, v5: T5, v6: T6, v7: T7, dom: Element, oldV1: T1, oldV2: T2, oldV3: T3, oldV4: T4, oldV5: T5, oldV6: T6, oldV7: T7) => Primitive | Node | null | undefined): Node | []
-declare function bind<T1, T2, T3, T4, T5, T6, T7, T8>(d1: StateView<T1>, d2: StateView<T2>, d3: StateView<T3>, d4: StateView<T4>, d5: StateView<T5>, d6: StateView<T6>, d7: StateView<T7>, d8: StateView<T8>, f: (v1: T1, v2: T2, v3: T3, v4: T4, v5: T5, v6: T6, v7: T7, v8: T8, dom: Element, oldV1: T1, oldV2: T2, oldV3: T3, oldV4: T4, oldV5: T5, oldV6: T6, oldV7: T7, oldV8: T8) => Primitive | Node | null | undefined): Node | []
-declare function bind<T1, T2, T3, T4, T5, T6, T7, T8, T9>(d1: StateView<T1>, d2: StateView<T2>, d3: StateView<T3>, d4: StateView<T4>, d5: StateView<T5>, d6: StateView<T6>, d7: StateView<T7>, d8: StateView<T8>, d9: StateView<T9>, f: (v1: T1, v2: T2, v3: T3, v4: T4, v5: T5, v6: T6, v7: T7, v8: T8, v9: T9, dom: Element, oldV1: T1, oldV2: T2, oldV3: T3, oldV4: T4, oldV5: T5, oldV6: T6, oldV7: T7, oldV8: T8, oldV9: T9) => Primitive | Node | null | undefined): Node | []
-declare function bind<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(d1: StateView<T1>, d2: StateView<T2>, d3: StateView<T3>, d4: StateView<T4>, d5: StateView<T5>, d6: StateView<T6>, d7: StateView<T7>, d8: StateView<T8>, d9: StateView<T9>, d10: StateView<T10>, f: (v1: T1, v2: T2, v3: T3, v4: T4, v5: T5, v6: T6, v7: T7, v8: T8, v9: T9, v10: T10, dom: Element, oldV1: T1, oldV2: T2, oldV3: T3, oldV4: T4, oldV5: T5, oldV6: T6, oldV7: T7, oldV8: T8, oldV9: T9, oldV10: T10) => Primitive | Node | null | undefined): Node | []
+
+type BindFuncArgs<T extends StateView[]> = T extends [infer OnlyOne extends StateView] ?
+  [OnlyOne['val']] : T extends [infer First extends StateView, ...infer Rest extends StateView[]] ?
+  [First['val'], ...BindFuncArgs<Rest>] : never
+
+type BindFunc<T extends StateView[]> = (...arg: [...BindFuncArgs<T>, Element, ...BindFuncArgs<T>]) => Primitive | Node | null | undefined
+
+declare function bind<StateViews extends StateView[]>(...args: [...StateViews, BindFunc<StateViews>]): Node | []
 
 export type Van = {
   readonly state: <T>(initVal: T) => State<T>

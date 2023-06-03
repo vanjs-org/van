@@ -49,12 +49,12 @@ let add = (dom, ...children) => (
 let tags = new Proxy((name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
   let dom = document.createElement(name)
-  Obj.entries(props).forEach(([k, v]) => {
+  for (let [k, v] of Obj.entries(props)) {
     let setter = dom[k] !== _undefined ? v => dom[k] = v : v => dom.setAttribute(k, v)
     if (protoOf(v) === stateProto) bind(v, v => (setter(v), dom))
     else if (protoOf(v) === objProto) bind(...v["deps"], (...deps) => (setter(v["f"](...deps)), dom))
     else setter(v)
-  })
+  }
   return add(dom, ...children)
 }, {get: (tag, name) => tag.bind(_undefined, name)})
 
@@ -63,30 +63,30 @@ let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected
 let updateDoms = () => {
   let changedStatesArray = [...changedStates]
   changedStates = _undefined
-  new Set(changedStatesArray.flatMap(filterBindings)).forEach(b => {
-    let {_deps, dom, func} = b
-    let newDom = func(..._deps.map(d => d._val), dom, ..._deps.map(d => d.oldVal))
+  for (let b of new Set(changedStatesArray.flatMap(filterBindings))) {
+    let {_deps, dom} = b
+    let newDom = b.func(..._deps.map(d => d._val), dom, ..._deps.map(d => d.oldVal))
     if (newDom !== dom)
       if (newDom != _undefined)
         dom.replaceWith(b.dom = toDom(newDom)); else dom.remove(), b.dom = _undefined
-  })
-  changedStatesArray.forEach(s => s.oldVal = s._val)
+  }
+  for (let s of changedStatesArray) s.oldVal = s._val
 }
 
 let bindingGcCycleInMs = 1000
 let statesToGc
 
 let bind = (...deps) => {
-  let [func] = deps.splice(-1, 1)
+  let func = deps.pop()
   let result = func(...deps.map(d => d._val))
   if (result == _undefined) return []
   let binding = {_deps: deps, dom: toDom(result), func}
-  deps.forEach(s => {
+  for (let s of deps) {
     statesToGc = addAndScheduleOnFirst(statesToGc, s,
       () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
       bindingGcCycleInMs)
     s.bindings.push(binding)
-  })
+  }
   return binding.dom
 }
 
