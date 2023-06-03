@@ -1,3 +1,22 @@
+// Auto-Append feature 
+let _base;              // Global element stores current insert position. If empty, elements are added at the end of document.
+let _baseStack = [];    // Stack for storing _base positions
+
+// set a new basepoint for append, save previous on baseStack
+function begin(ID) {
+  _baseStack.push(_base);// Save old base
+  if (_baseStack.length > 100) throw new Error("_baseStackOverflow in begin()");
+
+  _base = (typeof (ID) === 'string') ? document.getElementById(ID) : ID
+  return _base
+}
+// restore last base, cnt: call multiple times
+function end(cnt = 1) {
+  if (cnt > 1) end(cnt - 1)
+  if (_baseStack.length <= 0) throw new Error("_baseStack empty in end()")
+  return (_base = _baseStack.pop())    // restore old stack
+}
+
 // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
 
 // Aliasing some builtin symbols to reduce the bundle size.
@@ -55,7 +74,9 @@ let tags = new Proxy((name, ...args) => {
     else if (protoOf(v) === objProto) bind(...v["deps"], (...deps) => (setter(v["f"](...deps)), dom))
     else setter(v)
   }
-  return add(dom, ...children)
+  let r = add(dom, ...children)
+  if (_base) add(_base, r) // auto-Append, if base not empty
+  return r
 }, {get: (tag, name) => tag.bind(_undefined, name)})
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
@@ -90,4 +111,4 @@ let bind = (...deps) => {
   return binding.dom
 }
 
-export default {add, tags, state, bind}
+export default {add, tags, state, bind, begin, end}
