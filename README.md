@@ -97,3 +97,4 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 * [Tamotsu Takahashi](https://github.com/tamo)
 * [icecream17](https://github.com/icecream17)
 * [enpitsuLin](https://github.com/enpitsuLin)
+* [Elliot Ford](https://github.com/EFord36)
