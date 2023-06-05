@@ -1,6 +1,10 @@
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
-**VanJS** (abbr. **Van**illa **J**ava**S**cript) is an ***ultra-lightweight***, ***zero-dependency*** and ***unopinionated*** Reactive UI framework based on pure vanilla JavaScript and DOM. Programming with **VanJS** feels a lot like React. Check-out the `Hello World` code below:
+📣 [VanJS 0.11.11 released →](https://github.com/vanjs-org/van/discussions/44)
+
+> Enable everyone to build useful UI apps with a few lines of code, anywhere, any time, on any device.
+
+**VanJS** is an ***ultra-lightweight***, ***zero-dependency*** and ***unopinionated*** Reactive UI framework based on pure vanilla JavaScript and DOM. Programming with **VanJS** feels like building React apps in a [scripting language](https://vanjs.org/about#story), without JSX. Check-out the `Hello World` code below:
 
 ```javascript
 // Reusable components can be just pure vanilla JavaScript functions.
@@ -22,7 +26,7 @@ van.add(document.body, Hello())
 
 You can convert any HTML snippet into **VanJS** code with our online [converter](https://vanjs.org/convert).
 
-**VanJS** helps you manage state and UI binding as well, with a more natural API:
+**VanJS** helps you manage states and UI bindings as well, with a more natural API:
 
 ```javascript
 const Counter = () => {
@@ -41,8 +45,6 @@ van.add(document.body, Counter())
 
 ## Why VanJS?
 
-**VanJS** has the vision to be the [scripting language](https://vanjs.org/about#story) for UI, just like `bash` is the scripting language for terminal. **VanJS** empowers frontend engineers, backend engineers, system engineers, data scientists, and anyone else to build comprehensive user interfaces. You can code with **VanJS** anywhere, any time, and on any device – _even on your smartphone!_ 👏👏👏
-
 ### Reactive Programming without React/JSX
 
 Declarative DOM tree composition, reusable components, reactive state binding - **VanJS** offers every good aspect that React does, but without the need of React, JSX, transpiling, virtual DOM, or any hidden logic. Everything is built with simple JavaScript functions and DOM.
@@ -53,7 +55,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Ultra-Lightweight
 
-**VanJS** is a very thin layer on top of Vanilla JavaScript and DOM, barely enough to make the DOM manipulation and state binding as ergonomic as (if not more than) React, and it delegates most of work to standard browser APIs implemented in native code. As a result, the bundled size of **VanJS** is just 1.2kB, which is **more than 100 times** smaller than most popular UI frameworks:
+**VanJS** is a very thin layer on top of Vanilla JavaScript and DOM, barely enough to make the DOM manipulation and state binding as ergonomic as (if not more than) React, and it delegates most of work to standard browser APIs implemented in native code. As a result, the bundled size of **VanJS** is just 1.2kB, which is **more than 100 times** smaller than most popular UI frameworks, making it the smallest reactive UI framework in the world:
 
 ![Size comparison](doc/size_comp.png)
 
@@ -67,15 +69,15 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Easy to Learn
 
-**VanJS** puts heavy emphasis on the simplicity of the framework. There are only 4 exported functions in the API and feels a lot like React. Because of that, the [walkthrough tutorial](https://vanjs.org/tutorial) is the same as the full API referrence, and can be learned within 1 hour for most developers.
+**VanJS** puts heavy emphasis on the simplicity of the framework. There are only 4 exported functions in the API and feels a lot like React. Because of that, the [walkthrough tutorial](https://vanjs.org/tutorial) is the same as the full API reference, and can be learned within 1 hour for most developers.
 
 ## Want to Learn More?
 
 * Download and [Get Started](https://vanjs.org/start)
 * Learn from the [Tutorial](https://vanjs.org/tutorial)
-* Learn by [Examples](https://vanjs.org/demo)
+* Learn by [Examples](https://vanjs.org/demo) (and also [Community Examples](https://vanjs.org/demo#community-examples))
 * Convert HTML snippet to **VanJS** code with our online [HTML to **VanJS** Converter](https://vanjs.org/convert)
-* Want server-side rendering? Check out [Mini-Van](https://github.com/vanjs-org/mini-van)
+* Want server-side rendering? Check out [Mini-Van](https://github.com/vanjs-org/mini-van) (the entire vanjs.org site is built on top of Mini-Van)
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page
 
 ## Support & Feedback
@@ -93,3 +95,6 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 * [Tao Xin](https://github.com/Tao-VanJS)
 * [Ryan Olson](https://github.com/ryanolsonx)
 * [Tamotsu Takahashi](https://github.com/tamo)
+* [icecream17](https://github.com/icecream17)
+* [enpitsuLin](https://github.com/enpitsuLin)
+* [Elliot Ford](https://github.com/EFord36)
