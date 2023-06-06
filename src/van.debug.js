@@ -72,6 +72,7 @@ const tags = new Proxy(van.tags, {
       const [props, ...children] = protoOf(args[0] ?? 0) === Object.prototype ? args : [{}, ...args]
       const debugProps =  {}
       for (const [k, v] of Object.entries(props)) {
+        if(v === undefined) continue
         const validatePropValue = k.startsWith("on") ?
           v => (expect(typeof v === "function",
             `Invalid property value for ${k}: Only functions are allowed for on... handler`), v) :
