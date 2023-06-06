@@ -52,7 +52,7 @@ begin() is "transparent", it just returns the DOM reference of the first child. 
 ```
 begin(ID) can also digest Strings:
 ```JS
-    <div id="ID"> <>
+    <div id="ID"> </div>
     <script>
     begin("ID") // select div by ID
         h1()
@@ -97,4 +97,13 @@ To check your code, you can add this line to the end of Javascript:
        css(`
           .myClass { color: ${mycolor[1]}; }
         `)
-Definitions with css() work like any other CSS you provide with static definitions, they just are added from within Javascript. This makes it easy to control CSS programmatically
+Definitions with css() work like any other CSS you provide with static definitions, they just are added from within Javascript. This makes it easy to control CSS programmatically. css can be used anywhere and anytime in the script. New css-rules will become active immediately and might even be changed as shown in the example below:
+```JS
+    const { button, br } = van.tags
+    const { add, css } = van
+    add(document.body,
+    button({onclick: () => css(".class1 {background-color: red;}")},"set class1 red"),
+    button({onclick: () => css(".class1 {background-color: green;}")},"set class1 green")
+    );
+```
+!Attention: Always add a local CSS-file first, as the dynamic rules are included in the first style sheet. If the first sheet is loaded from an external source, the use of css() may cause a CORS error.
