@@ -44,7 +44,7 @@ With VAN_DML, this can be rewritten:
 ```
 begin() is "transparent", it just returns the DOM reference of the first child. This let´s you create functions like this:
 ```JS
-    const bdiv (...args) => begin(div(...args))
+    const bdiv = (...args) => begin(div(...args))
     
     bdiv() // Create a div and open for append
         h1()
@@ -61,7 +61,7 @@ begin(ID) can also digest Strings:
 
 ## end(n)
 
-end() finishes the append mode and returns to the previous base. For each begin() there should be one call of end(). You can verify this by checking `SP()==0` (see below). 
+end() finishes the append mode and returns to the previous base. For each begin() there should be one call of end(). You can verify this by checking `SP() === 0` (see below). 
 If no base is selected (or the calls begin() and end() are balanced), auto-Append is disabled. 
 
 end(n) runs "end()" n times. May be convenient to return from deep nested functions.
@@ -84,17 +84,17 @@ To check your code, you can add this line to the end of Javascript:
     if (sp() !== 0) alert(`baseStack mismatch: stacksize ${sp()} at end of Javascript`)
 ```
 
-## CSS(s): create CSS-Defintions dynamically with Javascript
+## css(s): create CSS-Defintions dynamically with Javascript
     s can be 
-     - a string CSS(".myClass { color: red; }") 
+     - a string css(".myClass { color: red; }") 
      - a template string with multiple rules
-        CSS(`
+        css(`
           .myClass { color: red; }
           .myClass: hover { color: green }
         `)
       - It can contain even template literals: 
        let color = ["red","green","blue"]
-       CSS(`
+       css(`
           .myClass { color: ${mycolor[1]}; }
         `)
-Definitions with CSS() work like any other CSS you provide with static definitions, they just are added from within Javascript. This makes it easy to control CSS programmatically
+Definitions with css() work like any other CSS you provide with static definitions, they just are added from within Javascript. This makes it easy to control CSS programmatically
