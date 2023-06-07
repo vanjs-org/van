@@ -107,9 +107,9 @@ Definitions with css() work like any other CSS you provide with static definitio
 ```JS
     const { button, br } = van.tags
     const { add, css } = van
-      add(document.body,
-      button({onclick: () => css(".class1 {background-color: red;}")},"set class1 red"),
-      button({onclick: () => css(".class1 {background-color: green;}")},"set class1 green")
+        add(document.body,
+        button({onclick: () => css(".class1 {background-color: red;}")},"set class1 red"),
+        button({onclick: () => css(".class1 {background-color: green;}")},"set class1 green")
     );
 ```
-!Attention: Always add a local CSS-file first, as the dynamic rules are included in the first style sheet. If the first sheet is loaded from an external source, the use of css() may cause a CORS error.
+**!Attention:** Always add a ***local CSS-file*** first, as the dynamic rules are included in the first style sheet. If the first sheet is loaded from an external source, the use of css() may cause a CORS error.
