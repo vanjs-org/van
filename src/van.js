@@ -20,7 +20,7 @@ let stateProto = {
       else if (v === s.oldVal)
         changedStates.delete(s)
       s._val = v
-      s.listeners.forEach(l => l(v, curV))
+      for (let l of s.listeners) l(v, curV)
     }
   },
 
@@ -41,10 +41,11 @@ let state = initVal => ({
 
 let toDom = v => v.nodeType ? v : new Text(v)
 
-let add = (dom, ...children) => (
-  children.flat(Infinity).forEach(child => dom.appendChild(
-    protoOf(child) === stateProto ? bind(child, v => v) : toDom(child))),
-  dom)
+let add = (dom, ...children) => {
+  for (let child of children.flat(Infinity))
+    dom.appendChild(protoOf(child) === stateProto ? bind(child, v => v) : toDom(child))
+  return dom
+}
 
 let tags = new Proxy((name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
