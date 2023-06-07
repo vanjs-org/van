@@ -18,7 +18,6 @@ function end(cnt = 1) {
 }
 
 // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
-var updateRate = 0 // Initial update timeout 0 ms
 
 // Aliasing some builtin symbols to reduce the bundle size.
 let Obj = Object, _undefined, protoOf = Object.getPrototypeOf
@@ -36,7 +35,7 @@ let stateProto = {
     let s = this, curV = s._val
     if (v !== curV) {
       if (s.oldVal === curV)
-        changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms, updateRate)
+        changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms)
       else if (v === s.oldVal)
         changedStates.delete(s)
       s._val = v
@@ -111,5 +110,5 @@ let bind = (...deps) => {
   }
   return binding.dom
 }
-let updateRate = (t) => updateRate = t
-export default {add, tags, state, bind, begin, end, updateRate}
+
+export default {add, tags, state, bind, begin, end}
