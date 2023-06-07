@@ -52,7 +52,7 @@ begin() is "transparent", it just returns the DOM reference of the first child. 
 ```
 begin(ID) can also digest Strings:
 ```JS
-    <div id="ID"> </div>
+    <div id="ID"></div>
     <script>
     begin("ID") // select div by ID
         h1()
