@@ -229,6 +229,32 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(dom.outerHTML, '<div data-type="line" data-id="1" data-line="line=1">This is a test line</div>')
     },
 
+    tagsTest_readonlyProps_connected: withHiddenDom(async hiddenDom => {
+      const form = state("form1")
+      const dom = button({form}, "Button")
+      add(hiddenDom, dom)
+      assertEq(dom.outerHTML, '<button form="form1">Button</button>')
+
+      form.val = "form2"
+      await sleep(waitMsOnDomUpdates)
+      assertEq(dom.outerHTML, '<button form="form2">Button</button>')
+
+      assertEq(input({list: "datalist1"}).outerHTML, '<input list="datalist1">')
+    }),
+
+    tagsTest_readonlyProps_disconnected: async () => {
+      const form = state("form1")
+      const dom = button({form}, "Button")
+      assertEq(dom.outerHTML, '<button form="form1">Button</button>')
+
+      form.val = "form2"
+      await sleep(waitMsOnDomUpdates)
+      // Attributes won't change as dom is not connected to document
+      assertEq(dom.outerHTML, '<button form="form1">Button</button>')
+
+      assertEq(input({list: "datalist1"}).outerHTML, '<input list="datalist1">')
+    },
+
     tagsTest_stateAsChild_connected: withHiddenDom(async hiddenDom => {
       const line2 = state(<string | null>"Line 2")
       const dom = div(

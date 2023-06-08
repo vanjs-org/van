@@ -2,7 +2,7 @@
   // van.js
   var Obj = Object;
   var _undefined;
-  var protoOf = Object.getPrototypeOf;
+  var protoOf = Obj.getPrototypeOf;
   var addAndScheduleOnFirst = (set, s, func, waitMs) => (set ?? (setTimeout(func, waitMs), /* @__PURE__ */ new Set())).add(s);
   var changedStates;
   var stateProto = {
@@ -39,11 +39,14 @@
       dom.appendChild(protoOf(child) === stateProto ? bind(child, (v) => v) : toDom(child));
     return dom;
   };
+  var isSettablePropCache = {};
+  var getPropDescriptor = (proto, key) => proto ? Obj.getOwnPropertyDescriptor(proto, key) ?? getPropDescriptor(protoOf(proto), key) : _undefined;
+  var isSettableProp = (tag, key, proto) => isSettablePropCache[tag + "," + key] ?? (isSettablePropCache[tag + "," + key] = getPropDescriptor(proto, key)?.set ?? 0);
   var tags = new Proxy((name, ...args) => {
     let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args];
     let dom = document.createElement(name);
     for (let [k, v] of Obj.entries(props)) {
-      let setter = dom[k] !== _undefined ? (v2) => dom[k] = v2 : (v2) => dom.setAttribute(k, v2);
+      let setter = isSettableProp(name, k, protoOf(dom)) ? (v2) => dom[k] = v2 : (v2) => dom.setAttribute(k, v2);
       if (protoOf(v) === stateProto)
         bind(v, (v2) => (setter(v2), dom));
       else if (protoOf(v) === objProto)

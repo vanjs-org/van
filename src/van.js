@@ -1,7 +1,7 @@
 // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
 
 // Aliasing some builtin symbols to reduce the bundle size.
-let Obj = Object, _undefined, protoOf = Object.getPrototypeOf
+let Obj = Object, _undefined, protoOf = Obj.getPrototypeOf
 
 let addAndScheduleOnFirst = (set, s, func, waitMs) =>
   (set ?? (setTimeout(func, waitMs), new Set)).add(s)
@@ -47,11 +47,20 @@ let add = (dom, ...children) => {
   return dom
 }
 
+let isSettablePropCache = {}
+
+let getPropDescriptor = (proto, key) => proto ?
+  Obj.getOwnPropertyDescriptor(proto, key) ?? getPropDescriptor(protoOf(proto), key) :
+  _undefined
+
+let isSettableProp = (tag, key, proto) => isSettablePropCache[tag + "," + key] ??
+    (isSettablePropCache[tag + "," + key] = getPropDescriptor(proto, key)?.set ?? 0)
+
 let tags = new Proxy((name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
   let dom = document.createElement(name)
   for (let [k, v] of Obj.entries(props)) {
-    let setter = dom[k] !== _undefined ? v => dom[k] = v : v => dom.setAttribute(k, v)
+    let setter = isSettableProp(name, k, protoOf(dom)) ? v => dom[k] = v : v => dom.setAttribute(k, v)
     if (protoOf(v) === stateProto) bind(v, v => (setter(v), dom))
     else if (protoOf(v) === objProto) bind(...v["deps"], (...deps) => (setter(v["f"](...deps)), dom))
     else setter(v)
