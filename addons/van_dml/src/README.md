@@ -11,10 +11,10 @@ Van_DML extends the core of VanJS. You can enable van_dml like this:
     const { begin, end, base, sp, css } = van  // new functions of van_dml
 ```
 ## How does it work?
-`begin(ID)` selects an element "ID" as a base. ID can be a DOM element or a HTML-ID. All elements created after begin() are automatically appended as childs to this object.
-`end() finishes the automatic appending.
+`begin(ID)` selects an element "ID" as a base. ID can be a DOM element or a HTML-ID. All elements created after `begin()` are automatically appended as childs to this object.
+`end()` finishes the automatic appending.
 
-begin() and end() can be nested like this:
+`begin()` and `end()` can be nested like this:
 ```JS
     const { h1, h2, div, p, button } = van.tags;
     const { begin, end, base, sp, css } = van
@@ -42,7 +42,7 @@ With VAN_DML, this can be rewritten:
     let d = begin(div()) // -> d is the <div>-element
     begin(div()).style.color = "red" // Acess the style of div
 ```
-begin() is "transparent", it just returns the DOM reference of the first child. This let´s you create functions like this:
+`begin()` is "transparent", it just returns the DOM reference of the first child. This let´s you create functions like this:
 ```JS
     const bdiv = (...args) => begin(div(...args))
     
@@ -57,14 +57,15 @@ begin(ID) can also digest Strings:
     begin("ID") // select div by ID
         h1()
     end()
+    </script>
 ```
 
 ## end(n)
 
-end() finishes the append mode and returns to the previous base. For each begin() there should be one call of end(). You can verify this by checking `SP() === 0` (see below). 
-If no base is selected (or the calls begin() and end() are balanced), auto-Append is disabled. 
+`end()` finishes the append mode and returns to the previous base. For each `begin()` there should be one call of `end()`. You can verify this by checking `SP() === 0` (see below). 
+If no base is selected (or the calls `begin()` and `end()` are balanced), auto-Append is disabled. 
 
-end(n) runs "end()" n times. May be convenient to return from deep nested functions.
+end(n) runs `end()` n times. May be convenient to return from deep nested functions.
 
 ## base() and sp()
 
@@ -74,7 +75,7 @@ base() returns the current base:
     let b = base(); // returns the current base (div())
 ```
 
-sp() is the current Stack-Position. Initially SP() is 0. With each call of begin() sp() is incremented, end() decements sp().
+sp() is the current Stack-Position. Initially SP() is 0. With each call of `begin()` sp() is incremented, `end()` decements sp().
 To check your code, you can add this line to the end of Javascript:
 ```JS
     begin(document.body) 
@@ -84,10 +85,10 @@ To check your code, you can add this line to the end of Javascript:
     if (sp() !== 0) alert(`baseStack mismatch: stacksize ${sp()} at end of Javascript`)
 ```
 
-## css(s): create CSS-Defintions dynamically with Javascript
+## css(): create CSS-rules dynamically with Javascript
 
+`css(s)` adds new CSS-rules during runtime.  
 s can be 
-
 - a string css(".myClass { color: red; }") 
 - a template string with multiple rules
 ```JS
@@ -103,13 +104,13 @@ s can be
         .myClass { color: ${mycolor[1]}; }
     `)
 ```
-Definitions with css() work like any other CSS you provide with static definitions, they just are added from within Javascript. This makes it easy to control CSS programmatically. css can be used anywhere and anytime in the script. New css-rules will become active immediately and might even be changed as shown in the example below:
+If a rule already exists, it will be overwritten by the new definition. Results are immediately shown by the browser. Definitions with css() work like any other CSS you provide with static definitions, they just are added from within Javascript. This makes it easy to control CSS programmatically. css can be used anywhere and anytime in the script. New css-rules will become active immediately and might even be changed as shown in the example below:
 ```JS
-    const { button, br } = van.tags
+    const { button } = van.tags
     const { add, css } = van
         add(document.body,
         button({onclick: () => css(".class1 {background-color: red;}")},"set class1 red"),
         button({onclick: () => css(".class1 {background-color: green;}")},"set class1 green")
     );
 ```
-**!Attention:** Always add a ***local CSS-file*** first, as the dynamic rules are included in the first style sheet. If the first sheet is loaded from an external source, the use of css() may cause a CORS error.
+**!Attention:**: css() adds new rules to the first stylesheet (`window.document.styleSheets[0]`). If the first stylesheet was loaded from an external source, this may cause CORS errors. For more information see [here](https://davidwalsh.name/add-rules-stylesheets) and [here](https://stackoverflow.com/questions/49088507/cannot-access-rules-in-external-cssstylesheet). Always add a ***local CSS-file*** first, as the dynamic rules are included in the first style sheet.
