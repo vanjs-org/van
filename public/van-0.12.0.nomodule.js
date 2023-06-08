@@ -58,12 +58,14 @@
     return add(dom, ...children);
   }, { get: (tag, name) => tag.bind(_undefined, name) });
   var filterBindings = (s) => s.bindings = s.bindings.filter((b) => b.dom?.isConnected);
+  var getVals = (deps) => deps.map((d) => protoOf(d ?? 0) === stateProto ? d._val : d);
+  var getOldVals = (deps) => deps.map((d) => protoOf(d ?? 0) === stateProto ? d.oldVal : d);
   var updateDoms = () => {
     let changedStatesArray = [...changedStates];
     changedStates = _undefined;
     for (let b of new Set(changedStatesArray.flatMap(filterBindings))) {
       let { _deps, dom } = b;
-      let newDom = b.func(..._deps.map((d) => d._val), dom, ..._deps.map((d) => d.oldVal));
+      let newDom = b.func(...getVals(_deps), dom, ...getOldVals(_deps));
       if (newDom !== dom)
         if (newDom != _undefined)
           dom.replaceWith(b.dom = toDom(newDom));
@@ -77,19 +79,20 @@
   var statesToGc;
   var bind = (...deps) => {
     let func = deps.pop();
-    let result = func(...deps.map((d) => d._val));
+    let result = func(...getVals(deps));
     if (result == _undefined)
       return [];
     let binding = { _deps: deps, dom: toDom(result), func };
-    for (let s of deps) {
-      statesToGc = addAndScheduleOnFirst(
-        statesToGc,
-        s,
-        () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
-        bindingGcCycleInMs
-      );
-      s.bindings.push(binding);
-    }
+    for (let s of deps)
+      if (protoOf(s ?? 0) === stateProto) {
+        statesToGc = addAndScheduleOnFirst(
+          statesToGc,
+          s,
+          () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
+          bindingGcCycleInMs
+        );
+        s.bindings.push(binding);
+      }
     return binding.dom;
   };
   var van_default = { add, tags: tagsNS(), "tagsNS": tagsNS, state, bind };

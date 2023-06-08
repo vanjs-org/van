@@ -70,12 +70,15 @@ let tagsNS = ns => new Proxy((name, ...args) => {
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
+let getVals = deps => deps.map(d => protoOf(d ?? 0) === stateProto ? d._val : d)
+let getOldVals = deps => deps.map(d => protoOf(d ?? 0) === stateProto ? d.oldVal : d)
+
 let updateDoms = () => {
   let changedStatesArray = [...changedStates]
   changedStates = _undefined
   for (let b of new Set(changedStatesArray.flatMap(filterBindings))) {
     let {_deps, dom} = b
-    let newDom = b.func(..._deps.map(d => d._val), dom, ..._deps.map(d => d.oldVal))
+    let newDom = b.func(...getVals(_deps), dom, ...getOldVals(_deps))
     if (newDom !== dom)
       if (newDom != _undefined)
         dom.replaceWith(b.dom = toDom(newDom)); else dom.remove(), b.dom = _undefined
@@ -88,10 +91,10 @@ let statesToGc
 
 let bind = (...deps) => {
   let func = deps.pop()
-  let result = func(...deps.map(d => d._val))
+  let result = func(...getVals(deps))
   if (result == _undefined) return []
   let binding = {_deps: deps, dom: toDom(result), func}
-  for (let s of deps) {
+  for (let s of deps) if (protoOf(s ?? 0) === stateProto) {
     statesToGc = addAndScheduleOnFirst(statesToGc, s,
       () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
       bindingGcCycleInMs)

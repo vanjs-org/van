@@ -1,11 +1,11 @@
-export type State<T = any> = {
+export type State<T> = {
   val: T
   onnew(l: (val: T, oldVal: T) => void): void
 }
 
 // Defining readonly view of State<T> for covariance.
 // Basically we want State<string> implements StateView<string | number>
-export interface StateView<T = any> {
+export interface StateView<T> {
   readonly val: T
 }
 
@@ -14,7 +14,7 @@ export type Primitive = string | number | boolean | bigint
 export type PropValue = Primitive | Function | null
 
 export interface DerivedProp {
-  readonly deps: readonly StateView<unknown>[]
+  readonly deps: unknown[]
   readonly f: (...args: readonly any[]) => PropValue
 }
 
@@ -133,14 +133,15 @@ type Tags = {
   readonly template: TagFunc<HTMLTemplateElement>
 }
 
+type ValOf<T> = T extends StateView<unknown> ? T["val"] : T
 
-type BindFuncArgs<T extends StateView[]> = T extends [infer OnlyOne extends StateView] ?
-  [OnlyOne['val']] : T extends [infer First extends StateView, ...infer Rest extends StateView[]] ?
-  [First['val'], ...BindFuncArgs<Rest>] : never
+type BindFuncArgs<T extends readonly unknown[]> = T extends [infer OnlyOne] ?
+  [ValOf<OnlyOne>] : T extends [infer First, ...infer Rest extends unknown[]] ?
+  [ValOf<First>, ...BindFuncArgs<Rest>] : never
 
-type BindFunc<T extends StateView[]> = (...arg: [...BindFuncArgs<T>, Element, ...BindFuncArgs<T>]) => Primitive | Node | null | undefined
+type BindFunc<T extends unknown[]> = (...arg: readonly [...BindFuncArgs<T>, Element, ...BindFuncArgs<T>]) => Primitive | Node | null | undefined
 
-declare function bind<StateViews extends StateView[]>(...args: [...StateViews, BindFunc<StateViews>]): Node | []
+declare function bind<T extends unknown[]>(...args: [...T, BindFunc<T>]): Node | []
 
 export type Van = {
   readonly state: <T>(initVal: T) => State<T>

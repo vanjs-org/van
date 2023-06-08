@@ -121,8 +121,27 @@
         const path2 = state("/hello");
         const dom = a({ href: { deps: [host, path2], f: (host2, path3) => `https://${host2}${path3}` } }, "Test Link");
         assertEq(dom.href, "https://example.com/hello");
-        host.val = "github.com";
-        path2.val = "/alexander-xin/van/";
+        host.val = "vanjs.org";
+        path2.val = "/start";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.href, "https://example.com/hello");
+      },
+      tagsTest_stateDerivedProp_nonStateDeps_connected: withHiddenDom(async (hiddenDom) => {
+        const host = state("example.com");
+        const path2 = "/hello";
+        const dom = a({ href: { deps: [host, path2], f: (host2, path3) => `https://${host2}${path3}` } }, "Test Link");
+        add(hiddenDom, dom);
+        assertEq(dom.href, "https://example.com/hello");
+        host.val = "vanjs.org";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.href, "https://vanjs.org/hello");
+      }),
+      tagsTest_stateDerivedProp_nonStateDeps_disconnected: async () => {
+        const host = state("example.com");
+        const path2 = "/hello";
+        const dom = a({ href: { deps: [host, path2], f: (host2, path3) => `https://${host2}${path3}` } }, "Test Link");
+        assertEq(dom.href, "https://example.com/hello");
+        host.val = "vanjs.org";
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.href, "https://example.com/hello");
       },
@@ -423,6 +442,17 @@
         line3.val = "Line 3";
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p></div>");
+      }),
+      bindTest_nonStateDeps: withHiddenDom(async (hiddenDom) => {
+        const part1 = "\u{1F44B}Hello ", part2 = state("\u{1F5FA}\uFE0FWorld");
+        const dom = bind(part1, part2, (part12, part22) => part12 + part22);
+        assertEq(add(hiddenDom, dom), hiddenDom);
+        assertEq(dom.textContent, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
+        assertEq(hiddenDom.innerHTML, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
+        part2.val = "\u{1F366}VanJS";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.textContent, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
+        assertEq(hiddenDom.innerHTML, "\u{1F44B}Hello \u{1F366}VanJS");
       })
     };
     const debugTests = {
@@ -514,11 +544,6 @@
       bindTest_noStates: () => {
         assertError("1 or more states", () => bind());
         assertError("1 or more states", () => bind((x) => x * 2));
-      },
-      bindTest_nonStateArgs: () => {
-        assertError("must be states", () => bind(state(0), "", state(""), (a2, b, c) => a2 + b + c));
-        const s = state([]);
-        assertError("must be states", () => bind(s.val, (s2) => s2.length));
       },
       bindTest_lastArgNotFunc: () => assertError("must be the generation function", () => bind(state(0), state(1))),
       bindTest_invalidInitialResult: () => {

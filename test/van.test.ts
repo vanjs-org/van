@@ -154,8 +154,30 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       const path = state("/hello")
       const dom = a({href: {deps: [host, path], f: (host, path) => `https://${host}${path}`}}, "Test Link")
       assertEq(dom.href, "https://example.com/hello")
-      host.val = "github.com"
-      path.val = "/alexander-xin/van/"
+      host.val = "vanjs.org"
+      path.val = "/start"
+      await sleep(waitMsOnDomUpdates)
+      // href won't change as dom is not connected to document
+      assertEq(dom.href, "https://example.com/hello")
+    },
+
+    tagsTest_stateDerivedProp_nonStateDeps_connected: withHiddenDom(async hiddenDom => {
+      const host = state("example.com")
+      const path = "/hello"
+      const dom = a({href: {deps: [host, path], f: (host, path) => `https://${host}${path}`}}, "Test Link")
+      add(hiddenDom, dom)
+      assertEq(dom.href, "https://example.com/hello")
+      host.val = "vanjs.org"
+      await sleep(waitMsOnDomUpdates)
+      assertEq(dom.href, "https://vanjs.org/hello")
+    }),
+
+    tagsTest_stateDerivedProp_nonStateDeps_disconnected: async () => {
+      const host = state("example.com")
+      const path = "/hello"
+      const dom = a({href: {deps: [host, path], f: (host, path) => `https://${host}${path}`}}, "Test Link")
+      assertEq(dom.href, "https://example.com/hello")
+      host.val = "vanjs.org"
       await sleep(waitMsOnDomUpdates)
       // href won't change as dom is not connected to document
       assertEq(dom.href, "https://example.com/hello")
@@ -472,7 +494,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       verticalPlacement.val = true
       await sleep(waitMsOnDomUpdates)
 
-      // dom is disconnected from the document and it won't be updated
+      // dom is disconnected from the document thus it won't be updated
       assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2: Extra</button><button>Button 3</button></div>")
       assertEq((<Element>hiddenDom.firstChild).outerHTML, "<div><div><button>Button 1</button></div><div><button>Button 2: Extra</button></div><div><button>Button 3</button></div></div>")
       button2Text.val = "Button 2: Extra Extra"
@@ -596,6 +618,23 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       await sleep(waitMsOnDomUpdates)
       assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p></div>")
     }),
+
+    bindTest_nonStateDeps: withHiddenDom(async hiddenDom => {
+      const part1 = "👋Hello ", part2 = state("🗺️World")
+
+      const dom = <Text>bind(part1, part2, (part1, part2) => part1 + part2)
+      assertEq(add(hiddenDom, dom), hiddenDom)
+
+      assertEq(dom.textContent!, "👋Hello 🗺️World")
+      assertEq(hiddenDom.innerHTML, "👋Hello 🗺️World")
+
+      part2.val = "🍦VanJS"
+      await sleep(waitMsOnDomUpdates)
+
+      // dom is disconnected from the document thus it won't be updated
+      assertEq(dom.textContent!, "👋Hello 🗺️World")
+      assertEq(hiddenDom.innerHTML, "👋Hello 🍦VanJS")
+    }),
   }
 
   const debugTests = {
@@ -711,14 +750,6 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertError("1 or more states", () => bind(x => x * 2))
     },
 
-    bindTest_nonStateArgs: () => {
-      // @ts-ignore
-      assertError("must be states", () => bind(state(0), "", state(""), (a: number, b: number, c: number) => a + b + c))
-      const s = state([])
-      // @ts-ignore
-      assertError("must be states", () => bind(s.val, s => s.length))
-    },
-
     bindTest_lastArgNotFunc: () =>
       assertError("must be the generation function", () => bind(state(0), <any>state(1))),
 
@@ -797,7 +828,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
     }),
 
     bulletList: () => {
-      const List = ({items}) => ul(items.map(it => li(it)))
+      const List = ({items}) => ul(items.map((it: any) => li(it)))
       assertEq(List({items: ["Item 1", "Item 2", "Item 3"]}).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
     },
 
