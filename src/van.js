@@ -6,7 +6,7 @@ let Obj = Object, _undefined, protoOf = Object.getPrototypeOf
 let addAndScheduleOnFirst = (set, s, func, waitMs) =>
   (set ?? (setTimeout(func, waitMs), new Set)).add(s)
 
-let changedStates, ur
+let changedStates
 
 let stateProto = {
   get "val"() { return this._val },
@@ -16,7 +16,7 @@ let stateProto = {
     let s = this, curV = s._val
     if (v !== curV) {
       if (s.oldVal === curV)
-        changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms, ur)
+        changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms)
       else if (v === s.oldVal)
         changedStates.delete(s)
       s._val = v
@@ -89,5 +89,5 @@ let bind = (...deps) => {
   }
   return binding.dom
 }
-let rate = (ms) => ur = ms
-export default {add, tags, state, bind, rate}
+
+export default {add, tags, state, bind}
