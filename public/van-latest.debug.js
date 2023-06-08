@@ -65,7 +65,7 @@ const add = (dom, ...children) => {
   return van.add(dom, ...children)
 }
 
-const tags = new Proxy(van.tags, {
+const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
   get: (vanTags, name) => {
     const vanTag = vanTags[name]
     return (...args) => {
@@ -95,6 +95,11 @@ const tags = new Proxy(van.tags, {
   },
 })
 
+const tagsNS = ns => {
+  expect(typeof ns === "string", "Must provide a string for parameter `ns` in `tagsNS`")
+  return _tagsNS(ns)
+}
+
 const bind = (...deps) => {
   let [func] = deps.splice(-1, 1)
   expect(deps.length > 0, "`bind` must be called with 1 or more states as dependencies")
@@ -117,4 +122,4 @@ const bind = (...deps) => {
   })
 }
 
-export default {add, tags, state, bind, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
+export default {add, tags: _tagsNS(), tagsNS, state, bind, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}

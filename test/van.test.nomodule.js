@@ -3,7 +3,7 @@
   // ../test/van.test.js
   window.numTests = 0;
   var runTests = async (vanObj, msgDom2, { debug }) => {
-    const { add, tags, state, bind } = vanObj;
+    const { add, tags, tagsNS, state, bind } = vanObj;
     const { a, button, div: div2, input, li, option, p, pre, select, span, table, tbody, td, th, thead, tr, ul } = tags;
     const assert = (cond) => {
       if (!cond)
@@ -237,6 +237,16 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<p>Text</p>");
       }),
+      tagsNSTest_svg: () => {
+        const { circle, path: path2, svg } = tagsNS("http://www.w3.org/2000/svg");
+        const dom = svg({ width: "16px", viewBox: "0 0 50 50" }, circle({ cx: "25", cy: "25", "r": "20", stroke: "black", "stroke-width": "2", fill: "yellow" }), circle({ cx: "16", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), circle({ cx: "34", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), path2({ "d": "M 15 30 Q 25 40, 35 30", stroke: "black", "stroke-width": "2", fill: "transparent" }));
+        assertEq(dom.outerHTML, '<svg width="16px" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" stroke="black" stroke-width="2" fill="yellow"></circle><circle cx="16" cy="20" r="2" stroke="black" stroke-width="2" fill="black"></circle><circle cx="34" cy="20" r="2" stroke="black" stroke-width="2" fill="black"></circle><path d="M 15 30 Q 25 40, 35 30" stroke="black" stroke-width="2" fill="transparent"></path></svg>');
+      },
+      tagsNSTest_math: () => {
+        const { math, mi, mn, mo, mrow, msup } = tagsNS("http://www.w3.org/1998/Math/MathML");
+        const dom = math(msup(mi("e"), mrow(mi("i"), mi("\u03C0"))), mo("+"), mn("1"), mo("="), mn("0"));
+        assertEq(dom.outerHTML, "<math><msup><mi>e</mi><mrow><mi>i</mi><mi>\u03C0</mi></mrow></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>0</mn></math>");
+      },
       addTest_basic: () => {
         const dom = ul();
         assertEq(add(dom, li("Item 1"), li("Item 2")), dom);
@@ -450,6 +460,13 @@
         add(hiddenDom, dom);
         assertError("already connected to document", () => div2(p(), dom, p()));
       }),
+      tagsNSTest_invalidNs: () => {
+        assertError("Must provide a string", () => tagsNS(1));
+        assertError("Must provide a string", () => tagsNS(null));
+        assertError("Must provide a string", () => tagsNS(void 0));
+        assertError("Must provide a string", () => tagsNS({}));
+        assertError("Must provide a string", () => tagsNS((x) => x * 2));
+      },
       addTest_1stArgNotDom: () => {
         assertError("1st argument of `add` function must be a DOM Node object", () => add({}, div2()));
       },

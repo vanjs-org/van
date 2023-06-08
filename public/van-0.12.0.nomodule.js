@@ -3,6 +3,7 @@
   var Obj = Object;
   var _undefined;
   var protoOf = Obj.getPrototypeOf;
+  var doc = document;
   var addAndScheduleOnFirst = (set, s, func, waitMs) => (set ?? (setTimeout(func, waitMs), /* @__PURE__ */ new Set())).add(s);
   var changedStates;
   var stateProto = {
@@ -42,9 +43,9 @@
   var isSettablePropCache = {};
   var getPropDescriptor = (proto, key) => proto ? Obj.getOwnPropertyDescriptor(proto, key) ?? getPropDescriptor(protoOf(proto), key) : _undefined;
   var isSettableProp = (tag, key, proto) => isSettablePropCache[tag + "," + key] ?? (isSettablePropCache[tag + "," + key] = getPropDescriptor(proto, key)?.set ?? 0);
-  var tags = new Proxy((name, ...args) => {
+  var tagsNS = (ns) => new Proxy((name, ...args) => {
     let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args];
-    let dom = document.createElement(name);
+    let dom = ns ? doc.createElementNS(ns, name) : doc.createElement(name);
     for (let [k, v] of Obj.entries(props)) {
       let setter = isSettableProp(name, k, protoOf(dom)) ? (v2) => dom[k] = v2 : (v2) => dom.setAttribute(k, v2);
       if (protoOf(v) === stateProto)
@@ -91,7 +92,7 @@
     }
     return binding.dom;
   };
-  var van_default = { add, tags, state, bind };
+  var van_default = { add, tags: tagsNS(), "tagsNS": tagsNS, state, bind };
 
   // van.forbundle.js
   window.van = van_default;
