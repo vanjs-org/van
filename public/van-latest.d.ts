@@ -146,7 +146,7 @@ export type Van = {
   readonly state: <T>(initVal: T) => State<T>
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
   readonly tags: Tags
-  readonly tagsNS: (s: string) => Tags
+  readonly tagsNS: (namespaceURI: string) => Tags
   readonly bind: typeof bind
 }
 
