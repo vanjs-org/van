@@ -1,6 +1,6 @@
 window.numTests = 0;
 const runTests = async (vanObj, msgDom, { debug }) => {
-    const { add, tags, state, bind } = vanObj;
+    const { add, tags, tagsNS, state, bind } = vanObj;
     const { a, button, div, input, li, option, p, pre, select, span, table, tbody, td, th, thead, tr, ul } = tags;
     const assert = (cond) => {
         if (!cond)
@@ -123,8 +123,28 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             const path = state("/hello");
             const dom = a({ href: { deps: [host, path], f: (host, path) => `https://${host}${path}` } }, "Test Link");
             assertEq(dom.href, "https://example.com/hello");
-            host.val = "github.com";
-            path.val = "/alexander-xin/van/";
+            host.val = "vanjs.org";
+            path.val = "/start";
+            await sleep(waitMsOnDomUpdates);
+            // href won't change as dom is not connected to document
+            assertEq(dom.href, "https://example.com/hello");
+        },
+        tagsTest_stateDerivedProp_nonStateDeps_connected: withHiddenDom(async (hiddenDom) => {
+            const host = state("example.com");
+            const path = "/hello";
+            const dom = a({ href: { deps: [host, path], f: (host, path) => `https://${host}${path}` } }, "Test Link");
+            add(hiddenDom, dom);
+            assertEq(dom.href, "https://example.com/hello");
+            host.val = "vanjs.org";
+            await sleep(waitMsOnDomUpdates);
+            assertEq(dom.href, "https://vanjs.org/hello");
+        }),
+        tagsTest_stateDerivedProp_nonStateDeps_disconnected: async () => {
+            const host = state("example.com");
+            const path = "/hello";
+            const dom = a({ href: { deps: [host, path], f: (host, path) => `https://${host}${path}` } }, "Test Link");
+            assertEq(dom.href, "https://example.com/hello");
+            host.val = "vanjs.org";
             await sleep(waitMsOnDomUpdates);
             // href won't change as dom is not connected to document
             assertEq(dom.href, "https://example.com/hello");
@@ -185,6 +205,26 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // Attributes won't change as dom is not connected to document
             assertEq(dom.outerHTML, '<div data-type="line" data-id="1" data-line="line=1">This is a test line</div>');
         },
+        tagsTest_readonlyProps_connected: withHiddenDom(async (hiddenDom) => {
+            const form = state("form1");
+            const dom = button({ form }, "Button");
+            add(hiddenDom, dom);
+            assertEq(dom.outerHTML, '<button form="form1">Button</button>');
+            form.val = "form2";
+            await sleep(waitMsOnDomUpdates);
+            assertEq(dom.outerHTML, '<button form="form2">Button</button>');
+            assertEq(input({ list: "datalist1" }).outerHTML, '<input list="datalist1">');
+        }),
+        tagsTest_readonlyProps_disconnected: async () => {
+            const form = state("form1");
+            const dom = button({ form }, "Button");
+            assertEq(dom.outerHTML, '<button form="form1">Button</button>');
+            form.val = "form2";
+            await sleep(waitMsOnDomUpdates);
+            // Attributes won't change as dom is not connected to document
+            assertEq(dom.outerHTML, '<button form="form1">Button</button>');
+            assertEq(input({ list: "datalist1" }).outerHTML, '<input list="datalist1">');
+        },
         tagsTest_stateAsChild_connected: withHiddenDom(async (hiddenDom) => {
             const line2 = state("Line 2");
             const dom = div(pre("Line 1"), pre(line2), pre("Line 3"));
@@ -227,6 +267,16 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<p>Text</p>");
         }),
+        tagsNSTest_svg: () => {
+            const { circle, path, svg } = tagsNS("http://www.w3.org/2000/svg");
+            const dom = svg({ width: "16px", viewBox: "0 0 50 50" }, circle({ cx: "25", cy: "25", "r": "20", stroke: "black", "stroke-width": "2", fill: "yellow" }), circle({ cx: "16", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), circle({ cx: "34", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), path({ "d": "M 15 30 Q 25 40, 35 30", stroke: "black", "stroke-width": "2", fill: "transparent" }));
+            assertEq(dom.outerHTML, '<svg width="16px" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" stroke="black" stroke-width="2" fill="yellow"></circle><circle cx="16" cy="20" r="2" stroke="black" stroke-width="2" fill="black"></circle><circle cx="34" cy="20" r="2" stroke="black" stroke-width="2" fill="black"></circle><path d="M 15 30 Q 25 40, 35 30" stroke="black" stroke-width="2" fill="transparent"></path></svg>');
+        },
+        tagsNSTest_math: () => {
+            const { math, mi, mn, mo, mrow, msup } = tagsNS("http://www.w3.org/1998/Math/MathML");
+            const dom = math(msup(mi("e"), mrow(mi("i"), mi("π"))), mo("+"), mn("1"), mo("="), mn("0"));
+            assertEq(dom.outerHTML, '<math><msup><mi>e</mi><mrow><mi>i</mi><mi>π</mi></mrow></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>0</mn></math>');
+        },
         addTest_basic: () => {
             const dom = ul();
             assertEq(add(dom, li("Item 1"), li("Item 2")), dom);
@@ -333,7 +383,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2: Extra</button><button>Button 3</button></div>");
             verticalPlacement.val = true;
             await sleep(waitMsOnDomUpdates);
-            // dom is disconnected from the document and it won't be updated
+            // dom is disconnected from the document thus it won't be updated
             assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2: Extra</button><button>Button 3</button></div>");
             assertEq(hiddenDom.firstChild.outerHTML, "<div><div><button>Button 1</button></div><div><button>Button 2: Extra</button></div><div><button>Button 3</button></div></div>");
             button2Text.val = "Button 2: Extra Extra";
@@ -428,6 +478,18 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p></div>");
         }),
+        bindTest_nonStateDeps: withHiddenDom(async (hiddenDom) => {
+            const part1 = "👋Hello ", part2 = state("🗺️World");
+            const dom = bind(part1, part2, (part1, part2) => part1 + part2);
+            assertEq(add(hiddenDom, dom), hiddenDom);
+            assertEq(dom.textContent, "👋Hello 🗺️World");
+            assertEq(hiddenDom.innerHTML, "👋Hello 🗺️World");
+            part2.val = "🍦VanJS";
+            await sleep(waitMsOnDomUpdates);
+            // dom is disconnected from the document thus it won't be updated
+            assertEq(dom.textContent, "👋Hello 🗺️World");
+            assertEq(hiddenDom.innerHTML, "👋Hello 🍦VanJS");
+        }),
     };
     const debugTests = {
         tagsTest_invalidProp_nonFuncOnHandler: () => {
@@ -465,6 +527,13 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             add(hiddenDom, dom);
             assertError("already connected to document", () => div(p(), dom, p()));
         }),
+        tagsNSTest_invalidNs: () => {
+            assertError("Must provide a string", () => tagsNS(1));
+            assertError("Must provide a string", () => tagsNS(null));
+            assertError("Must provide a string", () => tagsNS(undefined));
+            assertError("Must provide a string", () => tagsNS({}));
+            assertError("Must provide a string", () => tagsNS(((x) => x * 2)));
+        },
         addTest_1stArgNotDom: () => {
             assertError("1st argument of `add` function must be a DOM Node object", () => add({}, div()));
         },
@@ -514,13 +583,6 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertError("1 or more states", () => bind());
             // @ts-ignore
             assertError("1 or more states", () => bind(x => x * 2));
-        },
-        bindTest_nonStateArgs: () => {
-            // @ts-ignore
-            assertError("must be states", () => bind(state(0), "", state(""), (a, b, c) => a + b + c));
-            const s = state([]);
-            // @ts-ignore
-            assertError("must be states", () => bind(s.val, s => s.length));
         },
         bindTest_lastArgNotFunc: () => assertError("must be the generation function", () => bind(state(0), state(1))),
         bindTest_invalidInitialResult: () => {
@@ -583,7 +645,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(hiddenDom.firstChild.querySelector("div").innerText, "❤️: 1");
         }),
         bulletList: () => {
-            const List = ({ items }) => ul(items.map(it => li(it)));
+            const List = ({ items }) => ul(items.map((it) => li(it)));
             assertEq(List({ items: ["Item 1", "Item 2", "Item 3"] }).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
         },
         table: () => {

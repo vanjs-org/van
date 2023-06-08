@@ -55,7 +55,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Ultra-Lightweight
 
-**VanJS** is a very thin layer on top of Vanilla JavaScript and DOM, barely enough to make the DOM manipulation and state binding as ergonomic as (if not more than) React, and it delegates most of work to standard browser APIs implemented in native code. As a result, the bundled size of **VanJS** is just 1.2kB, which is **more than 100 times** smaller than most popular UI frameworks, making it the smallest reactive UI framework in the world:
+**VanJS** is a very thin layer on top of Vanilla JavaScript and DOM, barely enough to make the DOM manipulation and state binding as ergonomic as (if not more than) React, and it delegates most of work to standard browser APIs implemented in native code. As a result, the bundled size of **VanJS** is just 1.3kB, which is **more than 100 times** smaller than most popular UI frameworks, making it the smallest reactive UI framework in the world:
 
 ![Size comparison](doc/size_comp.png)
 
@@ -69,7 +69,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Easy to Learn
 
-**VanJS** puts heavy emphasis on the simplicity of the framework. There are only 4 exported functions in the API and feels a lot like React. Because of that, the [walkthrough tutorial](https://vanjs.org/tutorial) is the same as the full API reference, and can be learned within 1 hour for most developers.
+**VanJS** puts heavy emphasis on the simplicity of the framework. There are only 5 exported functions in the API and feels a lot like React. Because of that, the [walkthrough tutorial](https://vanjs.org/tutorial) is the same as the full API reference, and can be learned within 1 hour for most developers.
 
 ## Want to Learn More?
 
@@ -99,3 +99,4 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 * [icecream17](https://github.com/icecream17)
 * [enpitsuLin](https://github.com/enpitsuLin)
 * [Elliot Ford](https://github.com/EFord36)
+* [andrewgryan](https://github.com/andrewgryan)
