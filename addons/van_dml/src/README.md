@@ -99,7 +99,7 @@ s can be
  ```
  - It can contain template literals: 
  ```JS
-    let color = ["red","green","blue"]
+    let color = [ "red", "green", "blue" ]
     css(`
         .myClass { color: ${mycolor[1]}; }
     `)
