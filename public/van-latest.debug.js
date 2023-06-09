@@ -65,7 +65,7 @@ const add = (dom, ...children) => {
   return van.add(dom, ...children)
 }
 
-const tags = new Proxy(van.tags, {
+const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
   get: (vanTags, name) => {
     const vanTag = vanTags[name]
     return (...args) => {
@@ -81,8 +81,8 @@ const tags = new Proxy(van.tags, {
         if (protoOf(v ?? 0) === stateProto) {
           debugProps[k] = {deps: [v], f: v => validatePropValue(v)}
         } else if (protoOf(v ?? 0) === Object.prototype) {
-          expect(Array.isArray(v.deps) && v.deps.every(d => protoOf(d) === stateProto),
-            "For state-derived properties, you want specify an Array of states in `deps` field")
+          expect(Array.isArray(v.deps),
+            "For state-derived properties, you want specify an Array in `deps` field")
           expect(typeof v.f === "function",
             "For state-derived properties, you want specify the generation function in `f` field")
           debugProps[k] = {deps: v.deps, f: (...deps) => validatePropValue(v.f(...deps))}
@@ -95,10 +95,14 @@ const tags = new Proxy(van.tags, {
   },
 })
 
+const tagsNS = ns => {
+  expect(typeof ns === "string", "Must provide a string for parameter `ns` in `tagsNS`")
+  return _tagsNS(ns)
+}
+
 const bind = (...deps) => {
-  let [func] = deps.splice(-1, 1)
+  let func = deps.pop()
   expect(deps.length > 0, "`bind` must be called with 1 or more states as dependencies")
-  deps.forEach(d => expect(protoOf(d) === stateProto, "Dependencies in `bind` must be states"))
   expect(typeof func === "function", "The last argument of `bind` must be the generation function")
 
   return van.bind(...deps, (...depArgs) => {
@@ -117,4 +121,4 @@ const bind = (...deps) => {
   })
 }
 
-export default {add, tags, state, bind, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
+export default {add, tags: _tagsNS(), tagsNS, state, bind, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
