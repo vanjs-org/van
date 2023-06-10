@@ -91,7 +91,7 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 
 ## Contributors
 
-*Ordered chronologically by first contribution:*
+*Some authors can't be recognized by Github as contributors for weird reasons (e.g.: [1](https://github.com/vanjs-org/van/pull/29#issuecomment-1583616491), [2](https://github.com/vanjs-org/van/pull/40#issuecomment-1585307358)). Their names are shown here. Authors are ordered chronologically by first contribution:*
 
 * [Tao Xin](https://github.com/Tao-VanJS)
 * [Ryan Olson](https://github.com/ryanolsonx)
