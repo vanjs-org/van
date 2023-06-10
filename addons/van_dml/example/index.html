@@ -23,7 +23,6 @@
       return b
     }
 
-    begin(document.body)
     css(`body {
       background-image: linear-gradient(0deg, #6ac 0%, #eff 100%);
       background-attachment: fixed;
@@ -33,15 +32,21 @@
       font-family: helvetica;
     }`)
 
+    begin(document.body)  // Open document for append
+
     h2({ style: "color: #fc0;" }, "This is the DML style")
+
+	// create a div() and open for append 
     begin(div({ style: "border: 2px solid black; border-radius: 15px; width: 500px; margin: auto;" }, ""))
 
       h1({ style: "color: red;" }, "Create 100 buttons")
-      for (let i = 0; i < 100; i++)
-        rbutton({ style: "margin: 3px;" }, `Button ${i}`).onclick = () => alert(`Button ${i} pressed`)
-    end(2);
 
-    if (sp() !== 0) alert("SP-Error")
+      for (let i = 0; i < 100; i++) 
+        rbutton({ style: "margin: 3px;" }, `Button ${i}`).onclick = () => alert(`Button ${i} pressed`)
+    
+	end(2); // close all open appends
+
+    if (sp() !== 0) alert("SP-Error") // check the stack pointer, should be zero at the end
 
     //********************************************************************
   </script>
