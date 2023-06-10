@@ -24,7 +24,8 @@ The tag-function provided by VanJS is slightly modified, but is used the same wa
       font-family: helvetica;
     }`)
 ```
-This is just for demonstration purpose, how to use css(). The same rule definition could have used in the \<style\>-tag in the head
+This is just for demonstration purpose, how to use css(). The same rule definition could have used in the \<style\>-tag in the head.
+Using dynamic CSS-rules ist most helpful to provide reactive pages. You can use and change definitions depending on device properties by simply using Javascript. 
 
 ### Auto-append feature
 ```JS
