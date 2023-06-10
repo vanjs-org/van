@@ -451,48 +451,56 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(rootDom1stIteration.outerHTML, '<ul><li class="">Item 1</li><li class="selected">Item 2</li><li class="">Item 3</li></ul>');
         }),
         bindTest_nullToRemoveDom: withHiddenDom(async (hiddenDom) => {
-            const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state("Line 3");
-            const dom = div(bind(line1, l => l === "" ? null : p(l)), bind(line2, l => l === "" ? null : p(l)), p(line3));
+            const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state("Line 3"), line4 = state(""), line5 = state(null);
+            const dom = div(bind(line1, l => l === "" ? null : p(l)), bind(line2, l => l === "" ? null : p(l)), p(line3), 
+            // line4 won't appear in the DOM tree as its initial value is null
+            bind(line4, l => l === "" ? null : p(l)), 
+            // line5 won't appear in the DOM tree as its initial value is null
+            p(line5));
             add(hiddenDom, dom);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 2</p><p>Line 3</p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 2</p><p>Line 3</p><p></p></div>");
             // Delete Line 2
             line2.val = "";
             await sleep(waitMsOnDomUpdates);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p><p></p></div>");
             // Deleted dom won't be brought back, even the underlying state is changed back
             line2.val = "Line 2";
             await sleep(waitMsOnDomUpdates);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p><p></p></div>");
             // Delete Line 3
             line3.val = null;
             await sleep(waitMsOnDomUpdates);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
             // Deleted dom won't be brought back, even the underlying state is changed back
             line3.val = "Line 3";
             await sleep(waitMsOnDomUpdates);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
         }),
         bindTest_undefinedToRemoveDom: withHiddenDom(async (hiddenDom) => {
-            const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state("Line 3");
-            const dom = div(bind(line1, l => l === "" ? undefined : p(l)), bind(line2, l => l === "" ? undefined : p(l)), p(line3));
+            const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state("Line 3"), line4 = state(""), line5 = state(undefined);
+            const dom = div(bind(line1, l => l === "" ? undefined : p(l)), bind(line2, l => l === "" ? undefined : p(l)), p(line3), 
+            // line4 won't appear in the DOM tree as its initial value is undefined
+            bind(line4, l => l === "" ? undefined : p(l)), 
+            // line5 won't appear in the DOM tree as its initial value is undefined
+            p(line5));
             add(hiddenDom, dom);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 2</p><p>Line 3</p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 2</p><p>Line 3</p><p></p></div>");
             // Delete Line 2
             line2.val = "";
             await sleep(waitMsOnDomUpdates);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p><p></p></div>");
             // Deleted dom won't be brought back, even the underlying state is changed back
             line2.val = "Line 2";
             await sleep(waitMsOnDomUpdates);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p><p></p></div>");
             // Delete Line 3
             line3.val = undefined;
             await sleep(waitMsOnDomUpdates);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
             // Deleted dom won't be brought back, even the underlying state is changed back
             line3.val = "Line 3";
             await sleep(waitMsOnDomUpdates);
-            assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p></div>");
+            assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
         }),
         bindTest_nonStateDeps: withHiddenDom(async (hiddenDom) => {
             const part1 = "👋Hello ", part2 = state("🗺️World");

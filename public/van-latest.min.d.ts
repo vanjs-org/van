@@ -26,8 +26,11 @@ export type ChildDom = Primitive | Node | StateView<Primitive | null | undefined
 
 export type TagFunc<Result> = (first?: Props | ChildDom, ...rest: readonly ChildDom[]) => Result
 
-type Tags = {
+interface TagsBase {
   readonly [key: string]: TagFunc<Element>
+}
+
+interface Tags extends TagsBase {
   // Register known element types
   // Source: https://developer.mozilla.org/en-US/docs/Web/HTML/Element
 
@@ -143,11 +146,11 @@ type BindFunc<T extends unknown[]> = (...arg: readonly [...BindFuncArgs<T>, Elem
 
 declare function bind<T extends unknown[]>(...args: [...T, BindFunc<T>]): Node | []
 
-export type Van = {
+export interface Van {
   readonly state: <T>(initVal: T) => State<T>
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
   readonly tags: Tags
-  readonly tagsNS: (namespaceURI: string) => Tags
+  readonly tagsNS: (namespaceURI: string) => TagsBase
   readonly bind: typeof bind
 }
 
