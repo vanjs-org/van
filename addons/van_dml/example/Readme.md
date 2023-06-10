@@ -1,6 +1,6 @@
 ## Example for the DML-style provided by van_dml.js
 
-Just include the script after vanJS to enable the new functionality. (ES6-module version will be provided soon):
+Just include the `van_dml.js` script after vanJS to enable the new functionality. (ES6-module version will be provided soon):
 ```HTML
   <script src="van-0.11.10.nomodule-min.js"></script>
   <script src="van_dml.js"></script>
