@@ -27,9 +27,10 @@ The tag-function provided by VanJS is slightly modified, but is used the same wa
 This is just for demonstration purpose, how to use css(). The same rule definition could have used in the \<style\>-tag in the head.
 Using dynamic CSS-rules ist most helpful to provide reactive pages. You can use and change definitions depending on device properties by simply using Javascript. 
 
-### Auto-append feature
+### Auto-append feature with `begin()` and `end()` 
 ```JS
     begin(document.body)
+       // ... some tag-functions here
     end();
 ```
 `begin(el)` opens a DOM element `el` for writing. New elements created with a tag-function will be appended automatically as a child of this element. `el` can be any existing element, the "ID" of an element of even the document.body. In the example, the whole document was created using auto-append.
@@ -63,7 +64,7 @@ The click-event is added externally to the DOM-reference returned by rbutton. Th
 
 ### The result shold look like this
 
-each button should show an alert with it´s number
+Each button should show an alert with it´s number
 
 ![IMG06-10-23 11-36-24](https://github.com/efpage/van/assets/29945129/53795149-39e5-4639-9f67-e49e085b138f)
 
