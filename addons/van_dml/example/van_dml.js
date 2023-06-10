@@ -38,7 +38,7 @@
 
     /* ----------------------------------------------------------------------------
     CSS: create CSS-Defintions dynamically
-    s can be 
+    `s` can be 
      - a string CSS(".myClass { color: red; }") 
      - a template with multiple rules
         CSS(`
