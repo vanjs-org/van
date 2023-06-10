@@ -37,11 +37,11 @@
     });
 
     /* ----------------------------------------------------------------------------
-    CSS: create CSS-Defintions dynamically
+    css: create CSS-Defintions dynamically
     s can be 
-     - a string CSS(".myClass { color: red; }") 
+     - a string css(".myClass { color: red; }") 
      - a template with multiple rules
-        CSS(`
+        css(`
           .myClass { color: red; }
           .myClass: hover { color: green }
         `)
