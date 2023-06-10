@@ -39,28 +39,33 @@ let state = initVal => ({
   listeners: [],
 })
 
+let isState = s => protoOf(s ?? 0) === stateProto
+
+let val = s => isState(s) ? s._val : s
+let vals = deps => deps.map(val)
+let oldVals = deps => deps.map(s => isState(s) ? s.oldVal : s)
+
 let toDom = v => v.nodeType ? v : new Text(v)
 
 let add = (dom, ...children) => {
-  for (let child of children.flat(Infinity)) if (child != _undefined)
+  for (let child of children.flat(Infinity)) if (val(child) != _undefined)
     dom.appendChild(protoOf(child) === stateProto ? bind(child, v => v) : toDom(child))
   return dom
 }
 
-let isSettablePropCache = {}
-
-let getPropDescriptor = (proto, key) => proto ?
-  Obj.getOwnPropertyDescriptor(proto, key) ?? getPropDescriptor(protoOf(proto), key) :
-  _undefined
-
-let isSettableProp = (tag, key, proto) => isSettablePropCache[tag + "," + key] ??
-    (isSettablePropCache[tag + "," + key] = getPropDescriptor(proto, key)?.set ?? 0)
+let isPropSettableCache = {}
 
 let tagsNS = ns => new Proxy((name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
   let dom = ns ? doc.createElementNS(ns, name) : doc.createElement(name)
   for (let [k, v] of Obj.entries(props)) {
-    let setter = isSettableProp(name, k, protoOf(dom)) ? v => dom[k] = v : v => dom.setAttribute(k, v)
+    let getPropDescriptor = proto => proto ?
+      Obj.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) :
+      _undefined
+    let cacheKey = name + "," + k
+    let isPropSettable = isPropSettableCache[cacheKey] ??
+      (isPropSettableCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0)
+    let setter = isPropSettable ? v => dom[k] = v : v => dom.setAttribute(k, v)
     if (protoOf(v) === stateProto) bind(v, v => (setter(v), dom))
     else if (protoOf(v) === objProto) bind(...v["deps"], (...deps) => (setter(v["f"](...deps)), dom))
     else setter(v)
@@ -70,15 +75,12 @@ let tagsNS = ns => new Proxy((name, ...args) => {
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
-let getVals = deps => deps.map(d => protoOf(d ?? 0) === stateProto ? d._val : d)
-let getOldVals = deps => deps.map(d => protoOf(d ?? 0) === stateProto ? d.oldVal : d)
-
 let updateDoms = () => {
   let changedStatesArray = [...changedStates]
   changedStates = _undefined
   for (let b of new Set(changedStatesArray.flatMap(filterBindings))) {
     let {_deps, dom} = b
-    let newDom = b.func(...getVals(_deps), dom, ...getOldVals(_deps))
+    let newDom = b.func(...vals(_deps), dom, ...oldVals(_deps))
     if (newDom !== dom)
       if (newDom != _undefined)
         dom.replaceWith(b.dom = toDom(newDom)); else dom.remove(), b.dom = _undefined
@@ -90,17 +92,17 @@ let bindingGcCycleInMs = 1000
 let statesToGc
 
 let bind = (...deps) => {
-  let func = deps.pop()
-  let result = func(...getVals(deps))
-  if (result == _undefined) return []
-  let binding = {_deps: deps, dom: toDom(result), func}
-  for (let s of deps) if (protoOf(s ?? 0) === stateProto) {
-    statesToGc = addAndScheduleOnFirst(statesToGc, s,
-      () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
-      bindingGcCycleInMs)
-    s.bindings.push(binding)
+  let func = deps.pop(), result = func(...vals(deps))
+  if (result != _undefined) {
+    let binding = {_deps: deps, dom: toDom(result), func}
+    for (let s of deps) if (isState(s)) {
+      statesToGc = addAndScheduleOnFirst(statesToGc, s,
+        () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
+        bindingGcCycleInMs)
+      s.bindings.push(binding)
+    }
+    return binding.dom
   }
-  return binding.dom
 }
 
 export default {add, tags: tagsNS(), "tagsNS": tagsNS, state, bind}
