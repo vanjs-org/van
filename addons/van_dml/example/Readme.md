@@ -6,6 +6,13 @@ Just include the `van_dml.js` script after vanJS to enable the new functionality
   <script src="van_dml.js"></script>
 ```
 
+The tag-function provided by VanJS is slightly modified, but is used the same way. Some new functinos are added to van.js, which can enabled like shown
+```JS
+    const { h1, h2, div, p, button } = van.tags
+    const { begin, end, base, sp, css } = van   // functions can be used also this way: van.begin, van.end, van.css ....
+```
+
+
 ### Apply CSS dynamically:
 ```JS
     css(`body {
