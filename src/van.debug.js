@@ -53,15 +53,17 @@ const isDomOrPrimitive = v => v instanceof Node || isValidPrimitive(v)
 
 const checkChildValid = child => {
   expect(
-    isDomOrPrimitive(child) || protoOf(child ?? 0) === stateProto && isValidPrimitive(child.val),
-    "Only DOM Node, string, number, boolean, bigint, and state of string, number, boolean or bigint are valid child of a DOM Node"
+    isDomOrPrimitive(child) || child === null || child === undefined ||
+    protoOf(child ?? 0) === stateProto && (
+      isValidPrimitive(child.val) || child.val === null || child.val === undefined),
+    "Only DOM Node, string, number, boolean, bigint, null, undefined and state of string, number, boolean, bigint, null or undefined are valid child of a DOM Node",
   )
-  expect(!child.isConnected, "You can't add a DOM Node that is already connected to document")
+  expect(!child?.isConnected, "You can't add a DOM Node that is already connected to document")
 }
 
 const add = (dom, ...children) => {
   expect(dom instanceof Node, "1st argument of `add` function must be a DOM Node object")
-  children.flat(Infinity).forEach(child => checkChildValid(child))
+  for (const child of children.flat(Infinity)) checkChildValid(child)
   return van.add(dom, ...children)
 }
 
@@ -89,7 +91,7 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
         } else
           debugProps[k] = validatePropValue(v)
       }
-      children.flat(Infinity).forEach(child => checkChildValid(child))
+      for (const child of children.flat(Infinity)) checkChildValid(child)
       return vanTag(debugProps, ...children)
     }
   },

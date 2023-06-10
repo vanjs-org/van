@@ -4,3 +4,4 @@ src/test.js
 package-lock.json
 public/hello-nomodule.html
 public/van-latest.min.pre-*.js
+public/*.gz

@@ -42,7 +42,7 @@ let state = initVal => ({
 let toDom = v => v.nodeType ? v : new Text(v)
 
 let add = (dom, ...children) => {
-  for (let child of children.flat(Infinity))
+  for (let child of children.flat(Infinity)) if (child != _undefined)
     dom.appendChild(protoOf(child) === stateProto ? bind(child, v => v) : toDom(child))
   return dom
 }

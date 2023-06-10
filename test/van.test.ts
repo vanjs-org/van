@@ -89,6 +89,16 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
         "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
     },
 
+    tagsTest_nullOrUndefinedAreIgnored: () => {
+      assertEq(ul(li("Item 1"), li("Item 2"), undefined, li("Item 3"), null).outerHTML,
+      "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
+      assertEq(ul([li("Item 1"), li("Item 2"), undefined, li("Item 3"), null]).outerHTML,
+        "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
+      // Deeply nested
+      assertEq(ul([[undefined, li("Item 1"), null, [li("Item 2")]], null, li("Item 3"), undefined]).outerHTML,
+        "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
+    },
+
     tagsTest_stateAsProp_connected: withHiddenDom(async hiddenDom => {
       const href = state("http://example.com/")
       const dom = a({href}, "Test Link")
@@ -373,6 +383,19 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       // No-op if no children specified
       assertEq(add(dom, [[[]]]), dom)
       assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li><li>Item 4</li><li>Item 5</li></ul>")
+    },
+
+    addTest_nullOrUndefinedAreIgnored: () => {
+      const dom = ul()
+      assertEq(add(dom, li("Item 1"), li("Item 2"), undefined, li("Item 3"), null), dom)
+      assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
+      assertEq(add(dom, [li("Item 4"), li("Item 5"), undefined, li("Item 6"), null]), dom)
+      assertEq(dom.outerHTML,
+        "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li><li>Item 4</li><li>Item 5</li><li>Item 6</li></ul>")
+      // Deeply nested
+      assertEq(add(dom, [[undefined, li("Item 7"), null, [li("Item 8")]], null, li("Item 9"), undefined]), dom)
+      assertEq(dom.outerHTML,
+        "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li><li>Item 4</li><li>Item 5</li><li>Item 6</li><li>Item 7</li><li>Item 8</li><li>Item 9</li></ul>")
     },
 
     addTest_addState_connected: withHiddenDom(async hiddenDom => {
@@ -665,13 +688,9 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
 
     tagsTest_invalidChild: () => {
       assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>{}, p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>null, p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>undefined, p()))
       assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>((x: number) => x * 2), p()))
 
       assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(<any>{}), p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(null), p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(undefined), p()))
       assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(<any>((x: number) => x * 2)), p()))
     },
 
@@ -698,13 +717,9 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       const dom = div()
 
       assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>{}, p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>null, p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>undefined, p()))
       assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>((x: number) => x * 2), p()))
 
       assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(<any>{}), p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(null), p()))
-      assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(undefined), p()))
       assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(<any>((x: number) => x * 2)), p()))
     },
 

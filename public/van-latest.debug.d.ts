@@ -22,7 +22,7 @@ export interface Props {
   readonly [key: string]: PropValue | StateView<PropValue> | DerivedProp
 }
 
-export type ChildDom = Primitive | Node | StateView<Primitive | null | undefined> | readonly ChildDom[]
+export type ChildDom = Primitive | Node | StateView<Primitive | null | undefined> | readonly ChildDom[] | null | undefined
 
 export type TagFunc<Result> = (first?: Props | ChildDom, ...rest: readonly ChildDom[]) => Result
 

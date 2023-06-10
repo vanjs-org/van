@@ -65,6 +65,12 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // Deeply nested
             assertEq(ul([[li("Item 1"), [li("Item 2")]], li("Item 3")]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
         },
+        tagsTest_nullOrUndefinedAreIgnored: () => {
+            assertEq(ul(li("Item 1"), li("Item 2"), undefined, li("Item 3"), null).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
+            assertEq(ul([li("Item 1"), li("Item 2"), undefined, li("Item 3"), null]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
+            // Deeply nested
+            assertEq(ul([[undefined, li("Item 1"), null, [li("Item 2")]], null, li("Item 3"), undefined]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
+        },
         tagsTest_stateAsProp_connected: withHiddenDom(async (hiddenDom) => {
             const href = state("http://example.com/");
             const dom = a({ href }, "Test Link");
@@ -298,6 +304,16 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(add(dom, [[[]]]), dom);
             assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li><li>Item 4</li><li>Item 5</li></ul>");
         },
+        addTest_nullOrUndefinedAreIgnored: () => {
+            const dom = ul();
+            assertEq(add(dom, li("Item 1"), li("Item 2"), undefined, li("Item 3"), null), dom);
+            assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
+            assertEq(add(dom, [li("Item 4"), li("Item 5"), undefined, li("Item 6"), null]), dom);
+            assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li><li>Item 4</li><li>Item 5</li><li>Item 6</li></ul>");
+            // Deeply nested
+            assertEq(add(dom, [[undefined, li("Item 7"), null, [li("Item 8")]], null, li("Item 9"), undefined]), dom);
+            assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li><li>Item 4</li><li>Item 5</li><li>Item 6</li><li>Item 7</li><li>Item 8</li><li>Item 9</li></ul>");
+        },
         addTest_addState_connected: withHiddenDom(async (hiddenDom) => {
             const line2 = state("Line 2");
             assertEq(add(hiddenDom, pre("Line 1"), pre(line2), pre("Line 3")), hiddenDom);
@@ -514,12 +530,8 @@ const runTests = async (vanObj, msgDom, { debug }) => {
         },
         tagsTest_invalidChild: () => {
             assertError(/Only.*are valid child of a DOM Node/, () => div(div(), {}, p()));
-            assertError(/Only.*are valid child of a DOM Node/, () => div(div(), null, p()));
-            assertError(/Only.*are valid child of a DOM Node/, () => div(div(), undefined, p()));
             assertError(/Only.*are valid child of a DOM Node/, () => div(div(), ((x) => x * 2), p()));
             assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state({}), p()));
-            assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(null), p()));
-            assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(undefined), p()));
             assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(((x) => x * 2)), p()));
         },
         tagsTest_alreadyConnectedChild: withHiddenDom(hiddenDom => {
@@ -540,12 +552,8 @@ const runTests = async (vanObj, msgDom, { debug }) => {
         addTest_invalidChild: () => {
             const dom = div();
             assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), {}, p()));
-            assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), null, p()));
-            assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), undefined, p()));
             assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), ((x) => x * 2), p()));
             assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state({}), p()));
-            assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(null), p()));
-            assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(undefined), p()));
             assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(((x) => x * 2)), p()));
         },
         addTest_alreadyConnectedChild: withHiddenDom(hiddenDom => {
