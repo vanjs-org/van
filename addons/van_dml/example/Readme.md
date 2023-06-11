@@ -64,4 +64,5 @@ onclick is applied to the button externally, which is convenient. It was also po
 ### Result
 
 The result should look like follows. Each button should return it´s number with an alert.
+
 ![IMG06-10-23 11-36-24](https://github.com/efpage/van/assets/29945129/4ba3191d-356a-45e0-9d6b-97252780b234)
