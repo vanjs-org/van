@@ -25,6 +25,7 @@ This adds dynamic style definitions to the page. The example is only to demonstr
       font-family: helvetica;
     }`)
 ```
+Dynamic CSS can be used to create responsive pages with ease. Just use JS to select, which CSS should be applied.
 
 ### Auto-append with `begin()` and `end`
 begin opens any DOM element for writing. Elements created between `begin()` and `end()` will be automatic appended as a child to the object selecte with `begin(el)`
