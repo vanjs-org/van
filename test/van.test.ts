@@ -929,10 +929,10 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
 
     connectedProps: withHiddenDom(async hiddenDom => {
       const ConnectedProps = () => {
-        const value = state("")
+        const text = state("")
         return span(
-          input({type: "text", value, oninput: e => value.val = e.target.value}),
-          input({type: "text", value, oninput: e => value.val = e.target.value}),
+          input({type: "text", value: text, oninput: (e: any) => text.val = e.target.value}),
+          input({type: "text", value: text, oninput: (e: any) => text.val = e.target.value}),
         )
       }
       add(hiddenDom, ConnectedProps())

@@ -671,8 +671,8 @@
       }),
       connectedProps: withHiddenDom(async (hiddenDom) => {
         const ConnectedProps = () => {
-          const value = state("");
-          return span(input({ type: "text", value, oninput: (e) => value.val = e.target.value }), input({ type: "text", value, oninput: (e) => value.val = e.target.value }));
+          const text = state("");
+          return span(input({ type: "text", value: text, oninput: (e) => text.val = e.target.value }), input({ type: "text", value: text, oninput: (e) => text.val = e.target.value }));
         };
         add(hiddenDom, ConnectedProps());
         const [input1, input2] = hiddenDom.querySelectorAll("input");
