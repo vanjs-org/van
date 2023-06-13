@@ -16,7 +16,7 @@
           <a href="https://vanjs.org/demo">📚 Examples</a>
         </td>
         <td>
-          <a href="https://vanjs.org/convert">📝 Convert HTML to VanJS</a>
+          <a href="https://vanjs.org/convert">📝 HTML to VanJS Converter</a>
         </td>
         <td>
           <a href="https://github.com/vanjs-org/van/discussions">💬 Discuss</a>
