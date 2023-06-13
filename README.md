@@ -6,19 +6,19 @@
   <table>
     <tbody>
       <tr>
-        <td style="vertical-align: text-top;">
+        <td>
           <a href="https://vanjs.org/start">🖊️ Get Started</a>
         </td>
-        <td style="vertical-align: text-top;">
+        <td>
           <a href="https://vanjs.org/tutorial">📖 Tutorial</a>
         </td>
-        <td style="vertical-align: text-top;">
+        <td>
           <a href="https://vanjs.org/demo">📚 Examples</a>
         </td>
-        <td style="vertical-align: text-top;">
+        <td>
           <a href="https://vanjs.org/convert">📝 HTML to VanJS Converter</a>
         </td>
-        <td style="vertical-align: text-top;">
+        <td>
           <a href="https://github.com/vanjs-org/van/discussions">💬 Discuss</a>
         </td>
       </tr>
