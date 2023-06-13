@@ -1,5 +1,29 @@
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
+<div align="center">
+  <table>
+    <tbody>
+      <tr>
+        <td>
+          <a href="https://vanjs.org/start">🖊️ Get Started</a>
+        </td>
+        <td>
+          <a href="https://vanjs.org/tutorial">📖 Tutorial</a>
+        </td>
+        <td>
+          <a href="https://vanjs.org/demo">📚 Examples</a>
+        </td>
+        <td>
+          <a href="https://vanjs.org/convert">📝 HTML to VanJS Converter</a>
+        </td>
+        <td>
+          <a href="https://github.com/vanjs-org/van/discussions">💬 Discuss</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 📣 [VanJS 0.12.0 released →](https://github.com/vanjs-org/van/discussions/53)
 
 > Enable everyone to build useful UI apps with a few lines of code, anywhere, any time, on any device.
