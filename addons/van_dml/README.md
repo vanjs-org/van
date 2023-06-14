@@ -29,7 +29,7 @@ Van_DML extends the core of VanJS. You can enable van_dml like this:
 ```
 This is similar to using plain HTML, where a tag create elements directly.
 
-## tansparent operation of "begin()"
+## transparent operation of "begin()"
 
 Van-Tags return a DOM Reference that can be stored in a variable:
 ```JS
