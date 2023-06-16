@@ -12,6 +12,7 @@ cp van.d.ts ../public/van-$VER.debug.d.ts
 ../node_modules/esbuild/bin/esbuild van.forbundle.debug.js --bundle --outfile=../public/van-$VER.nomodule.debug.js
 
 $TERSER van.js --compress --toplevel --mangle --mangle-props keep_quoted -f wrap_func_args=false -o ../public/van-$VER.min.js
+gzip -kf ../public/van-$VER.min.js
 cp van.d.ts ../public/van-$VER.min.d.ts
 MIN_NOMODULE=$($TERSER ../public/van-$VER.nomodule.js --compress --toplevel --mangle --mangle-props keep_quoted -f wrap_func_args=false)
 echo -n "{let${MIN_NOMODULE:3}}" > ../public/van-$VER.nomodule.min.js
