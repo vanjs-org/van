@@ -6,24 +6,24 @@ let Obj = Object, _undefined, protoOf = Obj.getPrototypeOf, doc = document
 let addAndScheduleOnFirst = (set, s, func, waitMs) =>
   (set ?? (setTimeout(func, waitMs), new Set)).add(s)
 
-let changedStates, getValHook
+let changedStates, curDeps
 
-let runWithGetValHook = (f, hook, arg) => {
-  let prevGetValHook = getValHook
-  getValHook = hook
+let runAndCaptureDeps = (f, deps, arg) => {
+  let prevDeps = curDeps
+  curDeps = deps
   let r = f(arg)
-  getValHook = prevGetValHook
+  curDeps = prevDeps
   return r
 }
 
 let stateProto = {
   get "val"() {
-    getValHook?.(this)
+    curDeps?.add(this)
     return this._val
   },
 
   get "oldVal"() {
-    getValHook?.(this)
+    curDeps?.add(this)
     return this._oldVal
   },
 
@@ -33,16 +33,15 @@ let stateProto = {
     if (v !== curV) {
       changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms)
       s._val = v
-      for (let l of s.listeners) l(v, curV)
+      let listeners = [...s.listeners = s.listeners.filter(l => !l.executed)]
+      for (let l of listeners) effect(l.f), l.executed = 1
     }
   },
-
-  "onnew"(l) { this.listeners.push(l) },
 }
 
 // stateProto is a plain object thus protoOf(stateProto) is just Object.prototype.
 // protoOf(stateProto) is equivalent to protoOf({}) but saves 1 byte in the minized bundle.
-let objProto = protoOf(stateProto)
+let objProto = protoOf(stateProto), funcProto = protoOf(runAndCaptureDeps)
 
 let state = initVal => ({
   __proto__: stateProto,
@@ -57,26 +56,36 @@ let isState = s => protoOf(s ?? 0) === stateProto
 let val = s => isState(s) ? s.val : s
 let oldVal = s => isState(s) ? s.oldVal : s
 
-let toDom = v => v.nodeType ? v : new Text(v)
+let toDom = v => v == _undefined ? _undefined : v.nodeType ? v : new Text(v)
 
 let bindingGcCycleInMs = 1000
 let statesToGc
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
-let bind = (f, arg) => {
-  const binding = {f}
-  return binding.dom = toDom(runWithGetValHook(f, s => {
+let bind = (f, dom) => {
+  let deps = new Set, binding = {f, dom: toDom(runAndCaptureDeps(f, deps, dom))}
+  for (let s of deps) {
     statesToGc = addAndScheduleOnFirst(statesToGc, s,
       () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
       bindingGcCycleInMs)
     s.bindings.push(binding)
-  }, arg))
+  }
+  return binding.dom
+}
+
+let effect = f => {
+  let deps = new Set, listener = {f}
+  runAndCaptureDeps(f, deps)
+  for (let s of deps) s.listeners.push(listener)
 }
 
 let add = (dom, ...children) => {
-  for (let child of children.flat(Infinity)) if (val(child) != _undefined)
-    dom.appendChild(isState(child) ? bind(() => child.val) : toDom(child))
+  for (let c of children.flat(Infinity)) {
+    let child = isState(c) ? bind(() => c.val) :
+      protoOf(c ?? 0) === funcProto ? bind(c) : toDom(c)
+    if (child != _undefined) dom.appendChild(child)
+  }
   return dom
 }
 
@@ -94,7 +103,7 @@ let tagsNS = ns => new Proxy((name, ...args) => {
       (propSetterCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0)
     let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k)
     if (isState(v)) bind(() => (setter(v.val), dom))
-    else if (!k.startsWith("on") && typeof v === "function") bind(() => (setter(v()), dom))
+    else if (!k.startsWith("on") && protoOf(v ?? 0) === funcProto) bind(() => (setter(v()), dom))
     else setter(v)
   }
   return add(dom, ...children)
@@ -111,4 +120,4 @@ let updateDoms = () => {
   for (let s of changedStatesArray) s._oldVal = s._val
 }
 
-export default {add, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal}
+export default {add, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect}

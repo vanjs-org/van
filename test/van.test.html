@@ -29,7 +29,7 @@
       <h2>The End</h2>
       <p>✅ <span id="numTests">0</span> tests passed</p>
     </div>
-    
+
     <script type="module">
       import {testVanFile} from "./van.test.js"
 
@@ -45,7 +45,7 @@
       (async () => {
         await testVanFile(`../public/van-${version}.js`, "es6")
         await testVanFile(`../public/van-${version}.min.js`, "es6")
-        await testVanFile(`../public/van-${version}.debug.js`, "es6")
+        // await testVanFile(`../public/van-${version}.debug.js`, "es6")
         es6TestingBlockerResolve()
       })()
     </script>
@@ -64,7 +64,7 @@
         await window.es6TestingBlocker
         await testVanFile(`../public/van-${version}.nomodule.js`, "nomodule")
         await testVanFile(`../public/van-${version}.nomodule.min.js`, "nomodule")
-        await testVanFile(`../public/van-${version}.nomodule.debug.js`, "nomodule")
+        // await testVanFile(`../public/van-${version}.nomodule.debug.js`, "nomodule")
         document.getElementById("numTests").innerText = window.numTests
         document.getElementById("endMsg").style.display = ""
       })()

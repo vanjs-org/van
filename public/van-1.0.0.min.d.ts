@@ -1,12 +1,12 @@
-export type State<T> = {
+export interface State<T> extends StateView<T> {
   val: T
-  onnew(l: (val: T, oldVal: T) => void): void
 }
 
 // Defining readonly view of State<T> for covariance.
 // Basically we want State<string> implements StateView<string | number>
 export interface StateView<T> {
   readonly val: T
+  readonly oldVal: T
 }
 
 declare function val<T>(s: T | StateView<T>): T
@@ -138,6 +138,7 @@ export interface Van {
   readonly state: <T>(initVal: T) => State<T>
   readonly val: typeof val
   readonly oldVal: typeof oldVal
+  readonly effect: (f: () => void) => void
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
   readonly tags: Tags
   readonly tagsNS: (namespaceURI: string) => TagsBase

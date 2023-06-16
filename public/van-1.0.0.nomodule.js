@@ -6,21 +6,21 @@
   var doc = document;
   var addAndScheduleOnFirst = (set, s, func, waitMs) => (set ?? (setTimeout(func, waitMs), /* @__PURE__ */ new Set())).add(s);
   var changedStates;
-  var getValHook;
-  var runWithGetValHook = (f, hook, arg) => {
-    let prevGetValHook = getValHook;
-    getValHook = hook;
+  var curDeps;
+  var runAndCaptureDeps = (f, deps, arg) => {
+    let prevDeps = curDeps;
+    curDeps = deps;
     let r = f(arg);
-    getValHook = prevGetValHook;
+    curDeps = prevDeps;
     return r;
   };
   var stateProto = {
     get "val"() {
-      getValHook?.(this);
+      curDeps?.add(this);
       return this._val;
     },
     get "oldVal"() {
-      getValHook?.(this);
+      curDeps?.add(this);
       return this._oldVal;
     },
     set "val"(v) {
@@ -28,15 +28,14 @@
       if (v !== curV) {
         changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms);
         s._val = v;
-        for (let l of s.listeners)
-          l(v, curV);
+        let listeners = [...s.listeners = s.listeners.filter((l) => !l.executed)];
+        for (let l of listeners)
+          effect(l.f), l.executed = 1;
       }
-    },
-    "onnew"(l) {
-      this.listeners.push(l);
     }
   };
   var objProto = protoOf(stateProto);
+  var funcProto = protoOf(runAndCaptureDeps);
   var state = (initVal) => ({
     __proto__: stateProto,
     _val: initVal,
@@ -47,13 +46,13 @@
   var isState = (s) => protoOf(s ?? 0) === stateProto;
   var val = (s) => isState(s) ? s.val : s;
   var oldVal = (s) => isState(s) ? s.oldVal : s;
-  var toDom = (v) => v.nodeType ? v : new Text(v);
+  var toDom = (v) => v == _undefined ? _undefined : v.nodeType ? v : new Text(v);
   var bindingGcCycleInMs = 1e3;
   var statesToGc;
   var filterBindings = (s) => s.bindings = s.bindings.filter((b) => b.dom?.isConnected);
-  var bind = (f, arg) => {
-    const binding = { f };
-    return binding.dom = toDom(runWithGetValHook(f, (s) => {
+  var bind = (f, dom) => {
+    let deps = /* @__PURE__ */ new Set(), binding = { f, dom: toDom(runAndCaptureDeps(f, deps, dom)) };
+    for (let s of deps) {
       statesToGc = addAndScheduleOnFirst(
         statesToGc,
         s,
@@ -61,12 +60,21 @@
         bindingGcCycleInMs
       );
       s.bindings.push(binding);
-    }, arg));
+    }
+    return binding.dom;
+  };
+  var effect = (f) => {
+    let deps = /* @__PURE__ */ new Set(), listener = { f };
+    runAndCaptureDeps(f, deps);
+    for (let s of deps)
+      s.listeners.push(listener);
   };
   var add = (dom, ...children) => {
-    for (let child of children.flat(Infinity))
-      if (val(child) != _undefined)
-        dom.appendChild(isState(child) ? bind(() => child.val) : toDom(child));
+    for (let c of children.flat(Infinity)) {
+      let child = isState(c) ? bind(() => c.val) : protoOf(c ?? 0) === funcProto ? bind(c) : toDom(c);
+      if (child != _undefined)
+        dom.appendChild(child);
+    }
     return dom;
   };
   var propSetterCache = {};
@@ -80,7 +88,7 @@
       let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k);
       if (isState(v))
         bind(() => (setter(v.val), dom));
-      else if (!k.startsWith("on") && typeof v === "function")
+      else if (!k.startsWith("on") && protoOf(v ?? 0) === funcProto)
         bind(() => (setter(v()), dom));
       else
         setter(v);
@@ -99,7 +107,7 @@
     for (let s of changedStatesArray)
       s._oldVal = s._val;
   };
-  var van_default = { add, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal };
+  var van_default = { add, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect };
 
   // van.forbundle.js
   window.van = van_default;

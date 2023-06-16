@@ -19,6 +19,7 @@ echo -n "{let${MIN_NOMODULE:3}}" > ../public/van-$VER.nomodule.min.js
 cp ../public/van-$VER.js ../public/van-latest.js
 cp ../public/van-$VER.d.ts ../public/van-latest.d.ts
 cp ../public/van-$VER.min.js ../public/van-latest.min.js
+cp ../public/van-$VER.min.js.gz ../public/van-latest.min.js.gz
 cp ../public/van-$VER.min.d.ts ../public/van-latest.min.d.ts
 cp ../public/van-$VER.debug.js ../public/van-latest.debug.js
 cp ../public/van-$VER.debug.d.ts ../public/van-latest.debug.d.ts
