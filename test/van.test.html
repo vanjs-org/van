@@ -45,7 +45,7 @@
       (async () => {
         await testVanFile(`../public/van-${version}.js`, "es6")
         await testVanFile(`../public/van-${version}.min.js`, "es6")
-        // await testVanFile(`../public/van-${version}.debug.js`, "es6")
+        await testVanFile(`../public/van-${version}.debug.js`, "es6")
         es6TestingBlockerResolve()
       })()
     </script>

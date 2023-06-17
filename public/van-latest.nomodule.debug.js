@@ -125,9 +125,10 @@
   };
   var protoOf2 = Object.getPrototypeOf;
   var stateProto2 = protoOf2(van_default.state());
+  var isState2 = (s) => protoOf2(s ?? 0) === stateProto2;
   var checkStateValValid = (v) => {
     expect(!(v instanceof Node), "DOM Node is not valid value for state");
-    expect(protoOf2(v ?? 0) !== stateProto2, "State couldn't have value to other state");
+    expect(!isState2(v), "State couldn't have value to other state");
     return v;
   };
   var state2 = (initVal) => new Proxy(van_default.state(Object.freeze(checkStateValValid(initVal))), {
@@ -137,28 +138,44 @@
       return Reflect.set(s, prop, val2);
     },
     get: (s, prop) => {
-      if (prop === "onnew")
-        return (l) => {
-          expect(typeof l === "function", "You should pass-in functions to register `onnew` handlers");
-          s.onnew(l);
-        };
       return Reflect.get(s, prop);
     }
   });
+  var effect2 = (f) => {
+    expect(typeof f === "function", "Must pass-in a function to `van.effect`");
+    van_default.effect(f);
+  };
   var isValidPrimitive = (v) => typeof v === "string" || typeof v === "number" || typeof v === "boolean" || typeof v === "bigint";
   var isDomOrPrimitive = (v) => v instanceof Node || isValidPrimitive(v);
   var checkChildValid = (child) => {
     expect(
-      isDomOrPrimitive(child) || child === null || child === void 0 || protoOf2(child ?? 0) === stateProto2 && (isValidPrimitive(child.val) || child.val === null || child.val === void 0),
+      isDomOrPrimitive(child) || child === null || child === void 0 || isState2(child) && (isValidPrimitive(child.val) || child.val === null || child.val === void 0),
       "Only DOM Node, string, number, boolean, bigint, null, undefined and state of string, number, boolean, bigint, null or undefined are valid child of a DOM Node"
     );
     expect(!child?.isConnected, "You can't add a DOM Node that is already connected to document");
   };
+  var checkChildren = (children) => children.flat(Infinity).map((c) => {
+    if (typeof c === "function")
+      return (dom) => {
+        const r = c(dom);
+        if (!expect(
+          r === null || r === void 0 || isDomOrPrimitive(r),
+          "The result of `bind` generation function must be DOM node, primitive, null or undefined"
+        ))
+          return null;
+        if (r !== dom && r instanceof Node)
+          expect(
+            !r.isConnected,
+            "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to .document"
+          );
+        return r;
+      };
+    checkChildValid(c);
+    return c;
+  });
   var add2 = (dom, ...children) => {
-    expect(dom instanceof Node, "1st argument of `add` function must be a DOM Node object");
-    for (const child of children.flat(Infinity))
-      checkChildValid(child);
-    return van_default.add(dom, ...children);
+    expect(dom instanceof Element, "1st argument of `van.add` function must be a DOM Element object");
+    return van_default.add(dom, ...checkChildren(children));
   };
   var _tagsNS = (ns) => new Proxy(van_default.tagsNS(ns), {
     get: (vanTags, name) => {
@@ -174,59 +191,25 @@
             isValidPrimitive(v2),
             `Invalid property value for ${k}: Only string, number, boolean, bigint are valid prop value types`
           ), v2);
-          if (protoOf2(v ?? 0) === stateProto2) {
-            debugProps[k] = { deps: [v], f: (v2) => validatePropValue(v2) };
-          } else if (protoOf2(v ?? 0) === Object.prototype) {
-            expect(
-              Array.isArray(v.deps),
-              "For state-derived properties, you want specify an Array in `deps` field"
-            );
-            expect(
-              typeof v.f === "function",
-              "For state-derived properties, you want specify the generation function in `f` field"
-            );
-            debugProps[k] = { deps: v.deps, f: (...deps) => validatePropValue(v.f(...deps)) };
-          } else
+          if (k.startsWith("on")) {
+            validatePropValue(van_default.val(v));
+            debugProps[k] = v;
+          } else if (isState2(v))
+            debugProps[k] = () => validatePropValue(v.val);
+          else if (typeof v === "function")
+            debugProps[k] = () => validatePropValue(v());
+          else
             debugProps[k] = validatePropValue(v);
         }
-        for (const child of children.flat(Infinity))
-          checkChildValid(child);
-        return vanTag(debugProps, ...children);
+        return vanTag(debugProps, ...checkChildren(children));
       };
     }
   });
   var tagsNS2 = (ns) => {
-    expect(typeof ns === "string", "Must provide a string for parameter `ns` in `tagsNS`");
+    expect(typeof ns === "string", "Must provide a string for parameter `ns` in `van.tagsNS`");
     return _tagsNS(ns);
   };
-  var bind2 = (...deps) => {
-    let func = deps.pop();
-    expect(deps.length > 0, "`bind` must be called with 1 or more states as dependencies");
-    expect(typeof func === "function", "The last argument of `bind` must be the generation function");
-    return van_default.bind(...deps, (...depArgs) => {
-      const result = func(...depArgs);
-      if (!expect(
-        result === null || result === void 0 || isDomOrPrimitive(result),
-        "The result of `bind` generation function must be DOM node, primitive, null or undefined"
-      ))
-        return null;
-      if (depArgs.length > deps.length) {
-        const prevResult = depArgs[deps.length];
-        if (!expect(
-          prevResult instanceof Node && prevResult.isConnected,
-          "The previous result of the `bind` generation function must be a DOM node connected to document"
-        ))
-          return null;
-        if (result !== prevResult && result instanceof Node)
-          expect(
-            !result.isConnected,
-            "If the result of `bind` generation fucntion is not the same as previous one, it shouldn't be already connected to document"
-          );
-      }
-      return result;
-    });
-  };
-  var van_debug_default = { add: add2, tags: _tagsNS(), tagsNS: tagsNS2, state: state2, bind: bind2, startCapturingErrors, stopCapturingErrors, get capturedErrors() {
+  var van_debug_default = { add: add2, tags: _tagsNS(), tagsNS: tagsNS2, state: state2, val: van_default.val, oldVal: van_default.oldVal, effect: effect2, startCapturingErrors, stopCapturingErrors, get capturedErrors() {
     return capturedErrors;
   } };
 

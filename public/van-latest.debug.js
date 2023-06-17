@@ -19,12 +19,12 @@ const expect = (cond, msg) => {
 }
 
 const protoOf = Object.getPrototypeOf
-
 const stateProto = protoOf(van.state())
+const isState = s => protoOf(s ?? 0) === stateProto
 
 const checkStateValValid = v => {
   expect(!(v instanceof Node), "DOM Node is not valid value for state")
-  expect(protoOf(v ?? 0) !== stateProto, "State couldn't have value to other state")
+  expect(!isState(v), "State couldn't have value to other state")
   return v
 }
 
@@ -34,14 +34,13 @@ const state = initVal => new Proxy(van.state(Object.freeze(checkStateValValid(in
     return Reflect.set(s, prop, val)
   },
 
-  get: (s, prop) => {
-    if (prop === "onnew") return l => {
-      expect(typeof l === "function", "You should pass-in functions to register `onnew` handlers")
-      s.onnew(l)
-    }
-    return Reflect.get(s, prop)
-  }
+  get: (s, prop) => { return Reflect.get(s, prop) }
 })
+
+const effect = f => {
+  expect(typeof(f) === "function", "Must pass-in a function to `van.effect`")
+  van.effect(f)
+}
 
 const isValidPrimitive = v =>
   typeof(v) === "string" ||
@@ -54,17 +53,30 @@ const isDomOrPrimitive = v => v instanceof Node || isValidPrimitive(v)
 const checkChildValid = child => {
   expect(
     isDomOrPrimitive(child) || child === null || child === undefined ||
-    protoOf(child ?? 0) === stateProto && (
+    isState(child) && (
       isValidPrimitive(child.val) || child.val === null || child.val === undefined),
     "Only DOM Node, string, number, boolean, bigint, null, undefined and state of string, number, boolean, bigint, null or undefined are valid child of a DOM Node",
   )
   expect(!child?.isConnected, "You can't add a DOM Node that is already connected to document")
 }
 
+const checkChildren = children => children.flat(Infinity).map(c => {
+  if (typeof c === "function") return dom => {
+    const r = c(dom)
+    if (!expect(r === null || r === undefined || isDomOrPrimitive(r),
+      "The result of `bind` generation function must be DOM node, primitive, null or undefined")) return null
+    if (r !== dom && r instanceof Node)
+      expect(!r.isConnected,
+        "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to .document")
+    return r
+  }
+  checkChildValid(c)
+  return c
+})
+
 const add = (dom, ...children) => {
-  expect(dom instanceof Node, "1st argument of `add` function must be a DOM Node object")
-  for (const child of children.flat(Infinity)) checkChildValid(child)
-  return van.add(dom, ...children)
+  expect(dom instanceof Element, "1st argument of `van.add` function must be a DOM Element object")
+  return van.add(dom, ...checkChildren(children))
 }
 
 const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
@@ -80,47 +92,24 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
           v => (expect(isValidPrimitive(v),
             `Invalid property value for ${k}: Only string, number, boolean, bigint are valid prop value types`), v)
 
-        if (protoOf(v ?? 0) === stateProto) {
-          debugProps[k] = {deps: [v], f: v => validatePropValue(v)}
-        } else if (protoOf(v ?? 0) === Object.prototype) {
-          expect(Array.isArray(v.deps),
-            "For state-derived properties, you want specify an Array in `deps` field")
-          expect(typeof v.f === "function",
-            "For state-derived properties, you want specify the generation function in `f` field")
-          debugProps[k] = {deps: v.deps, f: (...deps) => validatePropValue(v.f(...deps))}
-        } else
+        if (k.startsWith("on")) {
+          validatePropValue(van.val(v))
+          debugProps[k] = v
+        } else if (isState(v))
+          debugProps[k] = () => validatePropValue(v.val)
+        else if (typeof v === "function")
+          debugProps[k] = () => validatePropValue(v())
+        else
           debugProps[k] = validatePropValue(v)
       }
-      for (const child of children.flat(Infinity)) checkChildValid(child)
-      return vanTag(debugProps, ...children)
+      return vanTag(debugProps, ...checkChildren(children))
     }
   },
 })
 
 const tagsNS = ns => {
-  expect(typeof ns === "string", "Must provide a string for parameter `ns` in `tagsNS`")
+  expect(typeof ns === "string", "Must provide a string for parameter `ns` in `van.tagsNS`")
   return _tagsNS(ns)
 }
 
-const bind = (...deps) => {
-  let func = deps.pop()
-  expect(deps.length > 0, "`bind` must be called with 1 or more states as dependencies")
-  expect(typeof func === "function", "The last argument of `bind` must be the generation function")
-
-  return van.bind(...deps, (...depArgs) => {
-    const result = func(...depArgs)
-    if (!expect(result === null || result === undefined || isDomOrPrimitive(result),
-      "The result of `bind` generation function must be DOM node, primitive, null or undefined")) return null
-    if (depArgs.length > deps.length) {
-      const prevResult = depArgs[deps.length]
-      if (!expect(prevResult instanceof Node && prevResult.isConnected,
-        "The previous result of the `bind` generation function must be a DOM node connected to document")) return null
-      if (result !== prevResult && result instanceof Node)
-        expect(!result.isConnected,
-          "If the result of `bind` generation fucntion is not the same as previous one, it shouldn't be already connected to document")
-    }
-    return result
-  })
-}
-
-export default {add, tags: _tagsNS(), tagsNS, state, bind, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
+export default {add, tags: _tagsNS(), tagsNS, state, val: van.val, oldVal: van.oldVal, effect, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
