@@ -105,4 +105,4 @@ let bind = (...deps) => {
   }
 }
 
-export default {add, tags: tagsNS(), "tagsNS": tagsNS, state, bind}
+export default {add, tags: tagsNS(), tagsNS, state, bind}
