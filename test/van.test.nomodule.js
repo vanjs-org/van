@@ -553,14 +553,16 @@
         assertError("You should pass-in functions to register `onnew` handlers", () => s.onnew(++t2));
       },
       stateTest_mutatingVal: () => {
+        // Catching different error messages as https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Read-only
+        const errorPattern = /Cannot assign to read only property '[ab]'|"[ab]" is read-only|Attempted to assign to readonly property./;
         {
           const t2 = state({ a: 2 });
-          assertError("Cannot assign to read only property 'a'", () => t2.val.a = 3);
+          assertError(errorPattern, () => t2.val.a = 3);
         }
         {
           const t2 = state({ b: 1 });
           t2.val = { b: 2 };
-          assertError("Cannot assign to read only property 'b'", () => t2.val.b = 3);
+          assertError(errorPattern, () => t2.val.b = 3);
         }
       },
       bindTest_noStates: () => {
