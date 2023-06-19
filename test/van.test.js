@@ -17,13 +17,13 @@ const runTests = async (vanObj, msgDom, { debug }) => {
         }
         catch (e) {
             if (msg instanceof RegExp) {
-                if (msg.test(e.message))
+                if (msg.test(e.toString()))
                     caught = true;
                 else
                     throw e;
             }
             else {
-                if (e.message.includes(msg))
+                if (e.toString().includes(msg))
                     caught = true;
                 else
                     throw e;
@@ -584,16 +584,15 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertError("You should pass-in functions to register `onnew` handlers", () => s.onnew(++t));
         },
         stateTest_mutatingVal: () => {
-            // Catching different error messages as https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Read-only
-            const errorPattern = /Cannot assign to read only property '[ab]'|"[ab]" is read-only|Attempted to assign to readonly property./;
+            // Different browser might throw different error messages, thus we only assert a generic prefix.
             {
                 const t = state({ a: 2 });
-                assertError(errorPattern, () => t.val.a = 3);
+                assertError("TypeError:", () => t.val.a = 3);
             }
             {
                 const t = state({ b: 1 });
                 t.val = { b: 2 };
-                assertError(errorPattern, () => t.val.b = 3);
+                assertError("TypeError:", () => t.val.b = 3);
             }
         },
         bindTest_noStates: () => {

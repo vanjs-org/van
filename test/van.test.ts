@@ -30,9 +30,9 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       func()
     } catch (e) {
       if (msg instanceof RegExp) {
-        if (msg.test(e.message)) caught = true; else throw e
+        if (msg.test(e.toString())) caught = true; else throw e
       } else {
-        if (e.message.includes(msg)) caught = true; else throw e
+        if (e.toString().includes(msg)) caught = true; else throw e
       }
     }
     if (!caught) throw new Error(`Expected error with message "${msg}" being thrown.`)
@@ -755,16 +755,15 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
     },
 
     stateTest_mutatingVal: () => {
-      // Catching different error messages as https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Read-only
-      const errorPattern = /Cannot assign to read only property '[ab]'|"[ab]" is read-only|Attempted to assign to readonly property./;
+      // Different browser might throw different error messages, thus we only assert a generic prefix.
       {
         const t = state({a: 2})
-        assertError(errorPattern, () => t.val.a = 3)
+        assertError("TypeError:", () => t.val.a = 3)
       }
       {
         const t = state({b: 1})
         t.val = {b: 2}
-        assertError(errorPattern, () => t.val.b = 3)
+        assertError("TypeError:", () => t.val.b = 3)
       }
     },
 
