@@ -610,12 +610,12 @@ const runTests = async (vanObj, msgDom, { debug }) => {
     //   stateTest_mutatingVal: () => {
     //     {
     //       const t = state({a: 2})
-    //       assertError("Cannot assign to read only property 'a'", () => t.val.a = 3)
+    //       assertError("TypeError:", () => t.val.a = 3)
     //     }
     //     {
     //       const t = state({b: 1})
     //       t.val = {b: 2}
-    //       assertError("Cannot assign to read only property 'b'", () => t.val.b = 3)
+    //       assertError("TypeError:", () => t.val.b = 3)
     //     }
     //   },
     //   bindTest_noStates: () => {
@@ -849,19 +849,12 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             }
             // Wait until GC kicks in
             await sleep(1000);
-<<<<<<< HEAD
             function bindings(s) {
-                // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling
+                // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling in minified scripts.
                 return Object.values(text).find(v => Array.isArray(v) && v.length > 0);
             }
             assert(bindings(renderPre).length < 10);
             assert(bindings(text).length < 10);
-=======
-            // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling
-            // in minified scripts.
-            const bindings = Object.values(text).find(v => Array.isArray(v) && v.length > 0);
-            assert(bindings.length < 10);
->>>>>>> main
         })
     };
     const suites = { tests, examples, gcTests };
