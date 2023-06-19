@@ -40,7 +40,7 @@ let stateProto = {
 }
 
 // stateProto is a plain object thus protoOf(stateProto) is just Object.prototype.
-// protoOf(stateProto) is equivalent to protoOf({}) but saves 1 byte in the minized bundle.
+// protoOf(stateProto) is equivalent to protoOf({}) but saves 1 byte in the minified bundle.
 let objProto = protoOf(stateProto), funcProto = protoOf(runAndCaptureDeps)
 
 let state = initVal => ({

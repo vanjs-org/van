@@ -17,13 +17,13 @@ const runTests = async (vanObj, msgDom, { debug }) => {
         }
         catch (e) {
             if (msg instanceof RegExp) {
-                if (msg.test(e.message))
+                if (msg.test(e.toString()))
                     caught = true;
                 else
                     throw e;
             }
             else {
-                if (e.message.includes(msg))
+                if (e.toString().includes(msg))
                     caught = true;
                 else
                     throw e;
@@ -849,12 +849,19 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             }
             // Wait until GC kicks in
             await sleep(1000);
+<<<<<<< HEAD
             function bindings(s) {
                 // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling
                 return Object.values(text).find(v => Array.isArray(v) && v.length > 0);
             }
             assert(bindings(renderPre).length < 10);
             assert(bindings(text).length < 10);
+=======
+            // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling
+            // in minified scripts.
+            const bindings = Object.values(text).find(v => Array.isArray(v) && v.length > 0);
+            assert(bindings.length < 10);
+>>>>>>> main
         })
     };
     const suites = { tests, examples, gcTests };

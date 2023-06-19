@@ -1,35 +1,28 @@
-export interface State<T> extends StateView<T> {
+export type State<T> = {
   val: T
+  onnew(l: (val: T, oldVal: T) => void): void
 }
 
 // Defining readonly view of State<T> for covariance.
 // Basically we want State<string> implements StateView<string | number>
 export interface StateView<T> {
   readonly val: T
-  readonly oldVal: T
 }
-
-declare function val<T>(s: T | StateView<T>): T
-declare function oldVal<T>(s: T | StateView<T>): T
 
 export type Primitive = string | number | boolean | bigint
 
-<<<<<<< HEAD
-export type PropValue = Primitive | EventListener | null
-=======
 export type PropValue = Primitive | Function
 
 export interface DerivedProp {
   readonly deps: unknown[]
   readonly f: (...args: readonly any[]) => PropValue
 }
->>>>>>> main
 
 export interface Props {
-  readonly [key: string]: PropValue | StateView<PropValue> | (() => PropValue)
+  readonly [key: string]: PropValue | StateView<PropValue> | DerivedProp
 }
 
-export type ChildDom = Primitive | Node | StateView<Primitive | null | undefined> | ((dom: Node) => Primitive | Node | null | undefined) | readonly ChildDom[] | null | undefined
+export type ChildDom = Primitive | Node | StateView<Primitive | null | undefined> | readonly ChildDom[] | null | undefined
 
 export type TagFunc<Result> = (first?: Props | ChildDom, ...rest: readonly ChildDom[]) => Result
 
@@ -143,14 +136,22 @@ interface Tags extends TagsBase {
   readonly template: TagFunc<HTMLTemplateElement>
 }
 
+type ValOf<T> = T extends StateView<unknown> ? T["val"] : T
+
+type BindFuncArgs<T extends readonly unknown[]> = T extends [infer OnlyOne] ?
+  [ValOf<OnlyOne>] : T extends [infer First, ...infer Rest extends unknown[]] ?
+  [ValOf<First>, ...BindFuncArgs<Rest>] : never
+
+type BindFunc<T extends unknown[]> = (...arg: readonly [...BindFuncArgs<T>, Element, ...BindFuncArgs<T>]) => Primitive | Node | null | undefined
+
+declare function bind<T extends unknown[]>(...args: [...T, BindFunc<T>]): Node | []
+
 export interface Van {
   readonly state: <T>(initVal: T) => State<T>
-  readonly val: typeof val
-  readonly oldVal: typeof oldVal
-  readonly effect: (f: () => void) => void
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
   readonly tags: Tags
   readonly tagsNS: (namespaceURI: string) => TagsBase
+  readonly bind: typeof bind
 }
 
 declare const van: Van

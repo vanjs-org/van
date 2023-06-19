@@ -19,12 +19,12 @@
         func();
       } catch (e) {
         if (msg instanceof RegExp) {
-          if (msg.test(e.message))
+          if (msg.test(e.toString()))
             caught = true;
           else
             throw e;
         } else {
-          if (e.message.includes(msg))
+          if (e.toString().includes(msg))
             caught = true;
           else
             throw e;

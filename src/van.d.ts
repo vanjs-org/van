@@ -14,7 +14,16 @@ declare function oldVal<T>(s: T | StateView<T>): T
 
 export type Primitive = string | number | boolean | bigint
 
+<<<<<<< HEAD
 export type PropValue = Primitive | EventListener | null
+=======
+export type PropValue = Primitive | Function
+
+export interface DerivedProp {
+  readonly deps: unknown[]
+  readonly f: (...args: readonly any[]) => PropValue
+}
+>>>>>>> main
 
 export interface Props {
   readonly [key: string]: PropValue | StateView<PropValue> | (() => PropValue)

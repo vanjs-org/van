@@ -30,9 +30,9 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       func()
     } catch (e) {
       if (msg instanceof RegExp) {
-        if (msg.test(e.message)) caught = true; else throw e
+        if (msg.test(e.toString())) caught = true; else throw e
       } else {
-        if (e.message.includes(msg)) caught = true; else throw e
+        if (e.toString().includes(msg)) caught = true; else throw e
       }
     }
     if (!caught) throw new Error(`Expected error with message "${msg}" being thrown.`)
@@ -1114,7 +1114,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       await sleep(1000)
 
       function bindings<T>(s: State<T>): unknown[] {
-        // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling
+        // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling in minified scripts.
         return Object.values(text).find(v => Array.isArray(v) && v.length > 0)
       }
       assert(bindings(renderPre).length < 10)
