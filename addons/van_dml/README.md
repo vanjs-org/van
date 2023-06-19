@@ -115,6 +115,6 @@ If a rule already exists, it will be overwritten by the new definition. Results 
 ```
 **!Attention:**: css() adds new rules to the first stylesheet (`window.document.styleSheets[0]`). If the first stylesheet was loaded from an external source, this may cause CORS errors. For more information see [here](https://davidwalsh.name/add-rules-stylesheets) and [here](https://stackoverflow.com/questions/49088507/cannot-access-rules-in-external-cssstylesheet). Always add a ***local CSS-file*** first, as the dynamic rules are included in the first style sheet. 
 
-# Support
+## Support
 
 If you need support, please use the [Discussions](https://github.com/vanjs-org/van/discussions) page.
