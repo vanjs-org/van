@@ -64,7 +64,7 @@
         await window.es6TestingBlocker
         await testVanFile(`../public/van-${version}.nomodule.js`, "nomodule")
         await testVanFile(`../public/van-${version}.nomodule.min.js`, "nomodule")
-        // await testVanFile(`../public/van-${version}.nomodule.debug.js`, "nomodule")
+        await testVanFile(`../public/van-${version}.nomodule.debug.js`, "nomodule")
         document.getElementById("numTests").innerText = window.numTests
         document.getElementById("endMsg").style.display = ""
       })()

@@ -70,6 +70,10 @@
         assertEq(ul([li("Item 1"), li("Item 2"), void 0, li("Item 3"), null]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
         assertEq(ul([[void 0, li("Item 1"), null, [li("Item 2")]], null, li("Item 3"), void 0]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
       },
+      tagsTest_nullPropValue: () => {
+        const dom = button({ onclick: null });
+        assert(dom.onclick === null);
+      },
       tagsTest_stateAsProp_connected: withHiddenDom(async (hiddenDom) => {
         const href = state("http://example.com/");
         const dom = a({ href }, "Test Link");
@@ -95,6 +99,10 @@
         dom.querySelector("button").click();
         assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
         handler.val = () => add(dom, div2("Button clicked!"));
+        await sleep(waitMsOnDomUpdates);
+        dom.querySelector("button").click();
+        assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><div>Button clicked!</div></div>");
+        handler.val = null;
         await sleep(waitMsOnDomUpdates);
         dom.querySelector("button").click();
         assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><div>Button clicked!</div></div>");
@@ -272,6 +280,18 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<p>Text</p>");
       }),
+      tagsTest_stateAsChild_domValuedState: withHiddenDom(async (hiddenDom) => {
+        const child = state(div2());
+        const dom = p(child);
+        add(hiddenDom, dom);
+        assertEq(dom.outerHTML, "<p><div></div></p>");
+        child.val = span();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, "<p><span></span></p>");
+        child.val = "Raw Text";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, "<p>Raw Text</p>");
+      }),
       tagsNSTest_svg: () => {
         const { circle, path: path2, svg } = tagsNS("http://www.w3.org/2000/svg");
         const dom = svg({ width: "16px", viewBox: "0 0 50 50" }, circle({ cx: "25", cy: "25", "r": "20", stroke: "black", "stroke-width": "2", fill: "yellow" }), circle({ cx: "16", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), circle({ cx: "34", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), path2({ "d": "M 15 30 Q 25 40, 35 30", stroke: "black", "stroke-width": "2", fill: "transparent" }));
@@ -376,6 +396,41 @@
         assertEq(selectedIndex.val, 3);
         assertEq(selectedItem.val, "Item 4");
       },
+      effectTest_conditionalEffect: () => {
+        const cond = state(true);
+        const a2 = state(1), b = state(2), c = state(3), d = state(4), sum = state(0);
+        let numEffectTriggered = 0;
+        effect(() => (++numEffectTriggered, sum.val = cond.val ? a2.val + b.val : c.val + d.val));
+        assertEq(sum.val, 3);
+        assertEq(numEffectTriggered, 1);
+        a2.val = 11;
+        assertEq(sum.val, 13);
+        assertEq(numEffectTriggered, 2);
+        b.val = 12;
+        assertEq(sum.val, 23);
+        assertEq(numEffectTriggered, 3);
+        c.val = 13;
+        assertEq(sum.val, 23);
+        assertEq(numEffectTriggered, 3);
+        d.val = 14;
+        assertEq(sum.val, 23);
+        assertEq(numEffectTriggered, 3);
+        cond.val = false;
+        assertEq(sum.val, 27);
+        assertEq(numEffectTriggered, 4);
+        c.val = 23;
+        assertEq(sum.val, 37);
+        assertEq(numEffectTriggered, 5);
+        d.val = 24;
+        assertEq(sum.val, 47);
+        assertEq(numEffectTriggered, 6);
+        a2.val = 21;
+        assertEq(sum.val, 47);
+        assertEq(numEffectTriggered, 6);
+        b.val = 22;
+        assertEq(sum.val, 47);
+        assertEq(numEffectTriggered, 6);
+      },
       complexStateBindingTest_dynamicDom: withHiddenDom(async (hiddenDom) => {
         const verticalPlacement = state(false);
         const button1Text = state("Button 1"), button2Text = state("Button 2"), button3Text = state("Button 3");
@@ -394,6 +449,52 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2: Extra</button><button>Button 3</button></div>");
         assertEq(hiddenDom.firstChild.outerHTML, "<div><div><button>Button 1</button></div><div><button>Button 2: Extra Extra</button></div><div><button>Button 3</button></div></div>");
+      }),
+      complexStateBindingTest_conditionalDomFunc: withHiddenDom(async (hiddenDom) => {
+        const cond = state(true);
+        const button1 = state("Button 1"), button2 = state("Button 2");
+        const button3 = state("Button 3"), button4 = state("Button 4");
+        let numFuncCalled = 0;
+        const domFunc = () => (++numFuncCalled, cond.val ? div2(button(button1.val), button(button2.val)) : div2(button(button3.val), button(button4.val)));
+        assertEq(add(hiddenDom, domFunc), hiddenDom);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1</button><button>Button 2</button></div>");
+        assertEq(numFuncCalled, 1);
+        button1.val = "Button 1-1";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1-1</button><button>Button 2</button></div>");
+        assertEq(numFuncCalled, 2);
+        button2.val = "Button 2-1";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1-1</button><button>Button 2-1</button></div>");
+        assertEq(numFuncCalled, 3);
+        button3.val = "Button 3-1";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1-1</button><button>Button 2-1</button></div>");
+        assertEq(numFuncCalled, 3);
+        button4.val = "Button 4-1";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1-1</button><button>Button 2-1</button></div>");
+        assertEq(numFuncCalled, 3);
+        cond.val = false;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-1</button><button>Button 4-1</button></div>");
+        assertEq(numFuncCalled, 4);
+        button3.val = "Button 3-2";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-2</button><button>Button 4-1</button></div>");
+        assertEq(numFuncCalled, 5);
+        button4.val = "Button 4-2";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-2</button><button>Button 4-2</button></div>");
+        assertEq(numFuncCalled, 6);
+        button1.val = "Button 1-2";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-2</button><button>Button 4-2</button></div>");
+        assertEq(numFuncCalled, 6);
+        button1.val = "Button 2-2";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-2</button><button>Button 4-2</button></div>");
+        assertEq(numFuncCalled, 6);
       }),
       complexStateBindingTest_statefulDynamicDom: withHiddenDom(async (hiddenDom) => {
         const numItems = state(0);

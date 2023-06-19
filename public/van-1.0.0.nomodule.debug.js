@@ -126,11 +126,7 @@
   var protoOf2 = Object.getPrototypeOf;
   var stateProto2 = protoOf2(van_default.state());
   var isState2 = (s) => protoOf2(s ?? 0) === stateProto2;
-  var checkStateValValid = (v) => {
-    expect(!(v instanceof Node), "DOM Node is not valid value for state");
-    expect(!isState2(v), "State couldn't have value to other state");
-    return v;
-  };
+  var checkStateValValid = (v) => (expect(!isState2(v), "State couldn't have value to other state"), v);
   var state2 = (initVal) => new Proxy(van_default.state(Object.freeze(checkStateValValid(initVal))), {
     set: (s, prop, val2) => {
       if (prop === "val")
@@ -147,31 +143,29 @@
   };
   var isValidPrimitive = (v) => typeof v === "string" || typeof v === "number" || typeof v === "boolean" || typeof v === "bigint";
   var isDomOrPrimitive = (v) => v instanceof Node || isValidPrimitive(v);
-  var checkChildValid = (child) => {
+  var validateChild = (child) => {
     expect(
-      isDomOrPrimitive(child) || child === null || child === void 0 || isState2(child) && (isValidPrimitive(child.val) || child.val === null || child.val === void 0),
-      "Only DOM Node, string, number, boolean, bigint, null, undefined and state of string, number, boolean, bigint, null or undefined are valid child of a DOM Node"
+      isDomOrPrimitive(child) || child === null || child === void 0,
+      "Only DOM Node, string, number, boolean, bigint, null, undefined are valid child of a DOM Node"
     );
-    expect(!child?.isConnected, "You can't add a DOM Node that is already connected to document");
+    return child;
   };
   var checkChildren = (children) => children.flat(Infinity).map((c) => {
+    const withResultValidation = (f) => (dom) => {
+      const r = validateChild(f(dom));
+      if (r !== dom && r instanceof Node)
+        expect(
+          !r.isConnected,
+          "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to .document"
+        );
+      return r;
+    };
+    if (isState2(c))
+      return withResultValidation(() => c.val);
     if (typeof c === "function")
-      return (dom) => {
-        const r = c(dom);
-        if (!expect(
-          r === null || r === void 0 || isDomOrPrimitive(r),
-          "The result of `bind` generation function must be DOM node, primitive, null or undefined"
-        ))
-          return null;
-        if (r !== dom && r instanceof Node)
-          expect(
-            !r.isConnected,
-            "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to .document"
-          );
-        return r;
-      };
-    checkChildValid(c);
-    return c;
+      return withResultValidation(c);
+    expect(!c?.isConnected, "You can't add a DOM Node that is already connected to document");
+    return validateChild(c);
   });
   var add2 = (dom, ...children) => {
     expect(dom instanceof Element, "1st argument of `van.add` function must be a DOM Element object");
@@ -185,11 +179,11 @@
         const debugProps = {};
         for (const [k, v] of Object.entries(props)) {
           const validatePropValue = k.startsWith("on") ? (v2) => (expect(
-            typeof v2 === "function",
-            `Invalid property value for ${k}: Only functions are allowed for on... handler`
+            typeof v2 === "function" || v2 === null,
+            `Invalid property value for ${k}: Only functions and null are allowed for on... handler`
           ), v2) : (v2) => (expect(
-            isValidPrimitive(v2),
-            `Invalid property value for ${k}: Only string, number, boolean, bigint are valid prop value types`
+            isValidPrimitive(v2) || v2 === null,
+            `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`
           ), v2);
           if (k.startsWith("on")) {
             validatePropValue(van_default.val(v));

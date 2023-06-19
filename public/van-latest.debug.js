@@ -22,11 +22,8 @@ const protoOf = Object.getPrototypeOf
 const stateProto = protoOf(van.state())
 const isState = s => protoOf(s ?? 0) === stateProto
 
-const checkStateValValid = v => {
-  expect(!(v instanceof Node), "DOM Node is not valid value for state")
-  expect(!isState(v), "State couldn't have value to other state")
-  return v
-}
+const checkStateValValid = v =>
+  (expect(!isState(v), "State couldn't have value to other state"), v)
 
 const state = initVal => new Proxy(van.state(Object.freeze(checkStateValValid(initVal))), {
   set: (s, prop, val) => {
@@ -50,28 +47,26 @@ const isValidPrimitive = v =>
 
 const isDomOrPrimitive = v => v instanceof Node || isValidPrimitive(v)
 
-const checkChildValid = child => {
+const validateChild = child => {
   expect(
-    isDomOrPrimitive(child) || child === null || child === undefined ||
-    isState(child) && (
-      isValidPrimitive(child.val) || child.val === null || child.val === undefined),
-    "Only DOM Node, string, number, boolean, bigint, null, undefined and state of string, number, boolean, bigint, null or undefined are valid child of a DOM Node",
+    isDomOrPrimitive(child) || child === null || child === undefined,
+    "Only DOM Node, string, number, boolean, bigint, null, undefined are valid child of a DOM Node",
   )
-  expect(!child?.isConnected, "You can't add a DOM Node that is already connected to document")
+  return child
 }
 
 const checkChildren = children => children.flat(Infinity).map(c => {
-  if (typeof c === "function") return dom => {
-    const r = c(dom)
-    if (!expect(r === null || r === undefined || isDomOrPrimitive(r),
-      "The result of `bind` generation function must be DOM node, primitive, null or undefined")) return null
+  const withResultValidation = f => dom => {
+    const r = validateChild(f(dom))
     if (r !== dom && r instanceof Node)
       expect(!r.isConnected,
         "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to .document")
     return r
   }
-  checkChildValid(c)
-  return c
+  if (isState(c)) return withResultValidation(() => c.val)
+  if (typeof c === "function") return withResultValidation(c)
+  expect(!c?.isConnected, "You can't add a DOM Node that is already connected to document")
+  return validateChild(c)
 })
 
 const add = (dom, ...children) => {
@@ -87,10 +82,10 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
       const debugProps =  {}
       for (const [k, v] of Object.entries(props)) {
         const validatePropValue = k.startsWith("on") ?
-          v => (expect(typeof v === "function",
-            `Invalid property value for ${k}: Only functions are allowed for on... handler`), v) :
-          v => (expect(isValidPrimitive(v),
-            `Invalid property value for ${k}: Only string, number, boolean, bigint are valid prop value types`), v)
+          v => (expect(typeof v === "function" || v === null,
+            `Invalid property value for ${k}: Only functions and null are allowed for on... handler`), v) :
+          v => (expect(isValidPrimitive(v) || v === null,
+            `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`), v)
 
         if (k.startsWith("on")) {
           validatePropValue(van.val(v))
