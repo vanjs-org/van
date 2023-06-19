@@ -22,8 +22,8 @@ Van_DML extends the core of VanJS. You can enable van_dml like this:
     beign(document.body)
         h1("Headline")
         begin(div({style: "border: 1px solid black"}))
-          h2("Headline in a box")
-          p("some text here")
+            h2("Headline in a box")
+            p("some text here")
         end()
     end()
 ```
