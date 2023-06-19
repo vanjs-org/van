@@ -20,7 +20,7 @@ This adds dynamic style definitions to the page. The example is only to demonstr
       background-image: linear-gradient(0deg, #6ac 0%, #eff 100%);
       background-attachment: fixed;
       background-size: 100% 100vh;
-	  padding: 20px;
+      padding: 20px;
       text-align: center;
       font-family: helvetica;
     }`)
@@ -39,7 +39,7 @@ begin opens any DOM element for writing. Elements created between `begin()` and 
 ```JS
     begin(document.body) // open document
       ...
-        begin(div(...))  // create div and open for append
+      begin(div(...))  // create div and open for append
       ...
     end(2);  // close all open appends
     if (sp() !== 0) alert("SP-Error") // check the stack pointer, should be zero at the end
