@@ -676,20 +676,20 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
     },
 
     tagsTest_invalidProp_nonPrimitiveValue: () => {
-      assertError(/Only.*are valid prop value types/, () => a({href: null}))
+      assertError(/Only.*are valid prop value types/, () => a({href: <any>null}))
       assertError(/Only.*are valid prop value types/, () => a(<any>{href: undefined}))
       assertError(/Only.*are valid prop value types/, () => a(<any>{href: (x: number) => x * 2}))
 
       // State as property
       assertError(/Only.*are valid prop value types/, () => a({href: state(<any>{})}))
-      assertError(/Only.*are valid prop value types/, () => a({href: state(null)}))
+      assertError(/Only.*are valid prop value types/, () => a({href: state(<any>null)}))
       assertError(/Only.*are valid prop value types/, () => a({href: state(<any>undefined)}))
       assertError(/Only.*are valid prop value types/, () => a({href: state((x: number) => x * 2)}))
 
       // State derived property
       const s = state(0)
       assertError(/Only.*are valid prop value types/, () => a({href: {deps: [s], f: <any>(() => {})}}))
-      assertError(/Only.*are valid prop value types/, () => a({href: {deps: [s], f: () => null}}))
+      assertError(/Only.*are valid prop value types/, () => a({href: {deps: [s], f: () => <any>null}}))
       assertError(/Only.*are valid prop value types/, () => a({href: {deps: [s], f: <any>(() => undefined)}}))
       assertError(/Only.*are valid prop value types/, () => a({href: {deps: [s], f: () => (x: number) => x * 2}}))
     },
@@ -1095,7 +1095,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       // Wait until GC kicks in
       await sleep(1000)
       // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling
-      // in minized scripts.
+      // in minified scripts.
       const bindings = Object.values(text).find(v => Array.isArray(v) && v.length > 0)
       assert((<any>bindings).length < 10)
     })

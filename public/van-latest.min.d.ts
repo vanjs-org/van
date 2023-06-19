@@ -11,7 +11,7 @@ export interface StateView<T> {
 
 export type Primitive = string | number | boolean | bigint
 
-export type PropValue = Primitive | Function | null
+export type PropValue = Primitive | Function
 
 export interface DerivedProp {
   readonly deps: unknown[]

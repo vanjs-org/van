@@ -1,6 +1,6 @@
 {
   "name": "van-dom",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "VanJS. A minimalist React-like UI library based on vanilla JavaScript and DOM.",
   "main": "src/van.js",
   "type": "module",

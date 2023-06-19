@@ -827,7 +827,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // Wait until GC kicks in
             await sleep(1000);
             // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling
-            // in minized scripts.
+            // in minified scripts.
             const bindings = Object.values(text).find(v => Array.isArray(v) && v.length > 0);
             assert(bindings.length < 10);
         })
