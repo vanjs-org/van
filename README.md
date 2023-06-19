@@ -113,6 +113,12 @@ We're looking for the 1.0 milestone (commitment to API stability) soon, your pre
 
 Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linkedin.com/in/tao-xin-64234920/) / [@taoxin](https://twitter.com/taoxin)
 
+## Community Add-ons
+
+**VanJS** can be extended via add-ons. Add-ons add more features to **VanJS** and/or provide an alternative styled API. Below is a curated list of add-ons built by **VanJS** community:
+
+* [van_dml.js](https://github.com/vanjs-org/van/tree/main/addons/van_dml) adds a a new flavour of composition to VanJS. Author: [Eckehard](https://github.com/efpage).
+
 ## Contributors
 
 *Some authors can't be recognized by Github as contributors for weird reasons (e.g.: [1](https://github.com/vanjs-org/van/pull/29#issuecomment-1583616491), [2](https://github.com/vanjs-org/van/pull/40#issuecomment-1585307358)). Their names are shown here. Authors are ordered chronologically by first contribution:*
@@ -126,3 +132,4 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 * [andrewgryan](https://github.com/andrewgryan)
 * [FredericHeem](https://github.com/FredericHeem)
 * [ebraminio](https://github.com/ebraminio)
+* [Eckehard](https://github.com/efpage)
