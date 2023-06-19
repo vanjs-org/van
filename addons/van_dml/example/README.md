@@ -31,16 +31,16 @@ Dynamic CSS can be used to create responsive pages with ease. Just use JS to sel
 begin opens any DOM element for writing. Elements created between `begin()` and `end()` will be automatic appended as a child to the object selecte with `begin(el)`
 ```JS
     begin(document.body)
-	   // some tag functions here
-	end()
+      // some tag functions here
+    end()
 ```
 `end()` returns to the previous used element or - if non was selected - finishes the append mode. Calls of `begin() ... end()` can be nested:
 
 ```JS
     begin(document.body) // open document
-	    ...
-		begin(div(...))  // create div and open for append
-        ...
+      ...
+        begin(div(...))  // create div and open for append
+      ...
     end(2);  // close all open appends
     if (sp() !== 0) alert("SP-Error") // check the stack pointer, should be zero at the end
 ```
