@@ -50,7 +50,7 @@ const isDomOrPrimitive = v => v instanceof Node || isValidPrimitive(v)
 const validateChild = child => {
   expect(
     isDomOrPrimitive(child) || child === null || child === undefined,
-    "Only DOM Node, string, number, boolean, bigint, null, undefined are valid child of a DOM Node",
+    "Only DOM Node, string, number, boolean, bigint, null, undefined are valid child of a DOM Element",
   )
   return child
 }
@@ -60,7 +60,7 @@ const checkChildren = children => children.flat(Infinity).map(c => {
     const r = validateChild(f(dom))
     if (r !== dom && r instanceof Node)
       expect(!r.isConnected,
-        "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to .document")
+        "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to document")
     return r
   }
   if (isState(c)) return withResultValidation(() => c.val)

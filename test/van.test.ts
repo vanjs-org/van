@@ -827,155 +827,137 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
     }),
   }
 
-  // const debugTests = {
-  //   tagsTest_invalidProp_nonFuncOnHandler: () => {
-  //     const counter = state(0)
-  //     assertError("Only functions are allowed",
-  //       () => button({onclick: ++counter.val}, "Increment"))
-  //   },
+  const debugTests = {
+    tagsTest_invalidProp_nonFuncOnHandler: () => {
+      const counter = state(0)
+      assertError("Only functions and null are allowed",
+        () => button({onclick: ++counter.val}, "Increment"))
+    },
 
-  //   tagsTest_invalidProp_nonPrimitiveValue: () => {
-  //     assertError(/Only.*are valid prop value types/, () => a({href: null}))
-  //     assertError(/Only.*are valid prop value types/, () => a(<any>{href: undefined}))
-  //     assertError(/Only.*are valid prop value types/, () => a(<any>{href: (x: number) => x * 2}))
+    tagsTest_invalidProp_nonPrimitiveValue: () => {
+      assertError(/Only.*are valid prop value types/, () => a({href: <any>{}}))
+      assertError(/Only.*are valid prop value types/, () => a({href: <any>undefined}))
 
-  //     // State as property
-  //     assertError(/Only.*are valid prop value types/, () => a({href: state(<any>{})}))
-  //     assertError(/Only.*are valid prop value types/, () => a({href: state(null)}))
-  //     assertError(/Only.*are valid prop value types/, () => a({href: state(<any>undefined)}))
-  //     assertError(/Only.*are valid prop value types/, () => a({href: state((x: number) => x * 2)}))
+      // State as property
+      assertError(/Only.*are valid prop value types/, () => a({href: state(<any>{})}))
+      assertError(/Only.*are valid prop value types/, () => a({href: state(<any>undefined)}))
+      assertError(/Only.*are valid prop value types/, () => a({href: state(<any>((x: number) => x * 2))}))
 
-  //     // State derived property
-  //     const s = state(0)
-  //     assertError(/Only.*are valid prop value types/, () => a({href: {deps: [s], f: <any>(() => {})}}))
-  //     assertError(/Only.*are valid prop value types/, () => a({href: {deps: [s], f: () => null}}))
-  //     assertError(/Only.*are valid prop value types/, () => a({href: {deps: [s], f: <any>(() => undefined)}}))
-  //     assertError(/Only.*are valid prop value types/, () => a({href: {deps: [s], f: () => (x: number) => x * 2}}))
-  //   },
+      // State derived property
+      assertError(/Only.*are valid prop value types/, () => a({href: () => ({})}))
+      assertError(/Only.*are valid prop value types/, () => a({href: () => undefined}))
+      assertError(/Only.*are valid prop value types/, () => a({href: () => (x: number) => x * 2}))
+    },
 
-  //   tagsTest_invalidChild: () => {
-  //     assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>{}, p()))
-  //     assertError(/Only.*are valid child of a DOM Node/, () => div(div(), <any>((x: number) => x * 2), p()))
+    tagsTest_invalidChild: () => {
+      assertError(/Only.*are valid child of a DOM Element/, () => div(div(), <any>{}, p()))
 
-  //     assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(<any>{}), p()))
-  //     assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(<any>((x: number) => x * 2)), p()))
-  //   },
+      assertError(/Only.*are valid child of a DOM Element/, () => div(div(), state(<any>{}), p()))
+      assertError(/Only.*are valid child of a DOM Element/, () => div(div(), state(<any>((x: number) => x * 2)), p()))
+    },
 
-  //   tagsTest_alreadyConnectedChild: withHiddenDom(hiddenDom => {
-  //     const dom = p()
-  //     add(hiddenDom, dom)
-  //     assertError("already connected to document", () => div(p(), dom, p()))
-  //   }),
+    tagsTest_alreadyConnectedChild: withHiddenDom(hiddenDom => {
+      const dom = p()
+      add(hiddenDom, dom)
+      assertError("already connected to document", () => div(p(), dom, p()))
+    }),
 
-  //   tagsNSTest_invalidNs: () => {
-  //     assertError("Must provide a string", () => tagsNS(<any>1))
-  //     assertError("Must provide a string", () => tagsNS(<any>null))
-  //     assertError("Must provide a string", () => tagsNS(<any>undefined))
-  //     assertError("Must provide a string", () => tagsNS(<any>{}))
-  //     assertError("Must provide a string", () => tagsNS(<any>((x: number) => x * 2)))
-  //   },
+    tagsNSTest_invalidNs: () => {
+      assertError("Must provide a string", () => tagsNS(<any>1))
+      assertError("Must provide a string", () => tagsNS(<any>null))
+      assertError("Must provide a string", () => tagsNS(<any>undefined))
+      assertError("Must provide a string", () => tagsNS(<any>{}))
+      assertError("Must provide a string", () => tagsNS(<any>((x: number) => x * 2)))
+    },
 
-  //   addTest_1stArgNotDom: () => {
-  //     assertError("1st argument of `add` function must be a DOM Node object",
-  //       () => add(<any>{}, div()))
-  //   },
+    addTest_1stArgNotDom: () => {
+      assertError("1st argument of `van.add` function must be a DOM Element object",
+        () => add(<any>{}, div()))
+    },
 
-  //   addTest_invalidChild: () => {
-  //     const dom = div()
+    addTest_invalidChild: () => {
+      const dom = div()
 
-  //     assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>{}, p()))
-  //     assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), <any>((x: number) => x * 2), p()))
+      assertError(/Only.*are valid child of a DOM Element/, () => add(dom, div(), <any>{}, p()))
 
-  //     assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(<any>{}), p()))
-  //     assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(<any>((x: number) => x * 2)), p()))
-  //   },
+      assertError(/Only.*are valid child of a DOM Element/, () => add(dom, div(), state(<any>{}), p()))
+      assertError(/Only.*are valid child of a DOM Element/, () => add(dom, div(), state(<any>((x: number) => x * 2)), p()))
+    },
 
-  //   addTest_alreadyConnectedChild: withHiddenDom(hiddenDom => {
-  //     const dom = div()
-  //     add(hiddenDom, dom)
-  //     assertError("already connected to document", () => add(hiddenDom, dom))
-  //   }),
+    addTest_alreadyConnectedChild: withHiddenDom(hiddenDom => {
+      const dom = div()
+      add(hiddenDom, dom)
+      assertError("already connected to document", () => add(hiddenDom, dom))
+    }),
 
-  //   stateTest_invalidInitialVal: () => {
-  //     assertError("DOM Node is not valid", () => state(document))
-  //     assertError("couldn't have value to other state", () => state(state(0)))
-  //   },
+    stateTest_invalidInitialVal: () => {
+      assertError("couldn't have value to other state", () => state(state(0)))
+    },
 
-  //   stateTest_invalidValSet: () => {
-  //     const s = state(<number | Node | State<number>>0)
-  //     assertError("DOM Node is not valid", () => s.val = document)
-  //     assertError("couldn't have value to other state", () => s.val = state(0))
-  //   },
+    stateTest_invalidValSet: () => {
+      const s = state(<number | State<number>>0)
+      assertError("couldn't have value to other state", () => s.val = state(0))
+    },
 
-  //   stateTest_nonFunctionOnnewListener: () => {
-  //     const s = state(0)
-  //     let t = 0
-  //     assertError("You should pass-in functions to register `onnew` handlers", () => s.onnew(<any>++t))
-  //   },
+    stateTest_mutatingVal: () => {
+      {
+        const t = state({a: 2})
+        assertError("TypeError:", () => t.val.a = 3)
+      }
+      {
+        const t = state({b: 1})
+        t.val = {b: 2}
+        assertError("TypeError:", () => t.val.b = 3)
+      }
+    },
 
-  //   stateTest_mutatingVal: () => {
-  //     {
-  //       const t = state({a: 2})
-  //       assertError("TypeError:", () => t.val.a = 3)
-  //     }
-  //     {
-  //       const t = state({b: 1})
-  //       t.val = {b: 2}
-  //       assertError("TypeError:", () => t.val.b = 3)
-  //     }
-  //   },
+    effectTest_nonFunctionArg: () => {
+      const a = state(0), b = state(0)
+      assertError("Must pass-in a function to `van.effect`", () => effect(<any>(b.val = a.val * 2)))
+    },
 
-  //   bindTest_noStates: () => {
-  //     // @ts-ignore
-  //     assertError("1 or more states", () => bind())
-  //     // @ts-ignore
-  //     assertError("1 or more states", () => bind(x => x * 2))
-  //   },
+    complexStateBindingTest_invalidInitialResult: () => {
+      assertError(/Only.*are valid child of a DOM Element/,
+        () => div(() => <any>{}))
+      assertError(/Only.*are valid child of a DOM Element/,
+        () => div(() => <any>((x: number) => x * 2)))
+    },
 
-  //   bindTest_lastArgNotFunc: () =>
-  //     assertError("must be the generation function", () => bind(state(0), <any>state(1))),
+    complexStateBindingTest_invalidFollowupResult: withHiddenDom(async hiddenDom => {
+      const s = state(1)
+      add(hiddenDom,
+        () => <any>(s.val || {}),
+        () => <any>(s.val || ((x: number) => x * 2))
+      )
+      await capturingErrors(async () => {
+        s.val = 0
+        await sleep(waitMsOnDomUpdates)
+        assert(vanObj.capturedErrors.length === 2 &&
+          vanObj.capturedErrors.every(e => /Only.*are valid child of a DOM Element/.test(e)))
+      })
+    }),
 
-  //   bindTest_invalidInitialResult: () => {
-  //     const s = state(0)
-  //     assertError("must be DOM node, primitive, null or undefined", () => bind(s, <any>(() => ({}))))
-  //     assertError("must be DOM node, primitive, null or undefined", () => bind(s, <any>(() => x => x * 2)))
-  //   },
+    complexStateBindingTest_derivedDom_domResultAlreadyConnected: withHiddenDom(async hiddenDom => {
+      const dom = div()
+      add(hiddenDom, dom)
+      const num = state(1)
+      add(hiddenDom, prevDom => {
+        if (num.val === 1) return div()
+        if (num.val === 2) return prevDom
+        if (num.val === 3) return dom
+      })
+      num.val = 2
+      await sleep(waitMsOnDomUpdates)
+      // Previous dom is returned from the generation function, thus the dom tree isn't changed
+      assertEq(hiddenDom.innerHTML, "<div></div><div></div>")
 
-  //   bindTest_invalidFollowupResult: withHiddenDom(async hiddenDom => {
-  //     const s = state(1)
-  //     add(hiddenDom,
-  //       bind(s, <any>(s => s || {})),
-  //       bind(s, <any>(s => s || (x => x * 2)))
-  //     )
-  //     await capturingErrors(async () => {
-  //       s.val = 0
-  //       await sleep(waitMsOnDomUpdates)
-  //       assert(vanObj.capturedErrors.length === 2 &&
-  //         vanObj.capturedErrors.every(e => e.includes("must be DOM node, primitive, null or undefined")))
-  //     })
-  //   }),
-
-  //   bindTest_derivedDom_domResultAlreadyConnected: withHiddenDom(async hiddenDom => {
-  //     const dom = div()
-  //     add(hiddenDom, dom)
-  //     const num = state(1)
-  //     add(hiddenDom, bind(num, (num, prevDom) => {
-  //       if (num === 1) return div()
-  //       if (num === 2) return prevDom
-  //       if (num === 3) return dom
-  //     }))
-  //     num.val = 2
-  //     await sleep(waitMsOnDomUpdates)
-  //     // Previous dom is returned from the generation function, thus the dom tree isn't changed
-  //     assertEq(hiddenDom.innerHTML, "<div></div><div></div>")
-
-  //     await capturingErrors(async () => {
-  //       num.val = 3
-  //       await sleep(waitMsOnDomUpdates)
-  //       assert(vanObj.capturedErrors[0].includes("it shouldn't be already connected to document"))
-  //     })
-  //   }),
-  // }
+      await capturingErrors(async () => {
+        num.val = 3
+        await sleep(waitMsOnDomUpdates)
+        assert(vanObj.capturedErrors.length === 1 && vanObj.capturedErrors[0].includes("it shouldn't be already connected to document"))
+      })
+    }),
+  }
 
   // Test cases for examples used in the documentation. Having the tests to ensure the examples
   // are always correct.
@@ -1256,7 +1238,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
 
   type Suite = { [name: string]: () => void | Promise<void> }
   const suites: { [k: string]: Suite} = {tests, examples, gcTests}
-  // if (debug) suites.debugTests = debugTests
+  if (debug) suites.debugTests = debugTests
 
   for (const [k, v] of Object.entries(suites)) {
     for (const [name, func] of Object.entries(v)) {

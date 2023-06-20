@@ -146,7 +146,7 @@
   var validateChild = (child) => {
     expect(
       isDomOrPrimitive(child) || child === null || child === void 0,
-      "Only DOM Node, string, number, boolean, bigint, null, undefined are valid child of a DOM Node"
+      "Only DOM Node, string, number, boolean, bigint, null, undefined are valid child of a DOM Element"
     );
     return child;
   };
@@ -156,7 +156,7 @@
       if (r !== dom && r instanceof Node)
         expect(
           !r.isConnected,
-          "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to .document"
+          "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to document"
         );
       return r;
     };
