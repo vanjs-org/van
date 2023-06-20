@@ -46,32 +46,32 @@ const runTests = async (vanObj, msgDom, { debug }) => {
         vanObj.stopCapturingErrors();
     };
     const tests = {
-        tagsTest_basic: () => {
+        tags_basic: () => {
             const dom = div(p("👋Hello"), ul(li("🗺️World"), li(a({ href: "https://vanjs.org/" }, "🍦VanJS"))));
             assertEq(dom.outerHTML, '<div><p>👋Hello</p><ul><li>🗺️World</li><li><a href="https://vanjs.org/">🍦VanJS</a></li></ul></div>');
         },
-        tagsTest_onclickHandler: () => {
+        tags_onclickHandler: () => {
             const dom = div(button({ onclick: () => add(dom, p("Button clicked!")) }));
             dom.querySelector("button").click();
             assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
         },
-        tagsTest_escape: () => {
+        tags_escape: () => {
             assertEq(p("<input>").outerHTML, "<p>&lt;input&gt;</p>");
             assertEq(div("a && b").outerHTML, "<div>a &amp;&amp; b</div>");
             assertEq(div("<input a && b>").outerHTML, "<div>&lt;input a &amp;&amp; b&gt;</div>");
         },
-        tagsTest_nestedChildren: () => {
+        tags_nestedChildren: () => {
             assertEq(ul([li("Item 1"), li("Item 2"), li("Item 3")]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
             // Deeply nested
             assertEq(ul([[li("Item 1"), [li("Item 2")]], li("Item 3")]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
         },
-        tagsTest_nullOrUndefinedAreIgnored: () => {
+        tags_nullOrUndefinedAreIgnored: () => {
             assertEq(ul(li("Item 1"), li("Item 2"), undefined, li("Item 3"), null).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
             assertEq(ul([li("Item 1"), li("Item 2"), undefined, li("Item 3"), null]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
             // Deeply nested
             assertEq(ul([[undefined, li("Item 1"), null, [li("Item 2")]], null, li("Item 3"), undefined]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
         },
-        tagsTest_stateAsProp_connected: withHiddenDom(async (hiddenDom) => {
+        tags_stateAsProp_connected: withHiddenDom(async (hiddenDom) => {
             const href = state("http://example.com/");
             const dom = a({ href }, "Test Link");
             add(hiddenDom, dom);
@@ -80,7 +80,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.href, "https://vanjs.org/");
         }),
-        tagsTest_stateAsProp_disconnected: async () => {
+        tags_stateAsProp_disconnected: async () => {
             const href = state("http://example.com/");
             const dom = a({ href }, "Test Link");
             assertEq(dom.href, "http://example.com/");
@@ -89,7 +89,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // href won't change as dom is not connected to document
             assertEq(dom.href, "http://example.com/");
         },
-        tagsTest_stateAsOnClickHandler_connected: withHiddenDom(async (hiddenDom) => {
+        tags_stateAsOnClickHandler_connected: withHiddenDom(async (hiddenDom) => {
             const dom = div();
             add(hiddenDom, dom);
             const handler = state(() => add(dom, p("Button clicked!")));
@@ -101,7 +101,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             dom.querySelector("button").click();
             assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><div>Button clicked!</div></div>");
         }),
-        tagsTest_stateAsOnClickHandler_disconnected: async () => {
+        tags_stateAsOnClickHandler_disconnected: async () => {
             const dom = div();
             const handler = state(() => add(dom, p("Button clicked!")));
             add(dom, button({ onclick: handler }));
@@ -113,7 +113,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // The onclick handler won't change as dom is not connected to document, as a result, the <p> element will be added
             assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><p>Button clicked!</p></div>");
         },
-        tagsTest_stateDerivedProp_connected: withHiddenDom(async (hiddenDom) => {
+        tags_stateDerivedProp_connected: withHiddenDom(async (hiddenDom) => {
             const host = state("example.com");
             const path = state("/hello");
             const dom = a({ href: { deps: [host, path], f: (host, path) => `https://${host}${path}` } }, "Test Link");
@@ -124,7 +124,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.href, "https://vanjs.org/start");
         }),
-        tagsTest_stateDerivedProp_disconnected: async () => {
+        tags_stateDerivedProp_disconnected: async () => {
             const host = state("example.com");
             const path = state("/hello");
             const dom = a({ href: { deps: [host, path], f: (host, path) => `https://${host}${path}` } }, "Test Link");
@@ -135,7 +135,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // href won't change as dom is not connected to document
             assertEq(dom.href, "https://example.com/hello");
         },
-        tagsTest_stateDerivedProp_nonStateDeps_connected: withHiddenDom(async (hiddenDom) => {
+        tags_stateDerivedProp_nonStateDeps_connected: withHiddenDom(async (hiddenDom) => {
             const host = state("example.com");
             const path = "/hello";
             const dom = a({ href: { deps: [host, path], f: (host, path) => `https://${host}${path}` } }, "Test Link");
@@ -145,7 +145,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.href, "https://vanjs.org/hello");
         }),
-        tagsTest_stateDerivedProp_nonStateDeps_disconnected: async () => {
+        tags_stateDerivedProp_nonStateDeps_disconnected: async () => {
             const host = state("example.com");
             const path = "/hello";
             const dom = a({ href: { deps: [host, path], f: (host, path) => `https://${host}${path}` } }, "Test Link");
@@ -155,7 +155,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // href won't change as dom is not connected to document
             assertEq(dom.href, "https://example.com/hello");
         },
-        tagsTest_stateDerivedOnClickHandler_connected: withHiddenDom(async (hiddenDom) => {
+        tags_stateDerivedOnClickHandler_connected: withHiddenDom(async (hiddenDom) => {
             const dom = div();
             add(hiddenDom, dom);
             const addPElement = state(true);
@@ -170,7 +170,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             dom.querySelector("button").click();
             assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><div>Button clicked!</div></div>");
         }),
-        tagsTest_stateDerivedOnClickHandler_disconnected: async () => {
+        tags_stateDerivedOnClickHandler_disconnected: async () => {
             const dom = div();
             const addPElement = state(true);
             add(dom, button({ onclick: { deps: [addPElement], f: addPElement => addPElement ?
@@ -185,7 +185,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // The onclick handler won't change as dom is not connected to document, as a result, the <p> element will be added
             assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><p>Button clicked!</p></div>");
         },
-        tagsTest_dataAttributes_connected: withHiddenDom(async (hiddenDom) => {
+        tags_dataAttributes_connected: withHiddenDom(async (hiddenDom) => {
             const lineNum = state(1);
             const dom = div({
                 "data-type": "line",
@@ -198,7 +198,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, '<div data-type="line" data-id="3" data-line="line=3">This is a test line</div>');
         }),
-        tagsTest_dataAttributes_disconnected: async () => {
+        tags_dataAttributes_disconnected: async () => {
             const lineNum = state(1);
             const dom = div({
                 "data-type": "line",
@@ -211,7 +211,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // Attributes won't change as dom is not connected to document
             assertEq(dom.outerHTML, '<div data-type="line" data-id="1" data-line="line=1">This is a test line</div>');
         },
-        tagsTest_readonlyProps_connected: withHiddenDom(async (hiddenDom) => {
+        tags_readonlyProps_connected: withHiddenDom(async (hiddenDom) => {
             const form = state("form1");
             const dom = button({ form }, "Button");
             add(hiddenDom, dom);
@@ -221,7 +221,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(dom.outerHTML, '<button form="form2">Button</button>');
             assertEq(input({ list: "datalist1" }).outerHTML, '<input list="datalist1">');
         }),
-        tagsTest_readonlyProps_disconnected: async () => {
+        tags_readonlyProps_disconnected: async () => {
             const form = state("form1");
             const dom = button({ form }, "Button");
             assertEq(dom.outerHTML, '<button form="form1">Button</button>');
@@ -231,7 +231,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(dom.outerHTML, '<button form="form1">Button</button>');
             assertEq(input({ list: "datalist1" }).outerHTML, '<input list="datalist1">');
         },
-        tagsTest_stateAsChild_connected: withHiddenDom(async (hiddenDom) => {
+        tags_stateAsChild_connected: withHiddenDom(async (hiddenDom) => {
             const line2 = state("Line 2");
             const dom = div(pre("Line 1"), pre(line2), pre("Line 3"));
             add(hiddenDom, dom);
@@ -248,7 +248,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre></pre><pre>Line 3</pre></div>");
         }),
-        tagsTest_stateAsChild_disconnected: async () => {
+        tags_stateAsChild_disconnected: async () => {
             const line2 = state("Line 2");
             const dom = div(pre("Line 1"), pre(line2), pre("Line 3"));
             assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
@@ -261,7 +261,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // Content won't change as dom is not connected to document
             assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
         },
-        tagsTest_stateAsChild_emptyStrWontDeleteDom: withHiddenDom(async (hiddenDom) => {
+        tags_stateAsChild_emptyStrWontDeleteDom: withHiddenDom(async (hiddenDom) => {
             const text = state("Text");
             const dom = p(text);
             add(hiddenDom, dom);
@@ -273,17 +273,17 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<p>Text</p>");
         }),
-        tagsNSTest_svg: () => {
+        tagsNS_svg: () => {
             const { circle, path, svg } = tagsNS("http://www.w3.org/2000/svg");
             const dom = svg({ width: "16px", viewBox: "0 0 50 50" }, circle({ cx: "25", cy: "25", "r": "20", stroke: "black", "stroke-width": "2", fill: "yellow" }), circle({ cx: "16", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), circle({ cx: "34", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), path({ "d": "M 15 30 Q 25 40, 35 30", stroke: "black", "stroke-width": "2", fill: "transparent" }));
             assertEq(dom.outerHTML, '<svg width="16px" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" stroke="black" stroke-width="2" fill="yellow"></circle><circle cx="16" cy="20" r="2" stroke="black" stroke-width="2" fill="black"></circle><circle cx="34" cy="20" r="2" stroke="black" stroke-width="2" fill="black"></circle><path d="M 15 30 Q 25 40, 35 30" stroke="black" stroke-width="2" fill="transparent"></path></svg>');
         },
-        tagsNSTest_math: () => {
+        tagsNS_math: () => {
             const { math, mi, mn, mo, mrow, msup } = tagsNS("http://www.w3.org/1998/Math/MathML");
             const dom = math(msup(mi("e"), mrow(mi("i"), mi("π"))), mo("+"), mn("1"), mo("="), mn("0"));
             assertEq(dom.outerHTML, '<math><msup><mi>e</mi><mrow><mi>i</mi><mi>π</mi></mrow></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>0</mn></math>');
         },
-        addTest_basic: () => {
+        add_basic: () => {
             const dom = ul();
             assertEq(add(dom, li("Item 1"), li("Item 2")), dom);
             assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li></ul>");
@@ -293,7 +293,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(add(dom), dom);
             assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li><li>Item 4</li><li>Item 5</li></ul>");
         },
-        addTest_nestedChildren: () => {
+        add_nestedChildren: () => {
             const dom = ul();
             assertEq(add(dom, [li("Item 1"), li("Item 2")]), dom);
             assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li></ul>");
@@ -304,7 +304,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(add(dom, [[[]]]), dom);
             assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li><li>Item 4</li><li>Item 5</li></ul>");
         },
-        addTest_nullOrUndefinedAreIgnored: () => {
+        add_nullOrUndefinedAreIgnored: () => {
             const dom = ul();
             assertEq(add(dom, li("Item 1"), li("Item 2"), undefined, li("Item 3"), null), dom);
             assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
@@ -314,7 +314,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(add(dom, [[undefined, li("Item 7"), null, [li("Item 8")]], null, li("Item 9"), undefined]), dom);
             assertEq(dom.outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li><li>Item 4</li><li>Item 5</li><li>Item 6</li><li>Item 7</li><li>Item 8</li><li>Item 9</li></ul>");
         },
-        addTest_addState_connected: withHiddenDom(async (hiddenDom) => {
+        add_addState_connected: withHiddenDom(async (hiddenDom) => {
             const line2 = state("Line 2");
             assertEq(add(hiddenDom, pre("Line 1"), pre(line2), pre("Line 3")), hiddenDom);
             assertEq(hiddenDom.outerHTML, '<div class="hidden"><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>');
@@ -330,7 +330,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.outerHTML, '<div class="hidden"><pre>Line 1</pre><pre></pre><pre>Line 3</pre></div>');
         }),
-        addTest_addState_disconnected: async () => {
+        add_addState_disconnected: async () => {
             const line2 = state("Line 2");
             const dom = div();
             assertEq(add(dom, pre("Line 1"), pre(line2), pre("Line 3")), dom);
@@ -344,13 +344,13 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // Content won't change as dom is not connected to document
             assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
         },
-        stateTest_val: () => {
+        state_val: () => {
             const s = state("Init State");
             assertEq(s.val, "Init State");
             s.val = "Changed State";
             assertEq(s.val, "Changed State");
         },
-        stateTest_onnew: () => {
+        state_onnew: () => {
             const history = [];
             const s = state("This");
             s.onnew((v, oldV) => history.push({ from: oldV, to: v }));
@@ -361,7 +361,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             s.val = "test";
             assertEq(JSON.stringify(history), '[{"from":"This","to":"is"},{"from":"is","to":"a"},{"from":"a","to":"test"}]');
         },
-        stateTest_derivedStates: () => {
+        state_derivedStates: () => {
             const numItems = state(0);
             const items = state([]);
             numItems.onnew(v => items.val = [...Array(v).keys()].map(i => `Item ${i + 1}`));
@@ -388,7 +388,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(selectedIndex.val, 3);
             assertEq(selectedItem.val, "Item 4");
         },
-        bindTest_dynamicDom: withHiddenDom(async (hiddenDom) => {
+        bind_dynamicDom: withHiddenDom(async (hiddenDom) => {
             const verticalPlacement = state(false);
             const button1Text = state("Button 1"), button2Text = state("Button 2"), button3Text = state("Button 3");
             const dom = bind(verticalPlacement, v => v ? div(div(button(button1Text)), div(button(button2Text)), div(button(button3Text))) : div(button(button1Text), button(button2Text), button(button3Text)));
@@ -408,7 +408,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2: Extra</button><button>Button 3</button></div>");
             assertEq(hiddenDom.firstChild.outerHTML, "<div><div><button>Button 1</button></div><div><button>Button 2: Extra Extra</button></div><div><button>Button 3</button></div></div>");
         }),
-        bindTest_statefulDynamicDom: withHiddenDom(async (hiddenDom) => {
+        bind_statefulDynamicDom: withHiddenDom(async (hiddenDom) => {
             const numItems = state(0);
             const items = state([]);
             numItems.onnew(v => items.val = [...Array(v).keys()].map(i => `Item ${i + 1}`));
@@ -450,7 +450,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // rootDom1stIteration won't be updated as it has already been disconnected from the document
             assertEq(rootDom1stIteration.outerHTML, '<ul><li class="">Item 1</li><li class="selected">Item 2</li><li class="">Item 3</li></ul>');
         }),
-        bindTest_nullToRemoveDom: withHiddenDom(async (hiddenDom) => {
+        bind_nullToRemoveDom: withHiddenDom(async (hiddenDom) => {
             const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state("Line 3"), line4 = state(""), line5 = state(null);
             const dom = div(bind(line1, l => l === "" ? null : p(l)), bind(line2, l => l === "" ? null : p(l)), p(line3), 
             // line4 won't appear in the DOM tree as its initial value is null
@@ -476,7 +476,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
         }),
-        bindTest_undefinedToRemoveDom: withHiddenDom(async (hiddenDom) => {
+        bind_undefinedToRemoveDom: withHiddenDom(async (hiddenDom) => {
             const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state("Line 3"), line4 = state(""), line5 = state(undefined);
             const dom = div(bind(line1, l => l === "" ? undefined : p(l)), bind(line2, l => l === "" ? undefined : p(l)), p(line3), 
             // line4 won't appear in the DOM tree as its initial value is undefined
@@ -502,7 +502,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
         }),
-        bindTest_nonStateDeps: withHiddenDom(async (hiddenDom) => {
+        bind_nonStateDeps: withHiddenDom(async (hiddenDom) => {
             const part1 = "👋Hello ", part2 = state("🗺️World");
             const dom = bind(part1, part2, (part1, part2) => part1 + part2);
             assertEq(add(hiddenDom, dom), hiddenDom);
@@ -516,11 +516,11 @@ const runTests = async (vanObj, msgDom, { debug }) => {
         }),
     };
     const debugTests = {
-        tagsTest_invalidProp_nonFuncOnHandler: () => {
+        tags_invalidProp_nonFuncOnHandler: () => {
             const counter = state(0);
             assertError("Only functions are allowed", () => button({ onclick: ++counter.val }, "Increment"));
         },
-        tagsTest_invalidProp_nonPrimitiveValue: () => {
+        tags_invalidProp_nonPrimitiveValue: () => {
             assertError(/Only.*are valid prop value types/, () => a({ href: null }));
             assertError(/Only.*are valid prop value types/, () => a({ href: undefined }));
             assertError(/Only.*are valid prop value types/, () => a({ href: (x) => x * 2 }));
@@ -536,54 +536,54 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertError(/Only.*are valid prop value types/, () => a({ href: { deps: [s], f: (() => undefined) } }));
             assertError(/Only.*are valid prop value types/, () => a({ href: { deps: [s], f: () => (x) => x * 2 } }));
         },
-        tagsTest_invalidChild: () => {
+        tags_invalidChild: () => {
             assertError(/Only.*are valid child of a DOM Node/, () => div(div(), {}, p()));
             assertError(/Only.*are valid child of a DOM Node/, () => div(div(), ((x) => x * 2), p()));
             assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state({}), p()));
             assertError(/Only.*are valid child of a DOM Node/, () => div(div(), state(((x) => x * 2)), p()));
         },
-        tagsTest_alreadyConnectedChild: withHiddenDom(hiddenDom => {
+        tags_alreadyConnectedChild: withHiddenDom(hiddenDom => {
             const dom = p();
             add(hiddenDom, dom);
             assertError("already connected to document", () => div(p(), dom, p()));
         }),
-        tagsNSTest_invalidNs: () => {
+        tagsNS_invalidNs: () => {
             assertError("Must provide a string", () => tagsNS(1));
             assertError("Must provide a string", () => tagsNS(null));
             assertError("Must provide a string", () => tagsNS(undefined));
             assertError("Must provide a string", () => tagsNS({}));
             assertError("Must provide a string", () => tagsNS(((x) => x * 2)));
         },
-        addTest_1stArgNotDom: () => {
+        add_1stArgNotDom: () => {
             assertError("1st argument of `add` function must be a DOM Node object", () => add({}, div()));
         },
-        addTest_invalidChild: () => {
+        add_invalidChild: () => {
             const dom = div();
             assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), {}, p()));
             assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), ((x) => x * 2), p()));
             assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state({}), p()));
             assertError(/Only.*are valid child of a DOM Node/, () => add(dom, div(), state(((x) => x * 2)), p()));
         },
-        addTest_alreadyConnectedChild: withHiddenDom(hiddenDom => {
+        add_alreadyConnectedChild: withHiddenDom(hiddenDom => {
             const dom = div();
             add(hiddenDom, dom);
             assertError("already connected to document", () => add(hiddenDom, dom));
         }),
-        stateTest_invalidInitialVal: () => {
+        state_invalidInitialVal: () => {
             assertError("DOM Node is not valid", () => state(document));
             assertError("couldn't have value to other state", () => state(state(0)));
         },
-        stateTest_invalidValSet: () => {
+        state_invalidValSet: () => {
             const s = state(0);
             assertError("DOM Node is not valid", () => s.val = document);
             assertError("couldn't have value to other state", () => s.val = state(0));
         },
-        stateTest_nonFunctionOnnewListener: () => {
+        state_nonFunctionOnnewListener: () => {
             const s = state(0);
             let t = 0;
             assertError("You should pass-in functions to register `onnew` handlers", () => s.onnew(++t));
         },
-        stateTest_mutatingVal: () => {
+        state_mutatingVal: () => {
             // Different browser might throw different error messages, thus we only assert a generic prefix.
             {
                 const t = state({ a: 2 });
@@ -595,19 +595,19 @@ const runTests = async (vanObj, msgDom, { debug }) => {
                 assertError("TypeError:", () => t.val.b = 3);
             }
         },
-        bindTest_noStates: () => {
+        bind_noStates: () => {
             // @ts-ignore
             assertError("1 or more states", () => bind());
             // @ts-ignore
             assertError("1 or more states", () => bind(x => x * 2));
         },
-        bindTest_lastArgNotFunc: () => assertError("must be the generation function", () => bind(state(0), state(1))),
-        bindTest_invalidInitialResult: () => {
+        bind_lastArgNotFunc: () => assertError("must be the generation function", () => bind(state(0), state(1))),
+        bind_invalidInitialResult: () => {
             const s = state(0);
             assertError("must be DOM node, primitive, null or undefined", () => bind(s, (() => ({}))));
             assertError("must be DOM node, primitive, null or undefined", () => bind(s, (() => x => x * 2)));
         },
-        bindTest_invalidFollowupResult: withHiddenDom(async (hiddenDom) => {
+        bind_invalidFollowupResult: withHiddenDom(async (hiddenDom) => {
             const s = state(1);
             add(hiddenDom, bind(s, (s => s || {})), bind(s, (s => s || (x => x * 2))));
             await capturingErrors(async () => {
@@ -617,7 +617,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
                     vanObj.capturedErrors.every(e => e.includes("must be DOM node, primitive, null or undefined")));
             });
         }),
-        bindTest_derivedDom_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
+        bind_derivedDom_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
             const dom = div();
             add(hiddenDom, dom);
             const num = state(1);
