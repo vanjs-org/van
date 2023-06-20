@@ -89,6 +89,8 @@ let add = (dom, ...children) => {
   return dom
 }
 
+let derive = f => (f.isDerived = 1, f)
+
 let propSetterCache = {}
 
 let tagsNS = ns => new Proxy((name, ...args) => {
@@ -103,7 +105,8 @@ let tagsNS = ns => new Proxy((name, ...args) => {
       (propSetterCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0)
     let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k)
     if (isState(v)) bind(() => (setter(v.val), dom))
-    else if (!k.startsWith("on") && protoOf(v ?? 0) === funcProto) bind(() => (setter(v()), dom))
+    else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v.isDerived))
+      bind(() => (setter(v()), dom))
     else setter(v)
   }
   return add(dom, ...children)
@@ -120,4 +123,4 @@ let updateDoms = () => {
   for (let s of changedStatesArray) s._oldVal = s._val
 }
 
-export default {add, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect}
+export default {add, "derive": derive, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect}

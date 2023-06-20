@@ -77,6 +77,7 @@
     }
     return dom;
   };
+  var derive = (f) => (f.isDerived = 1, f);
   var propSetterCache = {};
   var tagsNS = (ns) => new Proxy((name, ...args) => {
     let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args];
@@ -88,7 +89,7 @@
       let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k);
       if (isState(v))
         bind(() => (setter(v.val), dom));
-      else if (!k.startsWith("on") && protoOf(v ?? 0) === funcProto)
+      else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v.isDerived))
         bind(() => (setter(v()), dom));
       else
         setter(v);
@@ -107,7 +108,7 @@
     for (let s of changedStatesArray)
       s._oldVal = s._val;
   };
-  var van_default = { add, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect };
+  var van_default = { add, "derive": derive, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect };
 
   // van.debug.js
   var capturedErrors;
@@ -171,6 +172,10 @@
     expect(dom instanceof Element, "1st argument of `van.add` function must be a DOM Element object");
     return van_default.add(dom, ...checkChildren(children));
   };
+  var derive2 = (f) => {
+    expect(typeof f === "function", "Must pass-in a function to `van.derive`");
+    return van_default.derive(f);
+  };
   var _tagsNS = (ns) => new Proxy(van_default.tagsNS(ns), {
     get: (vanTags, name) => {
       const vanTag = vanTags[name];
@@ -185,13 +190,10 @@
             isValidPrimitive(v2) || v2 === null,
             `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`
           ), v2);
-          if (k.startsWith("on")) {
-            validatePropValue(van_default.val(v));
-            debugProps[k] = v;
-          } else if (isState2(v))
-            debugProps[k] = () => validatePropValue(v.val);
-          else if (typeof v === "function")
-            debugProps[k] = () => validatePropValue(v());
+          if (isState2(v))
+            debugProps[k] = derive2(() => validatePropValue(v.val));
+          else if (typeof v === "function" && (!k.startsWith("on") || v.isDerived))
+            debugProps[k] = derive2(() => validatePropValue(v()));
           else
             debugProps[k] = validatePropValue(v);
         }
@@ -203,7 +205,7 @@
     expect(typeof ns === "string", "Must provide a string for parameter `ns` in `van.tagsNS`");
     return _tagsNS(ns);
   };
-  var van_debug_default = { add: add2, tags: _tagsNS(), tagsNS: tagsNS2, state: state2, val: van_default.val, oldVal: van_default.oldVal, effect: effect2, startCapturingErrors, stopCapturingErrors, get capturedErrors() {
+  var van_debug_default = { add: add2, derive: derive2, tags: _tagsNS(), tagsNS: tagsNS2, state: state2, val: van_default.val, oldVal: van_default.oldVal, effect: effect2, startCapturingErrors, stopCapturingErrors, get capturedErrors() {
     return capturedErrors;
   } };
 

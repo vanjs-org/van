@@ -142,6 +142,7 @@ export interface Van {
   readonly oldVal: typeof oldVal
   readonly effect: (f: () => void) => void
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
+  readonly derive: (f: () => PropValue) => () => PropValue
   readonly tags: Tags
   readonly tagsNS: (namespaceURI: string) => TagsBase
 }

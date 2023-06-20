@@ -77,6 +77,7 @@
     }
     return dom;
   };
+  var derive = (f) => (f.isDerived = 1, f);
   var propSetterCache = {};
   var tagsNS = (ns) => new Proxy((name, ...args) => {
     let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args];
@@ -88,7 +89,7 @@
       let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k);
       if (isState(v))
         bind(() => (setter(v.val), dom));
-      else if (!k.startsWith("on") && protoOf(v ?? 0) === funcProto)
+      else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v.isDerived))
         bind(() => (setter(v()), dom));
       else
         setter(v);
@@ -107,7 +108,7 @@
     for (let s of changedStatesArray)
       s._oldVal = s._val;
   };
-  var van_default = { add, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect };
+  var van_default = { add, "derive": derive, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect };
 
   // van.forbundle.js
   window.van = van_default;

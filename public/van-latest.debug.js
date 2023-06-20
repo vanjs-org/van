@@ -74,6 +74,11 @@ const add = (dom, ...children) => {
   return van.add(dom, ...checkChildren(children))
 }
 
+const derive = f => {
+  expect(typeof(f) === "function", "Must pass-in a function to `van.derive`")
+  return van.derive(f)
+}
+
 const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
   get: (vanTags, name) => {
     const vanTag = vanTags[name]
@@ -87,13 +92,10 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
           v => (expect(isValidPrimitive(v) || v === null,
             `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`), v)
 
-        if (k.startsWith("on")) {
-          validatePropValue(van.val(v))
-          debugProps[k] = v
-        } else if (isState(v))
-          debugProps[k] = () => validatePropValue(v.val)
-        else if (typeof v === "function")
-          debugProps[k] = () => validatePropValue(v())
+        if (isState(v))
+          debugProps[k] = derive(() => validatePropValue(v.val))
+        else if (typeof v === "function" && (!k.startsWith("on") || v.isDerived))
+          debugProps[k] = derive(() => validatePropValue(v()))
         else
           debugProps[k] = validatePropValue(v)
       }
@@ -107,4 +109,4 @@ const tagsNS = ns => {
   return _tagsNS(ns)
 }
 
-export default {add, tags: _tagsNS(), tagsNS, state, val: van.val, oldVal: van.oldVal, effect, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
+export default {add, derive, tags: _tagsNS(), tagsNS, state, val: van.val, oldVal: van.oldVal, effect, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}

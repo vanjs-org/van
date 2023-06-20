@@ -3,7 +3,7 @@
   // ../test/van.test.js
   window.numTests = 0;
   var runTests = async (vanObj, msgDom2, { debug }) => {
-    const { add, tags, tagsNS, state, val, oldVal, effect } = vanObj;
+    const { add, derive, tags, tagsNS, state, val, oldVal, effect } = vanObj;
     const { a, button, div: div2, input, li, option, p, pre, select, span, table, tbody, td, th, thead, tr, ul } = tags;
     const assert = (cond) => {
       if (!cond)
@@ -91,7 +91,7 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.href, "http://example.com/");
       },
-      tags_stateAsOnClickHandler_connected: withHiddenDom(async (hiddenDom) => {
+      tags_stateAsOnclickHandler_connected: withHiddenDom(async (hiddenDom) => {
         const dom = div2();
         add(hiddenDom, dom);
         const handler = state(() => add(dom, p("Button clicked!")));
@@ -107,7 +107,7 @@
         dom.querySelector("button").click();
         assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><div>Button clicked!</div></div>");
       }),
-      tags_stateAsOnClickHandler_disconnected: async () => {
+      tags_stateAsOnclickHandler_disconnected: async () => {
         const dom = div2();
         const handler = state(() => add(dom, p("Button clicked!")));
         add(dom, button({ onclick: handler }));
@@ -175,28 +175,40 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.value, 'From: "Old Text" to: "Old Text"');
       },
-      tags_stateValuedOnClickHandler_connected: withHiddenDom(async (hiddenDom) => {
-        const dom = div2();
-        add(hiddenDom, dom);
-        const onclick = state(() => add(dom, p("Button clicked!")));
-        add(dom, button({ onclick }));
-        dom.querySelector("button").click();
-        assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
-        onclick.val = () => add(dom, div2("Button clicked!"));
+      tags_stateDerivedOnclickHandler_connected: withHiddenDom(async (hiddenDom) => {
+        const elementName = state("p");
+        add(hiddenDom, button({
+          onclick: derive(() => {
+            const name = elementName.val;
+            return name ? () => add(hiddenDom, tags[name]("Button clicked!")) : null;
+          })
+        }));
+        hiddenDom.querySelector("button").click();
+        assertEq(hiddenDom.innerHTML, "<button></button><p>Button clicked!</p>");
+        elementName.val = "div";
         await sleep(waitMsOnDomUpdates);
-        dom.querySelector("button").click();
-        assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><div>Button clicked!</div></div>");
+        hiddenDom.querySelector("button").click();
+        assertEq(hiddenDom.innerHTML, "<button></button><p>Button clicked!</p><div>Button clicked!</div>");
+        elementName.val = "";
+        await sleep(waitMsOnDomUpdates);
+        hiddenDom.querySelector("button").click();
+        assertEq(hiddenDom.innerHTML, "<button></button><p>Button clicked!</p><div>Button clicked!</div>");
       }),
-      tags_stateValuedOnClickHandler_disconnected: async () => {
+      tags_stateDerivedOnclickHandler_disconnected: async () => {
         const dom = div2();
-        const onclick = state(() => add(dom, p("Button clicked!")));
-        add(dom, button({ onclick }));
+        const elementName = state("p");
+        add(dom, button({
+          onclick: derive(() => {
+            const name = elementName.val;
+            return name ? () => add(dom, tags[name]("Button clicked!")) : null;
+          })
+        }));
         dom.querySelector("button").click();
-        assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
-        onclick.val = () => add(dom, div2("Button clicked!"));
+        assertEq(dom.innerHTML, "<button></button><p>Button clicked!</p>");
+        elementName.val = "div";
         await sleep(waitMsOnDomUpdates);
         dom.querySelector("button").click();
-        assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><p>Button clicked!</p></div>");
+        assertEq(dom.innerHTML, "<button></button><p>Button clicked!</p><p>Button clicked!</p>");
       },
       tags_dataAttributes_connected: withHiddenDom(async (hiddenDom) => {
         const lineNum = state(1);
@@ -608,9 +620,15 @@
       })
     };
     const debugTests = {
+      derive_nonFuncArg: () => {
+        const a2 = state(0);
+        assertError("Must pass-in a function to `van.derive`", () => derive(++a2.val));
+      },
       tags_invalidProp_nonFuncOnHandler: () => {
         const counter = state(0);
         assertError("Only functions and null are allowed", () => button({ onclick: ++counter.val }, "Increment"));
+        assertError("Only functions and null are allowed", () => button({ onclick: state(++counter.val) }, "Increment"));
+        assertError("Only functions and null are allowed", () => button({ onclick: derive(() => ++counter.val) }, "Increment"));
       },
       tags_invalidProp_nonPrimitiveValue: () => {
         assertError(/Only.*are valid prop value types/, () => a({ href: {} }));
@@ -622,6 +640,41 @@
         assertError(/Only.*are valid prop value types/, () => a({ href: () => void 0 }));
         assertError(/Only.*are valid prop value types/, () => a({ href: () => (x) => x * 2 }));
       },
+      tags_invalidFollowupPropValues_stateAsProp: withHiddenDom(async (hiddenDom) => {
+        const href1 = state("https://vanjs.org/");
+        const href2 = state("https://vanjs.org/");
+        const href3 = state("https://vanjs.org/");
+        let numClicks = 0;
+        const onclick = state(() => ++numClicks);
+        add(hiddenDom, a({ href: href1 }), a({ href: href2 }), a({ href: href3 }), button({ onclick }));
+        await capturingErrors(async () => {
+          href1.val = {};
+          href2.val = void 0;
+          href3.val = (x) => x * 2;
+          await sleep(waitMsOnDomUpdates);
+          assert(vanObj.capturedErrors.length === 3 && vanObj.capturedErrors.every((e) => /Only.*are valid prop value types/.test(e)));
+        });
+        await capturingErrors(async () => {
+          onclick.val = ++numClicks;
+          await sleep(waitMsOnDomUpdates);
+          assert(vanObj.capturedErrors.length === 1 && vanObj.capturedErrors[0].includes("Only functions and null are allowed"));
+        });
+      }),
+      tags_invalidFollowupPropValues_stateDerivedProp: withHiddenDom(async (hiddenDom) => {
+        const s = state("https://vanjs.org/"), t2 = state(() => {
+        });
+        add(hiddenDom, a({ href: () => s.val || {} }), a({ href: () => s.val || void 0 }), a({ href: () => s.val || ((x) => x * 2) }), button({ onclick: derive(() => t2.val || 1) }));
+        await capturingErrors(async () => {
+          s.val = "";
+          await sleep(waitMsOnDomUpdates);
+          assert(vanObj.capturedErrors.length === 3 && vanObj.capturedErrors.every((e) => /Only.*are valid prop value types/.test(e)));
+        });
+        await capturingErrors(async () => {
+          t2.val = 0;
+          await sleep(waitMsOnDomUpdates);
+          assert(vanObj.capturedErrors.length === 1 && vanObj.capturedErrors[0].includes("Only functions and null are allowed"));
+        });
+      }),
       tags_invalidChild: () => {
         assertError(/Only.*are valid child of a DOM Element/, () => div2(div2(), {}, p()));
         assertError(/Only.*are valid child of a DOM Element/, () => div2(div2(), state({}), p()));
@@ -671,7 +724,7 @@
           assertError("TypeError:", () => t2.val.b = 3);
         }
       },
-      effect_nonFunctionArg: () => {
+      effect_nonFuncArg: () => {
         const a2 = state(0), b = state(0);
         assertError("Must pass-in a function to `van.effect`", () => effect(b.val = a2.val * 2));
       },
@@ -681,11 +734,11 @@
       },
       complexStateBinding_invalidFollowupResult: withHiddenDom(async (hiddenDom) => {
         const s = state(1);
-        add(hiddenDom, () => s.val || {}, () => s.val || ((x) => x * 2));
+        add(hiddenDom, () => s.val || {}, () => s.val || ((x) => x * 2), () => s.val || [div2(), div2()]);
         await capturingErrors(async () => {
           s.val = 0;
           await sleep(waitMsOnDomUpdates);
-          assert(vanObj.capturedErrors.length === 2 && vanObj.capturedErrors.every((e) => /Only.*are valid child of a DOM Element/.test(e)));
+          assert(vanObj.capturedErrors.length === 3 && vanObj.capturedErrors.every((e) => /Only.*are valid child of a DOM Element/.test(e)));
         });
       }),
       complexStateBinding_derivedDom_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
@@ -873,6 +926,39 @@
           await sleep(waitMsOnDomUpdates);
           assertEq(hiddenDom.querySelector("ul").outerHTML, "<ul></ul>");
         }
+      }),
+      polymorphicBinding: withHiddenDom(async (hiddenDom) => {
+        let numYellowButtonClicked = 0;
+        const Button = ({ color, text, onclick }) => button({ style: () => `background-color: ${val(color)};`, onclick }, text);
+        const App = () => {
+          const colorState = state("green");
+          const textState = state("Turn Red");
+          const turnRed = () => {
+            colorState.val = "red";
+            textState.val = "Turn Green";
+            onclickState.val = turnGreen;
+          };
+          const turnGreen = () => {
+            colorState.val = "green";
+            textState.val = "Turn Red";
+            onclickState.val = turnRed;
+          };
+          const onclickState = state(turnRed);
+          return span(Button({ color: "yellow", text: "Click Me", onclick: () => ++numYellowButtonClicked }), " ", Button({ color: colorState, text: textState, onclick: onclickState }));
+        };
+        add(hiddenDom, App());
+        assertEq(hiddenDom.firstChild.outerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button></span>');
+        const [button1, button2] = hiddenDom.querySelectorAll("button");
+        button1.click();
+        assertEq(numYellowButtonClicked, 1);
+        button1.click();
+        assertEq(numYellowButtonClicked, 2);
+        button2.click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: red;">Turn Green</button></span>');
+        button2.click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.firstChild.outerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button></span>');
       })
     };
     const gcTests = {
@@ -893,7 +979,9 @@
         assert(bindings(text).length < 10);
       })
     };
-    const suites = { tests, examples, gcTests };
+    const suites = { tests, examples };
+    if (!new URL(location.href).searchParams.has("skipgc"))
+      suites.gcTests = gcTests;
     if (debug)
       suites.debugTests = debugTests;
     for (const [k, v] of Object.entries(suites)) {
