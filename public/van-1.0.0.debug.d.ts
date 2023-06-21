@@ -14,7 +14,7 @@ declare function oldVal<T>(s: T | StateView<T>): T
 
 export type Primitive = string | number | boolean | bigint
 
-export type PropValue = Primitive | EventListener | null
+export type PropValue = Primitive | ((e: any) => void) | null
 
 export interface Props {
   readonly [key: string]: PropValue | StateView<PropValue> | (() => PropValue)
@@ -22,7 +22,9 @@ export interface Props {
 
 export type ValidChildDomValue = Primitive | Node | null | undefined
 
-export type ChildDom = ValidChildDomValue | StateView<ValidChildDomValue> | ((dom: Node) => ValidChildDomValue) | readonly ChildDom[]
+export type BindingFunc = (dom: Node) => ValidChildDomValue
+
+export type ChildDom = ValidChildDomValue | StateView<ValidChildDomValue> | BindingFunc | readonly ChildDom[]
 
 export type TagFunc<Result> = (first?: Props | ChildDom, ...rest: readonly ChildDom[]) => Result
 
