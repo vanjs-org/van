@@ -1,4 +1,4 @@
-import type {Van, State, ValidChildDomValue} from "../src/van.d.ts"
+import type {Van, State, ValidChildDomValue, StateView} from "../src/van.d.ts"
 
 (<any>window).numTests = 0
 
@@ -21,7 +21,12 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
   }
 
   const assertEq = (lhs: string | number | Node, rhs: string | number | Node) => {
-    if (lhs !== rhs) throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}`)
+    if (lhs !== rhs) throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}.`)
+  }
+
+  const assertBetween = (n: number, start: number, end: number) => {
+    if (!(n >= start && n < end))
+      throw new Error(`Assertion failed. Expected in range [${start}, ${end}). Actual: ${n}.`)
   }
 
   const assertError = (msg: string | RegExp, func: () => void) => {
@@ -1332,9 +1337,11 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
   // In a VanJS app, there could be many derived DOM nodes created on-the-fly. We want to test the
   // garbage-collection process is in place to ensure obsolete bindings can be cleaned up.
   const gcTests = {
-    derivedDom: withHiddenDom(async hiddenDom => {
+    long_derivedDom: withHiddenDom(async hiddenDom => {
       const renderPre = state(false)
       const text = state("Text")
+      const bindingsPropKey = Object.entries(renderPre)
+        .find(([_, v]) => Array.isArray(v))![0]
       const dom = div(() => (renderPre.val ? pre : div)(() => `--${text.val}--`))
       add(hiddenDom, dom)
 
@@ -1346,22 +1353,69 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       // Wait until GC kicks in
       await sleep(1000)
 
-      function bindings<T>(s: State<T>): unknown[] {
-        // Find the `bindings` property in `text`. The name can be arbitrary due to property mangling in minified scripts.
-        return Object.values(text).find(v => Array.isArray(v) && v.length > 0)
+      assertBetween(renderPre[bindingsPropKey].length, 1, 5)
+      assertBetween(text[bindingsPropKey].length, 1, 5)
+    }),
+
+    long_conditionalDomFunc: withHiddenDom(async hiddenDom => {
+      const cond = state(true)
+      const a = state(0), b = state(0), c = state(0), d = state(0)
+      const bindingsPropKey = Object.entries(cond)
+        .find(([_, v]) => Array.isArray(v))![0]
+      const dom = div(() => cond.val ? a.val + b.val : c.val + d.val)
+      add(hiddenDom, dom)
+
+      const allStates: State<number | boolean>[] = [cond, a, b, c, d]
+      for (let i = 0; i < 100; ++i) {
+        const randomState = allStates[Math.floor(Math.random() * allStates.length)]
+        if (randomState === cond) randomState.val = !randomState.val
+        else ++(<State<number>>randomState).val
+        await sleep(waitMsOnDomUpdates)
       }
-      assert(bindings(renderPre).length < 10)
-      assert(bindings(text).length < 10)
-    })
+
+      allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 10))
+    }),
+
+    effect_basic: () => {
+      const history: any[] = []
+      const a = state(0)
+      const listenersPropKey = Object.entries(a)
+        .filter(([_, v]) => Array.isArray(v))[1][0]
+
+      effect(() => history.push({from: a.oldVal, to: a.val}))
+
+      for (let i = 0; i < 100; ++i) ++a.val
+
+      assertBetween(a[listenersPropKey].length, 1, 5)
+    },
+
+    effect_conditionalEffect: () => {
+      const cond = state(true)
+      const a = state(0), b = state(0), c = state(0), d = state(0)
+      const listenersPropKey = Object.entries(a)
+        .filter(([_, v]) => Array.isArray(v))[1][0]
+      let sum: number
+      effect(() => sum = cond.val ? a.val + b.val : c.val + d.val)
+
+      const allStates: State<number | boolean>[] = [cond, a, b, c, d]
+      for (let i = 0; i < 100; ++i) {
+        const randomState = allStates[Math.floor(Math.random() * allStates.length)]
+        if (randomState === cond) randomState.val = !randomState.val
+        else ++(<State<number>>randomState).val
+      }
+
+      allStates.every(s => assertBetween(s[listenersPropKey].length, 1, 10))
+    },
   }
 
   type Suite = { [name: string]: () => void | Promise<void> }
-  const suites: { [k: string]: Suite } = {tests, examples}
-  if (!new URL(location.href).searchParams.has("skipgc")) suites.gcTests = gcTests
+  const suites: { [k: string]: Suite } = {tests, examples, gcTests}
+  const skipLong = new URL(location.href).searchParams.has("skiplong")
   if (debug) suites.debugTests = debugTests
 
   for (const [k, v] of Object.entries(suites)) {
     for (const [name, func] of Object.entries(v)) {
+      if (skipLong && name.startsWith("long_")) continue
       ++(<any>window).numTests
       const result = state("")
       const msg = state("")

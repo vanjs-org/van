@@ -11,7 +11,11 @@
     };
     const assertEq = (lhs, rhs) => {
       if (lhs !== rhs)
-        throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}`);
+        throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}.`);
+    };
+    const assertBetween = (n, start, end) => {
+      if (!(n >= start && n < end))
+        throw new Error(`Assertion failed. Expected in range [${start}, ${end}). Actual: ${n}.`);
     };
     const assertError = (msg, func) => {
       let caught = false;
@@ -962,9 +966,10 @@
       })
     };
     const gcTests = {
-      derivedDom: withHiddenDom(async (hiddenDom) => {
+      long_derivedDom: withHiddenDom(async (hiddenDom) => {
         const renderPre = state(false);
         const text = state("Text");
+        const bindingsPropKey = Object.entries(renderPre).find(([_, v]) => Array.isArray(v))[0];
         const dom = div2(() => (renderPre.val ? pre : div2)(() => `--${text.val}--`));
         add(hiddenDom, dom);
         for (let i = 0; i < 20; ++i) {
@@ -972,20 +977,60 @@
           await sleep(waitMsOnDomUpdates);
         }
         await sleep(1e3);
-        function bindings(s) {
-          return Object.values(text).find((v) => Array.isArray(v) && v.length > 0);
+        assertBetween(renderPre[bindingsPropKey].length, 1, 5);
+        assertBetween(text[bindingsPropKey].length, 1, 5);
+      }),
+      long_conditionalDomFunc: withHiddenDom(async (hiddenDom) => {
+        const cond = state(true);
+        const a2 = state(0), b = state(0), c = state(0), d = state(0);
+        const bindingsPropKey = Object.entries(cond).find(([_, v]) => Array.isArray(v))[0];
+        const dom = div2(() => cond.val ? a2.val + b.val : c.val + d.val);
+        add(hiddenDom, dom);
+        const allStates = [cond, a2, b, c, d];
+        for (let i = 0; i < 100; ++i) {
+          const randomState = allStates[Math.floor(Math.random() * allStates.length)];
+          if (randomState === cond)
+            randomState.val = !randomState.val;
+          else
+            ++randomState.val;
+          await sleep(waitMsOnDomUpdates);
         }
-        assert(bindings(renderPre).length < 10);
-        assert(bindings(text).length < 10);
-      })
+        allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 10));
+      }),
+      effect_basic: () => {
+        const history = [];
+        const a2 = state(0);
+        const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
+        effect(() => history.push({ from: a2.oldVal, to: a2.val }));
+        for (let i = 0; i < 100; ++i)
+          ++a2.val;
+        assertBetween(a2[listenersPropKey].length, 1, 5);
+      },
+      effect_conditionalEffect: () => {
+        const cond = state(true);
+        const a2 = state(0), b = state(0), c = state(0), d = state(0);
+        const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
+        let sum;
+        effect(() => sum = cond.val ? a2.val + b.val : c.val + d.val);
+        const allStates = [cond, a2, b, c, d];
+        for (let i = 0; i < 100; ++i) {
+          const randomState = allStates[Math.floor(Math.random() * allStates.length)];
+          if (randomState === cond)
+            randomState.val = !randomState.val;
+          else
+            ++randomState.val;
+        }
+        allStates.every((s) => assertBetween(s[listenersPropKey].length, 1, 10));
+      }
     };
-    const suites = { tests, examples };
-    if (!new URL(location.href).searchParams.has("skipgc"))
-      suites.gcTests = gcTests;
+    const suites = { tests, examples, gcTests };
+    const skipLong = new URL(location.href).searchParams.has("skiplong");
     if (debug)
       suites.debugTests = debugTests;
     for (const [k, v] of Object.entries(suites)) {
       for (const [name, func] of Object.entries(v)) {
+        if (skipLong && name.startsWith("long_"))
+          continue;
         ++window.numTests;
         const result = state("");
         const msg = state("");
