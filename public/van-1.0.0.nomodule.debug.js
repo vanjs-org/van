@@ -14,6 +14,7 @@
     curDeps = prevDeps;
     return r;
   };
+  var filterBindings = (s) => s.bindings = s.bindings.filter((b) => b.dom?.isConnected);
   var stateProto = {
     get "val"() {
       curDeps?.add(this);
@@ -28,9 +29,11 @@
       if (v !== curV) {
         changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms);
         s._val = v;
-        let listeners = [...s.listeners = s.listeners.filter((l) => !l.executed)];
-        for (let l of listeners)
-          effect(l.f), l.executed = 1;
+        let boundStates = /* @__PURE__ */ new Set();
+        for (let l of [...s.listeners])
+          effect(l.f), l.executed = 1, l.deps.forEach(boundStates.add, boundStates);
+        for (let _s of boundStates)
+          _s.listeners = _s.listeners.filter((l) => !l.executed);
       }
     }
   };
@@ -47,9 +50,8 @@
   var val = (s) => isState(s) ? s.val : s;
   var oldVal = (s) => isState(s) ? s.oldVal : s;
   var toDom = (v) => v == _undefined ? _undefined : v.nodeType ? v : new Text(v);
-  var bindingGcCycleInMs = 1e3;
+  var gcCycleInMs = 1e3;
   var statesToGc;
-  var filterBindings = (s) => s.bindings = s.bindings.filter((b) => b.dom?.isConnected);
   var bind = (f, dom) => {
     let deps = /* @__PURE__ */ new Set(), binding = { f, dom: toDom(runAndCaptureDeps(f, deps, dom)) };
     for (let s of deps) {
@@ -57,14 +59,14 @@
         statesToGc,
         s,
         () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
-        bindingGcCycleInMs
+        gcCycleInMs
       );
       s.bindings.push(binding);
     }
     return binding.dom;
   };
   var effect = (f) => {
-    let deps = /* @__PURE__ */ new Set(), listener = { f };
+    let deps = /* @__PURE__ */ new Set(), listener = { f, deps };
     runAndCaptureDeps(f, deps);
     for (let s of deps)
       s.listeners.push(listener);

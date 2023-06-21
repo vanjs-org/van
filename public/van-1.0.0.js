@@ -16,6 +16,8 @@ let runAndCaptureDeps = (f, deps, arg) => {
   return r
 }
 
+let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
+
 let stateProto = {
   get "val"() {
     curDeps?.add(this)
@@ -33,8 +35,10 @@ let stateProto = {
     if (v !== curV) {
       changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms)
       s._val = v
-      let listeners = [...s.listeners = s.listeners.filter(l => !l.executed)]
-      for (let l of listeners) effect(l.f), l.executed = 1
+      let boundStates = new Set
+      for (let l of [...s.listeners])
+        effect(l.f), l.executed = 1, l.deps.forEach(boundStates.add, boundStates)
+      for (let _s of boundStates) _s.listeners = _s.listeners.filter(l => !l.executed)
     }
   },
 }
@@ -58,24 +62,22 @@ let oldVal = s => isState(s) ? s.oldVal : s
 
 let toDom = v => v == _undefined ? _undefined : v.nodeType ? v : new Text(v)
 
-let bindingGcCycleInMs = 1000
+let gcCycleInMs = 1000
 let statesToGc
-
-let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
 
 let bind = (f, dom) => {
   let deps = new Set, binding = {f, dom: toDom(runAndCaptureDeps(f, deps, dom))}
   for (let s of deps) {
     statesToGc = addAndScheduleOnFirst(statesToGc, s,
       () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
-      bindingGcCycleInMs)
+      gcCycleInMs)
     s.bindings.push(binding)
   }
   return binding.dom
 }
 
 let effect = f => {
-  let deps = new Set, listener = {f}
+  let deps = new Set, listener = {f, deps}
   runAndCaptureDeps(f, deps)
   for (let s of deps) s.listeners.push(listener)
 }

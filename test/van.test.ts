@@ -1353,8 +1353,8 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       // Wait until GC kicks in
       await sleep(1000)
 
-      assertBetween(renderPre[bindingsPropKey].length, 1, 5)
-      assertBetween(text[bindingsPropKey].length, 1, 5)
+      assertBetween(renderPre[bindingsPropKey].length, 1, 3)
+      assertBetween(text[bindingsPropKey].length, 1, 3)
     }),
 
     long_conditionalDomFunc: withHiddenDom(async hiddenDom => {
@@ -1374,6 +1374,10 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       }
 
       allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 10))
+
+      // Wait until GC kicks in
+      await sleep(1000)
+      allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 3))
     }),
 
     effect_basic: () => {
@@ -1386,7 +1390,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
 
       for (let i = 0; i < 100; ++i) ++a.val
 
-      assertBetween(a[listenersPropKey].length, 1, 5)
+      assertBetween(a[listenersPropKey].length, 1, 3)
     },
 
     effect_conditionalEffect: () => {
@@ -1404,7 +1408,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
         else ++(<State<number>>randomState).val
       }
 
-      allStates.every(s => assertBetween(s[listenersPropKey].length, 1, 10))
+      allStates.every(s => assertBetween(s[listenersPropKey].length, 1, 3))
     },
   }
 

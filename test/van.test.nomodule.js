@@ -977,8 +977,8 @@
           await sleep(waitMsOnDomUpdates);
         }
         await sleep(1e3);
-        assertBetween(renderPre[bindingsPropKey].length, 1, 5);
-        assertBetween(text[bindingsPropKey].length, 1, 5);
+        assertBetween(renderPre[bindingsPropKey].length, 1, 3);
+        assertBetween(text[bindingsPropKey].length, 1, 3);
       }),
       long_conditionalDomFunc: withHiddenDom(async (hiddenDom) => {
         const cond = state(true);
@@ -996,6 +996,8 @@
           await sleep(waitMsOnDomUpdates);
         }
         allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 10));
+        await sleep(1e3);
+        allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 3));
       }),
       effect_basic: () => {
         const history = [];
@@ -1004,7 +1006,7 @@
         effect(() => history.push({ from: a2.oldVal, to: a2.val }));
         for (let i = 0; i < 100; ++i)
           ++a2.val;
-        assertBetween(a2[listenersPropKey].length, 1, 5);
+        assertBetween(a2[listenersPropKey].length, 1, 3);
       },
       effect_conditionalEffect: () => {
         const cond = state(true);
@@ -1020,7 +1022,7 @@
           else
             ++randomState.val;
         }
-        allStates.every((s) => assertBetween(s[listenersPropKey].length, 1, 10));
+        allStates.every((s) => assertBetween(s[listenersPropKey].length, 1, 3));
       }
     };
     const suites = { tests, examples, gcTests };
