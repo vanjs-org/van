@@ -60,20 +60,18 @@ let isState = s => protoOf(s ?? 0) === stateProto
 let val = s => isState(s) ? s.val : s
 let oldVal = s => isState(s) ? s.oldVal : s
 
-let toDom = v => v == _undefined ? _undefined : v.nodeType ? v : new Text(v)
-
 let gcCycleInMs = 1000
 let statesToGc
 
 let bind = (f, dom) => {
-  let deps = new Set, binding = {f, dom: toDom(runAndCaptureDeps(f, deps, dom))}
+  let deps = new Set, binding = {f}, newDom = runAndCaptureDeps(f, deps, dom)
   for (let s of deps) {
     statesToGc = addAndScheduleOnFirst(statesToGc, s,
       () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
       gcCycleInMs)
     s.bindings.push(binding)
   }
-  return binding.dom
+  return binding.dom = (newDom ?? doc).nodeType ? newDom : new Text(newDom)
 }
 
 let effect = f => {
@@ -85,8 +83,8 @@ let effect = f => {
 let add = (dom, ...children) => {
   for (let c of children.flat(Infinity)) {
     let child = isState(c) ? bind(() => c.val) :
-      protoOf(c ?? 0) === funcProto ? bind(c) : toDom(c)
-    if (child != _undefined) dom.appendChild(child)
+      protoOf(c ?? 0) === funcProto ? bind(c) : c
+    if (child != _undefined) dom.append(child)
   }
   return dom
 }

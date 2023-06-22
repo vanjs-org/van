@@ -49,11 +49,10 @@
   var isState = (s) => protoOf(s ?? 0) === stateProto;
   var val = (s) => isState(s) ? s.val : s;
   var oldVal = (s) => isState(s) ? s.oldVal : s;
-  var toDom = (v) => v == _undefined ? _undefined : v.nodeType ? v : new Text(v);
   var gcCycleInMs = 1e3;
   var statesToGc;
   var bind = (f, dom) => {
-    let deps = /* @__PURE__ */ new Set(), binding = { f, dom: toDom(runAndCaptureDeps(f, deps, dom)) };
+    let deps = /* @__PURE__ */ new Set(), binding = { f }, newDom = runAndCaptureDeps(f, deps, dom);
     for (let s of deps) {
       statesToGc = addAndScheduleOnFirst(
         statesToGc,
@@ -63,7 +62,7 @@
       );
       s.bindings.push(binding);
     }
-    return binding.dom;
+    return binding.dom = (newDom ?? doc).nodeType ? newDom : new Text(newDom);
   };
   var effect = (f) => {
     let deps = /* @__PURE__ */ new Set(), listener = { f, deps };
@@ -73,9 +72,9 @@
   };
   var add = (dom, ...children) => {
     for (let c of children.flat(Infinity)) {
-      let child = isState(c) ? bind(() => c.val) : protoOf(c ?? 0) === funcProto ? bind(c) : toDom(c);
+      let child = isState(c) ? bind(() => c.val) : protoOf(c ?? 0) === funcProto ? bind(c) : c;
       if (child != _undefined)
-        dom.appendChild(child);
+        dom.append(child);
     }
     return dom;
   };
