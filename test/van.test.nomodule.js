@@ -371,11 +371,13 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
       },
-      state_val: () => {
+      state_valAndOldVal: () => {
         const s = state("Init State");
         assertEq(s.val, "Init State");
+        assertEq(s.oldVal, "Init State");
         s.val = "Changed State";
         assertEq(s.val, "Changed State");
+        assertEq(s.oldVal, "Init State");
       },
       effect_basic: () => {
         const history = [];
@@ -602,14 +604,14 @@
       }),
       complexStateBinding_nonStateDeps: withHiddenDom(async (hiddenDom) => {
         const part1 = "\u{1F44B}Hello ", part2 = state("\u{1F5FA}\uFE0FWorld");
-        assertEq(add(hiddenDom, () => val(part1) + val(part2)), hiddenDom);
+        assertEq(add(hiddenDom, () => `${val(part1)}${val(part2)}, from: ${oldVal(part1)}${oldVal(part2)}`), hiddenDom);
         const dom = hiddenDom.firstChild;
-        assertEq(dom.textContent, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
-        assertEq(hiddenDom.innerHTML, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
+        assertEq(dom.textContent, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld, from: \u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
+        assertEq(hiddenDom.innerHTML, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld, from: \u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
         part2.val = "\u{1F366}VanJS";
         await sleep(waitMsOnDomUpdates);
-        assertEq(dom.textContent, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
-        assertEq(hiddenDom.innerHTML, "\u{1F44B}Hello \u{1F366}VanJS");
+        assertEq(dom.textContent, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld, from: \u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
+        assertEq(hiddenDom.innerHTML, "\u{1F44B}Hello \u{1F366}VanJS, from: \u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
       }),
       complexStateBinding_oldVal: withHiddenDom(async (hiddenDom) => {
         const text = state("Old Text");
@@ -717,7 +719,7 @@
         const s = state(0);
         assertError("couldn't have value to other state", () => s.val = state(0));
       },
-      state_mutatingVal: () => {
+      state_mutatingValOrOldVal: () => {
         {
           const t2 = state({ a: 2 });
           assertError("TypeError:", () => t2.val.a = 3);
@@ -726,6 +728,7 @@
           const t2 = state({ b: 1 });
           t2.val = { b: 2 };
           assertError("TypeError:", () => t2.val.b = 3);
+          assertError("TypeError:", () => t2.oldVal.b = 3);
         }
       },
       effect_nonFuncArg: () => {

@@ -393,11 +393,13 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // Content won't change as dom is not connected to document
             assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
         },
-        state_val: () => {
+        state_valAndOldVal: () => {
             const s = state("Init State");
             assertEq(s.val, "Init State");
+            assertEq(s.oldVal, "Init State");
             s.val = "Changed State";
             assertEq(s.val, "Changed State");
+            assertEq(s.oldVal, "Init State");
         },
         effect_basic: () => {
             const history = [];
@@ -638,15 +640,15 @@ const runTests = async (vanObj, msgDom, { debug }) => {
         }),
         complexStateBinding_nonStateDeps: withHiddenDom(async (hiddenDom) => {
             const part1 = "👋Hello ", part2 = state("🗺️World");
-            assertEq(add(hiddenDom, () => val(part1) + val(part2)), hiddenDom);
+            assertEq(add(hiddenDom, () => `${val(part1)}${val(part2)}, from: ${oldVal(part1)}${oldVal(part2)}`), hiddenDom);
             const dom = hiddenDom.firstChild;
-            assertEq(dom.textContent, "👋Hello 🗺️World");
-            assertEq(hiddenDom.innerHTML, "👋Hello 🗺️World");
+            assertEq(dom.textContent, "👋Hello 🗺️World, from: 👋Hello 🗺️World");
+            assertEq(hiddenDom.innerHTML, "👋Hello 🗺️World, from: 👋Hello 🗺️World");
             part2.val = "🍦VanJS";
             await sleep(waitMsOnDomUpdates);
             // dom is disconnected from the document thus it won't be updated
-            assertEq(dom.textContent, "👋Hello 🗺️World");
-            assertEq(hiddenDom.innerHTML, "👋Hello 🍦VanJS");
+            assertEq(dom.textContent, "👋Hello 🗺️World, from: 👋Hello 🗺️World");
+            assertEq(hiddenDom.innerHTML, "👋Hello 🍦VanJS, from: 👋Hello 🗺️World");
         }),
         complexStateBinding_oldVal: withHiddenDom(async (hiddenDom) => {
             const text = state("Old Text");
@@ -762,7 +764,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             const s = state(0);
             assertError("couldn't have value to other state", () => s.val = state(0));
         },
-        state_mutatingVal: () => {
+        state_mutatingValOrOldVal: () => {
             {
                 const t = state({ a: 2 });
                 assertError("TypeError:", () => t.val.a = 3);
@@ -771,6 +773,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
                 const t = state({ b: 1 });
                 t.val = { b: 2 };
                 assertError("TypeError:", () => t.val.b = 3);
+                assertError("TypeError:", () => t.oldVal.b = 3);
             }
         },
         effect_nonFuncArg: () => {
