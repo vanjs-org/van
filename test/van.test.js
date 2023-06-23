@@ -638,6 +638,25 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
         }),
+        complexStateBinding_dynamicPrimitive: withHiddenDom(async (hiddenDom) => {
+            const a = state(1), b = state(2), deleted = state(false);
+            const dom = div(() => deleted.val ? null : a.val + b.val);
+            assertEq(dom.outerHTML, "<div>3</div>");
+            add(hiddenDom, dom);
+            a.val = 6;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(dom.outerHTML, "<div>8</div>");
+            b.val = 5;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(dom.outerHTML, "<div>11</div>");
+            deleted.val = true;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(dom.outerHTML, "<div></div>");
+            // Deleted dom won't be brought back, even the underlying state is changed back
+            deleted.val = false;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(dom.outerHTML, "<div></div>");
+        }),
         complexStateBinding_nonStateDeps: withHiddenDom(async (hiddenDom) => {
             const part1 = "👋Hello ", part2 = state("🗺️World");
             assertEq(add(hiddenDom, () => `${val(part1)}${val(part2)}, from: ${oldVal(part1)}${oldVal(part2)}`), hiddenDom);

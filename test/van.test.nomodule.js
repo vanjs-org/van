@@ -602,6 +602,24 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
       }),
+      complexStateBinding_dynamicPrimitive: withHiddenDom(async (hiddenDom) => {
+        const a2 = state(1), b = state(2), deleted = state(false);
+        const dom = div2(() => deleted.val ? null : a2.val + b.val);
+        assertEq(dom.outerHTML, "<div>3</div>");
+        add(hiddenDom, dom);
+        a2.val = 6;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, "<div>8</div>");
+        b.val = 5;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, "<div>11</div>");
+        deleted.val = true;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, "<div></div>");
+        deleted.val = false;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, "<div></div>");
+      }),
       complexStateBinding_nonStateDeps: withHiddenDom(async (hiddenDom) => {
         const part1 = "\u{1F44B}Hello ", part2 = state("\u{1F5FA}\uFE0FWorld");
         assertEq(add(hiddenDom, () => `${val(part1)}${val(part2)}, from: ${oldVal(part1)}${oldVal(part2)}`), hiddenDom);
