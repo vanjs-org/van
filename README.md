@@ -115,7 +115,7 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 
 _I will be traveling from June 23 to July 15, with no access to my computer. Most likely I can only respond to discussion posts and emails right after I'm back._
 
-_Meanwhile, **VanJS** [1.0.0](https://github.com/vanjs-org/van/discussions/62) is planned to be released shortly after my coming back. Stay tuned :-)_
+_Meanwhile, **VanJS** 1.0.0 ([feature preview](https://github.com/vanjs-org/van/discussions/62)) is planned to be released shortly after my coming back. Stay tuned :-)_
 
 _Thank you for your understanding!_
 
