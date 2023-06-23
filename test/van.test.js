@@ -1,7 +1,7 @@
 window.numTests = 0;
 const runTests = async (vanObj, msgDom, { debug }) => {
     const { add, derive, tags, tagsNS, state, val, oldVal, effect } = vanObj;
-    const { a, button, div, input, li, option, p, pre, select, span, table, tbody, td, th, thead, tr, ul } = tags;
+    const { a, button, div, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = tags;
     const assert = (cond) => {
         if (!cond)
             throw new Error("Assertion failed");
@@ -890,24 +890,24 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // Used in a state-derived property
             const dom3 = div({ style: () => `font-size: ${counter.val}em;` }, "Text");
             // Used in a complex binding
-            const dom4 = div(() => `${counter.val}^2 = ${counter.val * counter.val}`);
+            const dom4 = div(counter, sup(2), () => ` = ${counter.val * counter.val}`);
             // Button to increment the value of the state
             const incrementBtn = button({ onclick: () => ++counter.val }, "Increment");
             const resetBtn = button({ onclick: () => counter.val = 1 }, "Reset");
             add(hiddenDom, incrementBtn, resetBtn, dom1, dom2, dom3, dom4);
-            assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>1</div><input type="number" disabled=""><div style="font-size: 1em;">Text</div><div>1^2 = 1</div>');
+            assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>1</div><input type="number" disabled=""><div style="font-size: 1em;">Text</div><div>1<sup>2</sup> = 1</div>');
             assertEq(dom2.value, "1");
             incrementBtn.click();
             await sleep(waitMsOnDomUpdates);
-            assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>2</div><input type="number" disabled=""><div style="font-size: 2em;">Text</div><div>2^2 = 4</div>');
+            assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>2</div><input type="number" disabled=""><div style="font-size: 2em;">Text</div><div>2<sup>2</sup> = 4</div>');
             assertEq(dom2.value, "2");
             incrementBtn.click();
             await sleep(waitMsOnDomUpdates);
-            assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>3</div><input type="number" disabled=""><div style="font-size: 3em;">Text</div><div>3^2 = 9</div>');
+            assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>3</div><input type="number" disabled=""><div style="font-size: 3em;">Text</div><div>3<sup>2</sup> = 9</div>');
             assertEq(dom2.value, "3");
             resetBtn.click();
             await sleep(waitMsOnDomUpdates);
-            assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>1</div><input type="number" disabled=""><div style="font-size: 1em;">Text</div><div>1^2 = 1</div>');
+            assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>1</div><input type="number" disabled=""><div style="font-size: 1em;">Text</div><div>1<sup>2</sup> = 1</div>');
             assertEq(dom2.value, "1");
         }),
         connectedProps: withHiddenDom(async (hiddenDom) => {
