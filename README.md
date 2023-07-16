@@ -1,6 +1,6 @@
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
-📣 [VanJS 0.12.0 released →](https://github.com/vanjs-org/van/discussions/53)
+📣 [**VanJS** 0.12.0 released →](https://github.com/vanjs-org/van/discussions/53). **VanJS** 1.0.0 is [on the way →](https://github.com/vanjs-org/van/discussions/62).
 
 <div align="center">
   <table>
@@ -101,7 +101,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 * Learn from the [Tutorial](https://vanjs.org/tutorial)
 * Learn by [Examples](https://vanjs.org/demo) (and also [Community Examples](https://vanjs.org/demo#community-examples))
 * Convert HTML snippet to **VanJS** code with our online [HTML to **VanJS** Converter](https://vanjs.org/convert)
-* Want server-side rendering? Check out [Mini-Van](https://github.com/vanjs-org/mini-van) (the entire vanjs.org site is built on top of Mini-Van)
+* Want server-side rendering? Check out [Mini-Van](https://github.com/vanjs-org/mini-van) (the entire [vanjs.org](https://vanjs.org/) site is built on top of Mini-Van)
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page
 * [How did **VanJS** get its name?](https://vanjs.org/about#name)
 
