@@ -1,6 +1,6 @@
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
-📣 [**VanJS** 0.12.0 released →](https://github.com/vanjs-org/van/discussions/53). **VanJS** 1.0.0 is [on the way](https://github.com/vanjs-org/van/discussions/62).
+📣 [**VanJS** 0.12.0 released →](https://github.com/vanjs-org/van/discussions/53). **VanJS** 1.0.0 is [on the way →](https://github.com/vanjs-org/van/discussions/62).
 
 <div align="center">
   <table>
