@@ -473,7 +473,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(sum.val, 47);
             assertEq(numEffectTriggered, 6);
         },
-        complexStateBinding_dynamicDom: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_dynamicDom: withHiddenDom(async (hiddenDom) => {
             const verticalPlacement = state(false);
             const button1Text = state("Button 1"), button2Text = state("Button 2"), button3Text = state("Button 3");
             const domFunc = () => verticalPlacement.val ? div(div(button(button1Text)), div(button(button2Text)), div(button(button3Text))) : div(button(button1Text), button(button2Text), button(button3Text));
@@ -494,7 +494,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2: Extra</button><button>Button 3</button></div>");
             assertEq(hiddenDom.firstChild.outerHTML, "<div><div><button>Button 1</button></div><div><button>Button 2: Extra Extra</button></div><div><button>Button 3</button></div></div>");
         }),
-        complexStateBinding_conditionalDomFunc: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_conditionalDomFunc: withHiddenDom(async (hiddenDom) => {
             const cond = state(true);
             const button1 = state("Button 1"), button2 = state("Button 2");
             const button3 = state("Button 3"), button4 = state("Button 4");
@@ -544,7 +544,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-2</button><button>Button 4-2</button></div>");
             assertEq(numFuncCalled, 6);
         }),
-        complexStateBinding_statefulDynamicDom: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_statefulDynamicDom: withHiddenDom(async (hiddenDom) => {
             const numItems = state(0);
             const items = state([]);
             effect(() => items.val = [...Array(numItems.val).keys()].map(i => `Item ${i + 1}`));
@@ -586,7 +586,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             // rootDom1stIteration won't be updated as it has already been disconnected from the document
             assertEq(rootDom1stIteration.outerHTML, '<ul><li class="">Item 1</li><li class="selected">Item 2</li><li class="">Item 3</li></ul>');
         }),
-        complexStateBinding_nullToRemoveDom: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_nullToRemoveDom: withHiddenDom(async (hiddenDom) => {
             const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state("Line 3"), line4 = state(""), line5 = state(null);
             const dom = div(() => line1.val === "" ? null : p(line1.val), () => line2.val === "" ? null : p(line2.val), p(line3), 
             // line4 won't appear in the DOM tree as its initial value is null
@@ -612,7 +612,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
         }),
-        complexStateBinding_undefinedToRemoveDom: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_undefinedToRemoveDom: withHiddenDom(async (hiddenDom) => {
             const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state("Line 3"), line4 = state(""), line5 = state(undefined);
             const dom = div(() => line1.val === "" ? null : p(line1.val), () => line2.val === "" ? null : p(line2.val), p(line3), 
             // line4 won't appear in the DOM tree as its initial value is null
@@ -638,7 +638,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
         }),
-        complexStateBinding_dynamicPrimitive: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_dynamicPrimitive: withHiddenDom(async (hiddenDom) => {
             const a = state(1), b = state(2), deleted = state(false);
             const dom = div(() => deleted.val ? null : a.val + b.val);
             assertEq(dom.outerHTML, "<div>3</div>");
@@ -657,7 +657,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<div></div>");
         }),
-        complexStateBinding_nonStateDeps: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_nonStateDeps: withHiddenDom(async (hiddenDom) => {
             const part1 = "👋Hello ", part2 = state("🗺️World");
             assertEq(add(hiddenDom, () => `${val(part1)}${val(part2)}, from: ${oldVal(part1)}${oldVal(part2)}`), hiddenDom);
             const dom = hiddenDom.firstChild;
@@ -669,7 +669,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(dom.textContent, "👋Hello 🗺️World, from: 👋Hello 🗺️World");
             assertEq(hiddenDom.innerHTML, "👋Hello 🍦VanJS, from: 👋Hello 🗺️World");
         }),
-        complexStateBinding_oldVal: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_oldVal: withHiddenDom(async (hiddenDom) => {
             const text = state("Old Text");
             assertEq(add(hiddenDom, () => `From: "${oldVal(text)}" to: "${val(text)}"`), hiddenDom);
             const dom = hiddenDom.firstChild;
@@ -799,11 +799,11 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             const a = state(0), b = state(0);
             assertError("Must pass-in a function to `van.effect`", () => effect((b.val = a.val * 2)));
         },
-        complexStateBinding_invalidInitialResult: () => {
+        stateDerivedChild_invalidInitialResult: () => {
             assertError(/Only.*are valid child of a DOM Element/, () => div(() => ({})));
             assertError(/Only.*are valid child of a DOM Element/, () => div(() => ((x) => x * 2)));
         },
-        complexStateBinding_invalidFollowupResult: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_invalidFollowupResult: withHiddenDom(async (hiddenDom) => {
             const s = state(1);
             add(hiddenDom, () => (s.val || {}), () => (s.val || ((x) => x * 2)), () => (s.val || [div(), div()]));
             await capturingErrors(async () => {
@@ -813,7 +813,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
                     vanObj.capturedErrors.every(e => /Only.*are valid child of a DOM Element/.test(e)));
             });
         }),
-        complexStateBinding_derivedDom_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
+        stateDerivedChild_derivedDom_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
             const dom = div();
             add(hiddenDom, dom);
             const num = state(1);

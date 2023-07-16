@@ -597,7 +597,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(numEffectTriggered, 6)
     },
 
-    complexStateBinding_dynamicDom: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_dynamicDom: withHiddenDom(async hiddenDom => {
       const verticalPlacement = state(false)
       const button1Text = state("Button 1"), button2Text = state("Button 2"), button3Text = state("Button 3")
 
@@ -629,7 +629,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq((<Element>hiddenDom.firstChild).outerHTML, "<div><div><button>Button 1</button></div><div><button>Button 2: Extra Extra</button></div><div><button>Button 3</button></div></div>")
     }),
 
-    complexStateBinding_conditionalDomFunc: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_conditionalDomFunc: withHiddenDom(async hiddenDom => {
       const cond = state(true)
       const button1 = state("Button 1"), button2 = state("Button 2")
       const button3 = state("Button 3"), button4 = state("Button 4")
@@ -690,7 +690,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(numFuncCalled, 6)
     }),
 
-    complexStateBinding_statefulDynamicDom: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_statefulDynamicDom: withHiddenDom(async hiddenDom => {
       const numItems = state(0)
       const items = state(<readonly string[]>[])
       effect(() => items.val = [...Array(numItems.val).keys()].map(i => `Item ${i + 1}`))
@@ -741,7 +741,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(rootDom1stIteration.outerHTML, '<ul><li class="">Item 1</li><li class="selected">Item 2</li><li class="">Item 3</li></ul>')
     }),
 
-    complexStateBinding_nullToRemoveDom: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_nullToRemoveDom: withHiddenDom(async hiddenDom => {
       const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state(<string | null>"Line 3"), line4 = state(""), line5 = state(null)
 
       const dom = div(
@@ -777,7 +777,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>")
     }),
 
-    complexStateBinding_undefinedToRemoveDom: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_undefinedToRemoveDom: withHiddenDom(async hiddenDom => {
       const line1 = state("Line 1"), line2 = state("Line 2"), line3 = state(<string | undefined>"Line 3"), line4 = state(""), line5 = state(undefined)
 
       const dom = div(
@@ -813,7 +813,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>")
     }),
 
-    complexStateBinding_dynamicPrimitive: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_dynamicPrimitive: withHiddenDom(async hiddenDom => {
       const a = state(1), b = state(2), deleted = state(false)
       const dom = div(() => deleted.val ? null : a.val + b.val)
       assertEq(dom.outerHTML, "<div>3</div>")
@@ -837,7 +837,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(dom.outerHTML, "<div></div>")
     }),
 
-    complexStateBinding_nonStateDeps: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_nonStateDeps: withHiddenDom(async hiddenDom => {
       const part1 = "👋Hello ", part2 = state("🗺️World")
 
       assertEq(
@@ -857,7 +857,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(hiddenDom.innerHTML, "👋Hello 🍦VanJS, from: 👋Hello 🗺️World")
     }),
 
-    complexStateBinding_oldVal: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_oldVal: withHiddenDom(async hiddenDom => {
       const text = state("Old Text")
 
       assertEq(add(hiddenDom, () => `From: "${oldVal(text)}" to: "${val(text)}"`), hiddenDom)
@@ -1023,14 +1023,14 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertError("Must pass-in a function to `van.effect`", () => effect(<any>(b.val = a.val * 2)))
     },
 
-    complexStateBinding_invalidInitialResult: () => {
+    stateDerivedChild_invalidInitialResult: () => {
       assertError(/Only.*are valid child of a DOM Element/,
         () => div(() => <any>{}))
       assertError(/Only.*are valid child of a DOM Element/,
         () => div(() => <any>((x: number) => x * 2)))
     },
 
-    complexStateBinding_invalidFollowupResult: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_invalidFollowupResult: withHiddenDom(async hiddenDom => {
       const s = state(1)
       add(hiddenDom,
         () => <any>(s.val || {}),
@@ -1045,7 +1045,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       })
     }),
 
-    complexStateBinding_derivedDom_domResultAlreadyConnected: withHiddenDom(async hiddenDom => {
+    stateDerivedChild_derivedDom_domResultAlreadyConnected: withHiddenDom(async hiddenDom => {
       const dom = div()
       add(hiddenDom, dom)
       const num = state(1)

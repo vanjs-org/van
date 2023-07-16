@@ -25,8 +25,8 @@
       return this._oldVal;
     },
     set "val"(v) {
-      let s = this, curV = s._val;
-      if (v !== curV) {
+      let s = this;
+      if (v !== s._val) {
         changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms);
         s._val = v;
         let boundStates = /* @__PURE__ */ new Set();
@@ -72,7 +72,8 @@
   };
   var add = (dom, ...children) => {
     for (let c of children.flat(Infinity)) {
-      let child = isState(c) ? bind(() => c.val) : protoOf(c ?? 0) === funcProto ? bind(c) : c;
+      let protoOfC = protoOf(c ?? 0);
+      let child = protoOfC === stateProto ? bind(() => c.val) : protoOfC === funcProto ? bind(c) : c;
       if (child != _undefined)
         dom.append(child);
     }
