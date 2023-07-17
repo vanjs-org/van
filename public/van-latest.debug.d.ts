@@ -4,7 +4,7 @@ export type State<T> = {
 }
 
 // Defining readonly view of State<T> for covariance.
-// Basically we want State<string> implements StateView<string | number>
+// Basically we want StateView<string> to implement StateView<string | number>
 export interface StateView<T> {
   readonly val: T
 }
