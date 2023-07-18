@@ -9,10 +9,6 @@ export interface StateView<T> {
   readonly oldVal: T
 }
 
-declare function val<T>(s: T | StateView<T>): T
-declare function oldVal<T>(s: T | StateView<T>): T
-declare function derive<T>(f: () => T): State<T>
-
 export type Primitive = string | number | boolean | bigint
 
 export type PropValue = Primitive | ((e: any) => void) | null
@@ -141,9 +137,9 @@ interface Tags extends TagsBase {
 
 export interface Van {
   readonly state: <T>(initVal: T) => State<T>
-  readonly val: typeof val
-  readonly oldVal: typeof oldVal
-  readonly derive: typeof derive
+  readonly val: <T>(s: T | StateView<T>) => T
+  readonly oldVal: <T>(s: T | StateView<T>) => T
+  readonly derive: <T>(f: () => T) => State<T>
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
   readonly _: (f: () => PropValue) => () => PropValue
   readonly tags: Tags
