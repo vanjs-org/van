@@ -75,7 +75,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Grab 'n Go
 
-***No installation***, ***no configuration***, ***no 3rd-party dependencies***, ***no transpiling***, ***no IDE setups***. Adding a line to your script or HTML file is all you need to start coding. **VanJS** allows you to focus on the business logic of your application, rather than getting bogged down in frameworks and tools.
+***No installation***, ***no configuration***, ***no dependencies***, ***no transpiling***, ***no IDE setups***. Adding a line to your script or HTML file is all you need to start coding. **VanJS** allows you to focus on the business logic of your application, rather than getting bogged down in frameworks and tools.
 
 ### Ultra-Lightweight
 
