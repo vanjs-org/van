@@ -135,11 +135,11 @@
   var checkStateValValid = (v) => (expect(!isState2(v), "State couldn't have value to other state"), expect(!(v instanceof Node), "DOM Node is not valid value for state"), v);
   var curBindingFuncId = 0;
   var nextBindingFuncId = 0;
-  var runAndSetBindingFuncId = (f) => {
+  var runAndSetBindingFuncId = (f, arg) => {
     const prevBindingFuncId = curBindingFuncId;
     curBindingFuncId = ++nextBindingFuncId;
     try {
-      return f();
+      return f(arg);
     } finally {
       curBindingFuncId = prevBindingFuncId;
     }
@@ -192,7 +192,7 @@
     if (isState2(c))
       return withResultValidation(() => c.val);
     if (typeof c === "function")
-      return withResultValidation((dom) => runAndSetBindingFuncId(() => c(dom)));
+      return withResultValidation((dom) => runAndSetBindingFuncId(c, dom));
     expect(!c?.isConnected, "You can't add a DOM Node that is already connected to document");
     return validateChild(c);
   });

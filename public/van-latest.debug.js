@@ -31,11 +31,11 @@ const checkStateValValid = v => (
 let curBindingFuncId = 0
 let nextBindingFuncId = 0
 
-const runAndSetBindingFuncId = f => {
+const runAndSetBindingFuncId = (f, arg) => {
   const prevBindingFuncId = curBindingFuncId
   curBindingFuncId = ++nextBindingFuncId
   try {
-    return f()
+    return f(arg)
   } finally {
     curBindingFuncId = prevBindingFuncId
   }
@@ -98,7 +98,7 @@ const checkChildren = children => children.flat(Infinity).map(c => {
   }
   if (isState(c)) return withResultValidation(() => c.val)
   if (typeof c === "function")
-    return withResultValidation(dom => runAndSetBindingFuncId(() => c(dom)))
+    return withResultValidation(dom => runAndSetBindingFuncId(c, dom))
   expect(!c?.isConnected, "You can't add a DOM Node that is already connected to document")
   return validateChild(c)
 })
