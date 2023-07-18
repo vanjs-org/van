@@ -408,7 +408,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             s.val = "test";
             assertEq(JSON.stringify(history), '["This","is","a","test"]');
         },
-        derive_derivedStates: () => {
+        derive_derivedState: () => {
             const numItems = state(0);
             const items = derive(() => [...Array(numItems.val).keys()].map(i => `Item ${i + 1}`));
             const selectedIndex = derive(() => (items.val, 0));
@@ -430,7 +430,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             assertEq(selectedIndex.val, 3);
             assertEq(selectedItem.val, "Item 4");
         },
-        derive_conditionalDerivedStates: () => {
+        derive_conditionalDerivedState: () => {
             const cond = state(true);
             const a = state(1), b = state(2), c = state(3), d = state(4);
             let numEffectTriggered = 0;
@@ -873,11 +873,11 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             }).outerHTML, "<table><tbody><tr><td>1</td><td>John Doe</td><td>US</td></tr><tr><td>2</td><td>Jane Smith</td><td>CA</td></tr></tbody></table>");
         },
         stateExample: withHiddenDom(async (hiddenDom) => {
-            // Create a new State object with init value 1
+            // Create a new state object with init value 1
             const counter = state(1);
             // Log whenever the value of the state is updated
             derive(() => console.log(`Counter: ${counter.val}`));
-            // Derived states
+            // Derived state
             const counterSquared = derive(() => counter.val * counter.val);
             // Used as a child node
             const dom1 = div(counter);
@@ -1086,7 +1086,7 @@ const runTests = async (vanObj, msgDom, { debug }) => {
                 ++a.val;
             assertBetween(a[listenersPropKey].length, 1, 3);
         },
-        derive_conditionalDerivedStates: () => {
+        derive_conditionalDerivedState: () => {
             const cond = state(true);
             const a = state(0), b = state(0), c = state(0), d = state(0);
             const listenersPropKey = Object.entries(a)

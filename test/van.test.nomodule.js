@@ -384,7 +384,7 @@
         s.val = "test";
         assertEq(JSON.stringify(history), '["This","is","a","test"]');
       },
-      derive_derivedStates: () => {
+      derive_derivedState: () => {
         const numItems = state(0);
         const items = derive(() => [...Array(numItems.val).keys()].map((i) => `Item ${i + 1}`));
         const selectedIndex = derive(() => (items.val, 0));
@@ -406,7 +406,7 @@
         assertEq(selectedIndex.val, 3);
         assertEq(selectedItem.val, "Item 4");
       },
-      derive_conditionalDerivedStates: () => {
+      derive_conditionalDerivedState: () => {
         const cond = state(true);
         const a2 = state(1), b = state(2), c = state(3), d = state(4);
         let numEffectTriggered = 0;
@@ -1022,7 +1022,7 @@
           ++a2.val;
         assertBetween(a2[listenersPropKey].length, 1, 3);
       },
-      derive_conditionalDerivedStates: () => {
+      derive_conditionalDerivedState: () => {
         const cond = state(true);
         const a2 = state(0), b = state(0), c = state(0), d = state(0);
         const listenersPropKey = Object.entries(a2).filter(([_2, v]) => Array.isArray(v))[1][0];
