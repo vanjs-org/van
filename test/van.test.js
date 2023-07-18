@@ -793,6 +793,21 @@ const runTests = async (vanObj, msgDom, { debug }) => {
             const a = state(0);
             assertError("Must pass-in a function to `van.derive`", () => derive((a.val * 2)));
         },
+        derive_accessStateCreatedInOuterScope: () => {
+            const a = state(1);
+            // State-derived child
+            assertError("could lead to GC issues", () => div(() => {
+                const b = derive(() => a.val + 1);
+                return span(b.val + 1);
+            }));
+            // State-derived property
+            assertError("could lead to GC issues", () => div({
+                id: () => {
+                    const b = derive(() => a.val + 1);
+                    return b.val + 1;
+                },
+            }));
+        },
         stateDerivedChild_invalidInitialResult: () => {
             assertError(/Only.*are valid child of a DOM Element/, () => div(() => ({})));
             assertError(/Only.*are valid child of a DOM Element/, () => div(() => ((x) => x * 2)));

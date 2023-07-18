@@ -10,9 +10,11 @@
   var runAndCaptureDeps = (f, deps, arg) => {
     let prevDeps = curDeps;
     curDeps = deps;
-    let r = f(arg);
-    curDeps = prevDeps;
-    return r;
+    try {
+      return f(arg);
+    } finally {
+      curDeps = prevDeps;
+    }
   };
   var filterBindings = (s) => s.bindings = s.bindings.filter((b) => b.dom?.isConnected);
   var stateProto = {

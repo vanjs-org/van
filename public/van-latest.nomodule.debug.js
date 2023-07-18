@@ -10,9 +10,11 @@
   var runAndCaptureDeps = (f, deps, arg) => {
     let prevDeps = curDeps;
     curDeps = deps;
-    let r = f(arg);
-    curDeps = prevDeps;
-    return r;
+    try {
+      return f(arg);
+    } finally {
+      curDeps = prevDeps;
+    }
   };
   var filterBindings = (s) => s.bindings = s.bindings.filter((b) => b.dom?.isConnected);
   var stateProto = {
@@ -131,17 +133,41 @@
   var stateProto2 = protoOf2(van_default.state());
   var isState2 = (s) => protoOf2(s ?? 0) === stateProto2;
   var checkStateValValid = (v) => (expect(!isState2(v), "State couldn't have value to other state"), expect(!(v instanceof Node), "DOM Node is not valid value for state"), v);
-  var state2 = (initVal) => new Proxy(van_default.state(Object.freeze(checkStateValValid(initVal))), {
-    set: (s, prop, val2) => {
-      if (prop === "val")
-        Object.freeze(checkStateValValid(val2));
-      return Reflect.set(s, prop, val2);
-    },
-    get: (s, prop) => {
-      return Reflect.get(s, prop);
+  var curBindingFuncId = 0;
+  var nextBindingFuncId = 0;
+  var runAndSetBindingFuncId = (f) => {
+    const prevBindingFuncId = curBindingFuncId;
+    curBindingFuncId = ++nextBindingFuncId;
+    const r = f();
+    curBindingFuncId = prevBindingFuncId;
+    return r;
+  };
+  var inDeriveFunc = false;
+  var stateWithCreatedIn = (s) => (s._createdIn = curBindingFuncId, s);
+  var state2 = (initVal) => new Proxy(
+    stateWithCreatedIn(van_default.state(Object.freeze(checkStateValValid(initVal)))),
+    {
+      set: (s, prop, val2) => {
+        if (prop === "val")
+          Object.freeze(checkStateValValid(val2));
+        return Reflect.set(s, prop, val2);
+      },
+      get: (s, prop) => {
+        if (inDeriveFunc && (prop === "val" || prop === "oldVal"))
+          expect(curBindingFuncId === s._createdIn, "In `van.derive`, accessing a state created outside the scope of current binding function could lead to GC issues");
+        return Reflect.get(s, prop);
+      }
     }
-  });
-  var derive2 = (f) => (expect(typeof f === "function", "Must pass-in a function to `van.derive`"), van_default.derive(f));
+  );
+  var derive2 = (f) => (expect(typeof f === "function", "Must pass-in a function to `van.derive`"), van_default.derive(() => {
+    const prevInDeriveFunc = inDeriveFunc;
+    inDeriveFunc = true;
+    try {
+      return f();
+    } finally {
+      inDeriveFunc = prevInDeriveFunc;
+    }
+  }));
   var isValidPrimitive = (v) => typeof v === "string" || typeof v === "number" || typeof v === "boolean" || typeof v === "bigint";
   var isDomOrPrimitive = (v) => v instanceof Node || isValidPrimitive(v);
   var validateChild = (child) => {
@@ -164,7 +190,7 @@
     if (isState2(c))
       return withResultValidation(() => c.val);
     if (typeof c === "function")
-      return withResultValidation(c);
+      return withResultValidation((dom) => runAndSetBindingFuncId(() => c(dom)));
     expect(!c?.isConnected, "You can't add a DOM Node that is already connected to document");
     return validateChild(c);
   });
@@ -193,7 +219,7 @@
           if (isState2(v))
             debugProps[k] = van_default._(() => validatePropValue(v.val));
           else if (typeof v === "function" && (!k.startsWith("on") || v.isBindingFunc))
-            debugProps[k] = van_default._(() => validatePropValue(v()));
+            debugProps[k] = van_default._(() => validatePropValue(runAndSetBindingFuncId(v)));
           else
             debugProps[k] = validatePropValue(v);
         }

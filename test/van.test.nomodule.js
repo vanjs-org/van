@@ -745,6 +745,19 @@
         const a2 = state(0);
         assertError("Must pass-in a function to `van.derive`", () => derive(a2.val * 2));
       },
+      derive_accessStateCreatedInOuterScope: () => {
+        const a2 = state(1);
+        assertError("could lead to GC issues", () => div2(() => {
+          const b = derive(() => a2.val + 1);
+          return span(b.val + 1);
+        }));
+        assertError("could lead to GC issues", () => div2({
+          id: () => {
+            const b = derive(() => a2.val + 1);
+            return b.val + 1;
+          }
+        }));
+      },
       stateDerivedChild_invalidInitialResult: () => {
         assertError(/Only.*are valid child of a DOM Element/, () => div2(() => ({})));
         assertError(/Only.*are valid child of a DOM Element/, () => div2(() => (x) => x * 2));

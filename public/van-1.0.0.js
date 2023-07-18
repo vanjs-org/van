@@ -11,9 +11,11 @@ let changedStates, curDeps
 let runAndCaptureDeps = (f, deps, arg) => {
   let prevDeps = curDeps
   curDeps = deps
-  let r = f(arg)
-  curDeps = prevDeps
-  return r
+  try {
+    return f(arg)
+  } finally {
+    curDeps = prevDeps
+  }
 }
 
 let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)

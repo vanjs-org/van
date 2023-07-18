@@ -28,18 +28,46 @@ const checkStateValValid = v => (
   v
 )
 
-const state = initVal => new Proxy(van.state(Object.freeze(checkStateValValid(initVal))), {
-  set: (s, prop, val) => {
-    if (prop === "val") Object.freeze(checkStateValValid(val))
-    return Reflect.set(s, prop, val)
-  },
+let curBindingFuncId = 0
+let nextBindingFuncId = 0
 
-  get: (s, prop) => { return Reflect.get(s, prop) }
-})
+const runAndSetBindingFuncId = f => {
+  const prevBindingFuncId = curBindingFuncId
+  curBindingFuncId = ++nextBindingFuncId
+  const r = f()
+  curBindingFuncId = prevBindingFuncId
+  return r
+}
+
+let inDeriveFunc = false
+
+const stateWithCreatedIn = s => (s._createdIn = curBindingFuncId, s)
+
+const state = initVal => new Proxy(
+  stateWithCreatedIn(van.state(Object.freeze(checkStateValValid(initVal)))), {
+    set: (s, prop, val) => {
+      if (prop === "val") Object.freeze(checkStateValValid(val))
+      return Reflect.set(s, prop, val)
+    },
+
+    get: (s, prop) => {
+      if (inDeriveFunc && (prop === "val" || prop === "oldVal"))
+        expect(curBindingFuncId === s._createdIn, "In `van.derive`, accessing a state created outside the scope of current binding function could lead to GC issues")
+      return Reflect.get(s, prop)
+    },
+  })
 
 const derive = f => (
   expect(typeof(f) === "function", "Must pass-in a function to `van.derive`"),
-  van.derive(f)
+  van.derive(() => {
+    const prevInDeriveFunc = inDeriveFunc
+    inDeriveFunc = true
+    try {
+      return f()
+    } finally {
+      inDeriveFunc = prevInDeriveFunc
+    }
+  })
 )
 
 const isValidPrimitive = v =>
@@ -67,7 +95,8 @@ const checkChildren = children => children.flat(Infinity).map(c => {
     return r
   }
   if (isState(c)) return withResultValidation(() => c.val)
-  if (typeof c === "function") return withResultValidation(c)
+  if (typeof c === "function")
+    return withResultValidation(dom => runAndSetBindingFuncId(() => c(dom)))
   expect(!c?.isConnected, "You can't add a DOM Node that is already connected to document")
   return validateChild(c)
 })
@@ -98,7 +127,7 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
         if (isState(v))
           debugProps[k] = van._(() => validatePropValue(v.val))
         else if (typeof v === "function" && (!k.startsWith("on") || v.isBindingFunc))
-          debugProps[k] = van._(() => validatePropValue(v()))
+          debugProps[k] = van._(() => validatePropValue(runAndSetBindingFuncId(v)))
         else
           debugProps[k] = validatePropValue(v)
       }
