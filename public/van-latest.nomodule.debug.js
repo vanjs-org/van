@@ -138,9 +138,11 @@
   var runAndSetBindingFuncId = (f) => {
     const prevBindingFuncId = curBindingFuncId;
     curBindingFuncId = ++nextBindingFuncId;
-    const r = f();
-    curBindingFuncId = prevBindingFuncId;
-    return r;
+    try {
+      return f();
+    } finally {
+      curBindingFuncId = prevBindingFuncId;
+    }
   };
   var inDeriveFunc = false;
   var stateWithCreatedIn = (s) => (s._createdIn = curBindingFuncId, s);

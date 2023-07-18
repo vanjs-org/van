@@ -34,9 +34,11 @@ let nextBindingFuncId = 0
 const runAndSetBindingFuncId = f => {
   const prevBindingFuncId = curBindingFuncId
   curBindingFuncId = ++nextBindingFuncId
-  const r = f()
-  curBindingFuncId = prevBindingFuncId
-  return r
+  try {
+    return f()
+  } finally {
+    curBindingFuncId = prevBindingFuncId
+  }
 }
 
 let inDeriveFunc = false
