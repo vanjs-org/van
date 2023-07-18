@@ -33,12 +33,14 @@ let stateProto = {
     // Aliasing `this` to reduce the bundle size.
     let s = this
     if (v !== s._val) {
-      changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms)
       s._val = v
       let boundStates = new Set
       for (let l of [...s.listeners])
-        effect(l.f), l.executed = 1, l.deps.forEach(boundStates.add, boundStates)
+        derive(l.f, l.s), l.executed = 1, l.deps.forEach(boundStates.add, boundStates)
       for (let _s of boundStates) _s.listeners = _s.listeners.filter(l => !l.executed)
+      s.bindings.length ?
+        changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms) :
+        s._oldVal = v
     }
   },
 }
@@ -65,19 +67,20 @@ let statesToGc
 
 let bind = (f, dom) => {
   let deps = new Set, binding = {f}, newDom = runAndCaptureDeps(f, deps, dom)
-  for (let s of deps) {
-    statesToGc = addAndScheduleOnFirst(statesToGc, s,
+  for (let d of deps) {
+    statesToGc = addAndScheduleOnFirst(statesToGc, d,
       () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
       gcCycleInMs)
-    s.bindings.push(binding)
+    d.bindings.push(binding)
   }
   return binding.dom = (newDom ?? doc).nodeType ? newDom : new Text(newDom)
 }
 
-let effect = f => {
-  let deps = new Set, listener = {f, deps}
-  runAndCaptureDeps(f, deps)
-  for (let s of deps) s.listeners.push(listener)
+let derive = (f, s = state()) => {
+  let deps = new Set, listener = {f, deps, s}
+  s.val = runAndCaptureDeps(f, deps)
+  for (let d of deps) d.listeners.push(listener)
+  return s
 }
 
 let add = (dom, ...children) => {
@@ -90,7 +93,7 @@ let add = (dom, ...children) => {
   return dom
 }
 
-let derive = f => (f.isDerived = 1, f)
+let _ = f => (f.isBindingFunc = 1, f)
 
 let propSetterCache = {}
 
@@ -106,7 +109,7 @@ let tagsNS = ns => new Proxy((name, ...args) => {
       (propSetterCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0)
     let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k)
     if (isState(v)) bind(() => (setter(v.val), dom))
-    else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v.isDerived))
+    else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v.isBindingFunc))
       bind(() => (setter(v()), dom))
     else setter(v)
   }
@@ -124,4 +127,4 @@ let updateDoms = () => {
   for (let s of changedStatesArray) s._oldVal = s._val
 }
 
-export default {add, "derive": derive, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect}
+export default {add, "_": _, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, "derive": derive}

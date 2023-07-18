@@ -22,8 +22,11 @@ const protoOf = Object.getPrototypeOf
 const stateProto = protoOf(van.state())
 const isState = s => protoOf(s ?? 0) === stateProto
 
-const checkStateValValid = v =>
-  (expect(!isState(v), "State couldn't have value to other state"), v)
+const checkStateValValid = v => (
+  expect(!isState(v), "State couldn't have value to other state"),
+  expect(!(v instanceof Node), "DOM Node is not valid value for state"),
+  v
+)
 
 const state = initVal => new Proxy(van.state(Object.freeze(checkStateValValid(initVal))), {
   set: (s, prop, val) => {
@@ -34,10 +37,10 @@ const state = initVal => new Proxy(van.state(Object.freeze(checkStateValValid(in
   get: (s, prop) => { return Reflect.get(s, prop) }
 })
 
-const effect = f => {
-  expect(typeof(f) === "function", "Must pass-in a function to `van.effect`")
-  van.effect(f)
-}
+const derive = f => (
+  expect(typeof(f) === "function", "Must pass-in a function to `van.derive`"),
+  van.derive(f)
+)
 
 const isValidPrimitive = v =>
   typeof(v) === "string" ||
@@ -74,9 +77,9 @@ const add = (dom, ...children) => {
   return van.add(dom, ...checkChildren(children))
 }
 
-const derive = f => {
-  expect(typeof(f) === "function", "Must pass-in a function to `van.derive`")
-  return van.derive(f)
+const _ = f => {
+  expect(typeof(f) === "function", "Must pass-in a function to `van._`")
+  return van._(f)
 }
 
 const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
@@ -93,9 +96,9 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
             `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`), v)
 
         if (isState(v))
-          debugProps[k] = derive(() => validatePropValue(v.val))
-        else if (typeof v === "function" && (!k.startsWith("on") || v.isDerived))
-          debugProps[k] = derive(() => validatePropValue(v()))
+          debugProps[k] = van._(() => validatePropValue(v.val))
+        else if (typeof v === "function" && (!k.startsWith("on") || v.isBindingFunc))
+          debugProps[k] = van._(() => validatePropValue(v()))
         else
           debugProps[k] = validatePropValue(v)
       }
@@ -109,4 +112,4 @@ const tagsNS = ns => {
   return _tagsNS(ns)
 }
 
-export default {add, derive, tags: _tagsNS(), tagsNS, state, val: van.val, oldVal: van.oldVal, effect, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
+export default {add, _, tags: _tagsNS(), tagsNS, state, val: van.val, oldVal: van.oldVal, derive, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}

@@ -1,4 +1,4 @@
-import type {Van, State, ValidChildDomValue, StateView} from "../src/van.d.ts"
+import type {Van, State} from "../src/van.d.ts"
 
 (<any>window).numTests = 0
 
@@ -13,7 +13,7 @@ type VanForTesting = Van & {
 }
 
 const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleOptions) => {
-  const {add, derive, tags, tagsNS, state, val, oldVal, effect} = vanObj
+  const {_, add, tags, tagsNS, state, val, oldVal, derive} = vanObj
   const {a, button, div, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul} = tags
 
   const assert = (cond: boolean) => {
@@ -231,7 +231,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
     tags_stateDerivedOnclickHandler_connected: withHiddenDom(async hiddenDom => {
       const elementName = state("p")
       add(hiddenDom, button({
-        onclick: derive(() => {
+        onclick: _(() => {
           const name = elementName.val
           return name ? () => add(hiddenDom, tags[name]("Button clicked!")) : null
         }),
@@ -254,7 +254,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       const dom = div()
       const elementName = state("p")
       add(dom, button({
-        onclick: derive(() => {
+        onclick: _(() => {
           const name = elementName.val
           return name ? () => add(dom, tags[name]("Button clicked!")) : null
         }),
@@ -388,19 +388,6 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(dom.outerHTML, "<p>Text</p>")
     }),
 
-    tags_stateAsChild_domValuedState: withHiddenDom(async hiddenDom => {
-      const child = state(<ValidChildDomValue>div())
-      const dom = p(child)
-      add(hiddenDom, dom)
-      assertEq(dom.outerHTML, "<p><div></div></p>")
-      child.val = span()
-      await sleep(waitMsOnDomUpdates)
-      assertEq(dom.outerHTML, "<p><span></span></p>")
-      child.val = "Raw Text"
-      await sleep(waitMsOnDomUpdates)
-      assertEq(dom.outerHTML, "<p>Raw Text</p>")
-    }),
-
     tagsNS_svg: () => {
       const {circle, path, svg} = tagsNS("http://www.w3.org/2000/svg")
       const dom = svg({width: "16px", viewBox: "0 0 50 50"},
@@ -499,19 +486,30 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>")
     },
 
-    state_valAndOldVal: () => {
-      const s = state("Init State")
-      assertEq(s.val, "Init State")
-      assertEq(s.oldVal, "Init State")
-      s.val = "Changed State"
-      assertEq(s.val, "Changed State")
-      assertEq(s.oldVal, "Init State")
-    },
+    state_valAndOldVal: withHiddenDom(async hiddenDom => {
+      const s = state("State Version 1")
+      assertEq(s.val, "State Version 1")
+      assertEq(s.oldVal, "State Version 1")
 
-    effect_basic: () => {
+      // If the state object doesn't have any bindings, we directly update the `oldVal`
+      s.val = "State Version 2"
+      assertEq(s.val, "State Version 2")
+      assertEq(s.oldVal, "State Version 2")
+
+      add(hiddenDom, s)
+      // If the state object has some bindings, `oldVal` refers to its old value until DOM update completes
+      s.val = "State Version 3"
+      assertEq(s.val, "State Version 3")
+      assertEq(s.oldVal, "State Version 2")
+      await sleep(waitMsOnDomUpdates)
+      assertEq(s.val, "State Version 3")
+      assertEq(s.oldVal, "State Version 3")
+    }),
+
+    derive_sideEffect: () => {
       const history: string[] = []
       const s = state("This")
-      effect(() => history.push(s.val))
+      derive(() => history.push(s.val))
       s.val = "is"
       s.val = "a"
       s.val = "test"
@@ -519,14 +517,11 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(JSON.stringify(history), '["This","is","a","test"]')
     },
 
-    effect_derivedStates: () => {
+    derive_derivedState: () => {
       const numItems = state(0)
-      const items = state(<readonly string[]>[])
-      effect(() => items.val = [...Array(numItems.val).keys()].map(i => `Item ${i + 1}`))
-      const selectedIndex = state(0)
-      effect(() => (items.val, selectedIndex.val = 0))
-      const selectedItem = state("")
-      effect(() => selectedItem.val = items.val[selectedIndex.val])
+      const items = derive(() => [...Array(numItems.val).keys()].map(i => `Item ${i + 1}`))
+      const selectedIndex = derive(() => (items.val, 0))
+      const selectedItem = derive(() => items.val[selectedIndex.val])
 
       numItems.val = 3
       assertEq(numItems.val, 3)
@@ -549,11 +544,11 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       assertEq(selectedItem.val, "Item 4")
     },
 
-    effect_conditionalEffect: () => {
+    derive_conditionalDerivedState: () => {
       const cond = state(true)
-      const a = state(1), b = state(2), c = state(3), d = state(4), sum = state(0)
+      const a = state(1), b = state(2), c = state(3), d = state(4)
       let numEffectTriggered = 0
-      effect(() => (++numEffectTriggered, sum.val = cond.val ? a.val + b.val : c.val + d.val))
+      const sum = derive(() => (++numEffectTriggered, cond.val ? a.val + b.val : c.val + d.val))
 
       assertEq(sum.val, 3)
       assertEq(numEffectTriggered, 1)
@@ -692,10 +687,8 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
 
     stateDerivedChild_statefulDynamicDom: withHiddenDom(async hiddenDom => {
       const numItems = state(0)
-      const items = state(<readonly string[]>[])
-      effect(() => items.val = [...Array(numItems.val).keys()].map(i => `Item ${i + 1}`))
-      const selectedIndex = state(0)
-      effect(() => (items.val, selectedIndex.val = 0))
+      const items = derive(() => [...Array(numItems.val).keys()].map(i => `Item ${i + 1}`))
+      const selectedIndex = derive(() => (items.val, 0))
 
       const domFunc = dom => {
         // If items aren't changed, we don't need to regenerate the entire dom
@@ -876,9 +869,9 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
   }
 
   const debugTests = {
-    derive_nonFuncArg: () => {
+    escape_nonFuncArg: () => {
       const a = state(0)
-      assertError("Must pass-in a function to `van.derive`", () => derive(<any>++a.val))
+      assertError("Must pass-in a function to `van._`", () => _(<any>++a.val))
     },
 
     tags_invalidProp_nonFuncOnHandler: () => {
@@ -892,7 +885,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
 
       // State derived property
       assertError("Only functions and null are allowed",
-        () => button({onclick: derive(() => ++counter.val)}, "Increment"))
+        () => button({onclick: _(() => ++counter.val)}, "Increment"))
     },
 
     tags_invalidProp_nonPrimitiveValue: () => {
@@ -939,7 +932,7 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
         a({href: () => s.val || {}}),
         a({href: () => s.val || undefined}),
         a({href: () => s.val || ((x: number) => x * 2)}),
-        button({onclick: derive(() => t.val || 1)}),
+        button({onclick: _(() => t.val || 1)}),
       )
       await capturingErrors(async () => {
         s.val = ""
@@ -998,11 +991,13 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
 
     state_invalidInitialVal: () => {
       assertError("couldn't have value to other state", () => state(state(0)))
+      assertError("DOM Node is not valid value for state", () => state(div()))
     },
 
     state_invalidValSet: () => {
-      const s = state(<number | State<number>>0)
+      const s = state(<number | State<number> | HTMLElement>0)
       assertError("couldn't have value to other state", () => s.val = state(0))
+      assertError("DOM Node is not valid value for state", () => s.val = div())
     },
 
     state_mutatingValOrOldVal: () => {
@@ -1018,9 +1013,9 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       }
     },
 
-    effect_nonFuncArg: () => {
-      const a = state(0), b = state(0)
-      assertError("Must pass-in a function to `van.effect`", () => effect(<any>(b.val = a.val * 2)))
+    derive_nonFuncArg: () => {
+      const a = state(0)
+      assertError("Must pass-in a function to `van.derive`", () => derive(<any>(a.val * 2)))
     },
 
     stateDerivedChild_invalidInitialResult: () => {
@@ -1131,11 +1126,14 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
     },
 
     stateExample: withHiddenDom(async hiddenDom => {
-      // Create a new State object with init value 1
+      // Create a new state object with init value 1
       const counter = state(1)
 
       // Log whenever the value of the state is updated
-      effect(() => console.log(`Counter: ${counter.val}`))
+      derive(() => console.log(`Counter: ${counter.val}`))
+
+      // Derived state
+      const counterSquared = derive(() => counter.val * counter.val)
 
       // Used as a child node
       const dom1 = div(counter)
@@ -1146,8 +1144,8 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       // Used in a state-derived property
       const dom3 = div({style: () => `font-size: ${counter.val}em;`}, "Text")
 
-      // Used in a complex binding
-      const dom4 = div(counter, sup(2), () => ` = ${counter.val * counter.val}`)
+      // Used in a state-derived child
+      const dom4 = div(counter, sup(2), () => ` = ${counterSquared.val}`)
 
       // Button to increment the value of the state
       const incrementBtn = button({onclick: () => ++counter.val}, "Increment")
@@ -1410,26 +1408,25 @@ const runTests = async (vanObj: VanForTesting, msgDom: Element, {debug}: BundleO
       allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 3))
     }),
 
-    effect_basic: () => {
+    derive_basic: () => {
       const history: any[] = []
       const a = state(0)
       const listenersPropKey = Object.entries(a)
         .filter(([_, v]) => Array.isArray(v))[1][0]
 
-      effect(() => history.push({from: a.oldVal, to: a.val}))
+      derive(() => history.push(a.val))
 
       for (let i = 0; i < 100; ++i) ++a.val
 
       assertBetween(a[listenersPropKey].length, 1, 3)
     },
 
-    effect_conditionalEffect: () => {
+    derive_conditionalDerivedState: () => {
       const cond = state(true)
       const a = state(0), b = state(0), c = state(0), d = state(0)
       const listenersPropKey = Object.entries(a)
         .filter(([_, v]) => Array.isArray(v))[1][0]
-      let sum: number
-      effect(() => sum = cond.val ? a.val + b.val : c.val + d.val)
+      derive(() => cond.val ? a.val + b.val : c.val + d.val)
 
       const allStates: State<number | boolean>[] = [cond, a, b, c, d]
       for (let i = 0; i < 100; ++i) {

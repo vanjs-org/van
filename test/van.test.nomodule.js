@@ -3,7 +3,7 @@
   // ../test/van.test.js
   window.numTests = 0;
   var runTests = async (vanObj, msgDom2, { debug }) => {
-    const { add, derive, tags, tagsNS, state, val, oldVal, effect } = vanObj;
+    const { _, add, tags, tagsNS, state, val, oldVal, derive } = vanObj;
     const { a, button, div: div2, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = tags;
     const assert = (cond) => {
       if (!cond)
@@ -182,7 +182,7 @@
       tags_stateDerivedOnclickHandler_connected: withHiddenDom(async (hiddenDom) => {
         const elementName = state("p");
         add(hiddenDom, button({
-          onclick: derive(() => {
+          onclick: _(() => {
             const name = elementName.val;
             return name ? () => add(hiddenDom, tags[name]("Button clicked!")) : null;
           })
@@ -202,7 +202,7 @@
         const dom = div2();
         const elementName = state("p");
         add(dom, button({
-          onclick: derive(() => {
+          onclick: _(() => {
             const name = elementName.val;
             return name ? () => add(dom, tags[name]("Button clicked!")) : null;
           })
@@ -296,18 +296,6 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<p>Text</p>");
       }),
-      tags_stateAsChild_domValuedState: withHiddenDom(async (hiddenDom) => {
-        const child = state(div2());
-        const dom = p(child);
-        add(hiddenDom, dom);
-        assertEq(dom.outerHTML, "<p><div></div></p>");
-        child.val = span();
-        await sleep(waitMsOnDomUpdates);
-        assertEq(dom.outerHTML, "<p><span></span></p>");
-        child.val = "Raw Text";
-        await sleep(waitMsOnDomUpdates);
-        assertEq(dom.outerHTML, "<p>Raw Text</p>");
-      }),
       tagsNS_svg: () => {
         const { circle, path: path2, svg } = tagsNS("http://www.w3.org/2000/svg");
         const dom = svg({ width: "16px", viewBox: "0 0 50 50" }, circle({ cx: "25", cy: "25", "r": "20", stroke: "black", "stroke-width": "2", fill: "yellow" }), circle({ cx: "16", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), circle({ cx: "34", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), path2({ "d": "M 15 30 Q 25 40, 35 30", stroke: "black", "stroke-width": "2", fill: "transparent" }));
@@ -371,32 +359,36 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
       },
-      state_valAndOldVal: () => {
-        const s = state("Init State");
-        assertEq(s.val, "Init State");
-        assertEq(s.oldVal, "Init State");
-        s.val = "Changed State";
-        assertEq(s.val, "Changed State");
-        assertEq(s.oldVal, "Init State");
-      },
-      effect_basic: () => {
+      state_valAndOldVal: withHiddenDom(async (hiddenDom) => {
+        const s = state("State Version 1");
+        assertEq(s.val, "State Version 1");
+        assertEq(s.oldVal, "State Version 1");
+        s.val = "State Version 2";
+        assertEq(s.val, "State Version 2");
+        assertEq(s.oldVal, "State Version 2");
+        add(hiddenDom, s);
+        s.val = "State Version 3";
+        assertEq(s.val, "State Version 3");
+        assertEq(s.oldVal, "State Version 2");
+        await sleep(waitMsOnDomUpdates);
+        assertEq(s.val, "State Version 3");
+        assertEq(s.oldVal, "State Version 3");
+      }),
+      derive_sideEffect: () => {
         const history = [];
         const s = state("This");
-        effect(() => history.push(s.val));
+        derive(() => history.push(s.val));
         s.val = "is";
         s.val = "a";
         s.val = "test";
         s.val = "test";
         assertEq(JSON.stringify(history), '["This","is","a","test"]');
       },
-      effect_derivedStates: () => {
+      derive_derivedStates: () => {
         const numItems = state(0);
-        const items = state([]);
-        effect(() => items.val = [...Array(numItems.val).keys()].map((i) => `Item ${i + 1}`));
-        const selectedIndex = state(0);
-        effect(() => (items.val, selectedIndex.val = 0));
-        const selectedItem = state("");
-        effect(() => selectedItem.val = items.val[selectedIndex.val]);
+        const items = derive(() => [...Array(numItems.val).keys()].map((i) => `Item ${i + 1}`));
+        const selectedIndex = derive(() => (items.val, 0));
+        const selectedItem = derive(() => items.val[selectedIndex.val]);
         numItems.val = 3;
         assertEq(numItems.val, 3);
         assertEq(items.val.join(","), "Item 1,Item 2,Item 3");
@@ -414,11 +406,11 @@
         assertEq(selectedIndex.val, 3);
         assertEq(selectedItem.val, "Item 4");
       },
-      effect_conditionalEffect: () => {
+      derive_conditionalDerivedStates: () => {
         const cond = state(true);
-        const a2 = state(1), b = state(2), c = state(3), d = state(4), sum = state(0);
+        const a2 = state(1), b = state(2), c = state(3), d = state(4);
         let numEffectTriggered = 0;
-        effect(() => (++numEffectTriggered, sum.val = cond.val ? a2.val + b.val : c.val + d.val));
+        const sum = derive(() => (++numEffectTriggered, cond.val ? a2.val + b.val : c.val + d.val));
         assertEq(sum.val, 3);
         assertEq(numEffectTriggered, 1);
         a2.val = 11;
@@ -516,10 +508,8 @@
       }),
       stateDerivedChild_statefulDynamicDom: withHiddenDom(async (hiddenDom) => {
         const numItems = state(0);
-        const items = state([]);
-        effect(() => items.val = [...Array(numItems.val).keys()].map((i) => `Item ${i + 1}`));
-        const selectedIndex = state(0);
-        effect(() => (items.val, selectedIndex.val = 0));
+        const items = derive(() => [...Array(numItems.val).keys()].map((i) => `Item ${i + 1}`));
+        const selectedIndex = derive(() => (items.val, 0));
         const domFunc = (dom) => {
           if (dom && items.val === items.oldVal) {
             const itemDoms = dom.childNodes;
@@ -644,15 +634,15 @@
       })
     };
     const debugTests = {
-      derive_nonFuncArg: () => {
+      escape_nonFuncArg: () => {
         const a2 = state(0);
-        assertError("Must pass-in a function to `van.derive`", () => derive(++a2.val));
+        assertError("Must pass-in a function to `van._`", () => _(++a2.val));
       },
       tags_invalidProp_nonFuncOnHandler: () => {
         const counter = state(0);
         assertError("Only functions and null are allowed", () => button({ onclick: ++counter.val }, "Increment"));
         assertError("Only functions and null are allowed", () => button({ onclick: state(++counter.val) }, "Increment"));
-        assertError("Only functions and null are allowed", () => button({ onclick: derive(() => ++counter.val) }, "Increment"));
+        assertError("Only functions and null are allowed", () => button({ onclick: _(() => ++counter.val) }, "Increment"));
       },
       tags_invalidProp_nonPrimitiveValue: () => {
         assertError(/Only.*are valid prop value types/, () => a({ href: {} }));
@@ -687,7 +677,7 @@
       tags_invalidFollowupPropValues_stateDerivedProp: withHiddenDom(async (hiddenDom) => {
         const s = state("https://vanjs.org/"), t2 = state(() => {
         });
-        add(hiddenDom, a({ href: () => s.val || {} }), a({ href: () => s.val || void 0 }), a({ href: () => s.val || ((x) => x * 2) }), button({ onclick: derive(() => t2.val || 1) }));
+        add(hiddenDom, a({ href: () => s.val || {} }), a({ href: () => s.val || void 0 }), a({ href: () => s.val || ((x) => x * 2) }), button({ onclick: _(() => t2.val || 1) }));
         await capturingErrors(async () => {
           s.val = "";
           await sleep(waitMsOnDomUpdates);
@@ -732,10 +722,12 @@
       }),
       state_invalidInitialVal: () => {
         assertError("couldn't have value to other state", () => state(state(0)));
+        assertError("DOM Node is not valid value for state", () => state(div2()));
       },
       state_invalidValSet: () => {
         const s = state(0);
         assertError("couldn't have value to other state", () => s.val = state(0));
+        assertError("DOM Node is not valid value for state", () => s.val = div2());
       },
       state_mutatingValOrOldVal: () => {
         {
@@ -749,9 +741,9 @@
           assertError("TypeError:", () => t2.oldVal.b = 3);
         }
       },
-      effect_nonFuncArg: () => {
-        const a2 = state(0), b = state(0);
-        assertError("Must pass-in a function to `van.effect`", () => effect(b.val = a2.val * 2));
+      derive_nonFuncArg: () => {
+        const a2 = state(0);
+        assertError("Must pass-in a function to `van.derive`", () => derive(a2.val * 2));
       },
       stateDerivedChild_invalidInitialResult: () => {
         assertError(/Only.*are valid child of a DOM Element/, () => div2(() => ({})));
@@ -830,11 +822,12 @@
       },
       stateExample: withHiddenDom(async (hiddenDom) => {
         const counter = state(1);
-        effect(() => console.log(`Counter: ${counter.val}`));
+        derive(() => console.log(`Counter: ${counter.val}`));
+        const counterSquared = derive(() => counter.val * counter.val);
         const dom1 = div2(counter);
         const dom2 = input({ type: "number", value: counter, disabled: true });
         const dom3 = div2({ style: () => `font-size: ${counter.val}em;` }, "Text");
-        const dom4 = div2(counter, sup(2), () => ` = ${counter.val * counter.val}`);
+        const dom4 = div2(counter, sup(2), () => ` = ${counterSquared.val}`);
         const incrementBtn = button({ onclick: () => ++counter.val }, "Increment");
         const resetBtn = button({ onclick: () => counter.val = 1 }, "Reset");
         add(hiddenDom, incrementBtn, resetBtn, dom1, dom2, dom3, dom4);
@@ -990,7 +983,7 @@
       long_derivedDom: withHiddenDom(async (hiddenDom) => {
         const renderPre = state(false);
         const text = state("Text");
-        const bindingsPropKey = Object.entries(renderPre).find(([_, v]) => Array.isArray(v))[0];
+        const bindingsPropKey = Object.entries(renderPre).find(([_2, v]) => Array.isArray(v))[0];
         const dom = div2(() => (renderPre.val ? pre : div2)(() => `--${text.val}--`));
         add(hiddenDom, dom);
         for (let i = 0; i < 20; ++i) {
@@ -1004,7 +997,7 @@
       long_conditionalDomFunc: withHiddenDom(async (hiddenDom) => {
         const cond = state(true);
         const a2 = state(0), b = state(0), c = state(0), d = state(0);
-        const bindingsPropKey = Object.entries(cond).find(([_, v]) => Array.isArray(v))[0];
+        const bindingsPropKey = Object.entries(cond).find(([_2, v]) => Array.isArray(v))[0];
         const dom = div2(() => cond.val ? a2.val + b.val : c.val + d.val);
         add(hiddenDom, dom);
         const allStates = [cond, a2, b, c, d];
@@ -1020,21 +1013,20 @@
         await sleep(1e3);
         allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 3));
       }),
-      effect_basic: () => {
+      derive_basic: () => {
         const history = [];
         const a2 = state(0);
-        const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
-        effect(() => history.push({ from: a2.oldVal, to: a2.val }));
+        const listenersPropKey = Object.entries(a2).filter(([_2, v]) => Array.isArray(v))[1][0];
+        derive(() => history.push(a2.val));
         for (let i = 0; i < 100; ++i)
           ++a2.val;
         assertBetween(a2[listenersPropKey].length, 1, 3);
       },
-      effect_conditionalEffect: () => {
+      derive_conditionalDerivedStates: () => {
         const cond = state(true);
         const a2 = state(0), b = state(0), c = state(0), d = state(0);
-        const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
-        let sum;
-        effect(() => sum = cond.val ? a2.val + b.val : c.val + d.val);
+        const listenersPropKey = Object.entries(a2).filter(([_2, v]) => Array.isArray(v))[1][0];
+        derive(() => cond.val ? a2.val + b.val : c.val + d.val);
         const allStates = [cond, a2, b, c, d];
         for (let i = 0; i < 100; ++i) {
           const randomState = allStates[Math.floor(Math.random() * allStates.length)];

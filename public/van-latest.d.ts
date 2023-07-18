@@ -3,7 +3,7 @@ export interface State<T> extends StateView<T> {
 }
 
 // Defining readonly view of State<T> for covariance.
-// Basically we want State<string> implements StateView<string | number>
+// Basically we want StateView<string> to implement StateView<string | number>
 export interface StateView<T> {
   readonly val: T
   readonly oldVal: T
@@ -11,6 +11,7 @@ export interface StateView<T> {
 
 declare function val<T>(s: T | StateView<T>): T
 declare function oldVal<T>(s: T | StateView<T>): T
+declare function derive<T>(f: () => T): State<T>
 
 export type Primitive = string | number | boolean | bigint
 
@@ -142,9 +143,9 @@ export interface Van {
   readonly state: <T>(initVal: T) => State<T>
   readonly val: typeof val
   readonly oldVal: typeof oldVal
-  readonly effect: (f: () => void) => void
+  readonly derive: typeof derive
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
-  readonly derive: (f: () => PropValue) => () => PropValue
+  readonly _: (f: () => PropValue) => () => PropValue
   readonly tags: Tags
   readonly tagsNS: (namespaceURI: string) => TagsBase
 }

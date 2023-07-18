@@ -27,13 +27,13 @@
     set "val"(v) {
       let s = this;
       if (v !== s._val) {
-        changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms);
         s._val = v;
         let boundStates = /* @__PURE__ */ new Set();
         for (let l of [...s.listeners])
-          effect(l.f), l.executed = 1, l.deps.forEach(boundStates.add, boundStates);
+          derive(l.f, l.s), l.executed = 1, l.deps.forEach(boundStates.add, boundStates);
         for (let _s of boundStates)
           _s.listeners = _s.listeners.filter((l) => !l.executed);
+        s.bindings.length ? changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms) : s._oldVal = v;
       }
     }
   };
@@ -53,22 +53,23 @@
   var statesToGc;
   var bind = (f, dom) => {
     let deps = /* @__PURE__ */ new Set(), binding = { f }, newDom = runAndCaptureDeps(f, deps, dom);
-    for (let s of deps) {
+    for (let d of deps) {
       statesToGc = addAndScheduleOnFirst(
         statesToGc,
-        s,
+        d,
         () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
         gcCycleInMs
       );
-      s.bindings.push(binding);
+      d.bindings.push(binding);
     }
     return binding.dom = (newDom ?? doc).nodeType ? newDom : new Text(newDom);
   };
-  var effect = (f) => {
-    let deps = /* @__PURE__ */ new Set(), listener = { f, deps };
-    runAndCaptureDeps(f, deps);
-    for (let s of deps)
-      s.listeners.push(listener);
+  var derive = (f, s = state()) => {
+    let deps = /* @__PURE__ */ new Set(), listener = { f, deps, s };
+    s.val = runAndCaptureDeps(f, deps);
+    for (let d of deps)
+      d.listeners.push(listener);
+    return s;
   };
   var add = (dom, ...children) => {
     for (let c of children.flat(Infinity)) {
@@ -79,7 +80,7 @@
     }
     return dom;
   };
-  var derive = (f) => (f.isDerived = 1, f);
+  var _ = (f) => (f.isBindingFunc = 1, f);
   var propSetterCache = {};
   var tagsNS = (ns) => new Proxy((name, ...args) => {
     let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args];
@@ -91,7 +92,7 @@
       let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k);
       if (isState(v))
         bind(() => (setter(v.val), dom));
-      else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v.isDerived))
+      else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v.isBindingFunc))
         bind(() => (setter(v()), dom));
       else
         setter(v);
@@ -110,7 +111,7 @@
     for (let s of changedStatesArray)
       s._oldVal = s._val;
   };
-  var van_default = { add, "derive": derive, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, effect };
+  var van_default = { add, "_": _, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, "derive": derive };
 
   // van.debug.js
   var capturedErrors;
@@ -129,7 +130,7 @@
   var protoOf2 = Object.getPrototypeOf;
   var stateProto2 = protoOf2(van_default.state());
   var isState2 = (s) => protoOf2(s ?? 0) === stateProto2;
-  var checkStateValValid = (v) => (expect(!isState2(v), "State couldn't have value to other state"), v);
+  var checkStateValValid = (v) => (expect(!isState2(v), "State couldn't have value to other state"), expect(!(v instanceof Node), "DOM Node is not valid value for state"), v);
   var state2 = (initVal) => new Proxy(van_default.state(Object.freeze(checkStateValValid(initVal))), {
     set: (s, prop, val2) => {
       if (prop === "val")
@@ -140,10 +141,7 @@
       return Reflect.get(s, prop);
     }
   });
-  var effect2 = (f) => {
-    expect(typeof f === "function", "Must pass-in a function to `van.effect`");
-    van_default.effect(f);
-  };
+  var derive2 = (f) => (expect(typeof f === "function", "Must pass-in a function to `van.derive`"), van_default.derive(f));
   var isValidPrimitive = (v) => typeof v === "string" || typeof v === "number" || typeof v === "boolean" || typeof v === "bigint";
   var isDomOrPrimitive = (v) => v instanceof Node || isValidPrimitive(v);
   var validateChild = (child) => {
@@ -174,9 +172,9 @@
     expect(dom instanceof Element, "1st argument of `van.add` function must be a DOM Element object");
     return van_default.add(dom, ...checkChildren(children));
   };
-  var derive2 = (f) => {
-    expect(typeof f === "function", "Must pass-in a function to `van.derive`");
-    return van_default.derive(f);
+  var _2 = (f) => {
+    expect(typeof f === "function", "Must pass-in a function to `van._`");
+    return van_default._(f);
   };
   var _tagsNS = (ns) => new Proxy(van_default.tagsNS(ns), {
     get: (vanTags, name) => {
@@ -193,9 +191,9 @@
             `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`
           ), v2);
           if (isState2(v))
-            debugProps[k] = derive2(() => validatePropValue(v.val));
-          else if (typeof v === "function" && (!k.startsWith("on") || v.isDerived))
-            debugProps[k] = derive2(() => validatePropValue(v()));
+            debugProps[k] = van_default._(() => validatePropValue(v.val));
+          else if (typeof v === "function" && (!k.startsWith("on") || v.isBindingFunc))
+            debugProps[k] = van_default._(() => validatePropValue(v()));
           else
             debugProps[k] = validatePropValue(v);
         }
@@ -207,7 +205,7 @@
     expect(typeof ns === "string", "Must provide a string for parameter `ns` in `van.tagsNS`");
     return _tagsNS(ns);
   };
-  var van_debug_default = { add: add2, derive: derive2, tags: _tagsNS(), tagsNS: tagsNS2, state: state2, val: van_default.val, oldVal: van_default.oldVal, effect: effect2, startCapturingErrors, stopCapturingErrors, get capturedErrors() {
+  var van_debug_default = { add: add2, _: _2, tags: _tagsNS(), tagsNS: tagsNS2, state: state2, val: van_default.val, oldVal: van_default.oldVal, derive: derive2, startCapturingErrors, stopCapturingErrors, get capturedErrors() {
     return capturedErrors;
   } };
 
