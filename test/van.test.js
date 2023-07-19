@@ -1156,6 +1156,6 @@ export const testVanFile = async (path, type) => {
     const van = await (type === "es6" ? import(path).then(r => r.default) : fetch(path).then(r => r.text()).then(t => (eval(t), window.van)));
     const { div, h2 } = van.tags;
     const msgDom = div({ class: "testMsg" });
-    van.van.add(document.getElementById("msgPanel"), h2(`Running tests for ${path}`), msgDom);
+    van.add(document.getElementById("msgPanel"), h2(`Running tests for ${path}`), msgDom);
     await runTests(van, msgDom, { debug: path.includes(".debug") });
 };
