@@ -1,6 +1,6 @@
 window.numTests = 0;
 const runTests = async (van, msgDom, { debug }) => {
-    const { a, button, div, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van.tags;
+    const { a, b, button, div, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van.tags;
     const assert = (cond) => {
         if (!cond)
             throw new Error("Assertion failed");
@@ -886,7 +886,7 @@ const runTests = async (van, msgDom, { debug }) => {
                 ],
             }).outerHTML, "<table><tbody><tr><td>1</td><td>John Doe</td><td>US</td></tr><tr><td>2</td><td>Jane Smith</td><td>CA</td></tr></tbody></table>");
         },
-        stateExample: withHiddenDom(async (hiddenDom) => {
+        state: withHiddenDom(async (hiddenDom) => {
             // Create a new state object with init value 1
             const counter = van.state(1);
             // Log whenever the value of the state is updated
@@ -919,6 +919,18 @@ const runTests = async (van, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>1</div><input type="number" disabled=""><div style="font-size: 1em;">Text</div><div>1<sup>2</sup> = 1</div>');
             assertEq(dom2.value, "1");
+        }),
+        domValuedState_excludeDebug: withHiddenDom(async (hiddenDom) => {
+            const TurnBold = () => {
+                const vanJS = van.state("VanJS");
+                return span(button({ onclick: () => vanJS.val = b("VanJS") }, "Turn Bold"), " Welcome to ", vanJS, ". ", vanJS, " is awesome!");
+            };
+            van.add(hiddenDom, TurnBold());
+            const dom = (hiddenDom.firstChild);
+            assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to VanJS. VanJS&nbsp;is awesome!</span>");
+            dom.querySelector("button").click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to . <b>VanJS</b>&nbsp;is awesome!</span>");
         }),
         connectedProps: withHiddenDom(async (hiddenDom) => {
             const ConnectedProps = () => {
@@ -1124,6 +1136,8 @@ const runTests = async (van, msgDom, { debug }) => {
     for (const [k, v] of Object.entries(suites)) {
         for (const [name, func] of Object.entries(v)) {
             if (skipLong && name.startsWith("long_"))
+                continue;
+            if (debug && name.endsWith("_excludeDebug"))
                 continue;
             ++window.numTests;
             const result = van.state("");

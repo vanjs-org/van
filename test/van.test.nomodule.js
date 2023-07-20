@@ -3,7 +3,7 @@
   // ../test/van.test.js
   window.numTests = 0;
   var runTests = async (van2, msgDom2, { debug }) => {
-    const { a, button, div: div2, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van2.tags;
+    const { a, b, button, div: div2, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van2.tags;
     const assert = (cond) => {
       if (!cond)
         throw new Error("Assertion failed");
@@ -407,15 +407,15 @@
       },
       derive_conditionalDerivedState: () => {
         const cond = van2.state(true);
-        const a2 = van2.state(1), b = van2.state(2), c = van2.state(3), d = van2.state(4);
+        const a2 = van2.state(1), b2 = van2.state(2), c = van2.state(3), d = van2.state(4);
         let numEffectTriggered = 0;
-        const sum = van2.derive(() => (++numEffectTriggered, cond.val ? a2.val + b.val : c.val + d.val));
+        const sum = van2.derive(() => (++numEffectTriggered, cond.val ? a2.val + b2.val : c.val + d.val));
         assertEq(sum.val, 3);
         assertEq(numEffectTriggered, 1);
         a2.val = 11;
         assertEq(sum.val, 13);
         assertEq(numEffectTriggered, 2);
-        b.val = 12;
+        b2.val = 12;
         assertEq(sum.val, 23);
         assertEq(numEffectTriggered, 3);
         c.val = 13;
@@ -436,7 +436,7 @@
         a2.val = 21;
         assertEq(sum.val, 47);
         assertEq(numEffectTriggered, 6);
-        b.val = 22;
+        b2.val = 22;
         assertEq(sum.val, 47);
         assertEq(numEffectTriggered, 6);
       },
@@ -592,14 +592,14 @@
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
       }),
       stateDerivedChild_dynamicPrimitive: withHiddenDom(async (hiddenDom) => {
-        const a2 = van2.state(1), b = van2.state(2), deleted = van2.state(false);
-        const dom = div2(() => deleted.val ? null : a2.val + b.val);
+        const a2 = van2.state(1), b2 = van2.state(2), deleted = van2.state(false);
+        const dom = div2(() => deleted.val ? null : a2.val + b2.val);
         assertEq(dom.outerHTML, "<div>3</div>");
         van2.add(hiddenDom, dom);
         a2.val = 6;
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<div>8</div>");
-        b.val = 5;
+        b2.val = 5;
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<div>11</div>");
         deleted.val = true;
@@ -747,13 +747,13 @@
       derive_accessStateCreatedInOuterScope: () => {
         const a2 = van2.state(1);
         assertError("could lead to GC issues", () => div2(() => {
-          const b = van2.derive(() => a2.val + 1);
-          return span(b.val + 1);
+          const b2 = van2.derive(() => a2.val + 1);
+          return span(b2.val + 1);
         }));
         assertError("could lead to GC issues", () => div2({
           id: () => {
-            const b = van2.derive(() => a2.val + 1);
-            return b.val + 1;
+            const b2 = van2.derive(() => a2.val + 1);
+            return b2.val + 1;
           }
         }));
       },
@@ -832,7 +832,7 @@
           ]
         }).outerHTML, "<table><tbody><tr><td>1</td><td>John Doe</td><td>US</td></tr><tr><td>2</td><td>Jane Smith</td><td>CA</td></tr></tbody></table>");
       },
-      stateExample: withHiddenDom(async (hiddenDom) => {
+      state: withHiddenDom(async (hiddenDom) => {
         const counter = van2.state(1);
         van2.derive(() => console.log(`Counter: ${counter.val}`));
         const counterSquared = van2.derive(() => counter.val * counter.val);
@@ -857,6 +857,18 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>1</div><input type="number" disabled=""><div style="font-size: 1em;">Text</div><div>1<sup>2</sup> = 1</div>');
         assertEq(dom2.value, "1");
+      }),
+      domValuedState_excludeDebug: withHiddenDom(async (hiddenDom) => {
+        const TurnBold = () => {
+          const vanJS = van2.state("VanJS");
+          return span(button({ onclick: () => vanJS.val = b("VanJS") }, "Turn Bold"), "\xA0Welcome to ", vanJS, ". ", vanJS, "\xA0is awesome!");
+        };
+        van2.add(hiddenDom, TurnBold());
+        const dom = hiddenDom.firstChild;
+        assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to VanJS. VanJS&nbsp;is awesome!</span>");
+        dom.querySelector("button").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to . <b>VanJS</b>&nbsp;is awesome!</span>");
       }),
       connectedProps: withHiddenDom(async (hiddenDom) => {
         const ConnectedProps = () => {
@@ -1008,11 +1020,11 @@
       }),
       long_conditionalDomFunc: withHiddenDom(async (hiddenDom) => {
         const cond = van2.state(true);
-        const a2 = van2.state(0), b = van2.state(0), c = van2.state(0), d = van2.state(0);
+        const a2 = van2.state(0), b2 = van2.state(0), c = van2.state(0), d = van2.state(0);
         const bindingsPropKey = Object.entries(cond).find(([_, v]) => Array.isArray(v))[0];
-        const dom = div2(() => cond.val ? a2.val + b.val : c.val + d.val);
+        const dom = div2(() => cond.val ? a2.val + b2.val : c.val + d.val);
         van2.add(hiddenDom, dom);
-        const allStates = [cond, a2, b, c, d];
+        const allStates = [cond, a2, b2, c, d];
         for (let i = 0; i < 100; ++i) {
           const randomState = allStates[Math.floor(Math.random() * allStates.length)];
           if (randomState === cond)
@@ -1036,10 +1048,10 @@
       },
       derive_conditionalDerivedState: () => {
         const cond = van2.state(true);
-        const a2 = van2.state(0), b = van2.state(0), c = van2.state(0), d = van2.state(0);
+        const a2 = van2.state(0), b2 = van2.state(0), c = van2.state(0), d = van2.state(0);
         const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
-        van2.derive(() => cond.val ? a2.val + b.val : c.val + d.val);
-        const allStates = [cond, a2, b, c, d];
+        van2.derive(() => cond.val ? a2.val + b2.val : c.val + d.val);
+        const allStates = [cond, a2, b2, c, d];
         for (let i = 0; i < 100; ++i) {
           const randomState = allStates[Math.floor(Math.random() * allStates.length)];
           if (randomState === cond)
@@ -1057,6 +1069,8 @@
     for (const [k, v] of Object.entries(suites)) {
       for (const [name, func] of Object.entries(v)) {
         if (skipLong && name.startsWith("long_"))
+          continue;
+        if (debug && name.endsWith("_excludeDebug"))
           continue;
         ++window.numTests;
         const result = van2.state("");
