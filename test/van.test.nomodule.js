@@ -870,6 +870,21 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to . <b>VanJS</b>&nbsp;is awesome!</span>");
       }),
+      derivedState: withHiddenDom(async (hiddenDom) => {
+        const DerivedState = () => {
+          const text = van2.state("VanJS");
+          const length = van2.derive(() => text.val.length);
+          return span("The length of ", input({ type: "text", value: text, oninput: (e) => text.val = e.target.value }), " is ", length, ".");
+        };
+        van2.add(hiddenDom, DerivedState());
+        const dom = hiddenDom.firstChild;
+        assertEq(dom.outerHTML, '<span>The length of <input type="text"> is 5.</span>');
+        const inputDom = dom.querySelector("input");
+        inputDom.value = "Mini-Van";
+        inputDom.dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, '<span>The length of <input type="text"> is 8.</span>');
+      }),
       connectedProps: withHiddenDom(async (hiddenDom) => {
         const ConnectedProps = () => {
           const text = van2.state("");
