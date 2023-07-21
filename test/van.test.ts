@@ -1299,6 +1299,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
             option({value: "Ascending"}, "Ascending"),
             option({value: "Descending"}, "Descending"),
           ),
+          // A State-derived child node
           () => sortedBy.val === "Ascending" ?
             ul(items.val.split(",").sort().map(i => li(i))) :
             ul(items.val.split(",").sort().reverse().map(i => li(i))),

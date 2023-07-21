@@ -931,11 +931,18 @@
       sortedList: withHiddenDom(async (hiddenDom) => {
         const SortedList = () => {
           const items = van2.state("a,b,c"), sortedBy = van2.state("Ascending");
-          return span("Comma-separated list: ", input({
-            oninput: (e) => items.val = e.target.value,
-            type: "text",
-            value: items
-          }), " ", select({ oninput: (e) => sortedBy.val = e.target.value, value: sortedBy }, option({ value: "Ascending" }, "Ascending"), option({ value: "Descending" }, "Descending")), () => sortedBy.val === "Ascending" ? ul(items.val.split(",").sort().map((i) => li(i))) : ul(items.val.split(",").sort().reverse().map((i) => li(i))));
+          return span(
+            "Comma-separated list: ",
+            input({
+              oninput: (e) => items.val = e.target.value,
+              type: "text",
+              value: items
+            }),
+            " ",
+            select({ oninput: (e) => sortedBy.val = e.target.value, value: sortedBy }, option({ value: "Ascending" }, "Ascending"), option({ value: "Descending" }, "Descending")),
+            // A State-derived child node
+            () => sortedBy.val === "Ascending" ? ul(items.val.split(",").sort().map((i) => li(i))) : ul(items.val.split(",").sort().reverse().map((i) => li(i)))
+          );
         };
         van2.add(hiddenDom, SortedList());
         hiddenDom.querySelector("input").value = "a,b,c,d";
