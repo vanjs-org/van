@@ -919,22 +919,22 @@
       escapeDerivedProp: withHiddenDom(async (hiddenDom) => {
         const Counter = () => {
           const counter = van2.state(0);
-          const action = van2.state("Up");
-          return span("\u2764\uFE0F ", counter, " ", select({ oninput: (e) => action.val = e.target.value, value: action }, option({ value: "Up" }, "Up"), option({ value: "Down" }, "Down")), " ", button({ onclick: van2._(() => action.val === "Up" ? () => ++counter.val : () => --counter.val) }, "Run"));
+          const action = van2.state("\u{1F44D}");
+          return span("\u2764\uFE0F ", counter, " ", select({ oninput: (e) => action.val = e.target.value, value: action }, option({ value: "\u{1F44D}" }, "\u{1F44D}"), option({ value: "\u{1F44E}" }, "\u{1F44E}")), " ", button({ onclick: van2._(() => action.val === "\u{1F44D}" ? () => ++counter.val : () => --counter.val) }, "Run"));
         };
         van2.add(hiddenDom, Counter());
         const dom = hiddenDom.firstChild;
-        assertEq(dom.outerHTML, '<span>\u2764\uFE0F 0 <select><option value="Up">Up</option><option value="Down">Down</option></select> <button>Run</button></span>');
+        assertEq(dom.outerHTML, '<span>\u2764\uFE0F 0 <select><option value="\u{1F44D}">\u{1F44D}</option><option value="\u{1F44E}">\u{1F44E}</option></select> <button>Run</button></span>');
         dom.querySelector("button").click();
         dom.querySelector("button").click();
         await sleep(waitMsOnDomUpdates);
-        assertEq(dom.outerHTML, '<span>\u2764\uFE0F 2 <select><option value="Up">Up</option><option value="Down">Down</option></select> <button>Run</button></span>');
-        dom.querySelector("select").value = "Down";
+        assertEq(dom.outerHTML, '<span>\u2764\uFE0F 2 <select><option value="\u{1F44D}">\u{1F44D}</option><option value="\u{1F44E}">\u{1F44E}</option></select> <button>Run</button></span>');
+        dom.querySelector("select").value = "\u{1F44E}";
         dom.querySelector("select").dispatchEvent(new Event("input"));
         await sleep(waitMsOnDomUpdates);
         dom.querySelector("button").click();
         await sleep(waitMsOnDomUpdates);
-        assertEq(dom.outerHTML, '<span>\u2764\uFE0F 1 <select><option value="Up">Up</option><option value="Down">Down</option></select> <button>Run</button></span>');
+        assertEq(dom.outerHTML, '<span>\u2764\uFE0F 1 <select><option value="\u{1F44D}">\u{1F44D}</option><option value="\u{1F44E}">\u{1F44E}</option></select> <button>Run</button></span>');
       }),
       sortedList: withHiddenDom(async (hiddenDom) => {
         const SortedList = () => {

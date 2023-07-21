@@ -1273,32 +1273,32 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
     escapeDerivedProp: withHiddenDom(async hiddenDom => {
       const Counter = () => {
         const counter = van.state(0)
-        const action = van.state("Up")
+        const action = van.state("👍")
         return span(
           "❤️ ", counter, " ",
           select({oninput: e => action.val = e.target.value, value: action},
-            option({value: "Up"}, "Up"), option({value: "Down"}, "Down"),
+            option({value: "👍"}, "👍"), option({value: "👎"}, "👎"),
           ), " ",
-          button({onclick: van._(() => action.val === "Up" ?
+          button({onclick: van._(() => action.val === "👍" ?
             () => ++counter.val : () => --counter.val)}, "Run"),
         )
       }
 
       van.add(hiddenDom, Counter())
       const dom = <Element>(hiddenDom.firstChild)
-      assertEq(dom.outerHTML, '<span>❤️ 0 <select><option value="Up">Up</option><option value="Down">Down</option></select> <button>Run</button></span>')
+      assertEq(dom.outerHTML, '<span>❤️ 0 <select><option value="👍">👍</option><option value="👎">👎</option></select> <button>Run</button></span>')
 
       dom.querySelector("button")!.click()
       dom.querySelector("button")!.click()
       await sleep(waitMsOnDomUpdates)
-      assertEq(dom.outerHTML, '<span>❤️ 2 <select><option value="Up">Up</option><option value="Down">Down</option></select> <button>Run</button></span>')
+      assertEq(dom.outerHTML, '<span>❤️ 2 <select><option value="👍">👍</option><option value="👎">👎</option></select> <button>Run</button></span>')
 
-      dom.querySelector("select")!.value = "Down"
+      dom.querySelector("select")!.value = "👎"
       dom.querySelector("select")!.dispatchEvent(new Event("input"))
       await sleep(waitMsOnDomUpdates)
       dom.querySelector("button")!.click()
       await sleep(waitMsOnDomUpdates)
-      assertEq(dom.outerHTML, '<span>❤️ 1 <select><option value="Up">Up</option><option value="Down">Down</option></select> <button>Run</button></span>')
+      assertEq(dom.outerHTML, '<span>❤️ 1 <select><option value="👍">👍</option><option value="👎">👎</option></select> <button>Run</button></span>')
     }),
 
     sortedList: withHiddenDom(async hiddenDom => {
