@@ -858,18 +858,6 @@
         assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>1</div><input type="number" disabled=""><div style="font-size: 1em;">Text</div><div>1<sup>2</sup> = 1</div>');
         assertEq(dom2.value, "1");
       }),
-      domValuedState_excludeDebug: withHiddenDom(async (hiddenDom) => {
-        const TurnBold = () => {
-          const vanJS = van2.state("VanJS");
-          return span(button({ onclick: () => vanJS.val = b("VanJS") }, "Turn Bold"), "\xA0Welcome to ", vanJS, ". ", vanJS, "\xA0is awesome!");
-        };
-        van2.add(hiddenDom, TurnBold());
-        const dom = hiddenDom.firstChild;
-        assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to VanJS. VanJS&nbsp;is awesome!</span>");
-        dom.querySelector("button").click();
-        await sleep(waitMsOnDomUpdates);
-        assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to . <b>VanJS</b>&nbsp;is awesome!</span>");
-      }),
       derivedState: withHiddenDom(async (hiddenDom) => {
         const DerivedState = () => {
           const text = van2.state("VanJS");
@@ -927,6 +915,26 @@
         hiddenDom.querySelector("select").dispatchEvent(new Event("input"));
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.querySelector("span.preview").style.cssText, "font-size: 20px; color: blue;");
+      }),
+      escapeDerivedProp: withHiddenDom(async (hiddenDom) => {
+        const Counter = () => {
+          const counter = van2.state(0);
+          const action = van2.state("Up");
+          return span("\u2764\uFE0F ", counter, " ", select({ oninput: (e) => action.val = e.target.value, value: action }, option({ value: "Up" }, "Up"), option({ value: "Down" }, "Down")), " ", button({ onclick: van2._(() => action.val === "Up" ? () => ++counter.val : () => --counter.val) }, "Run"));
+        };
+        van2.add(hiddenDom, Counter());
+        const dom = hiddenDom.firstChild;
+        assertEq(dom.outerHTML, '<span>\u2764\uFE0F 0 <select><option value="Up">Up</option><option value="Down">Down</option></select> <button>Run</button></span>');
+        dom.querySelector("button").click();
+        dom.querySelector("button").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, '<span>\u2764\uFE0F 2 <select><option value="Up">Up</option><option value="Down">Down</option></select> <button>Run</button></span>');
+        dom.querySelector("select").value = "Down";
+        dom.querySelector("select").dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        dom.querySelector("button").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, '<span>\u2764\uFE0F 1 <select><option value="Up">Up</option><option value="Down">Down</option></select> <button>Run</button></span>');
       }),
       sortedList: withHiddenDom(async (hiddenDom) => {
         const SortedList = () => {
@@ -1023,6 +1031,18 @@
         button2.click();
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.firstChild.outerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button></span>');
+      }),
+      domValuedState_excludeDebug: withHiddenDom(async (hiddenDom) => {
+        const TurnBold = () => {
+          const vanJS = van2.state("VanJS");
+          return span(button({ onclick: () => vanJS.val = b("VanJS") }, "Turn Bold"), "\xA0Welcome to ", vanJS, ". ", vanJS, "\xA0is awesome!");
+        };
+        van2.add(hiddenDom, TurnBold());
+        const dom = hiddenDom.firstChild;
+        assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to VanJS. VanJS&nbsp;is awesome!</span>");
+        dom.querySelector("button").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to . <b>VanJS</b>&nbsp;is awesome!</span>");
       })
     };
     const gcTests = {
