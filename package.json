@@ -1,8 +1,19 @@
 {
-  "name": "van-dom",
+  "name": "vanjs-prerelease",
   "version": "1.0.0",
   "description": "VanJS. A minimalist React-like UI library based on vanilla JavaScript and DOM.",
+  "files": [
+    "src/van.js",
+    "src/van.d.ts",
+    "src/van.debug.js",
+    "src/van.debug.d.ts"
+  ],
   "main": "src/van.js",
+  "browser": "src/van.js",
+  "exports": {
+    ".": "./src/van.js",
+    "./debug": "./src/van.debug.js"
+  },
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +28,7 @@
     "DOM",
     "DOM Manipulation",
     "Zero-Dependency",
+    "lightweight",
     "Ultra-lightweight",
     "Minimalist"
   ],
@@ -32,7 +44,8 @@
     "url": "git+https://github.com/vanjs-org/van.git"
   },
   "bugs": {
-    "url": "https://github.com/vanjs-org/van/issues"
+    "url": "https://github.com/vanjs-org/van/issues",
+    "email": "bugs@vanjs.org"
   },
   "homepage": "https://vanjs.org"
 }

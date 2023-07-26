@@ -4,6 +4,8 @@ VER=$(jq -r ".version" ../package.json)
 echo -n $VER > ../public/van.version
 TERSER=../node_modules/terser/bin/terser
 
+cp van.d.ts van.debug.d.ts
+
 cp van.js ../public/van-$VER.js
 cp van.d.ts ../public/van-$VER.d.ts
 cp van.debug.js ../public/van-$VER.debug.js
