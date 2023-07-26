@@ -97,7 +97,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ## Want to Learn More?
 
-* Download and [Get Started](https://vanjs.org/start)
+* [Get Started](https://vanjs.org/start)
 * Learn from the [Tutorial](https://vanjs.org/tutorial)
 * Learn by [Examples](https://vanjs.org/demo) (and also [Community Examples](https://vanjs.org/demo#community-examples))
 * Convert HTML snippet to **VanJS** code with our online [HTML to **VanJS** Converter](https://vanjs.org/convert)
