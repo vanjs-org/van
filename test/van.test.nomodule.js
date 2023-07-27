@@ -41,13 +41,20 @@
     const withHiddenDom = (func) => async () => {
       const dom = div2({ class: "hidden" });
       van2.add(document.body, dom);
-      await func(dom);
-      dom.remove();
+      try {
+        await func(dom);
+      } finally {
+        dom.remove();
+      }
     };
-    const capturingErrors = async (func) => {
+    const capturingErrors = async (msg, numErrors, func) => {
       van2.startCapturingErrors();
-      await func();
-      van2.stopCapturingErrors();
+      try {
+        await func();
+        assert(van2.capturedErrors.length === numErrors && van2.capturedErrors.every((e) => msg instanceof RegExp ? msg.test(e.toString()) : e.toString().includes(msg)));
+      } finally {
+        van2.stopCapturingErrors();
+      }
     };
     const tests = {
       tags_basic: () => {
@@ -177,6 +184,51 @@
         text.val = "New Text";
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.value, 'From: "Old Text" to: "Old Text"');
+      },
+      tags_stateDerivedProp_errorThrown_connected: withHiddenDom(async (hiddenDom) => {
+        const text = van2.state("hello");
+        const dom = div2(div2({
+          class: () => {
+            if (text.val === "fail")
+              throw new Error();
+            return text.val;
+          },
+          "data-name": text
+        }, text), div2({
+          class: () => {
+            if (text.val === "fail")
+              throw new Error();
+            return text.val;
+          },
+          "data-name": text
+        }, text));
+        van2.add(hiddenDom, dom);
+        assertEq(dom.outerHTML, '<div><div class="hello" data-name="hello">hello</div><div class="hello" data-name="hello">hello</div></div>');
+        text.val = "fail";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, '<div><div class="hello" data-name="fail">fail</div><div class="hello" data-name="fail">fail</div></div>');
+      }),
+      tags_stateDerivedProp_errorThrown_disconnected: async () => {
+        const text = van2.state("hello");
+        const dom = div2(div2({
+          class: () => {
+            if (text.val === "fail")
+              throw new Error();
+            return text.val;
+          },
+          "data-name": text
+        }, text), div2({
+          class: () => {
+            if (text.val === "fail")
+              throw new Error();
+            return text.val;
+          },
+          "data-name": text
+        }, text));
+        assertEq(dom.outerHTML, '<div><div class="hello" data-name="hello">hello</div><div class="hello" data-name="hello">hello</div></div>');
+        text.val = "fail";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, '<div><div class="hello" data-name="hello">hello</div><div class="hello" data-name="hello">hello</div></div>');
       },
       tags_stateDerivedOnclickHandler_connected: withHiddenDom(async (hiddenDom) => {
         const elementName = van2.state("p");
@@ -440,6 +492,23 @@
         assertEq(sum.val, 47);
         assertEq(numEffectTriggered, 6);
       },
+      derive_errorThrown: () => {
+        const s0 = van2.state(1);
+        const s1 = van2.derive(() => s0.val * 2);
+        const s2 = van2.derive(() => {
+          if (s0.val > 1)
+            throw new Error();
+          return s0.val;
+        });
+        const s3 = van2.derive(() => s0.val * s0.val);
+        assertEq(s1.val, 2);
+        assertEq(s2.val, 1);
+        assertEq(s3.val, 1);
+        s0.val = 3;
+        assertEq(s1.val, 6);
+        assertEq(s2.val, void 0);
+        assertEq(s3.val, 9);
+      },
       stateDerivedChild_dynamicDom: withHiddenDom(async (hiddenDom) => {
         const verticalPlacement = van2.state(false);
         const button1Text = van2.state("Button 1"), button2Text = van2.state("Button 2"), button3Text = van2.state("Button 3");
@@ -630,6 +699,18 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.textContent, 'From: "Old Text" to: "Old Text"');
         assertEq(hiddenDom.innerHTML, 'From: "Old Text" to: "New Text"');
+      }),
+      stateDerivedChild_errorThrown: withHiddenDom(async (hiddenDom) => {
+        const num = van2.state(0);
+        assertEq(van2.add(hiddenDom, num, () => {
+          if (num.val > 0)
+            throw new Error();
+          return span("ok");
+        }, num), hiddenDom);
+        assertEq(hiddenDom.innerHTML, "0<span>ok</span>0");
+        num.val = 1;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, "1<span>ok</span>1");
       })
     };
     const debugTests = {
@@ -637,21 +718,21 @@
         const a2 = van2.state(0);
         assertError("Must pass-in a function to `van._`", () => van2._(++a2.val));
       },
-      tags_invalidProp_nonFuncOnHandler: () => {
+      tags_invalidProp_nonFuncOnHandler: async () => {
         const counter = van2.state(0);
         assertError("Only functions and null are allowed", () => button({ onclick: ++counter.val }, "Increment"));
-        assertError("Only functions and null are allowed", () => button({ onclick: van2.state(++counter.val) }, "Increment"));
-        assertError("Only functions and null are allowed", () => button({ onclick: van2._(() => ++counter.val) }, "Increment"));
+        await capturingErrors("Only functions and null are allowed", 1, () => button({ onclick: van2.state(++counter.val) }, "Increment"));
+        await capturingErrors("Only functions and null are allowed", 1, () => button({ onclick: van2._(() => ++counter.val) }, "Increment"));
       },
-      tags_invalidProp_nonPrimitiveValue: () => {
+      tags_invalidProp_nonPrimitiveValue: async () => {
         assertError(/Only.*are valid prop value types/, () => a({ href: {} }));
         assertError(/Only.*are valid prop value types/, () => a({ href: void 0 }));
-        assertError(/Only.*are valid prop value types/, () => a({ href: van2.state({}) }));
-        assertError(/Only.*are valid prop value types/, () => a({ href: van2.state(void 0) }));
-        assertError(/Only.*are valid prop value types/, () => a({ href: van2.state((x) => x * 2) }));
-        assertError(/Only.*are valid prop value types/, () => a({ href: () => ({}) }));
-        assertError(/Only.*are valid prop value types/, () => a({ href: () => void 0 }));
-        assertError(/Only.*are valid prop value types/, () => a({ href: () => (x) => x * 2 }));
+        await capturingErrors(/Only.*are valid prop value types/, 1, () => a({ href: van2.state({}) }));
+        await capturingErrors(/Only.*are valid prop value types/, 1, () => a({ href: van2.state(void 0) }));
+        await capturingErrors(/Only.*are valid prop value types/, 1, () => a({ href: van2.state((x) => x * 2) }));
+        await capturingErrors(/Only.*are valid prop value types/, 1, () => a({ href: () => ({}) }));
+        await capturingErrors(/Only.*are valid prop value types/, 1, () => a({ href: () => void 0 }));
+        await capturingErrors(/Only.*are valid prop value types/, 1, () => a({ href: () => (x) => x * 2 }));
       },
       tags_invalidFollowupPropValues_stateAsProp: withHiddenDom(async (hiddenDom) => {
         const href1 = van2.state("https://vanjs.org/");
@@ -660,38 +741,31 @@
         let numClicks = 0;
         const onclick = van2.state(() => ++numClicks);
         van2.add(hiddenDom, a({ href: href1 }), a({ href: href2 }), a({ href: href3 }), button({ onclick }));
-        await capturingErrors(async () => {
+        await capturingErrors(/Only.*are valid prop value types/, 3, async () => {
           href1.val = {};
           href2.val = void 0;
           href3.val = (x) => x * 2;
           await sleep(waitMsOnDomUpdates);
           assert(van2.capturedErrors.length === 3 && van2.capturedErrors.every((e) => /Only.*are valid prop value types/.test(e)));
         });
-        await capturingErrors(async () => {
-          onclick.val = ++numClicks;
-          await sleep(waitMsOnDomUpdates);
-          assert(van2.capturedErrors.length === 1 && van2.capturedErrors[0].includes("Only functions and null are allowed"));
-        });
       }),
       tags_invalidFollowupPropValues_stateDerivedProp: withHiddenDom(async (hiddenDom) => {
         const s = van2.state("https://vanjs.org/"), t2 = van2.state(() => {
         });
         van2.add(hiddenDom, a({ href: () => s.val || {} }), a({ href: () => s.val || void 0 }), a({ href: () => s.val || ((x) => x * 2) }), button({ onclick: van2._(() => t2.val || 1) }));
-        await capturingErrors(async () => {
+        await capturingErrors(/Only.*are valid prop value types/, 3, async () => {
           s.val = "";
           await sleep(waitMsOnDomUpdates);
-          assert(van2.capturedErrors.length === 3 && van2.capturedErrors.every((e) => /Only.*are valid prop value types/.test(e)));
         });
-        await capturingErrors(async () => {
+        await capturingErrors("Only functions and null are allowed", 1, async () => {
           t2.val = 0;
           await sleep(waitMsOnDomUpdates);
-          assert(van2.capturedErrors.length === 1 && van2.capturedErrors[0].includes("Only functions and null are allowed"));
         });
       }),
-      tags_invalidChild: () => {
+      tags_invalidChild: async () => {
         assertError(/Only.*are valid child of a DOM Element/, () => div2(div2(), {}, p()));
-        assertError(/Only.*are valid child of a DOM Element/, () => div2(div2(), van2.state({}), p()));
-        assertError(/Only.*are valid child of a DOM Element/, () => div2(div2(), van2.state((x) => x * 2), p()));
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => div2(div2(), van2.state({}), p()));
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => div2(div2(), van2.state((x) => x * 2), p()));
       },
       tags_alreadyConnectedChild: withHiddenDom((hiddenDom) => {
         const dom = p();
@@ -708,11 +782,11 @@
       add_1stArgNotDom: () => {
         assertError("1st argument of `van.add` function must be a DOM Element object", () => van2.add({}, div2()));
       },
-      add_invalidChild: () => {
+      add_invalidChild: async () => {
         const dom = div2();
         assertError(/Only.*are valid child of a DOM Element/, () => van2.add(dom, div2(), {}, p()));
-        assertError(/Only.*are valid child of a DOM Element/, () => van2.add(dom, div2(), van2.state({}), p()));
-        assertError(/Only.*are valid child of a DOM Element/, () => van2.add(dom, div2(), van2.state((x) => x * 2), p()));
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => van2.add(dom, div2(), van2.state({}), p()));
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => van2.add(dom, div2(), van2.state((x) => x * 2), p()));
       },
       add_alreadyConnectedChild: withHiddenDom((hiddenDom) => {
         const dom = div2();
@@ -744,30 +818,29 @@
         const a2 = van2.state(0);
         assertError("Must pass-in a function to `van.derive`", () => van2.derive(a2.val * 2));
       },
-      derive_accessStateCreatedInOuterScope: () => {
+      derive_accessStateCreatedInOuterScope: async () => {
         const a2 = van2.state(1);
-        assertError("could lead to GC issues", () => div2(() => {
+        await capturingErrors("could lead to GC issues", 1, () => div2(() => {
           const b2 = van2.derive(() => a2.val + 1);
           return span(b2.val + 1);
         }));
-        assertError("could lead to GC issues", () => div2({
+        await capturingErrors("could lead to GC issues", 1, () => div2({
           id: () => {
             const b2 = van2.derive(() => a2.val + 1);
             return b2.val + 1;
           }
         }));
       },
-      stateDerivedChild_invalidInitialResult: () => {
-        assertError(/Only.*are valid child of a DOM Element/, () => div2(() => ({})));
-        assertError(/Only.*are valid child of a DOM Element/, () => div2(() => (x) => x * 2));
+      stateDerivedChild_invalidInitialResult: async () => {
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => div2(() => ({})));
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => div2(() => (x) => x * 2));
       },
       stateDerivedChild_invalidFollowupResult: withHiddenDom(async (hiddenDom) => {
         const s = van2.state(1);
         van2.add(hiddenDom, () => s.val || {}, () => s.val || ((x) => x * 2), () => s.val || [div2(), div2()]);
-        await capturingErrors(async () => {
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 3, async () => {
           s.val = 0;
           await sleep(waitMsOnDomUpdates);
-          assert(van2.capturedErrors.length === 3 && van2.capturedErrors.every((e) => /Only.*are valid child of a DOM Element/.test(e)));
         });
       }),
       stateDerivedChild_derivedDom_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
@@ -785,10 +858,9 @@
         num.val = 2;
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.innerHTML, "<div></div><div></div>");
-        await capturingErrors(async () => {
+        await capturingErrors("it shouldn't be already connected to document", 1, async () => {
           num.val = 3;
           await sleep(waitMsOnDomUpdates);
-          assert(van2.capturedErrors.length === 1 && van2.capturedErrors[0].includes("it shouldn't be already connected to document"));
         });
       })
     };

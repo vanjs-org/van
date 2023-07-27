@@ -12,6 +12,9 @@
     curDeps = deps;
     try {
       return f(arg);
+    } catch (e) {
+      console.error(e);
+      return arg;
     } finally {
       curDeps = prevDeps;
     }
