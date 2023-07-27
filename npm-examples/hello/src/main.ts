@@ -1,4 +1,4 @@
-import van from "vanjs-prerelease2"
+import van from "vanjs-core"
 
 // Quote all tag names so that they're not mangled by minifier
 const {"a": a, "div": div, "li": li, "p": p, "ul": ul} = van.tags
