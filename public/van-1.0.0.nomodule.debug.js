@@ -16,26 +16,26 @@
       curDeps = prevDeps;
     }
   };
-  var filterBindings = (s) => s.bindings = s.bindings.filter((b) => b.dom?.isConnected);
+  var filterBindings = (s) => s._bindings = s._bindings.filter((b) => b._dom?.isConnected);
   var stateProto = {
-    get "val"() {
+    get val() {
       curDeps?.add(this);
       return this._val;
     },
-    get "oldVal"() {
+    get oldVal() {
       curDeps?.add(this);
       return this._oldVal;
     },
-    set "val"(v) {
+    set val(v) {
       let s = this;
       if (v !== s._val) {
         s._val = v;
         let boundStates = /* @__PURE__ */ new Set();
-        for (let l of [...s.listeners])
-          derive(l.f, l.s), l.executed = 1, l.deps.forEach(boundStates.add, boundStates);
+        for (let l of [...s._listeners])
+          derive(l.f, l.s), l._executed = 1, l._deps.forEach(boundStates.add, boundStates);
         for (let _s of boundStates)
-          _s.listeners = _s.listeners.filter((l) => !l.executed);
-        s.bindings.length ? changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms) : s._oldVal = v;
+          _s._listeners = _s._listeners.filter((l) => !l._executed);
+        s._bindings.length ? changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms) : s._oldVal = v;
       }
     }
   };
@@ -45,8 +45,8 @@
     __proto__: stateProto,
     _val: initVal,
     _oldVal: initVal,
-    bindings: [],
-    listeners: []
+    _bindings: [],
+    _listeners: []
   });
   var isState = (s) => protoOf(s ?? 0) === stateProto;
   var val = (s) => isState(s) ? s.val : s;
@@ -62,15 +62,15 @@
         () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
         gcCycleInMs
       );
-      d.bindings.push(binding);
+      d._bindings.push(binding);
     }
-    return binding.dom = (newDom ?? doc).nodeType ? newDom : new Text(newDom);
+    return binding._dom = (newDom ?? doc).nodeType ? newDom : new Text(newDom);
   };
   var derive = (f, s = state()) => {
-    let deps = /* @__PURE__ */ new Set(), listener = { f, deps, s };
+    let deps = /* @__PURE__ */ new Set(), listener = { f, _deps: deps, s };
     s.val = runAndCaptureDeps(f, deps);
     for (let d of deps)
-      d.listeners.push(listener);
+      d._listeners.push(listener);
     return s;
   };
   var add = (dom, ...children) => {
@@ -82,7 +82,7 @@
     }
     return dom;
   };
-  var _ = (f) => (f.isBindingFunc = 1, f);
+  var _ = (f) => (f._isBindingFunc = 1, f);
   var propSetterCache = {};
   var tagsNS = (ns) => new Proxy((name, ...args) => {
     let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args];
@@ -94,7 +94,7 @@
       let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k);
       if (isState(v))
         bind(() => (setter(v.val), dom));
-      else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v.isBindingFunc))
+      else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v._isBindingFunc))
         bind(() => (setter(v()), dom));
       else
         setter(v);
@@ -105,15 +105,15 @@
     let changedStatesArray = [...changedStates].filter((s) => s._val !== s._oldVal);
     changedStates = _undefined;
     for (let b of new Set(changedStatesArray.flatMap(filterBindings))) {
-      let dom = b.dom, newDom = bind(b.f, dom);
-      b.dom = _undefined;
+      let dom = b._dom, newDom = bind(b.f, dom);
+      b._dom = _undefined;
       if (newDom !== dom)
         newDom != _undefined ? dom.replaceWith(newDom) : dom.remove();
     }
     for (let s of changedStatesArray)
       s._oldVal = s._val;
   };
-  var van_default = { add, "_": _, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, "derive": derive };
+  var van_default = { add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive };
 
   // van.debug.js
   var capturedErrors;
@@ -220,7 +220,7 @@
           ), v2);
           if (isState2(v))
             debugProps[k] = van_default._(() => validatePropValue(v.val));
-          else if (typeof v === "function" && (!k.startsWith("on") || v.isBindingFunc))
+          else if (typeof v === "function" && (!k.startsWith("on") || v._isBindingFunc))
             debugProps[k] = van_default._(() => validatePropValue(runAndSetBindingFuncId(v)));
           else
             debugProps[k] = validatePropValue(v);

@@ -14,7 +14,6 @@ export default defineConfig({
           keep_quoted: true,
         },
       },
-      parse: {},
       format: {
         wrap_func_args: false,
       },

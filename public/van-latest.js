@@ -18,29 +18,29 @@ let runAndCaptureDeps = (f, deps, arg) => {
   }
 }
 
-let filterBindings = s => s.bindings = s.bindings.filter(b => b.dom?.isConnected)
+let filterBindings = s => s._bindings = s._bindings.filter(b => b._dom?.isConnected)
 
 let stateProto = {
-  get "val"() {
+  get val() {
     curDeps?.add(this)
     return this._val
   },
 
-  get "oldVal"() {
+  get oldVal() {
     curDeps?.add(this)
     return this._oldVal
   },
 
-  set "val"(v) {
+  set val(v) {
     // Aliasing `this` to reduce the bundle size.
     let s = this
     if (v !== s._val) {
       s._val = v
       let boundStates = new Set
-      for (let l of [...s.listeners])
-        derive(l.f, l.s), l.executed = 1, l.deps.forEach(boundStates.add, boundStates)
-      for (let _s of boundStates) _s.listeners = _s.listeners.filter(l => !l.executed)
-      s.bindings.length ?
+      for (let l of [...s._listeners])
+        derive(l.f, l.s), l._executed = 1, l._deps.forEach(boundStates.add, boundStates)
+      for (let _s of boundStates) _s._listeners = _s._listeners.filter(l => !l._executed)
+      s._bindings.length ?
         changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms) :
         s._oldVal = v
     }
@@ -55,8 +55,8 @@ let state = initVal => ({
   __proto__: stateProto,
   _val: initVal,
   _oldVal: initVal,
-  bindings: [],
-  listeners: [],
+  _bindings: [],
+  _listeners: [],
 })
 
 let isState = s => protoOf(s ?? 0) === stateProto
@@ -73,15 +73,15 @@ let bind = (f, dom) => {
     statesToGc = addAndScheduleOnFirst(statesToGc, d,
       () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
       gcCycleInMs)
-    d.bindings.push(binding)
+    d._bindings.push(binding)
   }
-  return binding.dom = (newDom ?? doc).nodeType ? newDom : new Text(newDom)
+  return binding._dom = (newDom ?? doc).nodeType ? newDom : new Text(newDom)
 }
 
 let derive = (f, s = state()) => {
-  let deps = new Set, listener = {f, deps, s}
+  let deps = new Set, listener = {f, _deps: deps, s}
   s.val = runAndCaptureDeps(f, deps)
-  for (let d of deps) d.listeners.push(listener)
+  for (let d of deps) d._listeners.push(listener)
   return s
 }
 
@@ -95,7 +95,7 @@ let add = (dom, ...children) => {
   return dom
 }
 
-let _ = f => (f.isBindingFunc = 1, f)
+let _ = f => (f._isBindingFunc = 1, f)
 
 let propSetterCache = {}
 
@@ -111,7 +111,7 @@ let tagsNS = ns => new Proxy((name, ...args) => {
       (propSetterCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0)
     let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k)
     if (isState(v)) bind(() => (setter(v.val), dom))
-    else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v.isBindingFunc))
+    else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v._isBindingFunc))
       bind(() => (setter(v()), dom))
     else setter(v)
   }
@@ -122,11 +122,11 @@ let updateDoms = () => {
   let changedStatesArray = [...changedStates].filter(s => s._val !== s._oldVal)
   changedStates = _undefined
   for (let b of new Set(changedStatesArray.flatMap(filterBindings))) {
-    let dom = b.dom, newDom = bind(b.f, dom)
-    b.dom = _undefined
+    let dom = b._dom, newDom = bind(b.f, dom)
+    b._dom = _undefined
     if (newDom !== dom) newDom != _undefined ? dom.replaceWith(newDom) : dom.remove()
   }
   for (let s of changedStatesArray) s._oldVal = s._val
 }
 
-export default {add, "_": _, tags: tagsNS(), "tagsNS": tagsNS, state, val, oldVal, "derive": derive}
+export default {add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive}

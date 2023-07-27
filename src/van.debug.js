@@ -128,7 +128,7 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
 
         if (isState(v))
           debugProps[k] = van._(() => validatePropValue(v.val))
-        else if (typeof v === "function" && (!k.startsWith("on") || v.isBindingFunc))
+        else if (typeof v === "function" && (!k.startsWith("on") || v._isBindingFunc))
           debugProps[k] = van._(() => validatePropValue(runAndSetBindingFuncId(v)))
         else
           debugProps[k] = validatePropValue(v)
