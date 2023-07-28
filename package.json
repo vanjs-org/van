@@ -36,6 +36,7 @@
   "license": "MIT",
   "devDependencies": {
     "esbuild": "^0.17.12",
+    "node-jq": "^2.3.5",
     "terser": "^5.17.1",
     "typescript": "^5.0.4"
   },
