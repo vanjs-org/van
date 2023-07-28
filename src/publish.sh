@@ -1,6 +1,6 @@
 set -e
 
-VER=$(jq -r ".version" ../package.json)
+VER=$(../node_modules/node-jq/bin/jq -r ".version" ../package.json)
 echo -n $VER > ../public/van.version
 TERSER=../node_modules/terser/bin/terser
 
