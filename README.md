@@ -93,7 +93,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Easy to Learn
 
-**VanJS** puts heavy emphasis on the simplicity of the framework. There are only 8 exported functions in the API and feels a lot like React. Because of that, the [walkthrough tutorial](https://vanjs.org/tutorial) is the same as the full API reference, and can be learned within 1 hour for most developers.
+Simplicity at its core. 4 major functions (`van.tags`, `van.add`, `van.state`, `van.derive`) + 4 auxiliary functions (`van.tagsNS`, `van._`, `van.val`, `van.oldVal`). The [walkthrough tutorial](https://vanjs.org/tutorial) is the same as the full API reference, and can be learned within 1 hour for most developers.
 
 ## Want to Learn More?
 
