@@ -117,7 +117,7 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 
 * [van_dml.js](https://github.com/vanjs-org/van/tree/main/addons/van_dml) adds a a new flavour of composition to VanJS. Author: [Eckehard](https://github.com/efpage).
 
-## Contributors (10)
+## Contributors (11)
 
 *Some authors can't be recognized by Github as contributors for weird reasons (e.g.: [1](https://github.com/vanjs-org/van/pull/29#issuecomment-1583616491), [2](https://github.com/vanjs-org/van/pull/40#issuecomment-1585307358)). Their names are shown here. Authors are ordered chronologically by first contribution:*
 
@@ -131,3 +131,4 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 * [FredericHeem](https://github.com/FredericHeem)
 * [ebraminio](https://github.com/ebraminio)
 * [Eckehard](https://github.com/efpage)
+* [Austin Merrick](https://github.com/onsclom)
