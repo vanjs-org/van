@@ -97,7 +97,7 @@ Simplicity at its core. 4 major functions (`van.tags`, `van.add`, `van.state`, `
 
 ## Want to Learn More?
 
-* [Get Started](https://vanjs.org/start)
+* [Get Started](https://vanjs.org/start) (CDN, NPM or local download)
 * Learn from the [Tutorial](https://vanjs.org/tutorial)
 * Learn by [Examples](https://vanjs.org/demo) (and also [Community Examples](https://vanjs.org/demo#community-examples))
 * Convert HTML snippet to **VanJS** code with our online [HTML to **VanJS** Converter](https://vanjs.org/convert)
