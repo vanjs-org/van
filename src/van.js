@@ -3,8 +3,8 @@
 // Aliasing some builtin symbols to reduce the bundle size.
 let Obj = Object, _undefined, protoOf = Obj.getPrototypeOf, doc = document
 
-let addAndScheduleOnFirst = (set, s, func, waitMs) =>
-  (set ?? (setTimeout(func, waitMs), new Set)).add(s)
+let addAndScheduleOnFirst = (set, s, f, waitMs) =>
+  (set ?? (setTimeout(f, waitMs), new Set)).add(s)
 
 let changedStates, curDeps
 
