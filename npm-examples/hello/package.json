@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "terser": "^5.19.2",
     "typescript": "^5.0.4",
     "vite": "^4.3.9"
   },
