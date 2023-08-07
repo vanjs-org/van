@@ -125,7 +125,7 @@ const serveConn = async (conn: Deno.Conn) => {
     (async () => reqEvent.respondWith(await serveHttp(conn, reqEvent.request)))()
 }
 
-console.log(`Visit http://localhost:${flags.port} in your browser`)
+console.log(`Visit http://localhost:${flags.port}/client.html in your browser`)
 if (!flags.skipLogin) {
   console.log("When prompted, paste the key below:")
   console.log(key + "\n")
