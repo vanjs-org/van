@@ -90,7 +90,7 @@ const serveHttp = async (conn: Deno.Conn, req: Request) => {
       setCookie(response.headers, {name: "SessionId", value: sessionId = genKey()})
       return response
     }
-    if (getCookies(req.headers)["SessionId"] !== sessionId)
+    if (!flags.skipLogin && getCookies(req.headers)["SessionId"] !== sessionId)
       return Response.json({
         stderr: "Expired session ID, please reload this page to relogin:"})
 
