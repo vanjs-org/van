@@ -53,7 +53,6 @@ const serveHttp = async (conn: Deno.Conn, req: Request) => {
     return new Response(
       "Only local requests are allowed for security purposes", {status: 403})
   const url = new URL(req.url)
-  console.log(url)
   if (req.method === "GET") {
     if (!flags.skipLogin && getCookies(req.headers)["SessionId"] !== sessionId)
       if (url.pathname === "/cwd") return new Response("", {status: 200}); else
