@@ -21,7 +21,7 @@ Compare to the ordinary Unix terminal that you're familar with, this web-based t
 
 ## Deployment Steps
 
-1. For the terminal to work, we need Deno runtime to run the server side script. If you don't have Deno in your environment, you can get it installed from https://deno.land/.
+1. For the terminal to work, we need Deno runtime to run the server-side script. If you don't have Deno in your environment, you can get it installed from https://deno.land/.
 2. Clone the `van` repo, if you haven't done already:
 ```shell
 git clone https://github.com/vanjs-org/van.git
