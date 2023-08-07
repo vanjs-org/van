@@ -72,7 +72,6 @@ const serveHttp = async (conn: Deno.Conn, req: Request) => {
         headers: {"content-type": "application/javascript; charset=utf-8"},
       },
     )
-    if (url.pathname !== "/client.html") Response.redirect("/client.html", 302)
     return new Response(await Deno.readTextFile(join(moduleDir, "client.html")), {
       status: 200,
       headers: {"content-type": "text/html; charset=utf-8"},
@@ -85,7 +84,7 @@ const serveHttp = async (conn: Deno.Conn, req: Request) => {
       const response = new Response(
         "", {
           status: 303,
-          headers: new Headers({"Location": "/client.html"})
+          headers: new Headers({"Location": "/"})
         }
       )
       setCookie(response.headers, {name: "SessionId", value: sessionId = genKey()})
@@ -126,7 +125,7 @@ const serveConn = async (conn: Deno.Conn) => {
     (async () => reqEvent.respondWith(await serveHttp(conn, reqEvent.request)))()
 }
 
-console.log(`Visit http://localhost:${flags.port}/client.html in your browser`)
+console.log(`Visit http://localhost:${flags.port}/ in your browser`)
 if (!flags.skipLogin) {
   console.log("When prompted, paste the key below:")
   console.log(key + "\n")
