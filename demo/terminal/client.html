@@ -2,7 +2,7 @@
 <html>
   <head>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
-    <title>A Simple Web-based Shell</title>
+    <title>A Simple Web-based Terminal</title>
     <meta charset="UTF-8">
     <style>
       .row { display: flex; }
@@ -151,7 +151,7 @@
         ]
       }
 
-      const Shell = ({cwd}) => div(
+      const Terminal = ({cwd}) => div(
         div("⚠️ Please avoid commands that takes long time to execute."),
         div({class: "warning"}, "BE CAREFUL, commands will be executed on your computer and are IRREVERSIBLE."),
         div("Enter some shell command and press ↵ to execute (Use ↑ and ↓ to navigate through the command history):"),
@@ -159,7 +159,7 @@
       )
 
       fetch("/cwd").then(r => r.text()).then(cwd =>
-        document.body.appendChild(Shell({cwd})).querySelector("input").focus())
+        document.body.appendChild(Terminal({cwd})).querySelector("input").focus())
     </script>
   </body>
 </html>

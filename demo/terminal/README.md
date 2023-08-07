@@ -15,9 +15,9 @@ Compare to the ordinary Unix terminal that you're familar with, this web-based t
 
 ## Source Files
 
-* `server.ts`: A Deno-based server-side script which connects to the shell of your local computer
-* `client.html`: An HTML file served by `server.ts` with client-side implementation for the GUI of the terminal
-* `van-1.0.1.min.js`: Minified **VanJS** code, used by `client.html`
+* [`server.ts`](https://github.com/vanjs-org/van/blob/main/demo/terminal/server.ts): A Deno-based server-side script which connects to the shell of your local computer.
+* [`client.html`](https://github.com/vanjs-org/van/blob/main/demo/terminal/client.html): An HTML file served by `server.ts` with client-side implementation for the GUI of the terminal.
+* [`van-1.0.1.min.js`](https://github.com/vanjs-org/van/blob/main/demo/terminal/van-1.0.1.min.js): Minified **VanJS** code, used by `client.html`.
 
 ## Deployment Steps
 
