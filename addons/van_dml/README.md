@@ -42,7 +42,7 @@ Van-Tags return a DOM Reference that can be stored in a variable:
 With VAN_DML, this can be rewritten:
 ```JS
     let d = begin(div()) // -> d is the <div>-element
-    begin(div()).style.color = "red" // Acess the style of div
+    begin(div()).style.color = "red" // Access the style of div
 ```
 `begin()` is "transparent", it just returns the DOM reference of the first child. This let´s you create functions like this:
 ```JS
@@ -77,7 +77,7 @@ base() returns the current base:
     let b = base(); // returns the current base (div())
 ```
 
-sp() is the current Stack-Position. Initially SP() is 0. With each call of `begin()` sp() is incremented, `end()` decements sp().
+sp() is the current Stack-Position. Initially SP() is 0. With each call of `begin()` sp() is incremented, `end()` decrements sp().
 To check your code, you can add this line to the end of Javascript:
 ```JS
     begin(document.body) 
