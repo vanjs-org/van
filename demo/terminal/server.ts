@@ -1,9 +1,14 @@
 import { getCookies, setCookie } from "https://deno.land/std@0.184.0/http/cookie.ts"
 import { resolve, dirname, fromFileUrl, join } from "https://deno.land/std@0.184.0/path/mod.ts"
+import { parse } from "https://deno.land/std@0.184.0/flags/mod.ts"
 
 const moduleDir = resolve(dirname(fromFileUrl(import.meta.url)))
 
-const port = Number(Deno.args[0] ?? 8000)
+const flags = parse(Deno.args, {
+  boolean: ["allowRemote"],
+  string: ["port"],
+  default: {port: 8000},
+})
 
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
@@ -44,7 +49,7 @@ const readFileOrError = async (path: string) => {
 }
 
 const serveHttp = async (conn: Deno.Conn, req: Request) => {
-  if ((<Deno.NetAddr>conn.remoteAddr).hostname !== "127.0.0.1")
+  if (!flags.allowRemote && (<Deno.NetAddr>conn.remoteAddr).hostname !== "127.0.0.1")
     return new Response(
       "Only local requests are allowed for security purposes", {status: 403})
   const url = new URL(req.url)
@@ -120,9 +125,9 @@ const serveConn = async (conn: Deno.Conn) => {
     (async () => reqEvent.respondWith(await serveHttp(conn, reqEvent.request)))()
 }
 
-console.log(`Visit http://localhost:${port} in your browser`)
+console.log(`Visit http://localhost:${flags.port} in your browser`)
 console.log("When prompted, paste the key below:")
 console.log(key + "\n")
 console.log("%cFor security purposes, DO NOT share the key with anyone else",
   "color: red; font-weight: bold")
-for await (const conn of Deno.listen({port})) serveConn(conn)
+for await (const conn of Deno.listen({port: Number(flags.port)})) serveConn(conn)
