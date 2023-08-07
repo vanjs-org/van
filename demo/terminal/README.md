@@ -34,7 +34,7 @@ You can preview the terminal app right in your browser with the help of [CodeSan
 
 Follow the steps below to run the terminal app in your local computer:
 
-1. For the terminal to work, we need Deno runtime to run the server-side script. If you don't have Deno in your environment, you can get it installed from https://deno.land/.
+1. For the terminal to work, you need Deno runtime to run the server-side script. If you don't have Deno in your environment, you can get it installed from https://deno.land/.
 2. Clone the `van` repo, if you haven't done already:
 ```shell
 git clone https://github.com/vanjs-org/van.git
