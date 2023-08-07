@@ -77,7 +77,7 @@ base() returns the current base:
     let b = base(); // returns the current base (div())
 ```
 
-sp() is the current Stack-Position. Initially SP() is 0. With each call of `begin()` sp() is incremented, `end()` decements sp().
+sp() is the current Stack-Position. Initially SP() is 0. With each call of `begin()` sp() is incremented, `end()` decrements sp().
 To check your code, you can add this line to the end of Javascript:
 ```JS
     begin(document.body) 
