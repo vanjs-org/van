@@ -42,7 +42,7 @@ Van-Tags return a DOM Reference that can be stored in a variable:
 With VAN_DML, this can be rewritten:
 ```JS
     let d = begin(div()) // -> d is the <div>-element
-    begin(div()).style.color = "red" // Acess the style of div
+    begin(div()).style.color = "red" // Access the style of div
 ```
 `begin()` is "transparent", it just returns the DOM reference of the first child. This let´s you create functions like this:
 ```JS
