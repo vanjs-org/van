@@ -13,6 +13,8 @@ Compare to the ordinary Unix terminal that you're familar with, this web-based t
 
 ![Tree screenshot](tree_screenshot.png)
 
+You can preview the terminal app via [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/demo/terminal).
+
 ## Source Files
 
 * [`server.ts`](https://github.com/vanjs-org/van/blob/main/demo/terminal/server.ts): A Deno-based server-side script which connects to the shell of your local computer.
@@ -45,7 +47,7 @@ deno run --allow-net --allow-run --allow-read demo/terminal/server.ts
 This demo program allows web access to your OS shell, which elevates the privilege to a level that you would not normally get with your browser. Here are the extra measures we're taking to ensure the security of your local computer while testing the demo:
 
 1. Only local connection to your server is allowed, unless flag `--allowRemote` is specified.
-2. Before using the web-based terminal in your browser, you need to login with the key printed in the console of `server.ts` first. The key is generated randomly every time the server restarts. You should never share the key to other people.
+2. Before using the web-based terminal in your browser, you need to login with the key printed in the console of `server.ts` first (unless flag `--skipLogin` is specified). The key is generated randomly every time the server restarts. You should never share the key to other people.
 3. You're advised to shut down the server when you're not using the terminal to further reduce the risk of unauthorized access to your terminal with the leaked key. Next time, when the server restarts, any browser access needs the login with a new key generated randomly.
 4. Please be aware that any commands you run in the web-based shell are the real commands executed on your computer. Thus don't try dangerous stuff as they are IRREVERSIBLE.
 
