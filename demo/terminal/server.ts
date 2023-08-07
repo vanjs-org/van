@@ -5,7 +5,7 @@ import { parse } from "https://deno.land/std@0.184.0/flags/mod.ts"
 const moduleDir = resolve(dirname(fromFileUrl(import.meta.url)))
 
 const flags = parse(Deno.args, {
-  boolean: ["allowRemote"],
+  boolean: ["allowRemote", "skipLogin"],
   string: ["port"],
   default: {port: 8000},
 })
@@ -54,7 +54,7 @@ const serveHttp = async (conn: Deno.Conn, req: Request) => {
       "Only local requests are allowed for security purposes", {status: 403})
   const url = new URL(req.url)
   if (req.method === "GET") {
-    if (getCookies(req.headers)["SessionId"] !== sessionId)
+    if (!flags.skipLogin && getCookies(req.headers)["SessionId"] !== sessionId)
       if (url.pathname === "/cwd") return new Response("", {status: 200}); else
         return new Response(
           `<form action="/login" method="post">
@@ -126,8 +126,10 @@ const serveConn = async (conn: Deno.Conn) => {
 }
 
 console.log(`Visit http://localhost:${flags.port} in your browser`)
-console.log("When prompted, paste the key below:")
-console.log(key + "\n")
-console.log("%cFor security purposes, DO NOT share the key with anyone else",
-  "color: red; font-weight: bold")
+if (!flags.skipLogin) {
+  console.log("When prompted, paste the key below:")
+  console.log(key + "\n")
+  console.log("%cFor security purposes, DO NOT share the key with anyone else",
+    "color: red; font-weight: bold")
+}
 for await (const conn of Deno.listen({port: Number(flags.port)})) serveConn(conn)

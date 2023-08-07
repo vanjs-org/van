@@ -19,17 +19,6 @@ Compare to the ordinary Unix terminal that you're familar with, this web-based t
 * [`client.html`](https://github.com/vanjs-org/van/blob/main/demo/terminal/client.html): An HTML file served by `server.ts` with client-side implementation for the GUI of the terminal.
 * [`van-1.0.1.min.js`](https://github.com/vanjs-org/van/blob/main/demo/terminal/van-1.0.1.min.js): Minified **VanJS** code, used by `client.html`.
 
-## Preview the Terminal App in Your Browser
-
-You can preview the terminal app right in your browser with the help of [CodeSandbox](https://codesandbox.io/). To do that, follow the steps below:
-
-1. Open [this link](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/demo/terminal) in your browser.
-2. After app is fully loaded, there should be a CLI console in the bottom pane like that:
-![CodeSandbox screenshot](codesandbox.png)
-3. Click the link http://localhost:8000 in the CLI console (_Note that: there should be a page preview in the right pane of your current page, that one won't work due to lack of cookie support_).
-4. A new tab will be opened which asks you to paste the key from console. Then you can paste the key from the console (the part that is redacted in red) and click "Log In".
-5. After login, you can try out the web-based shell.
-
 ## Run the Terminal App in Your Local Computer
 
 Follow the steps below to run the terminal app in your local computer:
