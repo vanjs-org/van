@@ -109,7 +109,7 @@ Simplicity at its core. 4 major functions (`van.tags`, `van.add`, `van.state`, `
 
 🙏 **VanJS** aims to build a better world by reducing the entry barrier for UI programming, with no intention or plan on commercialization whatsoever. If you find **VanJS** interesting, or could be useful for you some day, please consider starring the project. It takes just a few seconds but your support means the world to us and helps spread **VanJS** to a wider audience.
 
-> In the name of **Van**illa of the House **J**ava**S**cript, [the First of its name](https://vanjs.org/about#name), Smallest Reactive UI Framework, 0.9kB JSX-free Grab 'n Go Library, [Scripting Language](https://vanjs.org/about#story) for GUI, [ChatGPT-Empowered](https://chat.openai.com/share/d92cfaf6-b78e-45ca-a218-069f76fe1b9f) Toolkit, by the word of Tao of the House Xin, Founder and Maintainer of VanJS, I do hereby grant you the permission of VanJS under [MIT License](https://github.com/vanjs-org/van/blob/main/LICENSE).
+> In the name of **Van**illa of the House **J**ava**S**cript, [the First of its name](https://vanjs.org/about#name), Smallest Reactive UI Framework, 0.9kB JSX-free Grab 'n Go Library, [Scripting Language](https://vanjs.org/about#story) for GUI, [ChatGPT-Empowered](https://chat.openai.com/share/d92cfaf6-b78e-45ca-a218-069f76fe1b9f) Toolkit, by the word of Tao of the House Xin, Founder and Maintainer of **VanJS**, I do hereby grant you the permission of **VanJS** under [MIT License](https://github.com/vanjs-org/van/blob/main/LICENSE).
 
 Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linkedin.com/in/tao-xin-64234920/) / [@taoxin](https://twitter.com/taoxin)
 
@@ -117,7 +117,7 @@ Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linked
 
 **VanJS** can be extended via add-ons. Add-ons add more features to **VanJS** and/or provide an alternative styled API. Below is a curated list of add-ons built by **VanJS** community:
 
-* [van_dml.js](https://github.com/vanjs-org/van/tree/main/addons/van_dml) adds a a new flavour of composition to VanJS. Author: [Eckehard](https://github.com/efpage).
+* [van_dml.js](https://github.com/vanjs-org/van/tree/main/addons/van_dml) adds a a new flavour of composition to **VanJS**. Author: [Eckehard](https://github.com/efpage).
 
 ## Contributors (13)
 
