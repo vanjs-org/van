@@ -2,7 +2,7 @@
 
 _Author: [Eckehard](https://github.com/efpage)_
 
-**van_dml.js** adds a a new flavour of composition to VanJS. This is heavily inspired by the [DML](https://github.com/efpage/dml)-framework for dynamic page creation.
+**van_dml.js** adds a new flavour of composition to VanJS. This is heavily inspired by the [DML](https://github.com/efpage/dml)-framework for dynamic page creation.
 
 Van_DML extends the core of VanJS. You can enable van_dml like this:
 ```JS
