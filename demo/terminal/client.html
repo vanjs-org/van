@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+    <title>A Simple Web-based Shell</title>
+    <meta charset="UTF-8">
+    <style>
+      .row { display: flex; }
+
+      .left {
+        width: 60px;
+        text-align: right;
+      }
+
+      .right { width: 800px; }
+
+      .cwd {
+        margin: 12px 0 0 13px;
+        font-weight: bold;
+      }
+
+      .tree {
+        margin: 12px;
+        white-space: pre;
+      }
+
+      .tree a { cursor: pointer; }
+
+      .right input, .right textarea, .right table {
+        margin: 11px;
+        border-width: 1px;
+        box-sizing: border-box;
+        font: 15px monospace;
+        width: 100%;
+      }
+
+      .err, .warning { color: red; }
+
+      .warning { font-weight: bold; }
+
+      .hide { display: none; }
+
+      table { border-collapse: collapse }
+
+      th, td { border: 1px solid black; }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import van from "./van-1.0.1.min.js"
+
+      const {a, div, i, input, pre, table, tbody, td, textarea, th, thead, tr} = van.tags
+
+      const Text = (s, isErr = false) => {
+        const dom = textarea({readonly: true, class: isErr ? "err" : ""}, s)
+        setTimeout(() => dom.style.height = (dom.scrollHeight + 5) + "px")
+        return dom
+      }
+
+      // Special handling for the output result of `ps ...` - displaying a table
+      // instead of raw text.
+      const Table = s => {
+        const lines = s.trim().split("\n"), header = lines[0].split(/\s+/), nCols = header.length
+        return table(
+          thead(tr(header.map(h => th(h)))),
+          tbody(lines.slice(1).map(row => {
+            // The last column for the output of `ps ...` (which is COMMAND),
+            // might contain spaces, thus we will split the row by whitespaces
+            // first, and join all the trailing columns together.
+            const cols = row.split(/\s+/)
+            return tr(
+              [...cols.slice(0, nCols - 1), cols.slice(nCols - 1).join(" ")].map(c => td(c)))
+          })),
+        )
+      }
+
+      // Special handling for command `tree` - displaying a tree view of the
+      // current directory.
+      const Tree = ({path, dirs, files, indent = ""}) => div(
+        dirs.map(d => {
+          const icon = van.state("📁 ")
+          const expand = async () => {
+            icon.val = "📂 "
+            // No-op with clicking before subdirectory is fetched and rendered
+            onclick.val = null
+            const {tree, stderr} = await fetch(
+              "/?path=" + encodeURIComponent(path + "/" + d),
+              {method: "POST", body: "tree"}).then(r => r.json())
+            const treeDom = result.appendChild(tree ?
+              Tree({...tree, indent: indent + "    "}) : div({class: "err"}, indent + stderr))
+            onclick.val = () => (treeDom.remove(), onclick.val = expand, icon.val = "📁 ")
+          }
+          const onclick = van.state(expand)
+          const result = div(indent, a({onclick}, icon, d))
+          return result
+        }),
+        files.map(f => div(
+          indent + "📄 ",
+          a({href: "/open" + encodeURI(path + "/" + f), target: "_blank"}, f),
+        )),
+      )
+
+      const Output = ({id, stdout, stderr, tree, isPsCmd}) => div({class: "row"},
+        pre({class: "left"}, `Out[${id}]:`),
+        div({class: "right"},
+          stdout ? (isPsCmd ? Table(stdout) : Text(stdout)) : [],
+          stderr ? Text(stderr, true) : [],
+          tree ? div({class: "tree"},
+            div(i("You can click folders to expand/collapse")),
+            Tree(tree),
+          ) : [],
+        ),
+      )
+
+      const Input = ({id, cwd}) => {
+        let historyId = id
+        const onkeydown = async e => {
+          if (e.key === "Enter") {
+            e.preventDefault()
+            e.target.setAttribute("readonly", true)
+            const {stdout, stderr, tree} =
+              await fetch("/", {method: "POST", body: e.target.value}).then(r => r.json())
+            van.add(document.body, Output({id, stdout, stderr, tree,
+              isPsCmd: e.target.value.trim().split(" ")[0] === "ps"}))
+            van.add(document.body, Input({
+              id: id + 1,
+              cwd: await fetch("/cwd").then(r => r.text()),
+            })).lastElementChild.querySelector("input").focus()
+          } else if (e.key === "ArrowUp" && historyId > 1) {
+            e.target.value = document.getElementById(--historyId).value
+            const length = e.target.value.length
+            setTimeout(() => e.target.setSelectionRange(length, length))
+          } else if (e.key === "ArrowDown" && historyId < id) {
+            e.target.value = document.getElementById(++historyId).value
+            const length = e.target.value.length
+            setTimeout(() => e.target.setSelectionRange(length, length))
+          }
+        }
+        return [
+          div({class: "row"},
+            pre({class: "left"}),
+            div({class: "right"}, pre({class: "cwd"}, cwd + "$")),
+          ),
+          div({class: "row"},
+            pre({class: "left"}, `In[${id}]:`),
+            div({class: "right"},
+              input({id, type: "text",
+                placeholder: 'Try "ls -l", "ps au", "tree", "cd <dir>", etc.', onkeydown}),
+            ),
+          ),
+        ]
+      }
+
+      const Shell = ({cwd}) => div(
+        div("⚠️ Please avoid commands that takes long time to execute."),
+        div({class: "warning"}, "BE CAREFUL, commands will be executed on your computer and are IRREVERSIBLE."),
+        div("Enter some shell command and press ↵ to execute (Use ↑ and ↓ to navigate through the command history):"),
+        Input({id: 1, cwd})
+      )
+
+      fetch("/cwd").then(r => r.text()).then(cwd =>
+        document.body.appendChild(Shell({cwd})).querySelector("input").focus())
+    </script>
+  </body>
+</html>
