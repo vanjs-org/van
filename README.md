@@ -109,6 +109,8 @@ Simplicity at its core. 4 major functions (`van.tags`, `van.add`, `van.state`, `
 
 🙏 **VanJS** aims to build a better world by reducing the entry barrier for UI programming, with no intention or plan on commercialization whatsoever. If you find **VanJS** interesting, or could be useful for you some day, please consider starring the project. It takes just a few seconds but your support means the world to us and helps spread **VanJS** to a wider audience.
 
+> In the name of **Van**illa of the House **J**ava**S**cript, [the First of its name](https://vanjs.org/about#name), Smallest Reactive UI Framework, 0.9kB JSX-free Grab 'n Go Library, [Scripting Language](https://vanjs.org/about#story) for GUI, [ChatGPT-Empowered](https://chat.openai.com/share/d92cfaf6-b78e-45ca-a218-069f76fe1b9f) Toolkit, by the word of Tao of the House Xin, Founder and Maintainer of VanJS, I do hereby grant you the permission of VanJS under [MIT License](https://github.com/vanjs-org/van/blob/main/LICENSE).
+
 Contact us: [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linkedin.com/in/tao-xin-64234920/) / [@taoxin](https://twitter.com/taoxin)
 
 ## Community Add-ons
