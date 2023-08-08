@@ -13,6 +13,8 @@ Compare to the ordinary Unix terminal that you're familar with, this web-based t
 
 ![Tree screenshot](tree_screenshot.png)
 
+## Preview
+
 You can preview the terminal app via [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/demo/terminal).
 
 ## Source Files
