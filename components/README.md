@@ -21,7 +21,7 @@ Creates a modal window on top of the current page.
 #### Signature
 
 ```js
-Modal({props}, children) => <Created modal window>
+Modal({...props}, ...children) => <Created modal window>
 ```
 
 #### Examples
