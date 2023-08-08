@@ -11,7 +11,7 @@ export default defineConfig({
       },
       mangle: {
         properties: {
-          keep_quoted: true,
+          regex: /^_.+/,
         },
       },
       format: {
