@@ -1,5 +1,7 @@
 # **VanUI**: A Collection of Grab 'n Go Reusable UI Components for VanJS
 
+🙏 Feedback and contribution are welcome!
+
 ## Installation
 
 Currently, this library only supports NPM. It's published as NPM package [vanjs-ui](https://www.npmjs.com/package/vanjs-ui).
