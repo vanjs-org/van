@@ -9,3 +9,22 @@ export interface ModalProps {
     readonly modalStyleOverrides?: object;
 }
 export declare const Modal: ({ closed, backgroundColor, blurBackground, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement;
+export interface TabsProps {
+    readonly activeTab?: State<string> | undefined;
+    readonly resultClass?: string;
+    readonly style?: string;
+    readonly tabButtonRowColor?: string;
+    readonly tabButtonBorderStyle?: string;
+    readonly tabButtonHoverColor?: string;
+    readonly tabButtonActiveColor?: string;
+    readonly tabButtonRowClass?: string;
+    readonly tabButtonRowStyleOverrides?: object;
+    readonly tabButtonClass?: string;
+    readonly tabButtonStyleOverrides?: object;
+    readonly tabContentClass?: string;
+    readonly tabContentStyleOverrides?: object;
+}
+export interface TabsContent {
+    readonly [key: string]: ChildDom | ChildDom[];
+}
+export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: TabsContent) => HTMLDivElement;
