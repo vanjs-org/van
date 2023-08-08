@@ -70,7 +70,13 @@ You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sa
 
 #### Property Reference
 
-TODO
+* `closed`: Type `State<boolean>`. Required. A `State` object used to close the created modal window. Basically, setting `closed.val = true` will close the created modal window.
+* `backgroundColor`: Type `string`. Default `"rgba(0,0,0,.5)"`. Optional. The color of the background overlay when the modal is activated.
+* `blurBackground`: Type `boolean`. Default `false`. Optional. Whether to blur the background.
+* `backgroundClass`: Type `string`. Default `""`. Optional. The `class` property of the background overlay.
+* `backgroundStyleOverrides`: Type `object`. Default `{}`. Optional. A property bag for the styles you want to override for the background overlay. Sample value `{"z-index": 1000, "background-color": "rgba(0,0,0,.8)"}`.
+* `modalClass`: Type `string`. Default `""`. Optional. The `class` property of the created modal element.
+* `modalStyleOverrides`: Type `object`. Default `{}`. Optional. A property bag for the styles you want to override for the created modal element. Sample value `{"border-radius": "0.2rem", padding: "0.8rem", "background-color": "yellow"}`
 
 ### Planned for Future
 
