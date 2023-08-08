@@ -110,7 +110,7 @@ van.add(document.body, Tabs({style: "max-width: 500px;"}, {
 }))
 ```
 
-You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 #### Property Reference
 
