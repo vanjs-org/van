@@ -66,7 +66,7 @@ van.add(document.body, Modal({closed, blurBackground: true},
 ))
 ```
 
-You can live preview the examples with CodeSandbox (TODO: add link).
+You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/modal?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 #### Property Reference
 
