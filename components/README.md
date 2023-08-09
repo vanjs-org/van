@@ -1,6 +1,6 @@
 # **VanUI**: A Collection of Grab 'n Go Reusable UI Components for VanJS
 
-🙏 Feedback and contribution are welcome!
+🙏 Feedback and contribution are welcome and greatly appreciated!
 
 ## Installation
 
