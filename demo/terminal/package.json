@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "node_modules/deno-bin/bin/deno run --allow-net --allow-run --allow-read server.ts --allowRemote --skipLogin"
+    "dev": "deno run --allow-net --allow-run --allow-read server.ts --allowRemote --skipLogin"
   },
   "devDependencies": {
     "deno-bin": "^1.36.0"
