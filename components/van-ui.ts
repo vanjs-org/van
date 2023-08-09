@@ -144,7 +144,7 @@ export const Tabs = (
     ),
     Object.entries(contents).map(([k, v]) => div(
       {
-        style: () => `display: ${activeTabState.val === k ? "block" : "none"}; ${tabContentStylesStr}`,
+        style: () => `display: ${k === activeTabState.val ? "block" : "none"}; ${tabContentStylesStr}`,
         class: tabContentClass,
       },
       v,

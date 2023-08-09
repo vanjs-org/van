@@ -31,7 +31,7 @@ export const Tabs = ({ activeTab, resultClass = "", style = "", tabButtonRowColo
         },
         onclick: () => activeTabState.val = k,
     }, k))), Object.entries(contents).map(([k, v]) => div({
-        style: () => `display: ${activeTabState.val === k ? "block" : "none"}; ${tabContentStylesStr}`,
+        style: () => `display: ${k === activeTabState.val ? "block" : "none"}; ${tabContentStylesStr}`,
         class: tabContentClass,
     }, v)));
 };
