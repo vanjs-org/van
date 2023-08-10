@@ -1,8 +1,8 @@
 set -e
 
+# node-jq doesn't export a binary in node_modules/.bin/, thus we're using the fully qualified path here
 VER=$(../node_modules/node-jq/bin/jq -r '.version | split("-")[0]' ../package.json)
 echo -n $VER > ../public/van.version
-TERSER=../node_modules/terser/bin/terser
 
 cp van.d.ts van.debug.d.ts
 
@@ -10,13 +10,13 @@ cp van.js ../public/van-$VER.js
 cp van.d.ts ../public/van-$VER.d.ts
 cp van.debug.js ../public/van-$VER.debug.js
 cp van.d.ts ../public/van-$VER.debug.d.ts
-../node_modules/esbuild/bin/esbuild van.forbundle.js --bundle --outfile=../public/van-$VER.nomodule.js
-../node_modules/esbuild/bin/esbuild van.forbundle.debug.js --bundle --outfile=../public/van-$VER.nomodule.debug.js
+npx esbuild van.forbundle.js --bundle --outfile=../public/van-$VER.nomodule.js
+npx esbuild van.forbundle.debug.js --bundle --outfile=../public/van-$VER.nomodule.debug.js
 
-$TERSER van.js --compress --toplevel --mangle --mangle-props regex=/^_.+/ -f wrap_func_args=false -o ../public/van-$VER.min.js
+npx terser van.js --compress --toplevel --mangle --mangle-props regex=/^_.+/ -f wrap_func_args=false -o ../public/van-$VER.min.js
 gzip -kf ../public/van-$VER.min.js
 cp van.d.ts ../public/van-$VER.min.d.ts
-MIN_NOMODULE=$($TERSER ../public/van-$VER.nomodule.js --compress --toplevel --mangle --mangle-props regex=/^_.+/ -f wrap_func_args=false)
+MIN_NOMODULE=$(npx terser ../public/van-$VER.nomodule.js --compress --toplevel --mangle --mangle-props regex=/^_.+/ -f wrap_func_args=false)
 echo -n "{let${MIN_NOMODULE:3}}" > ../public/van-$VER.nomodule.min.js
 
 cp ../public/van-$VER.js ../public/van-latest.js
@@ -36,5 +36,5 @@ sed -i .bak s/van\\.js/van-latest\\.js/ ../public/van-latest.debug.js
 rm ../public/*.bak
 
 # Testing
-../node_modules/typescript/bin/tsc -m es2020 -t es2017 ../test/van.test.ts
-../node_modules/esbuild/bin/esbuild ../test/van.test.forbundle.js --bundle --banner:js="'use strict';" --outfile=../test/van.test.nomodule.js
+npx tsc -m es2020 -t es2017 ../test/van.test.ts
+npx esbuild ../test/van.test.forbundle.js --bundle --banner:js="'use strict';" --outfile=../test/van.test.nomodule.js
