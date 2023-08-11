@@ -160,7 +160,7 @@ van.add(document.body, Toggle({
 }))
 ```
 
-You can live preview the example with CodeSandbox(TODO: Add CodeSandbox link).
+You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 #### Property Reference
 
