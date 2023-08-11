@@ -1,5 +1,6 @@
 {
   "deno.enablePaths": [
-    "demo/terminal/server.ts"
+    "demo/terminal/server.ts",
+    "components/scripts"
   ]
 }
