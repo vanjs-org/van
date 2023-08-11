@@ -97,19 +97,29 @@ The `tabContents` parameter is an object whose keys are the titles of the tabs a
 #### Example
 
 ```ts
-van.add(document.body, Tabs({style: "max-width: 500px;"}, {
-  Home: p(
-    "Welcome to ", b("VanJS"), " - the smallest reactive UI framework in the world.",
-  ),
-  "Getting Started": [
-    p("To install the ", b("VanJS"), " NPM package, run the line below:"),
-    pre(code("npm install vanjs-core")),
-  ],
-  About: p(
-    "The author of ", b("VanJS"), " is ",
-    a({href: "https://github.com/Tao-VanJS"}, " Tao Xin"), "."
-  ),
-}))
+van.add(document.body, Tabs(
+  {
+    style: "max-width: 500px;",
+    tabButtonActiveColor: "white",
+    tabButtonBorderStyle: "none",
+    tabButtonRowStyleOverrides: {
+      "padding-left": "12px",
+    },
+  },
+  {
+    Home: p(
+      "Welcome to ", b("VanJS"), " - the smallest reactive UI framework in the world.",
+    ),
+    "Getting Started": [
+      p("To install the ", b("VanJS"), " NPM package, run the line below:"),
+      pre(code("npm install vanjs-core")),
+    ],
+    About: p(
+      "The author of ", b("VanJS"), " is ",
+      a({href: "https://github.com/Tao-VanJS"}, " Tao Xin"), "."
+    ),
+  },
+))
 ```
 
 You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1).
