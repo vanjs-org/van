@@ -23,17 +23,17 @@ const example2 = () => {
     div(input({type: "radio", name: "lang", value: "JavaScript"}), "JavaScript"),
   )
 
+  const onOk = () => {
+    const lang = (<HTMLInputElement>formDom.querySelector("input:checked")).value
+    alert(lang + " is a good language 😀")
+    closed.val = true
+  }
+
   van.add(document.body, Modal({closed, blurBackground: true},
     p("What's your favorite programming language?"),
     formDom,
     p({style: "display: flex; justify-content: center; gap: 3rem;"},
-      button({
-        onclick: () => {
-          const lang = (<HTMLInputElement>formDom.querySelector("input:checked")).value
-          alert(lang + " is a good language 😀")
-          closed.val = true
-        },
-      }, "Ok"),
+      button({onclick: onOk}, "Ok"),
       button({onclick: () => closed.val = true}, "Cancel"),
     )
   ))

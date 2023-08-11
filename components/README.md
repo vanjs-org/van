@@ -17,6 +17,7 @@ npm install vanjs-ui
 The following UI components has been implemented so far:
 * [Modal](#modal)
 * [Tabs](#tabs)
+* [Toggle](#toggle)
 
 ### Modal
 
@@ -54,17 +55,17 @@ const formDom = form(
   div(input({type: "radio", name: "lang", value: "JavaScript"}), "JavaScript"),
 )
 
+const onOk = () => {
+  const lang = (<HTMLInputElement>formDom.querySelector("input:checked")).value
+  alert(lang + " is a good language 😀")
+  closed.val = true
+}
+
 van.add(document.body, Modal({closed, blurBackground: true},
   p("What's your favorite programming language?"),
   formDom,
   p({style: "display: flex; justify-content: center; gap: 3rem;"},
-    button({
-      onclick: () => {
-        const lang = (<HTMLInputElement>formDom.querySelector("input:checked")).value
-        alert(lang + " is a good language 😀")
-        closed.val = true
-      },
-    }, "Ok"),
+    button({onclick: onOk}, "Ok"),
     button({onclick: () => closed.val = true}, "Cancel"),
   )
 ))
@@ -126,13 +127,13 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 
 #### Property Reference
 
-* `activeTab`: Type `State<string> | undefined`. Optional. If specified, you can activate a tab via the specified `State` object with `activeTab.val = "<tab title>"`.
+* `activeTab`: Type `State<string> | undefined`. Optional. If specified, you can activate a tab via the specified `State` object with `activeTab.val = "<tab title>"`, and subscribe to the changes of active tab via [`van.derive`](https://vanjs.org/tutorial#api-derive).
 * `resultClass`: Type `string`. Default `""`. Optional. The `class` attribute of the result DOM element. You can specify multiple CSS classes seperated by `" "`.
 * `style`: Type `string`. Default `""`. Optional. The `style` property of the result DOM element.
 * `tabButtonRowColor`: Type `string`. Default `"#f1f1f1"`. Optional. The background color of the container of tab buttons.
 * `tabButtonBorderStyle`: Type `string`. Default `1px solid #000`. Optional. The style of borders between tab buttons.
-* `tabButtonHoverColor`: Type `string`. Default `#ddd`. Optional. The color when the tab button is hovered.
-* `tabButtonActiveColor`: Type `string`. Default `#ccc`. Optional. The color of the tab button for the currently active tab.
+* `tabButtonHoverColor`: Type `string`. Default `"#ddd"`. Optional. The color when the tab button is hovered.
+* `tabButtonActiveColor`: Type `string`. Default `"#ccc"`. Optional. The color of the tab button for the currently active tab.
 * `tabButtonRowClass`: Type `string`. Default `""`. Optional. The `class` attribute of the container of tab buttons. You can specify multiple CSS classes seperated by `" "`.
 * `tabButtonRowStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the container of tab buttons.
 * `tabButtonClass`: Type `string`. Default `""`. The `class` attribute of tab buttons. You can specify multiple CSS classes seperated by `" "`.
@@ -140,10 +141,46 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `tabContentClass`: Type `string`. Default `""`. The `class` attribute of tab contents. You can specify multiple CSS classes seperated by `" "`.
 * `tabContentStyleOverrides`: Type `object`. Default `{}`. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for tab contents.
 
+### Toggle
+
+Creates a toggle switch that can be turned on and off.
+
+#### Signature
+
+```js
+Toggle({...props}) => <The created toggle switch>
+```
+
+#### Example
+
+```ts
+van.add(document.body, Toggle({
+  size: 2,
+  onColor: "#4CAF50"
+}))
+```
+
+You can live preview the example with CodeSandbox(TODO: Add CodeSandbox link).
+
+#### Property Reference
+
+* `on`: Type `boolean | State<boolean>`. Default `false`. Optional. A boolean or a boolean-typed `State` object to indicate the status of the toggle. If a `State` object is specified, you can turn on/off the toggle via the specified `State` object with `on.val = <true|false>`, and subscribe to the status change of the toggle via [`van.derive`](https://vanjs.org/tutorial#api-derive).
+* `size`: Type `number`. Default `1`. Optional. The size of the toggle. `1` means the height of the toggle is `1rem`.
+* `cursor`: Type `string`. Default `pointer`. Optional. The `cursor` CSS property of the toggle.
+* `ofColor`: Type `string`. Default `"#ccc"`. Optional. The color of the toggle when it's off.
+* `onColor`: Type `string`. Default `"#2196F3"`. Optional. The color of the toggle when it's on.
+* `circleColor`: Type `string`. Default `"white"`. Optional. The color of the toggling circle.
+* `toggleClass`: Type `string`. Default `""`. Optional. The `class` attribute of the toggle. You can specify multiple CSS classes seperated by `" "`.
+* `toggleStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggle.
+* `sliderClass`: Type `string`. Default `""`. Optional. The `class` attribute of the slider. You can specify multiple CSS classes seperated by `" "`.
+* `sliderStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the slider.
+* `circleClass`. Type `string`. Default `""`. Optional. The `class` attribute of the toggling circle. You can specify multiple CSS classes seperated by `" "`.
+* `circleStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle.
+* `circleWhenOnStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle. Typically this is used to override the `transform` CSS property if the dimensions of the toggle is overridden.
+
 ### Planned for Future
 
 The following UI components are planned to be added in the future:
-* Toggle
 * Tooltip
 * Banner
 * Message

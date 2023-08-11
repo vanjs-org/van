@@ -1,9 +1,13 @@
 import van, { ChildDom, State } from "vanjs-core"
 
 // Quote all tag names so that they're not mangled by minifier
-const {"button": button, "div": div} = van.tags
+const {"button": button, "div": div, "input": input, "label": label, "span": span} = van.tags
 
-const toStyleStr = (style: object) =>
+export interface CSSPropertyBag {
+  readonly [key: string]: string | number
+}
+
+const toStyleStr = (style: CSSPropertyBag) =>
   Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("")
 
 export interface ModalProps {
@@ -12,9 +16,9 @@ export interface ModalProps {
   readonly blurBackground?: boolean
 
   readonly backgroundClass?: string
-  readonly backgroundStyleOverrides?: object
+  readonly backgroundStyleOverrides?: CSSPropertyBag
   readonly modalClass?: string
-  readonly modalStyleOverrides?: object
+  readonly modalStyleOverrides?: CSSPropertyBag
 }
 
 export const Modal = (
@@ -41,7 +45,7 @@ export const Modal = (
     "z-index": 10000,
     "background-color": backgroundColor,
     "backdrop-filter": blurBackground ? "blur(0.25rem)" : "none",
-    ...backgroundStyleOverrides
+    ...backgroundStyleOverrides,
   }
   const modalStyle = {
     "border-radius": "0.5rem",
@@ -67,11 +71,11 @@ export interface TabsProps {
   readonly tabButtonActiveColor?: string
 
   readonly tabButtonRowClass?: string
-  readonly tabButtonRowStyleOverrides?: object
+  readonly tabButtonRowStyleOverrides?: CSSPropertyBag
   readonly tabButtonClass?: string
-  readonly tabButtonStyleOverrides?: object
+  readonly tabButtonStyleOverrides?: CSSPropertyBag
   readonly tabContentClass?: string
-  readonly tabContentStyleOverrides?: object
+  readonly tabContentStyleOverrides?: CSSPropertyBag
 }
 
 export interface TabsContent {
@@ -128,26 +132,119 @@ export const Tabs = (
 #${id} .vanui-tab-button:hover { background-color: ${tabButtonHoverColor} }
 #${id} .vanui-tab-button.active { background-color: ${tabButtonActiveColor} }`))
   return div({id, class: resultClass, style},
-    div({style: toStyleStr(tabButtonRowStyles), class: tabButtonRowClass},
+    div({class: tabButtonRowClass, style: toStyleStr(tabButtonRowStyles)},
       Object.keys(contents).map(k =>
         button({
-          style: tabButtonStylesStr,
           class: () => {
             const classes = ["vanui-tab-button"]
             if (tabButtonClass) classes.push(tabButtonClass)
             if (k === activeTabState.val) classes.push("active")
             return classes.join(" ")
           },
+          style: tabButtonStylesStr,
           onclick: () => activeTabState.val = k,
         }, k)
       ),
     ),
     Object.entries(contents).map(([k, v]) => div(
       {
-        style: () => `display: ${k === activeTabState.val ? "block" : "none"}; ${tabContentStylesStr}`,
         class: tabContentClass,
+        style: () => `display: ${k === activeTabState.val ? "block" : "none"}; ${tabContentStylesStr}`,
       },
       v,
     ))
+  )
+}
+
+export interface ToggleProps {
+  readonly on?: boolean | State<boolean>
+  readonly size?: number
+  readonly cursor?: string
+  readonly offColor?: string
+  readonly onColor?: string
+  readonly circleColor?: string
+
+  readonly toggleClass?: string
+  readonly toggleStyleOverrides?: CSSPropertyBag
+  readonly sliderClass?: string
+  readonly sliderStyleOverrides?: CSSPropertyBag
+  readonly circleClass?: string
+  readonly circleStyleOverrides?: CSSPropertyBag
+  readonly circleWhenOnStyleOverrides?: CSSPropertyBag
+}
+
+export const Toggle = ({
+  on = false,
+  size = 1,
+  cursor = "pointer",
+  offColor = "#ccc",
+  onColor = "#2196F3",
+  circleColor = "white",
+  toggleClass = "",
+  toggleStyleOverrides = {},
+  sliderClass = "",
+  sliderStyleOverrides = {},
+  circleClass = "",
+  circleStyleOverrides = {},
+  circleWhenOnStyleOverrides = {},
+}: ToggleProps) => {
+  const onState = typeof on === "boolean" ? van.state(on) : on
+  const toggleStyles = {
+    position: "relative",
+    display: "inline-block",
+    width: "1.76rem",
+    height: "1rem",
+    ...(size === 1 ? {} : {zoom: size}),
+    cursor,
+    ...toggleStyleOverrides,
+  }
+  const inputStyles = {
+    opacity: 0,
+    width: 0,
+    height: 0,
+    position: "absolute",
+    "z-index": 10000,  // Ensures the toggle clickable
+  }
+  const sliderStyles = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    transition: ".4s",
+    "border-radius": "1rem",
+    ...sliderStyleOverrides,
+  }
+  const sliderStylesStr = toStyleStr(sliderStyles)
+  const circleStyles = {
+    position: "absolute",
+    height: "0.76rem",
+    width: "0.76rem",
+    left: "0.12rem",
+    bottom: "0.12rem",
+    "background-color": circleColor,
+    transition: ".4s",
+    "border-radius": "50%",
+    ...circleStyleOverrides,
+  }
+  const circleStylesStr = toStyleStr(circleStyles)
+  const circleStylesWhenOn = {
+    transform: "translateX(0.76rem)",
+    ...circleWhenOnStyleOverrides,
+  }
+  const circleStylesWhenOnStr = toStyleStr(circleStylesWhenOn)
+  return label({class: toggleClass, style: toStyleStr(toggleStyles)},
+    input({type: "checkbox", style: toStyleStr(inputStyles),
+      oninput: e => onState.val = e.target.checked}),
+    span(
+      {
+        class: sliderClass,
+        style: () => `${sliderStylesStr}; background-color: ${onState.val ? onColor : offColor};`,
+      },
+      span({
+        class: circleClass,
+        style: () => circleStylesStr + (onState.val ? circleStylesWhenOnStr : ""),
+      }),
+    ),
   )
 }
