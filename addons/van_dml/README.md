@@ -21,7 +21,7 @@ Van_DML extends the core of VanJS. You can enable van_dml like this:
     const { h1, h2, div, p, button } = van.tags;
     const { begin, end, base, sp, css } = van
     
-    beign(document.body)
+    begin(document.body)
         h1("Headline")
         begin(div({style: "border: 1px solid black"}))
             h2("Headline in a box")
@@ -77,7 +77,7 @@ base() returns the current base:
     let b = base(); // returns the current base (div())
 ```
 
-sp() is the current Stack-Position. Initially SP() is 0. With each call of `begin()` sp() is incremented, `end()` decrements sp().
+sp() is the current Stack-Position. Initially sp() is 0. With each call of `begin()` sp() is incremented, `end()` decrements sp().
 To check your code, you can add this line to the end of Javascript:
 ```JS
     begin(document.body) 
