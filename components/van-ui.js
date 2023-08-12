@@ -37,7 +37,7 @@ export const Tabs = ({ activeTab, resultClass = "", style = "", tabButtonRowColo
 };
 export const Toggle = ({ on = false, size = 1, cursor = "pointer", offColor = "#ccc", onColor = "#2196F3", circleColor = "white", toggleClass = "", toggleStyleOverrides = {}, sliderClass = "", sliderStyleOverrides = {}, circleClass = "", circleStyleOverrides = {}, circleWhenOnStyleOverrides = {}, }) => {
     const onState = typeof on === "boolean" ? van.state(on) : on;
-    const toggleStyles = Object.assign(Object.assign(Object.assign({ position: "relative", display: "inline-block", width: "1.76rem", height: "1rem" }, (size === 1 ? {} : { zoom: size })), { cursor }), toggleStyleOverrides);
+    const toggleStyles = Object.assign({ position: "relative", display: "inline-block", width: 1.76 * size + "rem", height: size + "rem", cursor }, toggleStyleOverrides);
     const inputStyles = {
         opacity: 0,
         width: 0,
@@ -45,11 +45,11 @@ export const Toggle = ({ on = false, size = 1, cursor = "pointer", offColor = "#
         position: "absolute",
         "z-index": 10000, // Ensures the toggle clickable
     };
-    const sliderStyles = Object.assign({ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, transition: ".4s", "border-radius": "1rem" }, sliderStyleOverrides);
+    const sliderStyles = Object.assign({ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, transition: ".4s", "border-radius": size + "rem" }, sliderStyleOverrides);
     const sliderStylesStr = toStyleStr(sliderStyles);
-    const circleStyles = Object.assign({ position: "absolute", height: "0.76rem", width: "0.76rem", left: "0.12rem", bottom: "0.12rem", "background-color": circleColor, transition: ".4s", "border-radius": "50%" }, circleStyleOverrides);
+    const circleStyles = Object.assign({ position: "absolute", height: 0.76 * size + "rem", width: 0.76 * size + "rem", left: 0.12 * size + "rem", bottom: 0.12 * size + "rem", "background-color": circleColor, transition: ".4s", "border-radius": "50%" }, circleStyleOverrides);
     const circleStylesStr = toStyleStr(circleStyles);
-    const circleStylesWhenOn = Object.assign({ transform: "translateX(0.76rem)" }, circleWhenOnStyleOverrides);
+    const circleStylesWhenOn = Object.assign({ transform: `translateX(${0.76 * size}rem)` }, circleWhenOnStyleOverrides);
     const circleStylesWhenOnStr = toStyleStr(circleStylesWhenOn);
     return label({ class: toggleClass, style: toStyleStr(toggleStyles) }, input({ type: "checkbox", style: toStyleStr(inputStyles),
         oninput: e => onState.val = e.target.checked }), span({

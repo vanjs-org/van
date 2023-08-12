@@ -192,9 +192,8 @@ export const Toggle = ({
   const toggleStyles = {
     position: "relative",
     display: "inline-block",
-    width: "1.76rem",
-    height: "1rem",
-    ...(size === 1 ? {} : {zoom: size}),
+    width: 1.76 * size + "rem",
+    height: size + "rem",
     cursor,
     ...toggleStyleOverrides,
   }
@@ -212,16 +211,16 @@ export const Toggle = ({
     right: 0,
     bottom: 0,
     transition: ".4s",
-    "border-radius": "1rem",
+    "border-radius": size + "rem",
     ...sliderStyleOverrides,
   }
   const sliderStylesStr = toStyleStr(sliderStyles)
   const circleStyles = {
     position: "absolute",
-    height: "0.76rem",
-    width: "0.76rem",
-    left: "0.12rem",
-    bottom: "0.12rem",
+    height: 0.76 * size + "rem",
+    width: 0.76 * size + "rem",
+    left: 0.12 * size + "rem",
+    bottom: 0.12 * size + "rem",
     "background-color": circleColor,
     transition: ".4s",
     "border-radius": "50%",
@@ -229,7 +228,7 @@ export const Toggle = ({
   }
   const circleStylesStr = toStyleStr(circleStyles)
   const circleStylesWhenOn = {
-    transform: "translateX(0.76rem)",
+    transform: `translateX(${0.76 * size}rem)`,
     ...circleWhenOnStyleOverrides,
   }
   const circleStylesWhenOnStr = toStyleStr(circleStylesWhenOn)
