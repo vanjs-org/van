@@ -15,9 +15,9 @@ npm install vanjs-ui
 ## Documentation
 
 The following UI components has been implemented so far:
-* [Modal](#modal)
-* [Tabs](#tabs)
-* [Toggle](#toggle)
+* [Modal](#modal) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/modal?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+* [Tabs](#tabs) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+* [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 
 ### Modal
 
