@@ -113,8 +113,9 @@ let tagsNS = ns => new Proxy((name, ...args) => {
     let propSetter = propSetterCache[cacheKey] ??
       (propSetterCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0)
     let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k)
-    if (isState(v)) bind(() => (setter(v.val), dom))
-    else if (protoOf(v ?? 0) === funcProto && (!k.startsWith("on") || v._isBindingFunc))
+    let protoOfV = protoOf(v ?? 0)
+    if (protoOfV === stateProto) bind(() => (setter(v.val), dom))
+    else if (protoOfV === funcProto && (!k.startsWith("on") || v._isBindingFunc))
       bind(() => (setter(v()), dom))
     else setter(v)
   }
