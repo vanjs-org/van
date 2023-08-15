@@ -28,7 +28,7 @@ export interface TabsProps {
     readonly tabContentStyleOverrides?: CSSPropertyBag;
 }
 export interface TabsContent {
-    readonly [key: string]: ChildDom | ChildDom[];
+    readonly [key: string]: ChildDom | readonly ChildDom[];
 }
 export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: TabsContent) => HTMLDivElement;
 export interface ToggleProps {
@@ -47,3 +47,33 @@ export interface ToggleProps {
     readonly circleWhenOnStyleOverrides?: CSSPropertyBag;
 }
 export declare const Toggle: ({ on, size, cursor, offColor, onColor, circleColor, toggleClass, toggleStyleOverrides, sliderClass, sliderStyleOverrides, circleClass, circleStyleOverrides, circleWhenOnStyleOverrides, }: ToggleProps) => HTMLLabelElement;
+export interface MessageBoardProps {
+    readonly top?: string;
+    readonly bottom?: string;
+    readonly backgroundColor?: string;
+    readonly fontColor?: string;
+    readonly fadeOutSec?: number;
+    readonly boardClass?: string;
+    readonly boardStyleOverrides?: CSSPropertyBag;
+    readonly messageClass?: string;
+    readonly messageStyleOverrides?: CSSPropertyBag;
+    readonly closerClass?: string;
+    readonly closerStyleOverrides?: CSSPropertyBag;
+}
+export interface MessageProps {
+    readonly message: ChildDom | readonly ChildDom[];
+    readonly closer?: ChildDom | readonly ChildDom[];
+    readonly durationSec?: number;
+    readonly closed?: State<boolean>;
+}
+export declare class MessageBoard {
+    private _fadeOutSec;
+    private _messageClass;
+    private _messageStylesStr;
+    private _closerClass;
+    private _closerStylesStr;
+    private _dom;
+    constructor({ top, bottom, backgroundColor, fontColor, fadeOutSec, boardClass, boardStyleOverrides, messageClass, messageStyleOverrides, closerClass, closerStyleOverrides, }: MessageBoardProps, parentDom?: HTMLElement);
+    show({ message, closer, durationSec, closed, }: MessageProps): void;
+    remove(): void;
+}

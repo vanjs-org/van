@@ -24,6 +24,7 @@ The following UI components has been implemented so far:
 * [Modal](#modal) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/modal?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 * [Tabs](#tabs) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 * [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+* [MessageBoard](#message)
 
 ### Modal
 
@@ -184,12 +185,77 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `circleStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle.
 * `circleWhenOnStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle. Typically this is used to override the `transform` CSS property if the dimensions of the toggle is overridden.
 
+### MessageBoard
+
+Creates a message board to show messages on the screen.
+
+#### Signature
+
+To create a message board:
+
+```js
+const board = new MessageBoard({...props})
+```
+
+Then you can show messages with `show` method:
+
+```js
+board.show({...props})
+```
+
+Optionally, you can remove the DOM node of the message board with `remove` method:
+
+```js
+board.remove()
+```
+
+#### Examples
+
+```ts
+const board = new MessageBoard({top: "20px"})
+
+const example1 = () => board.show({message: "Hi!", durationSec: 1})
+const example2 = () => board.show(
+  {message: ["Welcome to ", a({href: "https://vanjs.org/", style: "color: #0099FF"}, "🍦VanJS"), "!"], closer: "❌"})
+
+const closed = van.state(false)
+const example3 = () => {
+  closed.val = false
+  board.show({message: "Press ESC to close this message", closed})
+}
+document.addEventListener("keydown", e => e.key === "Escape" && (closed.val = true))
+```
+
+You can live preview the examples with CodeSandbox(TODO: add link).
+
+#### Property Reference
+
+Message board properties:
+
+* `top`: Type `string`. Optional. The `top` CSS property of the message board.
+* `bottom`: Type `string`. Optional. The `bottom` CSS property of the message board. Exactly one of `top` and `bottom` should be specified.
+* `backgroundColor`: Type `string`. Default `"#333D"`. The background color of the messages shown on the message board.
+* `fontColor`: Type `string`. Default `"white"`. The font color of the messages shown on the message board.
+* `fadeOutSec`: Type `number`. Default `0.3`. The duration of the fade out animation when messages are being closed.
+* `boardClass`: Type `string`. Default `""`. Optional. The `class` attribute of the message board. You can specify multiple CSS classes seperated by `" "`.
+* `boardStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message board.
+* `messageClass`: Type `string`. Default `""`. Optional. The `class` attribute of the message shown on the message board. You can specify multiple CSS classes seperated by `" "`.
+* `messageStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message shown on the message board.
+* `closerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the message closer. You can specify multiple CSS classes seperated by `" "`.
+* `closerStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message closer.
+
+Message properties:
+
+* `message`: Type `ChildDom | readonly ChildDom[]`. Required. One or more `ChildDom` for the message we want to show.
+* `closer`: Type `ChildDom | readonly ChildDom[]`. Optional. If specified, we will render a closer DOM node with one or more `ChildDom` which can be clicked to close the shown message.
+* `durationSec`: Type `number`. Optional. If specified, the shown message will be automatically closed after `durationSec` seconds.
+* `closed`: Type `State<boolean>`. Optional. If specified, the shown message can be closed via the `closed` `State` object with `closed.val = true`.
+
 ### Planned for Future
 
 The following UI components are planned to be added in the future:
 * Tooltip
 * Banner
-* Message
 
 ### Property Bag for Style Overrides
 

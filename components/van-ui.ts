@@ -79,7 +79,7 @@ export interface TabsProps {
 }
 
 export interface TabsContent {
-  readonly [key: string]: ChildDom | ChildDom[]
+  readonly [key: string]: ChildDom | readonly ChildDom[]
 }
 
 let tabsId = 0
@@ -103,12 +103,12 @@ export const Tabs = (
   contents: TabsContent,
 ) => {
   const activeTabState = activeTab ?? van.state(Object.keys(contents)[0])
-  const tabButtonRowStyles = {
+  const tabButtonRowStylesStr = toStyleStr({
     overflow: "hidden",
     "background-color": tabButtonRowColor,
     ...tabButtonRowStyleOverrides,
-  }
-  const tabButtonStyles = {
+  })
+  const tabButtonStylesStr = toStyleStr({
     float: "left",
     border: "none",
     "border-right": tabButtonBorderStyle,
@@ -117,14 +117,12 @@ export const Tabs = (
     padding: "8px 16px",
     transition: "0.3s",
     ...tabButtonStyleOverrides,
-  }
-  const tabButtonStylesStr = toStyleStr(tabButtonStyles)
-  const tabContentStyles = {
+  })
+  const tabContentStylesStr = toStyleStr({
     padding: "6px 12px",
     "border-top": "none",
     ...tabContentStyleOverrides,
-  }
-  const tabContentStylesStr = toStyleStr(tabContentStyles)
+  })
 
   const id = "vanui-tabs-" + (++tabsId)
   van.add(document.head,
@@ -132,7 +130,7 @@ export const Tabs = (
 #${id} .vanui-tab-button:hover { background-color: ${tabButtonHoverColor} }
 #${id} .vanui-tab-button.active { background-color: ${tabButtonActiveColor} }`))
   return div({id, class: resultClass, style},
-    div({class: tabButtonRowClass, style: toStyleStr(tabButtonRowStyles)},
+    div({class: tabButtonRowClass, style: tabButtonRowStylesStr},
       Object.keys(contents).map(k =>
         button({
           class: () => {
@@ -189,22 +187,22 @@ export const Toggle = ({
   circleWhenOnStyleOverrides = {},
 }: ToggleProps) => {
   const onState = typeof on === "boolean" ? van.state(on) : on
-  const toggleStyles = {
+  const toggleStylesStr = toStyleStr({
     position: "relative",
     display: "inline-block",
     width: 1.76 * size + "rem",
     height: size + "rem",
     cursor,
     ...toggleStyleOverrides,
-  }
-  const inputStyles = {
+  })
+  const inputStylesStr = toStyleStr({
     opacity: 0,
     width: 0,
     height: 0,
     position: "absolute",
     "z-index": 10000,  // Ensures the toggle clickable
-  }
-  const sliderStyles = {
+  })
+  const sliderStylesStr = toStyleStr({
     position: "absolute",
     top: 0,
     left: 0,
@@ -213,9 +211,8 @@ export const Toggle = ({
     transition: ".4s",
     "border-radius": size + "rem",
     ...sliderStyleOverrides,
-  }
-  const sliderStylesStr = toStyleStr(sliderStyles)
-  const circleStyles = {
+  })
+  const circleStylesStr = toStyleStr({
     position: "absolute",
     height: 0.76 * size + "rem",
     width: 0.76 * size + "rem",
@@ -225,16 +222,13 @@ export const Toggle = ({
     transition: ".4s",
     "border-radius": "50%",
     ...circleStyleOverrides,
-  }
-  const circleStylesStr = toStyleStr(circleStyles)
-  const circleStylesWhenOn = {
+  })
+  const circleStylesWhenOnStr = toStyleStr({
     transform: `translateX(${0.76 * size}rem)`,
     ...circleWhenOnStyleOverrides,
-  }
-  const circleStylesWhenOnStr = toStyleStr(circleStylesWhenOn)
-  return label({class: toggleClass, style: toStyleStr(toggleStyles)},
-    input({type: "checkbox", style: toStyleStr(inputStyles),
-      oninput: e => onState.val = e.target.checked}),
+  })
+  return label({class: toggleClass, style: toggleStylesStr},
+    input({type: "checkbox", style: inputStylesStr, oninput: e => onState.val = e.target.checked}),
     span(
       {
         class: sliderClass,
@@ -246,4 +240,107 @@ export const Toggle = ({
       }),
     ),
   )
+}
+
+export interface MessageBoardProps {
+  readonly top?: string
+  readonly bottom?: string
+  readonly backgroundColor?: string
+  readonly fontColor?: string
+  readonly fadeOutSec?: number
+
+  readonly boardClass?: string
+  readonly boardStyleOverrides?: CSSPropertyBag
+  readonly messageClass?: string
+  readonly messageStyleOverrides?: CSSPropertyBag
+  readonly closerClass?: string
+  readonly closerStyleOverrides?: CSSPropertyBag
+}
+
+export interface MessageProps {
+  readonly message: ChildDom | readonly ChildDom[]
+  readonly closer?: ChildDom | readonly ChildDom[]
+  readonly durationSec?: number
+  readonly closed?: State<boolean>
+}
+
+export class MessageBoard {
+  private _fadeOutSec: number
+  private _messageClass: string
+  private _messageStylesStr: string
+  private _closerClass: string
+  private _closerStylesStr: string
+  private _dom: HTMLElement
+
+  constructor({
+    top = "unset",
+    bottom = "unset",
+    backgroundColor = "#333D",
+    fontColor = "white",
+    fadeOutSec = 0.3,
+    boardClass = "",
+    boardStyleOverrides = {},
+    messageClass = "",
+    messageStyleOverrides = {},
+    closerClass = "",
+    closerStyleOverrides = {},
+  }: MessageBoardProps, parentDom = document.body) {
+    const boardStylesStr = toStyleStr({
+      display: "flex",
+      "flex-direction": "column",
+      "align-items": "center",
+      position: "fixed",
+      top,
+      bottom,
+      left: "50%",
+      transform: "translateX(-50%)",
+      "z-index": 10000,
+      ...boardStyleOverrides,
+    })
+    this._fadeOutSec = fadeOutSec
+    this._messageClass = messageClass
+    this._messageStylesStr = toStyleStr({
+      display: "flex",
+      "background-color": backgroundColor,
+      color: fontColor,
+      padding: "15px",
+      "margin-bottom": "10px",
+      "border-radius": "5px",
+      transition: `opacity ${fadeOutSec}s, transform ${fadeOutSec}s`,
+      ...messageStyleOverrides,
+    })
+    this._closerClass = closerClass
+    this._closerStylesStr = toStyleStr({
+      display: "flex",
+      "align-items": "center",
+      "margin-left": "10px",
+      cursor: "pointer",
+      ...closerStyleOverrides
+    })
+
+    parentDom.appendChild(this._dom = div({class: boardClass, style: boardStylesStr}))
+  }
+
+  show({
+    message,
+    closer,
+    durationSec,
+    closed = van.state(false),
+  }: MessageProps) {
+    const removed = van.state(false)
+    van.derive(() => setTimeout((v: boolean) => removed.val = v, this._fadeOutSec * 1000, closed.val))
+    const msgDom = div({class: this._messageClass, style: this._messageStylesStr},
+      div(message),
+      closer ? span(
+        {class: this._closerClass, style: this._closerStylesStr, onclick: () => closed.val = true},
+        closer,
+      ) : null,
+    )
+    van.derive(() =>
+      closed.val && (msgDom.style.opacity = "0", msgDom.style.transform = "translateY(-20px)"))
+    if (durationSec) setTimeout(() => closed.val = true, durationSec * 1000)
+    van.add(this._dom, () => removed.val ? null : msgDom)
+  }
+
+  remove() { this._dom.remove() }
 }
