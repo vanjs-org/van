@@ -340,6 +340,7 @@ export class MessageBoard {
       closed.val && (msgDom.style.opacity = "0", msgDom.style.transform = "translateY(-20px)"))
     if (durationSec) setTimeout(() => closed.val = true, durationSec * 1000)
     van.add(this._dom, () => removed.val ? null : msgDom)
+    return msgDom
   }
 
   remove() { this._dom.remove() }

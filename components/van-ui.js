@@ -73,6 +73,7 @@ export class MessageBoard {
         if (durationSec)
             setTimeout(() => closed.val = true, durationSec * 1000);
         van.add(this._dom, () => removed.val ? null : msgDom);
+        return msgDom;
     }
     remove() { this._dom.remove(); }
 }

@@ -200,7 +200,7 @@ const board = new MessageBoard({...props})
 Then you can show messages with `show` method:
 
 ```js
-board.show({...props})
+board.show({...props}) => <The DOM node for the message, which is also appended to the message board>
 ```
 
 Optionally, you can remove the DOM node of the message board with `remove` method:

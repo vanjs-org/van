@@ -74,6 +74,6 @@ export declare class MessageBoard {
     private _closerStylesStr;
     private _dom;
     constructor({ top, bottom, backgroundColor, fontColor, fadeOutSec, boardClass, boardStyleOverrides, messageClass, messageStyleOverrides, closerClass, closerStyleOverrides, }: MessageBoardProps, parentDom?: HTMLElement);
-    show({ message, closer, durationSec, closed, }: MessageProps): void;
+    show({ message, closer, durationSec, closed, }: MessageProps): HTMLDivElement;
     remove(): void;
 }
