@@ -12,6 +12,12 @@ Run the following command to install the package:
 npm install vanjs-ui
 ```
 
+To use the NPM package, add this line to your script:
+
+```js
+import { <components you want to import> } from "vanjs-ui"
+```
+
 ## Documentation
 
 The following UI components has been implemented so far:
