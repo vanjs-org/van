@@ -217,7 +217,7 @@ Message properties:
 
 ### Tooltip
 
-Creates a tooltip above a DOM node which typically shows the DOM node is hovered.
+Creates a tooltip above a DOM node which typically shows when the DOM node is hovered.
 
 #### Signature
 
@@ -254,7 +254,7 @@ van.add(document.body,
 )
 ```
 
-You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1).
+You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1).
 
 Note that the lines:
 
@@ -271,7 +271,7 @@ are needed for the tooltip element to be shown properly.
 #### Property Reference
 
 * `text`: Type `string | State<string>`. Required. The text shown in the tooltip. If a `State` object is specified, you can set the text with `text.val = ...`.
-* `show`: Type `State<string>`. Required. The `State` object to control whether to show the tooltip or not.
+* `show`: Type `State<boolean>`. Required. The `State` object to control whether to show the tooltip or not.
 * `width`: Type `string`. Default `"200px"`. Optional. The width of the tooltip.
 * `backgroundColor`: Type `string`. Default `"#333D"`. Optional. The background color of the tooltip.
 * `fontColor`: Type `string`. Default: `"white"`. Optional. The font color of of the tooltip.
