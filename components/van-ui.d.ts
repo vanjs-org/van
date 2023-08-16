@@ -20,6 +20,7 @@ export interface TabsProps {
     readonly tabButtonBorderStyle?: string;
     readonly tabButtonHoverColor?: string;
     readonly tabButtonActiveColor?: string;
+    readonly transitionSec?: number;
     readonly tabButtonRowClass?: string;
     readonly tabButtonRowStyleOverrides?: CSSPropertyBag;
     readonly tabButtonClass?: string;
@@ -30,7 +31,7 @@ export interface TabsProps {
 export interface TabsContent {
     readonly [key: string]: ChildDom | readonly ChildDom[];
 }
-export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: TabsContent) => HTMLDivElement;
+export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: TabsContent) => HTMLDivElement;
 export interface ToggleProps {
     readonly on?: boolean | State<boolean>;
     readonly size?: number;
@@ -90,3 +91,17 @@ export interface TooltipProps {
     readonly triangleStyleOverrides?: CSSPropertyBag;
 }
 export declare const Tooltip: ({ text, show, width, backgroundColor, fontColor, fadeInSec, tooltipClass, tooltipStyleOverrides, triangleClass, triangleStyleOverrides, }: TooltipProps) => HTMLSpanElement;
+export interface OptionGroupProps {
+    readonly selected: State<string>;
+    readonly normalColor?: string;
+    readonly hoverColor?: string;
+    readonly selectedColor?: string;
+    readonly selectedHoverColor?: string;
+    readonly fontColor?: string;
+    readonly transitionSec?: number;
+    readonly optionGroupClass?: string;
+    readonly optionGroupStyleOverrides?: CSSPropertyBag;
+    readonly optionClass?: string;
+    readonly optionStyleOverrides?: CSSPropertyBag;
+}
+export declare const OptionGroup: ({ selected, normalColor, hoverColor, selectedColor, selectedHoverColor, fontColor, transitionSec, optionGroupClass, optionGroupStyleOverrides, optionClass, optionStyleOverrides, }: OptionGroupProps, options: string[]) => HTMLDivElement;

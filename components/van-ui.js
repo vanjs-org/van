@@ -8,22 +8,20 @@ export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackgrou
     return () => closed.val ? null : div({ class: backgroundClass, style: toStyleStr(backgroundStyle) }, div({ class: modalClass, style: toStyleStr(modalStyle) }, children));
 };
 let tabsId = 0;
-export const Tabs = ({ activeTab, resultClass = "", style = "", tabButtonRowColor = "#f1f1f1", tabButtonBorderStyle = "1px solid #000", tabButtonHoverColor = "#ddd", tabButtonActiveColor = "#ccc", tabButtonRowClass = "", tabButtonRowStyleOverrides = {}, tabButtonClass = "", tabButtonStyleOverrides = {}, tabContentClass = "", tabContentStyleOverrides = {}, }, contents) => {
+export const Tabs = ({ activeTab, resultClass = "", style = "", tabButtonRowColor = "#f1f1f1", tabButtonBorderStyle = "1px solid #000", tabButtonHoverColor = "#ddd", tabButtonActiveColor = "#ccc", transitionSec = 0.3, tabButtonRowClass = "", tabButtonRowStyleOverrides = {}, tabButtonClass = "", tabButtonStyleOverrides = {}, tabContentClass = "", tabContentStyleOverrides = {}, }, contents) => {
     const activeTabState = activeTab !== null && activeTab !== void 0 ? activeTab : van.state(Object.keys(contents)[0]);
     const tabButtonRowStylesStr = toStyleStr(Object.assign({ overflow: "hidden", "background-color": tabButtonRowColor }, tabButtonRowStyleOverrides));
-    const tabButtonStylesStr = toStyleStr(Object.assign({ float: "left", border: "none", "border-right": tabButtonBorderStyle, outline: "none", cursor: "pointer", padding: "8px 16px", transition: "0.3s" }, tabButtonStyleOverrides));
+    const tabButtonStylesStr = toStyleStr(Object.assign({ float: "left", border: "none", "border-right": tabButtonBorderStyle, outline: "none", cursor: "pointer", padding: "8px 16px", transition: `background-color ${transitionSec}s` }, tabButtonStyleOverrides));
     const tabContentStylesStr = toStyleStr(Object.assign({ padding: "6px 12px", "border-top": "none" }, tabContentStyleOverrides));
     const id = "vanui-tabs-" + (++tabsId);
-    van.add(document.head, van.tags["style"](`#${id} .vanui-tab-button { background-color: inherit }
+    document.head.appendChild(van.tags["style"](`#${id} .vanui-tab-button { background-color: inherit }
 #${id} .vanui-tab-button:hover { background-color: ${tabButtonHoverColor} }
 #${id} .vanui-tab-button.active { background-color: ${tabButtonActiveColor} }`));
     return div({ id, class: resultClass, style }, div({ class: tabButtonRowClass, style: tabButtonRowStylesStr }, Object.keys(contents).map(k => button({
         class: () => {
             const classes = ["vanui-tab-button"];
-            if (tabButtonClass)
-                classes.push(tabButtonClass);
-            if (k === activeTabState.val)
-                classes.push("active");
+            tabButtonClass && classes.push(tabButtonClass);
+            k === activeTabState.val && classes.push("active");
             return classes.join(" ");
         },
         style: tabButtonStylesStr,
@@ -85,4 +83,24 @@ export const Tooltip = ({ text, show, width = "200px", backgroundColor = "#333D"
         (dom.style.opacity = "1", dom.style.visibility = "visible") :
         (dom.style.opacity = "0", dom.style.visibility = "hidden"));
     return dom;
+};
+let optionGroupId = 0;
+export const OptionGroup = ({ selected, normalColor = "#e2eef7", hoverColor = "#c1d4e9", selectedColor = "#90b6d9", selectedHoverColor = "#7fa5c8", fontColor = "black", transitionSec = 0.3, optionGroupClass = "", optionGroupStyleOverrides = {}, optionClass = "", optionStyleOverrides = {}, }, options) => {
+    const buttonGroupStylesStr = toStyleStr(Object.assign({ display: "flex" }, optionGroupStyleOverrides));
+    const buttonStylesStr = toStyleStr(Object.assign({ padding: "10px 20px", border: "none", color: fontColor, cursor: "pointer", outline: "none", transition: `background-color ${transitionSec}s` }, optionStyleOverrides));
+    const id = "vanui-option-group-" + (++optionGroupId);
+    document.head.appendChild(van.tags["style"](`#${id} .vanui-button { background-color: ${normalColor} }
+#${id} .vanui-button:hover { background-color: ${hoverColor} }
+#${id} .vanui-button.selected { background-color: ${selectedColor} }
+#${id} .vanui-button.selected:hover { background-color: ${selectedHoverColor} }`));
+    return div({ id, class: optionGroupClass, style: buttonGroupStylesStr }, options.map(o => button({
+        class: () => {
+            const classes = ["vanui-button"];
+            optionClass && classes.push(optionClass);
+            o === selected.val && classes.push("selected");
+            return classes.join(" ");
+        },
+        style: buttonStylesStr,
+        onclick: () => selected.val = o,
+    }, o)));
 };

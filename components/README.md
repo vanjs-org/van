@@ -26,6 +26,7 @@ The following UI components has been implemented so far:
 * [MessageBoard](#message) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/message?file=/src/main.ts))
 * [Tooltip](#tooltip) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1))
 * [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+* [OptionGroup](#optiongroup) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/option-group?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 
 ### Modal
 
@@ -142,6 +143,7 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `tabButtonBorderStyle`: Type `string`. Default `1px solid #000`. Optional. The style of borders between tab buttons.
 * `tabButtonHoverColor`: Type `string`. Default `"#ddd"`. Optional. The color when the tab button is hovered.
 * `tabButtonActiveColor`: Type `string`. Default `"#ccc"`. Optional. The color of the tab button for the currently active tab.
+* `transitionSec`: Type `number`. Default `0.3`. Optional. The duration of the transition when tab buttons change color.
 * `tabButtonRowClass`: Type `string`. Default `""`. Optional. The `class` attribute of the container of tab buttons. You can specify multiple CSS classes seperated by `" "`.
 * `tabButtonRowStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the container of tab buttons.
 * `tabButtonClass`: Type `string`. Default `""`. The `class` attribute of tab buttons. You can specify multiple CSS classes seperated by `" "`.
@@ -318,10 +320,51 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `circleStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle.
 * `circleWhenOnStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle. Typically this is used to override the `transform` CSS property if the dimensions of the toggle is overridden.
 
+### OptionGroup
+
+Creates a group of button-shaped options where only one option can be selected. This is functionally similar to a radio group but with different appearance.
+
+#### Signature
+
+```js
+OptionGroup({...props}, options) => <The created option group>
+```
+
+The `options` parameter is a `string[]` for all the options.
+
+#### Example
+
+```ts
+const selected = van.state("")
+const options = ["Water", "Coffee", "Juice"]
+
+van.add(document.body,
+  p("What would you like to drink?"),
+  OptionGroup({selected}, options),
+  p(() => options.includes(selected.val) ?
+    span(b("You selected:"), " ", selected) : b("You haven't selected anything.")),
+)
+```
+
+You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/option-group?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
+#### Property Reference
+
+* `selected`: Type `State<string>`. Required. A `State` object for the currently selected option. You can change the selected option with `selected.val = <option string>`, and subscribe to the selection change via [`van.derive`](https://vanjs.org/tutorial#api-derive).
+* `normalColor`: Type `string`. Default `"#e2eef7"`. Optional. The color of the option when it's not selected or hovered.
+* `hoverColor`: Type `string`. Default `"#c1d4e9"`. Optional. The color of the option when it's hovered.
+* `selectedColor`: Type `string`. Default `"#90b6d9"`. Optional. The color of the option when it's selected.
+* `selectedHoverColor`: Type `string`. Default `"#7fa5c8"`. Optional. The color of the option when it's selected and hovered.
+* `fontColor`: Type `string`. Default `"black"`. Optional. The font color of the options.
+* `transitionSec`: Type `number`. Default `0.3`. Optional. The duration of the transition when the options change color.
+* `optionGroupClass`: Type `string`. Default `""`. Optional. The `class` attribute of the entire button group. You can specify multiple CSS classes seperated by `" "`.
+* `optionGroupStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the entire button group.
+* `optionClass`: Type `string`. Default `""`. Optional. The `class` attribute of the options. You can specify multiple CSS classes seperated by `" "`.
+* `optionStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the options.
+
 ### Planned for Future
 
 The following UI components are planned to be added in the future:
-* OptionGroup
 * Banner
 
 ### Property Bag for Style Overrides
