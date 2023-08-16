@@ -77,3 +77,16 @@ export declare class MessageBoard {
     show({ message, closer, durationSec, closed, }: MessageProps): HTMLDivElement;
     remove(): void;
 }
+export interface TooltipProps {
+    readonly text: string | State<string>;
+    readonly show: State<boolean>;
+    readonly width?: string;
+    readonly backgroundColor?: string;
+    readonly fontColor?: string;
+    readonly fadeInSec?: number;
+    readonly tooltipClass?: string;
+    readonly tooltipStyleOverrides?: CSSPropertyBag;
+    readonly triangleClass?: string;
+    readonly triangleStyleOverrides?: CSSPropertyBag;
+}
+export declare const Tooltip: ({ text, show, width, backgroundColor, fontColor, fadeInSec, tooltipClass, tooltipStyleOverrides, triangleClass, triangleStyleOverrides, }: TooltipProps) => HTMLSpanElement;

@@ -331,7 +331,7 @@ export class MessageBoard {
     van.derive(() => setTimeout((v: boolean) => removed.val = v, this._fadeOutSec * 1000, closed.val))
     const msgDom = div({class: this._messageClass, style: this._messageStylesStr},
       div(message),
-      closer ? span(
+      closer ? div(
         {class: this._closerClass, style: this._closerStylesStr, onclick: () => closed.val = true},
         closer,
       ) : null,
@@ -344,4 +344,69 @@ export class MessageBoard {
   }
 
   remove() { this._dom.remove() }
+}
+
+export interface TooltipProps {
+  readonly text: string | State<string>
+  readonly show: State<boolean>
+  readonly width?: string
+  readonly backgroundColor?: string
+  readonly fontColor?: string
+  readonly fadeInSec?: number
+
+  readonly tooltipClass?: string
+  readonly tooltipStyleOverrides?: CSSPropertyBag
+  readonly triangleClass?: string
+  readonly triangleStyleOverrides?: CSSPropertyBag
+}
+
+export const Tooltip = ({
+  text,
+  show,
+  width = "200px",
+  backgroundColor = "#333D",
+  fontColor = "white",
+  fadeInSec = 0.3,
+  tooltipClass = "",
+  tooltipStyleOverrides = {},
+  triangleClass = "",
+  triangleStyleOverrides = {},
+}: TooltipProps) => {
+  const tooltipStylesStr = toStyleStr({
+    width,
+    visibility: "hidden",
+    "background-color": backgroundColor,
+    color: fontColor,
+    "text-align": "center",
+    padding: "10px",
+    "border-radius": "5px",
+    position: "absolute",
+    "z-index": 1,
+    bottom: "125%",
+    left: "50%",
+    transform: "translateX(-50%)",
+    opacity: 0,
+    transition: `opacity ${fadeInSec}s`,
+    ...tooltipStyleOverrides,
+  })
+  const triangleStylesStr = toStyleStr({
+    width: 0,
+    height: 0,
+    "margin-left": "-5px",
+    "border-left": "5px solid transparent",
+    "border-right": "5px solid transparent",
+    "border-top": "5px solid #333",
+    position: "absolute",
+    bottom: "-5px",
+    left: "50%",
+    ...triangleStyleOverrides,
+  })
+  const dom = span({class: tooltipClass, style: tooltipStylesStr},
+    text,
+    div({class: triangleClass, style: triangleStylesStr}),
+  )
+  van.derive(() => show.val ?
+    (dom.style.opacity = "1", dom.style.visibility = "visible") :
+    (dom.style.opacity = "0", dom.style.visibility = "hidden"))
+  return dom
 }
