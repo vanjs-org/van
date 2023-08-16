@@ -322,7 +322,7 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 
 ### OptionGroup
 
-Creates a group of button-shaped options where only one option can be selected. This is functionally similar to a radio group but with different appearance.
+Creates a group of button-shaped options where only one option can be selected. This is functionally similar to a radio group but with a different appearance.
 
 #### Signature
 
@@ -357,8 +357,8 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `selectedHoverColor`: Type `string`. Default `"#7fa5c8"`. Optional. The color of the option when it's selected and hovered.
 * `fontColor`: Type `string`. Default `"black"`. Optional. The font color of the options.
 * `transitionSec`: Type `number`. Default `0.3`. Optional. The duration of the transition when the options change color.
-* `optionGroupClass`: Type `string`. Default `""`. Optional. The `class` attribute of the entire button group. You can specify multiple CSS classes seperated by `" "`.
-* `optionGroupStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the entire button group.
+* `optionGroupClass`: Type `string`. Default `""`. Optional. The `class` attribute of the entire option group. You can specify multiple CSS classes seperated by `" "`.
+* `optionGroupStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the entire option group.
 * `optionClass`: Type `string`. Default `""`. Optional. The `class` attribute of the options. You can specify multiple CSS classes seperated by `" "`.
 * `optionStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the options.
 
