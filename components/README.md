@@ -198,9 +198,9 @@ Message board properties:
 
 * `top`: Type `string`. Optional. The `top` CSS property of the message board.
 * `bottom`: Type `string`. Optional. The `bottom` CSS property of the message board. Exactly one of `top` and `bottom` should be specified.
-* `backgroundColor`: Type `string`. Default `"#333D"`. The background color of the messages shown on the message board.
-* `fontColor`: Type `string`. Default `"white"`. The font color of the messages shown on the message board.
-* `fadeOutSec`: Type `number`. Default `0.3`. The duration of the fade out animation when messages are being closed.
+* `backgroundColor`: Type `string`. Default `"#333D"`. Optional. The background color of the messages shown on the message board.
+* `fontColor`: Type `string`. Default `"white"`. Optional. The font color of the messages shown on the message board.
+* `fadeOutSec`: Type `number`. Default `0.3`. Optional. The duration of the fade out animation when messages are being closed.
 * `boardClass`: Type `string`. Default `""`. Optional. The `class` attribute of the message board. You can specify multiple CSS classes seperated by `" "`.
 * `boardStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message board.
 * `messageClass`: Type `string`. Default `""`. Optional. The `class` attribute of the message shown on the message board. You can specify multiple CSS classes seperated by `" "`.
