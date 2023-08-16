@@ -217,7 +217,7 @@ Message properties:
 
 ### Tooltip
 
-Creates a tooltip above a DOM node which typically shows when the DOM node is hovered.
+Creates a tooltip above a DOM node which typically shows when the DOM node is being hovered.
 
 #### Signature
 
