@@ -281,31 +281,6 @@ are needed for the tooltip element to be shown properly.
 * `triangleClass`: Type `string`. Default `""`. Optional. The `class` attribute of the triangle in the bottom. You can specify multiple CSS classes seperated by `" "`.
 * `triangleStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the triangle in the bottom.
 
-### Planned for Future
-
-The following UI components are planned to be added in the future:
-* OptionGroup
-* Banner
-
-### Property Bag for Style Overrides
-
-In the API of **VanUI**, you can specify an object as a property bag to override the styles of the created elements. The keys of the property bag are CSS property names, and the values of the property bag are CSS property values. Sample values of the property bag:
-
-```js
-{
-  "z-index": 1000,
-  "background-color": "rgba(0,0,0,.8)",
-}
-```
-
-```js
-{
-  "border-radius": "0.2rem",
-  padding: "0.8rem",
-  "background-color": "yellow",
-}
-```
-
 ### Toggle
 
 Creates a toggle switch that can be turned on and off.
@@ -342,3 +317,28 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `circleClass`. Type `string`. Default `""`. Optional. The `class` attribute of the toggling circle. You can specify multiple CSS classes seperated by `" "`.
 * `circleStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle.
 * `circleWhenOnStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle. Typically this is used to override the `transform` CSS property if the dimensions of the toggle is overridden.
+
+### Planned for Future
+
+The following UI components are planned to be added in the future:
+* OptionGroup
+* Banner
+
+### Property Bag for Style Overrides
+
+In the API of **VanUI**, you can specify an object as a property bag to override the styles of the created elements. The keys of the property bag are CSS property names, and the values of the property bag are CSS property values. Sample values of the property bag:
+
+```js
+{
+  "z-index": 1000,
+  "background-color": "rgba(0,0,0,.8)",
+}
+```
+
+```js
+{
+  "border-radius": "0.2rem",
+  padding: "0.8rem",
+  "background-color": "yellow",
+}
+```
