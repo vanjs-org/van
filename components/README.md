@@ -23,9 +23,9 @@ import { <components you want to import> } from "vanjs-ui"
 The following UI components has been implemented so far:
 * [Modal](#modal) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/modal?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 * [Tabs](#tabs) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1))
-* [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 * [MessageBoard](#message) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/message?file=/src/main.ts))
 * [Tooltip](#tooltip) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1))
+* [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 
 ### Modal
 
@@ -149,43 +149,6 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `tabContentClass`: Type `string`. Default `""`. The `class` attribute of tab contents. You can specify multiple CSS classes seperated by `" "`.
 * `tabContentStyleOverrides`: Type `object`. Default `{}`. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for tab contents.
 
-### Toggle
-
-Creates a toggle switch that can be turned on and off.
-
-#### Signature
-
-```js
-Toggle({...props}) => <The created toggle switch>
-```
-
-#### Example
-
-```ts
-van.add(document.body, Toggle({
-  size: 2,
-  onColor: "#4CAF50"
-}))
-```
-
-You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1).
-
-#### Property Reference
-
-* `on`: Type `boolean | State<boolean>`. Default `false`. Optional. A boolean or a boolean-typed `State` object to indicate the status of the toggle. If a `State` object is specified, you can turn on/off the toggle via the specified `State` object with `on.val = <true|false>`, and subscribe to the status change of the toggle via [`van.derive`](https://vanjs.org/tutorial#api-derive).
-* `size`: Type `number`. Default `1`. Optional. The size of the toggle. `1` means the height of the toggle is `1rem`.
-* `cursor`: Type `string`. Default `pointer`. Optional. The `cursor` CSS property of the toggle.
-* `ofColor`: Type `string`. Default `"#ccc"`. Optional. The color of the toggle when it's off.
-* `onColor`: Type `string`. Default `"#2196F3"`. Optional. The color of the toggle when it's on.
-* `circleColor`: Type `string`. Default `"white"`. Optional. The color of the toggling circle.
-* `toggleClass`: Type `string`. Default `""`. Optional. The `class` attribute of the toggle. You can specify multiple CSS classes seperated by `" "`.
-* `toggleStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggle.
-* `sliderClass`: Type `string`. Default `""`. Optional. The `class` attribute of the slider. You can specify multiple CSS classes seperated by `" "`.
-* `sliderStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the slider.
-* `circleClass`. Type `string`. Default `""`. Optional. The `class` attribute of the toggling circle. You can specify multiple CSS classes seperated by `" "`.
-* `circleStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle.
-* `circleWhenOnStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle. Typically this is used to override the `transform` CSS property if the dimensions of the toggle is overridden.
-
 ### MessageBoard
 
 Creates a message board to show messages on the screen.
@@ -291,6 +254,8 @@ van.add(document.body,
 )
 ```
 
+You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1).
+
 Note that the lines:
 
 ```ts
@@ -302,8 +267,6 @@ Note that the lines:
 ```
 
 are needed for the tooltip element to be shown properly.
-
-You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1).
 
 #### Property Reference
 
@@ -342,3 +305,40 @@ In the API of **VanUI**, you can specify an object as a property bag to override
   "background-color": "yellow",
 }
 ```
+
+### Toggle
+
+Creates a toggle switch that can be turned on and off.
+
+#### Signature
+
+```js
+Toggle({...props}) => <The created toggle switch>
+```
+
+#### Example
+
+```ts
+van.add(document.body, Toggle({
+  size: 2,
+  onColor: "#4CAF50"
+}))
+```
+
+You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
+#### Property Reference
+
+* `on`: Type `boolean | State<boolean>`. Default `false`. Optional. A boolean or a boolean-typed `State` object to indicate the status of the toggle. If a `State` object is specified, you can turn on/off the toggle via the specified `State` object with `on.val = <true|false>`, and subscribe to the status change of the toggle via [`van.derive`](https://vanjs.org/tutorial#api-derive).
+* `size`: Type `number`. Default `1`. Optional. The size of the toggle. `1` means the height of the toggle is `1rem`.
+* `cursor`: Type `string`. Default `pointer`. Optional. The `cursor` CSS property of the toggle.
+* `ofColor`: Type `string`. Default `"#ccc"`. Optional. The color of the toggle when it's off.
+* `onColor`: Type `string`. Default `"#2196F3"`. Optional. The color of the toggle when it's on.
+* `circleColor`: Type `string`. Default `"white"`. Optional. The color of the toggling circle.
+* `toggleClass`: Type `string`. Default `""`. Optional. The `class` attribute of the toggle. You can specify multiple CSS classes seperated by `" "`.
+* `toggleStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggle.
+* `sliderClass`: Type `string`. Default `""`. Optional. The `class` attribute of the slider. You can specify multiple CSS classes seperated by `" "`.
+* `sliderStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the slider.
+* `circleClass`. Type `string`. Default `""`. Optional. The `class` attribute of the toggling circle. You can specify multiple CSS classes seperated by `" "`.
+* `circleStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle.
+* `circleWhenOnStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle. Typically this is used to override the `transform` CSS property if the dimensions of the toggle is overridden.
