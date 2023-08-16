@@ -378,7 +378,7 @@ export const Tooltip = ({
     "background-color": backgroundColor,
     color: fontColor,
     "text-align": "center",
-    padding: "10px",
+    padding: "5px",
     "border-radius": "5px",
     position: "absolute",
     "z-index": 1,

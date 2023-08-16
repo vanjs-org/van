@@ -8,7 +8,7 @@ van.add(document.body, h1("Tooltip Examples"))
 const tooltip1Show = van.state(false)
 const tooltip2Show = van.state(false)
 const count = van.state(0)
-const tooltip2Text = van.derive(() => `Count ${count.val}`)
+const tooltip2Text = van.derive(() => `Count: ${count.val}`)
 const tooltip3Show = van.state(false)
 
 van.add(document.body,

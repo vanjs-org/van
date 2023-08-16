@@ -78,7 +78,7 @@ export class MessageBoard {
     remove() { this._dom.remove(); }
 }
 export const Tooltip = ({ text, show, width = "200px", backgroundColor = "#333D", fontColor = "white", fadeInSec = 0.3, tooltipClass = "", tooltipStyleOverrides = {}, triangleClass = "", triangleStyleOverrides = {}, }) => {
-    const tooltipStylesStr = toStyleStr(Object.assign({ width, visibility: "hidden", "background-color": backgroundColor, color: fontColor, "text-align": "center", padding: "10px", "border-radius": "5px", position: "absolute", "z-index": 1, bottom: "125%", left: "50%", transform: "translateX(-50%)", opacity: 0, transition: `opacity ${fadeInSec}s` }, tooltipStyleOverrides));
+    const tooltipStylesStr = toStyleStr(Object.assign({ width, visibility: "hidden", "background-color": backgroundColor, color: fontColor, "text-align": "center", padding: "5px", "border-radius": "5px", position: "absolute", "z-index": 1, bottom: "125%", left: "50%", transform: "translateX(-50%)", opacity: 0, transition: `opacity ${fadeInSec}s` }, tooltipStyleOverrides));
     const triangleStylesStr = toStyleStr(Object.assign({ width: 0, height: 0, "margin-left": "-5px", "border-left": "5px solid transparent", "border-right": "5px solid transparent", "border-top": "5px solid #333", position: "absolute", bottom: "-5px", left: "50%" }, triangleStyleOverrides));
     const dom = span({ class: tooltipClass, style: tooltipStylesStr }, text, div({ class: triangleClass, style: triangleStylesStr }));
     van.derive(() => show.val ?
