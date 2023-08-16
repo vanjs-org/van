@@ -25,6 +25,7 @@ The following UI components has been implemented so far:
 * [Tabs](#tabs) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 * [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 * [MessageBoard](#message) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/message?file=/src/main.ts))
+* [Tooltip](#tooltip) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1))
 
 ### Modal
 
@@ -302,7 +303,7 @@ Note that the lines:
 
 are needed for the tooltip element to be shown properly.
 
-You can live preview the example with CodeSandbox(TODO: add the link here).
+You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1).
 
 #### Property Reference
 
