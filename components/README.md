@@ -231,7 +231,7 @@ Tooltip({...props}) => <The created tooltip element>
 const tooltip1Show = van.state(false)
 const tooltip2Show = van.state(false)
 const count = van.state(0)
-const tooltip2Text = van.derive(() => `Count ${count.val}`)
+const tooltip2Text = van.derive(() => `Count: ${count.val}`)
 const tooltip3Show = van.state(false)
 
 van.add(document.body,
@@ -239,18 +239,18 @@ van.add(document.body,
     style: "position: relative;",
     onmouseenter: () => tooltip1Show.val = true,
     onmouseleave: () => tooltip1Show.val = false,
-  }, "Normal Tooltip", Tooltip({show: tooltip1Show, text: "Hi!"})), " ",
+  }, "Normal Tooltip", Tooltip({text: "Hi!", show: tooltip1Show})), " ",
   button({
     style: "position: relative;",
     onmouseenter: () => tooltip2Show.val = true,
     onmouseleave: () => tooltip2Show.val = false,
     onclick: () => ++count.val
-  }, "Increment Counter", Tooltip({show: tooltip2Show, text: tooltip2Text})), " ",
+  }, "Increment Counter", Tooltip({text: tooltip2Text, show: tooltip2Show})), " ",
   button({
     style: "position: relative;",
     onmouseenter: () => tooltip3Show.val = true,
     onmouseleave: () => tooltip3Show.val = false,
-  }, "Slow Fade-in", Tooltip({show: tooltip3Show, text: "Hi from the sloth!", fadeInSec: 5})),
+  }, "Slow Fade-in", Tooltip({text: "Hi from the sloth!", show: tooltip3Show, fadeInSec: 5})),
 )
 ```
 
@@ -274,7 +274,7 @@ are needed for the tooltip element to be shown properly.
 * `show`: Type `State<boolean>`. Required. The `State` object to control whether to show the tooltip or not.
 * `width`: Type `string`. Default `"200px"`. Optional. The width of the tooltip.
 * `backgroundColor`: Type `string`. Default `"#333D"`. Optional. The background color of the tooltip.
-* `fontColor`: Type `string`. Default: `"white"`. Optional. The font color of of the tooltip.
+* `fontColor`: Type `string`. Default: `"white"`. Optional. The font color of the tooltip.
 * `fadeInSec`: Type `number`. Default `0.3`. Optional. The duration of the fade-in animation.
 * `tooltipClass`: Type `string`. Default `""`. Optional. The `class` attribute of the tooltip. You can specify multiple CSS classes seperated by `" "`.
 * `tooltipStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the tooltip.

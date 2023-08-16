@@ -16,16 +16,16 @@ van.add(document.body,
     style: "position: relative;",
     onmouseenter: () => tooltip1Show.val = true,
     onmouseleave: () => tooltip1Show.val = false,
-  }, "Normal Tooltip", Tooltip({show: tooltip1Show, text: "Hi!"})), " ",
+  }, "Normal Tooltip", Tooltip({text: "Hi!", show: tooltip1Show})), " ",
   button({
     style: "position: relative;",
     onmouseenter: () => tooltip2Show.val = true,
     onmouseleave: () => tooltip2Show.val = false,
     onclick: () => ++count.val
-  }, "Increment Counter", Tooltip({show: tooltip2Show, text: tooltip2Text})), " ",
+  }, "Increment Counter", Tooltip({text: tooltip2Text, show: tooltip2Show})), " ",
   button({
     style: "position: relative;",
     onmouseenter: () => tooltip3Show.val = true,
     onmouseleave: () => tooltip3Show.val = false,
-  }, "Slow Fade-in", Tooltip({show: tooltip3Show, text: "Hi from the sloth!", fadeInSec: 5})),
+  }, "Slow Fade-in", Tooltip({text: "Hi from the sloth!", show: tooltip3Show, fadeInSec: 5})),
 )
