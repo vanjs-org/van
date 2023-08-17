@@ -28,49 +28,17 @@ const checkStateValValid = v => (
   v
 )
 
-let curBindingFuncId = 0
-let nextBindingFuncId = 0
+const state = initVal => new Proxy(van.state(Object.freeze(checkStateValValid(initVal))), {
+  set: (s, prop, val) => {
+    if (prop === "val") Object.freeze(checkStateValValid(val))
+    return Reflect.set(s, prop, val)
+  },
+})
 
-const runAndSetBindingFuncId = (f, arg) => {
-  const prevBindingFuncId = curBindingFuncId
-  curBindingFuncId = ++nextBindingFuncId
-  try {
-    return f(arg)
-  } finally {
-    curBindingFuncId = prevBindingFuncId
-  }
+const derive = f => {
+  expect(typeof(f) === "function", "Must pass-in a function to `van.derive`")
+  van.derive(f)
 }
-
-let inDeriveFunc = false
-
-const stateWithCreatedIn = s => (s._createdIn = curBindingFuncId, s)
-
-const state = initVal => new Proxy(
-  stateWithCreatedIn(van.state(Object.freeze(checkStateValValid(initVal)))), {
-    set: (s, prop, val) => {
-      if (prop === "val") Object.freeze(checkStateValValid(val))
-      return Reflect.set(s, prop, val)
-    },
-
-    get: (s, prop) => {
-      if (inDeriveFunc && (prop === "val" || prop === "oldVal"))
-        expect(curBindingFuncId === s._createdIn, "In `van.derive`, accessing a state created outside the scope of current binding function could lead to GC issues")
-      return Reflect.get(s, prop)
-    },
-  })
-
-const derive = f => (
-  expect(typeof(f) === "function", "Must pass-in a function to `van.derive`"),
-  van.derive(() => {
-    const prevInDeriveFunc = inDeriveFunc
-    inDeriveFunc = true
-    try {
-      return f()
-    } finally {
-      inDeriveFunc = prevInDeriveFunc
-    }
-  })
-)
 
 const isValidPrimitive = v =>
   typeof(v) === "string" ||

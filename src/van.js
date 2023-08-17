@@ -1,12 +1,12 @@
 // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
 
-// Aliasing some builtin symbols to reduce the bundle size.
+// Global variables - aliasing some builtin symbols to reduce the bundle size.
 let Obj = Object, _undefined, protoOf = Obj.getPrototypeOf, doc = document
+let changedStates, curDeps, curNewDerives, alwaysConnectedDom = {isConnected: 1}, gcCycleInMs = 1000, statesToGc, propSetterCache = {}
+let objProto = protoOf(alwaysConnectedDom), funcProto = protoOf(protoOf)
 
 let addAndScheduleOnFirst = (set, s, f, waitMs) =>
   (set ?? (setTimeout(f, waitMs), new Set)).add(s)
-
-let changedStates, curDeps
 
 let runAndCaptureDeps = (f, deps, arg) => {
   let prevDeps = curDeps
@@ -21,7 +21,16 @@ let runAndCaptureDeps = (f, deps, arg) => {
   }
 }
 
-let filterBindings = s => s._bindings = s._bindings.filter(b => b._dom?.isConnected)
+let keepConnected = l => l.filter(b => b._dom?.isConnected)
+
+let addStatesToGc = d => statesToGc = addAndScheduleOnFirst(statesToGc, d,
+  () => {
+    for (let s of statesToGc)
+      s._bindings = keepConnected(s._bindings),
+      s._listeners = keepConnected(s._listeners)
+    statesToGc = _undefined
+  },
+  gcCycleInMs)
 
 let stateProto = {
   get val() {
@@ -39,20 +48,14 @@ let stateProto = {
     let s = this
     if (v !== s._val) {
       s._val = v
-      let boundStates = new Set
-      for (let l of [...s._listeners])
-        derive(l.f, l.s), l._executed = 1, l._deps.forEach(boundStates.add, boundStates)
-      for (let _s of boundStates) _s._listeners = _s._listeners.filter(l => !l._executed)
+      let listeners = [...s._listeners = keepConnected(s._listeners)]
+      for (let l of listeners) derive(l.f, l.s, l._dom), l._dom = _undefined
       s._bindings.length ?
         changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms) :
         s._oldVal = v
     }
   },
 }
-
-// stateProto is a plain object thus protoOf(stateProto) is just Object.prototype.
-// protoOf(stateProto) is equivalent to protoOf({}) but saves 1 byte in the minified bundle.
-let objProto = protoOf(stateProto), funcProto = protoOf(runAndCaptureDeps)
 
 let state = initVal => ({
   __proto__: stateProto,
@@ -67,24 +70,22 @@ let isState = s => protoOf(s ?? 0) === stateProto
 let val = s => isState(s) ? s.val : s
 let oldVal = s => isState(s) ? s.oldVal : s
 
-let gcCycleInMs = 1000
-let statesToGc
-
 let bind = (f, dom) => {
-  let deps = new Set, binding = {f}, newDom = runAndCaptureDeps(f, deps, dom)
-  for (let d of deps) {
-    statesToGc = addAndScheduleOnFirst(statesToGc, d,
-      () => (statesToGc.forEach(filterBindings), statesToGc = _undefined),
-      gcCycleInMs)
-    d._bindings.push(binding)
-  }
-  return binding._dom = (newDom ?? doc).nodeType ? newDom : new Text(newDom)
+  let deps = new Set, binding = {f}, prevNewDerives = curNewDerives
+  curNewDerives = []
+  let newDom = runAndCaptureDeps(f, deps, dom)
+  newDom = (newDom ?? doc).nodeType ? newDom : new Text(newDom)
+  for (let d of deps) addStatesToGc(d), d._bindings.push(binding)
+  for (let l of curNewDerives) l._dom = newDom
+  curNewDerives = prevNewDerives
+  return binding._dom = newDom
 }
 
-let derive = (f, s = state()) => {
-  let deps = new Set, listener = {f, _deps: deps, s}
+let derive = (f, s = state(), dom) => {
+  let deps = new Set, listener = {
+    f, s, _dom: dom ?? curNewDerives?.add(listener) ?? alwaysConnectedDom}
   s.val = runAndCaptureDeps(f, deps)
-  for (let d of deps) d._listeners.push(listener)
+  for (let d of deps) addStatesToGc(d), d._listeners.push(listener)
   return s
 }
 
@@ -99,8 +100,6 @@ let add = (dom, ...children) => {
 }
 
 let _ = f => (f._isBindingFunc = 1, f)
-
-let propSetterCache = {}
 
 let tagsNS = ns => new Proxy((name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
@@ -125,7 +124,7 @@ let tagsNS = ns => new Proxy((name, ...args) => {
 let updateDoms = () => {
   let changedStatesArray = [...changedStates].filter(s => s._val !== s._oldVal)
   changedStates = _undefined
-  for (let b of new Set(changedStatesArray.flatMap(filterBindings))) {
+  for (let b of new Set(changedStatesArray.flatMap(s => s._bindings = keepConnected(s._bindings)))) {
     let dom = b._dom, newDom = bind(b.f, dom)
     b._dom = _undefined
     if (newDom !== dom) newDom != _undefined ? dom.replaceWith(newDom) : dom.remove()
