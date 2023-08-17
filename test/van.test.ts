@@ -1138,22 +1138,6 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       assertError("Must pass-in a function to `van.derive`", () => van.derive(<any>(a.val * 2)))
     },
 
-    derive_accessStateCreatedInOuterScope: async () => {
-      const a = van.state(1)
-      // State-derived child
-      await capturingErrors("could lead to GC issues", 1, () => div(() => {
-        const b = van.derive(() => a.val + 1)
-        return span(b.val + 1)
-      }))
-      // State-derived property
-      await capturingErrors("could lead to GC issues", 1, () => div({
-        id: () => {
-          const b = van.derive(() => a.val + 1)
-          return b.val + 1
-        },
-      }))
-    },
-
     stateDerivedChild_invalidInitialResult: async () => {
       await capturingErrors(/Only.*are valid child of a DOM Element/, 1,
         () => div(() => <any>{}))
@@ -1569,8 +1553,9 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
     }),
   }
 
-  // In a VanJS app, there could be many derived DOM nodes created on-the-fly. We want to test the
-  // garbage-collection process is in place to ensure obsolete bindings can be cleaned up.
+  // In a VanJS app, there could be many derived DOM nodes, states and side effects created on-the-fly.
+  // We want to test the garbage-collection process is in place to ensure obsolete bindings and
+  // derivations can be cleaned up.
   const gcTests = {
     long_derivedDom: withHiddenDom(async hiddenDom => {
       const renderPre = van.state(false)
@@ -1615,7 +1600,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 3))
     }),
 
-    derive_basic: () => {
+    long_deriveBasic: async () => {
       const history: any[] = []
       const a = van.state(0)
       const listenersPropKey = Object.entries(a)
@@ -1625,10 +1610,39 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
 
       for (let i = 0; i < 100; ++i) ++a.val
 
+      assertEq(history.length, 101)
+
+      // Wait until GC kicks in
+      await sleep(1000)
       assertBetween(a[listenersPropKey].length, 1, 3)
     },
 
-    derive_conditionalDerivedState: () => {
+    long_deriveInBindingFunc: withHiddenDom(async hiddenDom => {
+      const renderPre = van.state(false)
+      const prefix = van.state("Prefix")
+      const bindingsPropKey = Object.entries(renderPre)
+        .find(([_, v]) => Array.isArray(v))![0]
+      const listenersPropKey = Object.entries(renderPre)
+        .filter(([_, v]) => Array.isArray(v))[1][0]
+      const dom = div(() => {
+        const text = van.derive(() => `${prefix.val} - Suffix`)
+        return (renderPre.val ? pre : div)(() => `--${text.val}--`)
+      })
+      van.add(hiddenDom, dom)
+
+      for (let i = 0; i < 20; ++i) {
+        renderPre.val = !renderPre.val
+        await sleep(waitMsOnDomUpdates)
+      }
+
+      // Wait until GC kicks in
+      await sleep(1000)
+
+      assertBetween(renderPre[bindingsPropKey].length, 1, 3)
+      assertBetween(prefix[listenersPropKey].length, 1, 3)
+    }),
+
+    long_conditionalDerivedState: async () => {
       const cond = van.state(true)
       const a = van.state(0), b = van.state(0), c = van.state(0), d = van.state(0)
       const listenersPropKey = Object.entries(a)
@@ -1642,6 +1656,10 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
         else ++(<State<number>>randomState).val
       }
 
+      allStates.every(s => assertBetween(s[listenersPropKey].length, 1, 10))
+
+      // Wait until GC kicks in
+      await sleep(1000)
       allStates.every(s => assertBetween(s[listenersPropKey].length, 1, 3))
     },
   }

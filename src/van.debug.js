@@ -29,16 +29,16 @@ const checkStateValValid = v => (
 )
 
 const state = initVal => new Proxy(van.state(Object.freeze(checkStateValValid(initVal))), {
-  set: (s, prop, val) => {
-    if (prop === "val") Object.freeze(checkStateValValid(val))
-    return Reflect.set(s, prop, val)
-  },
+  set: (s, prop, val) => (
+    prop === "val" && Object.freeze(checkStateValValid(val)),
+    Reflect.set(s, prop, val)
+  ),
 })
 
-const derive = f => {
-  expect(typeof(f) === "function", "Must pass-in a function to `van.derive`")
+const derive = f => (
+  expect(typeof(f) === "function", "Must pass-in a function to `van.derive`"),
   van.derive(f)
-}
+)
 
 const isValidPrimitive = v =>
   typeof(v) === "string" ||
@@ -65,8 +65,7 @@ const checkChildren = children => children.flat(Infinity).map(c => {
     return r
   }
   if (isState(c)) return withResultValidation(() => c.val)
-  if (typeof c === "function")
-    return withResultValidation(dom => runAndSetBindingFuncId(c, dom))
+  if (typeof c === "function") return withResultValidation(c)
   expect(!c?.isConnected, "You can't add a DOM Node that is already connected to document")
   return validateChild(c)
 })
@@ -97,7 +96,7 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
         if (isState(v))
           debugProps[k] = van._(() => validatePropValue(v.val))
         else if (typeof v === "function" && (!k.startsWith("on") || v._isBindingFunc))
-          debugProps[k] = van._(() => validatePropValue(runAndSetBindingFuncId(v)))
+          debugProps[k] = van._(() => validatePropValue(v()))
         else
           debugProps[k] = validatePropValue(v)
       }

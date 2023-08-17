@@ -82,8 +82,8 @@ let bind = (f, dom) => {
 }
 
 let derive = (f, s = state(), dom) => {
-  let deps = new Set, listener = {
-    f, s, _dom: dom ?? curNewDerives?.add(listener) ?? alwaysConnectedDom}
+  let deps = new Set, listener = {f, s}
+  listener._dom = dom ?? curNewDerives?.push(listener) ?? alwaysConnectedDom
   s.val = runAndCaptureDeps(f, deps)
   for (let d of deps) addStatesToGc(d), d._listeners.push(listener)
   return s

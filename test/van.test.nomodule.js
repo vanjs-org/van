@@ -818,19 +818,6 @@
         const a2 = van2.state(0);
         assertError("Must pass-in a function to `van.derive`", () => van2.derive(a2.val * 2));
       },
-      derive_accessStateCreatedInOuterScope: async () => {
-        const a2 = van2.state(1);
-        await capturingErrors("could lead to GC issues", 1, () => div2(() => {
-          const b2 = van2.derive(() => a2.val + 1);
-          return span(b2.val + 1);
-        }));
-        await capturingErrors("could lead to GC issues", 1, () => div2({
-          id: () => {
-            const b2 = van2.derive(() => a2.val + 1);
-            return b2.val + 1;
-          }
-        }));
-      },
       stateDerivedChild_invalidInitialResult: async () => {
         await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => div2(() => ({})));
         await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => div2(() => (x) => x * 2));
@@ -1151,16 +1138,36 @@
         await sleep(1e3);
         allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 3));
       }),
-      derive_basic: () => {
+      long_deriveBasic: async () => {
         const history = [];
         const a2 = van2.state(0);
         const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
         van2.derive(() => history.push(a2.val));
         for (let i = 0; i < 100; ++i)
           ++a2.val;
+        assertEq(history.length, 101);
+        await sleep(1e3);
         assertBetween(a2[listenersPropKey].length, 1, 3);
       },
-      derive_conditionalDerivedState: () => {
+      long_deriveInBindingFunc: withHiddenDom(async (hiddenDom) => {
+        const renderPre = van2.state(false);
+        const prefix = van2.state("Prefix");
+        const bindingsPropKey = Object.entries(renderPre).find(([_, v]) => Array.isArray(v))[0];
+        const listenersPropKey = Object.entries(renderPre).filter(([_, v]) => Array.isArray(v))[1][0];
+        const dom = div2(() => {
+          const text = van2.derive(() => `${prefix.val} - Suffix`);
+          return (renderPre.val ? pre : div2)(() => `--${text.val}--`);
+        });
+        van2.add(hiddenDom, dom);
+        for (let i = 0; i < 20; ++i) {
+          renderPre.val = !renderPre.val;
+          await sleep(waitMsOnDomUpdates);
+        }
+        await sleep(1e3);
+        assertBetween(renderPre[bindingsPropKey].length, 1, 3);
+        assertBetween(prefix[listenersPropKey].length, 1, 3);
+      }),
+      long_conditionalDerivedState: async () => {
         const cond = van2.state(true);
         const a2 = van2.state(0), b2 = van2.state(0), c = van2.state(0), d = van2.state(0);
         const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
@@ -1173,6 +1180,8 @@
           else
             ++randomState.val;
         }
+        allStates.every((s) => assertBetween(s[listenersPropKey].length, 1, 10));
+        await sleep(1e3);
         allStates.every((s) => assertBetween(s[listenersPropKey].length, 1, 3));
       }
     };
