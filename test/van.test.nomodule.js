@@ -1105,7 +1105,17 @@
       })
     };
     const gcTests = {
-      long_derivedDom: withHiddenDom(async (hiddenDom) => {
+      bindingBasic: withHiddenDom(async (hiddenDom) => {
+        const counter = van2.state(0);
+        const bindingsPropKey = Object.entries(counter).find(([_, v]) => Array.isArray(v))[0];
+        van2.add(hiddenDom, () => span(`Counter: ${counter.val}`));
+        for (let i = 0; i < 100; ++i)
+          ++counter.val;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, "<span>Counter: 100</span>");
+        assertBetween(counter[bindingsPropKey].length, 1, 3);
+      }),
+      long_nestedBinding: withHiddenDom(async (hiddenDom) => {
         const renderPre = van2.state(false);
         const text = van2.state("Text");
         const bindingsPropKey = Object.entries(renderPre).find(([_, v]) => Array.isArray(v))[0];
@@ -1119,7 +1129,7 @@
         assertBetween(renderPre[bindingsPropKey].length, 1, 3);
         assertBetween(text[bindingsPropKey].length, 1, 3);
       }),
-      long_conditionalDomFunc: withHiddenDom(async (hiddenDom) => {
+      long_conditionalBinding: withHiddenDom(async (hiddenDom) => {
         const cond = van2.state(true);
         const a2 = van2.state(0), b2 = van2.state(0), c = van2.state(0), d = van2.state(0);
         const bindingsPropKey = Object.entries(cond).find(([_, v]) => Array.isArray(v))[0];
@@ -1138,7 +1148,7 @@
         await sleep(1e3);
         allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 3));
       }),
-      long_deriveBasic: async () => {
+      deriveBasic: () => {
         const history = [];
         const a2 = van2.state(0);
         const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
@@ -1146,7 +1156,6 @@
         for (let i = 0; i < 100; ++i)
           ++a2.val;
         assertEq(history.length, 101);
-        await sleep(1e3);
         assertBetween(a2[listenersPropKey].length, 1, 3);
       },
       long_deriveInBindingFunc: withHiddenDom(async (hiddenDom) => {

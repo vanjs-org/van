@@ -1169,7 +1169,18 @@ const runTests = async (van, msgDom, { debug }) => {
     // We want to test the garbage-collection process is in place to ensure obsolete bindings and
     // derivations can be cleaned up.
     const gcTests = {
-        long_derivedDom: withHiddenDom(async (hiddenDom) => {
+        bindingBasic: withHiddenDom(async (hiddenDom) => {
+            const counter = van.state(0);
+            const bindingsPropKey = Object.entries(counter)
+                .find(([_, v]) => Array.isArray(v))[0];
+            van.add(hiddenDom, () => span(`Counter: ${counter.val}`));
+            for (let i = 0; i < 100; ++i)
+                ++counter.val;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, "<span>Counter: 100</span>");
+            assertBetween(counter[bindingsPropKey].length, 1, 3);
+        }),
+        long_nestedBinding: withHiddenDom(async (hiddenDom) => {
             const renderPre = van.state(false);
             const text = van.state("Text");
             const bindingsPropKey = Object.entries(renderPre)
@@ -1185,7 +1196,7 @@ const runTests = async (van, msgDom, { debug }) => {
             assertBetween(renderPre[bindingsPropKey].length, 1, 3);
             assertBetween(text[bindingsPropKey].length, 1, 3);
         }),
-        long_conditionalDomFunc: withHiddenDom(async (hiddenDom) => {
+        long_conditionalBinding: withHiddenDom(async (hiddenDom) => {
             const cond = van.state(true);
             const a = van.state(0), b = van.state(0), c = van.state(0), d = van.state(0);
             const bindingsPropKey = Object.entries(cond)
@@ -1206,7 +1217,7 @@ const runTests = async (van, msgDom, { debug }) => {
             await sleep(1000);
             allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 3));
         }),
-        long_deriveBasic: async () => {
+        deriveBasic: () => {
             const history = [];
             const a = van.state(0);
             const listenersPropKey = Object.entries(a)
@@ -1215,8 +1226,6 @@ const runTests = async (van, msgDom, { debug }) => {
             for (let i = 0; i < 100; ++i)
                 ++a.val;
             assertEq(history.length, 101);
-            // Wait until GC kicks in
-            await sleep(1000);
             assertBetween(a[listenersPropKey].length, 1, 3);
         },
         long_deriveInBindingFunc: withHiddenDom(async (hiddenDom) => {
