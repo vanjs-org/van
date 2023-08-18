@@ -14,7 +14,7 @@
     "vite": "^4.3.9"
   },
   "dependencies": {
-    "vanjs-core": "^1.0.2",
+    "vanjs-core": "^1.1.0",
     "vanjs-ui": "^0.7.2"
   }
 }
