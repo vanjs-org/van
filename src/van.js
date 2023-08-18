@@ -23,14 +23,12 @@ let runAndCaptureDeps = (f, deps, arg) => {
 
 let keepConnected = l => l.filter(b => b._dom?.isConnected)
 
-let addStatesToGc = d => statesToGc = addAndScheduleOnFirst(statesToGc, d,
-  () => {
-    for (let s of statesToGc)
-      s._bindings = keepConnected(s._bindings),
-      s._listeners = keepConnected(s._listeners)
-    statesToGc = _undefined
-  },
-  gcCycleInMs)
+let addStatesToGc = d => statesToGc = addAndScheduleOnFirst(statesToGc, d, () => {
+  for (let s of statesToGc)
+    s._bindings = keepConnected(s._bindings),
+    s._listeners = keepConnected(s._listeners)
+  statesToGc = _undefined
+}, gcCycleInMs)
 
 let stateProto = {
   get val() {
