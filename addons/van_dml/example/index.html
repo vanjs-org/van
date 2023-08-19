@@ -7,16 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-latest.nomodule.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/addons/van_dml/src/van_dml.js"></script>
-  <style> 
+  <style>
   </style>
 </head>
 
 <body>
   <script>  "use strict";
-
     const { h1, h2, div, p, button } = van.tags;
     const { begin, end, base, sp, css } = van
-
     const rbutton = (...args) => {
       let b = button(...args)
       b.style.borderRadius = "50vh"
@@ -31,21 +29,28 @@
       padding: 20px;
       text-align: center;
       font-family: helvetica;
+    }
+    button:hover {
+      background-color: silver;
+      box-shadow: 3px 3px 4px gray;
+      transform: translate(-2px, -2px);
+   }
+    button:active {
+      background-color: gray;
+      box-shadow: 1px 1px 2px gray;
+      transform: translate(0px, 0px);
     }`)
 
     begin(document.body)  // Open document for append
 
     h2({ style: "color: #fc0;" }, "This is the DML style")
 
-	// create a div() and open for append 
+	  // create a div() and open for append 
     begin(div({ style: "border: 2px solid black; border-radius: 15px; width: 500px; margin: auto; background-color: #fff;" }, ""))
-
-      h1({ style: "color: red;" }, "Create 100 buttons")
-
-      for (let i = 0; i < 100; i++) 
-        rbutton({ style: "margin: 3px;" }, `Button ${i}`).onclick = () => alert(`Button ${i} pressed`)
-    
-	end(2); // close all open appends
+    let headline = h1({ style: "color: red;" }, "Create 100 buttons")
+    for (let i = 0; i < 100; i++)
+      rbutton({ style: "margin: 3px;" }, `Button ${i}`).onclick = () => headline.textContent = `Button ${i} pressed`
+    end(2); // close all open appends
 
     if (sp() !== 0) alert("SP-Error") // check the stack pointer, should be zero at the end
 
