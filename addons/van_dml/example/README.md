@@ -4,8 +4,13 @@ This is a  demo showing the design pattern and the usage of the commands introdu
 
 To use van_dml, include the script right after vanJS (an ES6-module will come soon)
 ```HTML
-  <script src="van-0.11.10.nomodule-min.js"></script>
+  <script src="van-latest.nomodule-min.js"></script>
   <script src="van_dml.js"></script>
+```
+if you want to load the modules from a cdn, you can use
+```JS
+  <script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-latest.nomodule.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/addons/van_dml/src/van_dml.js"></script>
 ```
 van_dml.js extends the `tag`-function of `van` and introduces some new functions. 
 ```JS
