@@ -32,7 +32,7 @@ const example2 = () => {
   van.add(document.body, Modal({closed, blurBackground: true},
     p("What's your favorite programming language?"),
     formDom,
-    p({style: "display: flex; justify-content: center; gap: 3rem;"},
+    p({style: "display: flex; justify-content: space-evenly;"},
       button({onclick: onOk}, "Ok"),
       button({onclick: () => closed.val = true}, "Cancel"),
     )
