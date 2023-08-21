@@ -2,7 +2,9 @@
 
 In this demo, we're going to show how to use **VanJS** to develop a web-based Unix terminal that connects to your local computer, with some notable improvements, all under 300 lines of code. While there are numerous open source projects aiming for a better terminal or shell, this example demonstrates that, with **VanJS**, we can easily provide great extension to commandline utilities with fancy GUI by leveraging all available HTML elements.
 
-The program is heavily tested in macOS, and should in theory works in Linux, or in any environment that has [/bin/sh](https://en.wikipedia.org/wiki/Bourne_shell).
+The program is heavily tested in macOS, and should in theory works in Linux, or in any environment that has `/bin/sh`.
+
+You can preview the terminal app via [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/demo/terminal).
 
 ## Features
 
@@ -12,10 +14,6 @@ Compare to the ordinary Unix terminal that you're familar with, this web-based t
 2. Command `tree` (need the exact text match) will render an interactive tree-view of your current directory, like the one in the screenshot below:
 
 ![Tree screenshot](tree_screenshot.png)
-
-## Preview
-
-You can preview the terminal app via [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/demo/terminal).
 
 ## Source Files
 
