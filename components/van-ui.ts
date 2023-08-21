@@ -136,12 +136,10 @@ export const Tabs = (
     div({class: tabButtonRowClass, style: tabButtonRowStylesStr},
       Object.keys(contents).map(k =>
         button({
-          class: () => {
-            const classes = ["vanui-tab-button"]
-            tabButtonClass && classes.push(tabButtonClass)
-            k === activeTabState.val && classes.push("active")
-            return classes.join(" ")
-          },
+          class: () => ["vanui-tab-button"].concat(
+            tabButtonClass ? tabButtonClass : [],
+            k === activeTabState.val ? "active" : [],
+          ).join(" "),
           style: tabButtonStylesStr,
           onclick: () => activeTabState.val = k,
         }, k)
@@ -469,12 +467,10 @@ export const OptionGroup = (
 
   return div({id, class: optionGroupClass, style: buttonGroupStylesStr},
     options.map(o => button({
-      class: () => {
-        const classes = ["vanui-button"]
-        optionClass && classes.push(optionClass)
-        o === selected.val && classes.push("selected")
-        return classes.join(" ")
-      },
+      class: () => ["vanui-button"].concat(
+        optionClass ? optionClass : [],
+        o === selected.val ? "selected" : [],
+      ).join(" "),
       style: buttonStylesStr,
       onclick: () => selected.val = o,
     }, o)),

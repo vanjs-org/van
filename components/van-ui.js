@@ -18,12 +18,7 @@ export const Tabs = ({ activeTab, resultClass = "", style = "", tabButtonRowColo
 #${id} .vanui-tab-button:hover { background-color: ${tabButtonHoverColor} }
 #${id} .vanui-tab-button.active { background-color: ${tabButtonActiveColor} }`));
     return div({ id, class: resultClass, style }, div({ class: tabButtonRowClass, style: tabButtonRowStylesStr }, Object.keys(contents).map(k => button({
-        class: () => {
-            const classes = ["vanui-tab-button"];
-            tabButtonClass && classes.push(tabButtonClass);
-            k === activeTabState.val && classes.push("active");
-            return classes.join(" ");
-        },
+        class: () => ["vanui-tab-button"].concat(tabButtonClass ? tabButtonClass : [], k === activeTabState.val ? "active" : []).join(" "),
         style: tabButtonStylesStr,
         onclick: () => activeTabState.val = k,
     }, k))), Object.entries(contents).map(([k, v]) => div({
@@ -94,12 +89,7 @@ export const OptionGroup = ({ selected, normalColor = "#e2eef7", hoverColor = "#
 #${id} .vanui-button.selected { background-color: ${selectedColor} }
 #${id} .vanui-button.selected:hover { background-color: ${selectedHoverColor} }`));
     return div({ id, class: optionGroupClass, style: buttonGroupStylesStr }, options.map(o => button({
-        class: () => {
-            const classes = ["vanui-button"];
-            optionClass && classes.push(optionClass);
-            o === selected.val && classes.push("selected");
-            return classes.join(" ");
-        },
+        class: () => ["vanui-button"].concat(optionClass ? optionClass : [], o === selected.val ? "selected" : []).join(" "),
         style: buttonStylesStr,
         onclick: () => selected.val = o,
     }, o)));
