@@ -1,6 +1,6 @@
 # An Improved Unix Terminal
 
-In this demo, we're going to show how to use **VanJS** to develop a web-based Unix terminal that connects to your local computer, with some notable improvements, all under 300 lines of code. While there are numerous open source projects aiming for a better terminal or shell, this example demonstrates that, with **VanJS**, we can easily provide great extension to commandline utilities with fancy GUI by leveraging all available HTML elements.
+In this demo, we're going to show how to use [**VanJS**](https://vanjs.org/) to develop a web-based Unix terminal that connects to your local computer, with some notable improvements, all under 300 lines of code. While there are numerous open source projects aiming for a better terminal or shell, this example demonstrates that, with **VanJS**, we can easily provide great extension to commandline utilities with fancy GUI by leveraging all available HTML elements.
 
 The program is heavily tested in macOS, and should in theory works in Linux, or in any environment that has `/bin/sh`.
 
