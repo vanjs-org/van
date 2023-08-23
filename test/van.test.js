@@ -1087,9 +1087,7 @@ const runTests = async (van, msgDom, { debug }) => {
             const EditableList = () => {
                 const listDom = ul();
                 const textDom = input({ type: "text" });
-                return div(textDom, " ", button({
-                    onclick: () => van.add(listDom, ListItem({ text: textDom.value })),
-                }, "➕"), listDom);
+                return div(textDom, " ", button({ onclick: () => van.add(listDom, ListItem({ text: textDom.value })) }, "➕"), listDom);
             };
             van.add(hiddenDom, EditableList());
             hiddenDom.querySelector("input").value = "abc";

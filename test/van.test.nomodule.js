@@ -1029,9 +1029,7 @@
         const EditableList = () => {
           const listDom = ul();
           const textDom = input({ type: "text" });
-          return div2(textDom, " ", button({
-            onclick: () => van2.add(listDom, ListItem({ text: textDom.value }))
-          }, "\u2795"), listDom);
+          return div2(textDom, " ", button({ onclick: () => van2.add(listDom, ListItem({ text: textDom.value })) }, "\u2795"), listDom);
         };
         van2.add(hiddenDom, EditableList());
         hiddenDom.querySelector("input").value = "abc";
