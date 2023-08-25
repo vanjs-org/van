@@ -1,10 +1,39 @@
 # **VanUI**: A Collection of Grab 'n Go Reusable UI Components for VanJS
 
+More on **VanJS**:
+
+<div align="center">
+  <table>
+    <tbody>
+      <tr>
+        <td>
+          <a href="https://github.com/vanjs-org/van/">🏠 Home</a>
+        </td>
+        <td>
+          <a href="https://vanjs.org/start">🖊️ Get Started</a>
+        </td>
+        <td>
+          <a href="https://vanjs.org/tutorial">📖 Tutorial</a>
+        </td>
+        <td>
+          <a href="https://vanjs.org/demo">📚 Examples</a>
+        </td>
+        <td>
+          <a href="https://vanjs.org/convert">📝 HTML to VanJS Converter</a>
+        </td>
+        <td>
+          <a href="https://github.com/vanjs-org/van/discussions">💬 Discuss</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 🙏 Feedback and contribution are welcome and greatly appreciated!
 
 ## Installation
 
-Currently, this library only supports NPM. It's published as NPM package [vanjs-ui](https://www.npmjs.com/package/vanjs-ui).
+The library is published as NPM package [vanjs-ui](https://www.npmjs.com/package/vanjs-ui).
 
 Run the following command to install the package:
 
