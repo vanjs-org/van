@@ -23,7 +23,7 @@ export type ChildDom = ValidChildDomValue | StateView<ValidChildDomValue> | Bind
 
 export type TagFunc<Result> = (first?: Props | ChildDom, ...rest: readonly ChildDom[]) => Result
 
-interface Tags extends Readonly<Record<string, TagFunc<Element>>> {
+interface Tags extends Record<string, TagFunc<Element>> {
   // Register known element types
   // Source: https://developer.mozilla.org/en-US/docs/Web/HTML/Element
 
@@ -137,7 +137,7 @@ export interface Van {
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
   readonly _: (f: () => PropValue) => () => PropValue
   readonly tags: Tags
-  readonly tagsNS: (namespaceURI: string) => Readonly<Record<string, TagFunc<Element>>>
+  readonly tagsNS: (namespaceURI: string) => Record<string, TagFunc<Element>>
 }
 
 declare const van: Van

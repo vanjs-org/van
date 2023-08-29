@@ -22,23 +22,23 @@ const protoOf = Object.getPrototypeOf
 const stateProto = protoOf(van.state())
 const isState = s => protoOf(s ?? 0) === stateProto
 
-const checkStateValValid = v => (
-  expect(!isState(v), "State couldn't have value to other state"),
-  expect(!(v instanceof Node), "DOM Node is not valid value for state"),
-  v
-)
+const checkStateValValid = v => {
+  expect(!isState(v), "State couldn't have value to other state")
+  expect(!(v instanceof Node), "DOM Node is not valid value for state")
+  return v
+}
 
 const state = initVal => new Proxy(van.state(Object.freeze(checkStateValValid(initVal))), {
-  set: (s, prop, val) => (
-    prop === "val" && Object.freeze(checkStateValValid(val)),
-    Reflect.set(s, prop, val)
-  ),
+  set: (s, prop, val) => {
+    prop === "val" && Object.freeze(checkStateValValid(val))
+    return Reflect.set(s, prop, val)
+  }
 })
 
-const derive = f => (
-  expect(typeof(f) === "function", "Must pass-in a function to `van.derive`"),
-  van.derive(f)
-)
+const derive = f => {
+  expect(typeof(f) === "function", "Must pass-in a function to `van.derive`")
+  return van.derive(f)
+}
 
 const isValidPrimitive = v =>
   typeof(v) === "string" ||

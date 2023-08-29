@@ -1,13 +1,11 @@
-export interface State<T> extends StateView<T> {
+export interface State<T> {
   val: T
+  readonly oldVal: T
 }
 
 // Defining readonly view of State<T> for covariance.
 // Basically we want StateView<string> to implement StateView<string | number>
-export interface StateView<T> {
-  readonly val: T
-  readonly oldVal: T
-}
+export type StateView<T> = Readonly<State<T>>
 
 export type Primitive = string | number | boolean | bigint
 
@@ -25,11 +23,7 @@ export type ChildDom = ValidChildDomValue | StateView<ValidChildDomValue> | Bind
 
 export type TagFunc<Result> = (first?: Props | ChildDom, ...rest: readonly ChildDom[]) => Result
 
-interface TagsBase {
-  readonly [key: string]: TagFunc<Element>
-}
-
-interface Tags extends TagsBase {
+interface Tags extends Readonly<Record<string, TagFunc<Element>>> {
   // Register known element types
   // Source: https://developer.mozilla.org/en-US/docs/Web/HTML/Element
 
@@ -143,7 +137,7 @@ export interface Van {
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
   readonly _: (f: () => PropValue) => () => PropValue
   readonly tags: Tags
-  readonly tagsNS: (namespaceURI: string) => TagsBase
+  readonly tagsNS: (namespaceURI: string) => Readonly<Record<string, TagFunc<Element>>>
 }
 
 declare const van: Van

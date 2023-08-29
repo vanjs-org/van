@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/vanjs-org/van/tree/main/components#readme",
   "dependencies": {
-    "vanjs-core": "^1.1.0"
+    "vanjs-core": "^1.1.3"
   },
   "devDependencies": {
     "node-jq": "^4.0.1",
