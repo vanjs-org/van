@@ -2,7 +2,7 @@
   "name": "vanjs-jsx",
   "version": "0.0.1",
   "type": "module",
-  "types": "./dist/index.d.ts",
+  "types": "./src/index.d.ts",
   "description": "",
   "exports": {
     ".": {
