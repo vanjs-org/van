@@ -11,9 +11,7 @@ export type Primitive = string | number | boolean | bigint
 
 export type PropValue = Primitive | ((e: any) => void) | null
 
-export interface Props {
-  readonly [key: string]: PropValue | StateView<PropValue> | (() => PropValue)
-}
+type Props = Record<string, PropValue | StateView<PropValue> | (() => PropValue)>
 
 export type ValidChildDomValue = Primitive | Node | null | undefined
 
