@@ -36,7 +36,7 @@ yarn add vanjs-jsx vanjs-core
       "noUnusedParameters": true,
       "noFallthroughCasesInSwitch": true,
 
-      /* For van-jsx */
+      /* For vanjs-jsx */
       "jsx": "react-jsx",
       "jsxImportSource": "vanjs-jsx"
     },
