@@ -1535,7 +1535,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
 
     domValuedState_excludeDebug: withHiddenDom(async hiddenDom => {
       const TurnBold = () => {
-        const vanJS = van.state(<string | Node>"VanJS")
+        const vanJS = van.state(<any>"VanJS")
         return span(
           button({onclick: () => vanJS.val = b("VanJS")}, "Turn Bold"),
           " Welcome to ", vanJS, ". ", vanJS, " is awesome!"
