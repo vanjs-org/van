@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "types": "./src/index.d.ts",
-  "description": "",
+  "description": "jsx-runtime for vanjs",
   "exports": {
     ".": {
       "require": "./src/index.js",
@@ -25,6 +25,12 @@
     "jsx-runtime.d.ts"
   ],
   "scripts": {},
-  "author": "",
-  "license": "MIT"
+  "author": "@idealjs",
+  "license": "MIT",
+  "peerDependencies": {
+    "vanjs-core": "^1.1.3"
+  },
+  "devDependencies": {
+    "vanjs-core": "^1.1.3"
+  }
 }
