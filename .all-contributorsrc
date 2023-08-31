@@ -51,6 +51,9 @@
       "profile": "https://github.com/ndrean",
       "contributions": [
         "example"
+      ]
+    },
+    {
       "login": "artydev",
       "name": "artydev",
       "avatar_url": "https://avatars.githubusercontent.com/u/31207473?v=4",
@@ -146,7 +149,7 @@
         "test"
       ]
     },
-    {   
+    {
       "login": "FredericHeem",
       "name": "FredericH",
       "avatar_url": "https://avatars.githubusercontent.com/u/4118089?v=4",
@@ -167,7 +170,7 @@
         "bug"
       ]
     },
-    { 
+    {
       "login": "EFord36",
       "name": "Elliot Ford",
       "avatar_url": "https://avatars.githubusercontent.com/u/20516159?v=4",

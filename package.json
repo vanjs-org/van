@@ -35,6 +35,7 @@
   "author": "Tao Xin",
   "license": "MIT",
   "devDependencies": {
+    "all-contributors-cli": "^6.26.1",
     "esbuild": "^0.17.12",
     "node-jq": "^2.3.5",
     "terser": "^5.19.2",
