@@ -1,4 +1,22 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "efpage",
+      "name": "Eckehard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29945129?v=4",
+      "profile": "http://www.efpage.de",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
+    }
+  ]
 }
