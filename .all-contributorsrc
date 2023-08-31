@@ -9,6 +9,15 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "groovenectar",
+      "name": "Daniel Upshaw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/595446?v=4",
+      "profile": "http://danielupshaw.com/",
+      "contributions": [
+        "plugin"
+      ]
+    },
+    {
       "login": "cloudspeech",
       "name": "cloudspeech",
       "avatar_url": "https://avatars.githubusercontent.com/u/850521?v=4",

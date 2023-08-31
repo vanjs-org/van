@@ -129,6 +129,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://danielupshaw.com/"><img src="https://avatars.githubusercontent.com/u/595446?v=4?s=100" width="100px;" alt="Daniel Upshaw"/><br /><sub><b>Daniel Upshaw</b></sub></a><br /><a href="#plugin-groovenectar" title="Plugin/utility libraries">🔌</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/cloudspeech"><img src="https://avatars.githubusercontent.com/u/850521?v=4?s=100" width="100px;" alt="cloudspeech"/><br /><sub><b>cloudspeech</b></sub></a><br /><a href="#ideas-cloudspeech" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://gion.ro"><img src="https://avatars.githubusercontent.com/u/867609?v=4?s=100" width="100px;" alt="Ionut Stoica"/><br /><sub><b>Ionut Stoica</b></sub></a><br /><a href="#ideas-iongion" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://person.sh"><img src="https://avatars.githubusercontent.com/u/3257?v=4?s=100" width="100px;" alt="Stephen Handley"/><br /><sub><b>Stephen Handley</b></sub></a><br /><a href="#example-stephenhandley" title="Examples">💡</a></td>
