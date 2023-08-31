@@ -9,6 +9,15 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "Tolluset",
+      "name": "Lee Byonghun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50096419?v=4",
+      "profile": "https://tolluset.gitbook.io/wiki/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "ebraminio",
       "name": "ebraminio",
       "avatar_url": "https://avatars.githubusercontent.com/u/833473?v=4",
