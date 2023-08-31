@@ -1,4 +1,21 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "EFord36",
+      "name": "Elliot Ford",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20516159?v=4",
+      "profile": "https://github.com/EFord36",
+      "contributions": [
+        "code"
+      ]
+    }
+  ]
 }
