@@ -129,6 +129,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://twitter.com/mindplaydk"><img src="https://avatars.githubusercontent.com/u/103348?v=4?s=100" width="100px;" alt="Rasmus Schultz"/><br /><sub><b>Rasmus Schultz</b></sub></a><br /><a href="#ideas-mindplay-dk" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/cqh963852"><img src="https://avatars.githubusercontent.com/u/17702287?v=4?s=100" width="100px;" alt="cqh"/><br /><sub><b>cqh</b></sub></a><br /><a href="#code-cqh963852" title="Code">💻</a> <a href="#plugin-cqh963852" title="Plugin/utility libraries">🔌</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/pomdtr"><img src="https://avatars.githubusercontent.com/u/17577332?v=4?s=100" width="100px;" alt="Achille Lacoin"/><br /><sub><b>Achille Lacoin</b></sub></a><br /><a href="#code-pomdtr" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/caputdraconis"><img src="https://avatars.githubusercontent.com/u/19674494?v=4?s=100" width="100px;" alt="caputdraconis"/><br /><sub><b>caputdraconis</b></sub></a><br /><a href="#code-caputdraconis" title="Code">💻</a></td>
