@@ -1,4 +1,21 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "awesome-club",
+      "name": "awesome",
+      "avatar_url": "https://avatars.githubusercontent.com/u/102911334?v=4",
+      "profile": "https://github.com/awesome-club",
+      "contributions": [
+        "video"
+      ]
+    }
+  ]
 }
