@@ -197,9 +197,12 @@
         const [props, ...children] = protoOf2(args[0] ?? 0) === Object.prototype ? args : [{}, ...args];
         const debugProps = {};
         for (const [k, v] of Object.entries(props)) {
-          const validatePropValue = k.startsWith("on") ? (v2) => (expect(
+          const validatePropValue = k.startsWith("on") ? k.toLowerCase() === k ? (v2) => (expect(
             typeof v2 === "function" || v2 === null,
-            `Invalid property value for ${k}: Only functions and null are allowed for on... handler`
+            `Invalid property value for ${k}: Only functions and null are allowed for ${k} property`
+          ), v2) : (v2) => (expect(
+            typeof v2 === "string",
+            `Invalid property value for ${k}: Only strings are allowed for ${k} attribute`
           ), v2) : (v2) => (expect(
             isValidPrimitive(v2) || v2 === null,
             `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`

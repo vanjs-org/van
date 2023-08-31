@@ -88,8 +88,12 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
       const debugProps =  {}
       for (const [k, v] of Object.entries(props)) {
         const validatePropValue = k.startsWith("on") ?
-          v => (expect(typeof v === "function" || v === null,
-            `Invalid property value for ${k}: Only functions and null are allowed for on... handler`), v) :
+          (k.toLowerCase() === k ?
+            v => (expect(typeof v === "function" || v === null,
+              `Invalid property value for ${k}: Only functions and null are allowed for ${k} property`), v) :
+            v => (expect(typeof v === "string",
+              `Invalid property value for ${k}: Only strings are allowed for ${k} attribute`), v)
+          ) :
           v => (expect(isValidPrimitive(v) || v === null,
             `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`), v)
 

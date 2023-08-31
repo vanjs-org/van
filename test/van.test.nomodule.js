@@ -62,9 +62,15 @@
         assertEq(dom.outerHTML, '<div><p>\u{1F44B}Hello</p><ul><li>\u{1F5FA}\uFE0FWorld</li><li><a href="https://vanjs.org/">\u{1F366}VanJS</a></li></ul></div>');
       },
       tags_onclickHandler: () => {
-        const dom = div2(button({ onclick: () => van2.add(dom, p("Button clicked!")) }));
-        dom.querySelector("button").click();
-        assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
+        {
+          const dom = div2(button({ onclick: () => van2.add(dom, p("Button clicked!")) }));
+          dom.querySelector("button").click();
+          assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
+        }
+        {
+          const dom = div2(button({ onClick: 'alert("Hello")' }, "Click me"));
+          assertEq(dom.outerHTML, '<div><button onclick="alert(&quot;Hello&quot;)">Click me</button></div>');
+        }
       },
       tags_escape: () => {
         assertEq(p("<input>").outerHTML, "<p>&lt;input&gt;</p>");
@@ -721,6 +727,8 @@
       tags_invalidProp_nonFuncOnHandler: async () => {
         const counter = van2.state(0);
         assertError("Only functions and null are allowed", () => button({ onclick: ++counter.val }, "Increment"));
+        assertError("Only functions and null are allowed", () => button({ onclick: 'alert("hello")' }, "Increment"));
+        assertError("Only strings are allowed", () => button({ onClick: () => ++counter.val }, "Increment"));
         await capturingErrors("Only functions and null are allowed", 1, () => button({ onclick: van2.state(++counter.val) }, "Increment"));
         await capturingErrors("Only functions and null are allowed", 1, () => button({ onclick: van2._(() => ++counter.val) }, "Increment"));
       },

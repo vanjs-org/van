@@ -63,9 +63,16 @@ const runTests = async (van, msgDom, { debug }) => {
             assertEq(dom.outerHTML, '<div><p>👋Hello</p><ul><li>🗺️World</li><li><a href="https://vanjs.org/">🍦VanJS</a></li></ul></div>');
         },
         tags_onclickHandler: () => {
-            const dom = div(button({ onclick: () => van.add(dom, p("Button clicked!")) }));
-            dom.querySelector("button").click();
-            assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
+            {
+                const dom = div(button({ onclick: () => van.add(dom, p("Button clicked!")) }));
+                dom.querySelector("button").click();
+                assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
+            }
+            {
+                // Use `onClick` instead of `onclick` so that attribute instead of property will be set.
+                const dom = div(button({ onClick: 'alert("Hello")' }, "Click me"));
+                assertEq(dom.outerHTML, '<div><button onclick="alert(&quot;Hello&quot;)">Click me</button></div>');
+            }
         },
         tags_escape: () => {
             assertEq(p("<input>").outerHTML, "<p>&lt;input&gt;</p>");
@@ -774,6 +781,8 @@ const runTests = async (van, msgDom, { debug }) => {
         tags_invalidProp_nonFuncOnHandler: async () => {
             const counter = van.state(0);
             assertError("Only functions and null are allowed", () => button({ onclick: ++counter.val }, "Increment"));
+            assertError("Only functions and null are allowed", () => button({ onclick: 'alert("hello")' }, "Increment"));
+            assertError("Only strings are allowed", () => button({ onClick: () => ++counter.val }, "Increment"));
             // State as property
             await capturingErrors("Only functions and null are allowed", 1, () => button({ onclick: van.state(++counter.val) }, "Increment"));
             // State derived property
