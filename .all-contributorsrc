@@ -1,4 +1,22 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "artydev",
+      "name": "artydev",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31207473?v=4",
+      "profile": "https://github.com/artydev",
+      "contributions": [
+        "example",
+        "question"
+      ]
+    }
+  ]
 }
