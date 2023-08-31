@@ -17,6 +17,42 @@
         "example",
         "code"
       ]
+      "login": "icecream17",
+      "name": "icecream17",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58114641?v=4",
+      "profile": "https://lichess.org/@/StevenEmily",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+     "login": "tamo",
+      "name": "Tamotsu Takahashi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/383537?v=4",
+      "profile": "http://tamo.tdiary.net/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ryanolsonx",
+      "name": "Ryan Olson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/238929?v=4",
+      "profile": "https://github.com/ryanolsonx",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "Tao-VanJS",
+      "name": "Tao Xin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/132854319?v=4",
+      "profile": "http://vanjs.org",
+      "contributions": [
+        "design",
+        "code",
+        "doc"
+      ]
     }
   ]
 }
