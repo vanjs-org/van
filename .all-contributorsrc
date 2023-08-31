@@ -9,6 +9,15 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "EFord36",
+      "name": "Elliot Ford",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20516159?v=4",
+      "profile": "https://github.com/EFord36",
+      "contributions": [
+        "code"
+      ]
+    },
+    {      
       "login": "enpitsuLin",
       "name": "enpitsulin",
       "avatar_url": "https://avatars.githubusercontent.com/u/29378026?v=4",
