@@ -123,7 +123,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 
 ## Contributors (24)
 
-*If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on #87 to let me know.*
+*If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
