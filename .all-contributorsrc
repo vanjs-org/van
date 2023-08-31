@@ -9,6 +9,15 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "tamo",
+      "name": "Tamotsu Takahashi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/383537?v=4",
+      "profile": "http://tamo.tdiary.net/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "ryanolsonx",
       "name": "Ryan Olson",
       "avatar_url": "https://avatars.githubusercontent.com/u/238929?v=4",
