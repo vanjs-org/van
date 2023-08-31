@@ -16,6 +16,17 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "Tao-VanJS",
+      "name": "Tao Xin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/132854319?v=4",
+      "profile": "http://vanjs.org",
+      "contributions": [
+        "design",
+        "code",
+        "doc"
+      ]
     }
   ]
 }
