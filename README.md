@@ -121,7 +121,9 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [van_dml.js](https://github.com/vanjs-org/van/tree/main/addons/van_dml): adds a a new flavour of composition to **VanJS**. Author: [Eckehard](https://github.com/efpage).
 * [van-jsx](https://github.com/vanjs-org/van/tree/main/addons/van_jsx): a JSX wrapper for **VanJS**, for people who like the JSX syntax more. Author: [cqh963852](https://github.com/cqh963852).
 
-## Contributors (15)
+## Contributors (24)
+
+*If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on #87 to let me know.*
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -167,21 +169,3 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-*Some authors can't be recognized by Github as contributors for weird reasons (e.g.: [1](https://github.com/vanjs-org/van/pull/29#issuecomment-1583616491), [2](https://github.com/vanjs-org/van/pull/40#issuecomment-1585307358)). Their names are shown here. Authors are ordered chronologically by first contribution:*
-
-* [Tao Xin](https://github.com/Tao-VanJS)
-* [Ryan Olson](https://github.com/ryanolsonx)
-* [Tamotsu Takahashi](https://github.com/tamo)
-* [icecream17](https://github.com/icecream17)
-* [enpitsuLin](https://github.com/enpitsuLin)
-* [Elliot Ford](https://github.com/EFord36)
-* [andrewgryan](https://github.com/andrewgryan)
-* [FredericHeem](https://github.com/FredericHeem)
-* [ebraminio](https://github.com/ebraminio)
-* [Eckehard](https://github.com/efpage)
-* [Austin Merrick](https://github.com/onsclom)
-* [Lee Byonghun](https://github.com/Tolluset)
-* [caputdraconis](https://github.com/caputdraconis050630)
-* [Achille Lacoin](https://github.com/pomdtr)
-* [cqh963852](https://github.com/cqh963852)
