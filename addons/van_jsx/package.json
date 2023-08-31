@@ -1,0 +1,36 @@
+{
+  "name": "vanjs-jsx",
+  "version": "0.0.1",
+  "type": "module",
+  "types": "./src/index.d.ts",
+  "description": "jsx-runtime for vanjs",
+  "exports": {
+    ".": {
+      "require": "./src/index.js",
+      "import": "./src/index.js"
+    },
+    "./jsx-runtime": {
+      "require": "./src/jsx-runtime.js",
+      "import": "./src/jsx-runtime.js",
+      "types": "./src/jsx-runtime.d.ts"
+    },
+    "./jsx-dev-runtime": {
+      "require": "./src/jsx-dev-runtime.js",
+      "import": "./src/jsx-dev-runtime.js",
+      "types": "./src/jsx-dev-runtime.d.ts"
+    }
+  },
+  "files": [
+    "src",
+    "jsx-runtime.d.ts"
+  ],
+  "scripts": {},
+  "author": "@idealjs",
+  "license": "MIT",
+  "peerDependencies": {
+    "vanjs-core": "^1.1.3"
+  },
+  "devDependencies": {
+    "vanjs-core": "^1.1.3"
+  }
+}
