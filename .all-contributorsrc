@@ -15,6 +15,52 @@
       "profile": "https://github.com/ndrean",
       "contributions": [
         "example"
+      "login": "artydev",
+      "name": "artydev",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31207473?v=4",
+      "profile": "https://github.com/artydev",
+      "contributions": [
+        "example",
+        "question"
+      ]
+    },
+    {
+      "login": "awesome-club",
+      "name": "awesome",
+      "avatar_url": "https://avatars.githubusercontent.com/u/102911334?v=4",
+      "profile": "https://github.com/awesome-club",
+      "contributions": [
+        "video"
+      ]
+    },
+    {
+      "login": "onsclom",
+      "name": "Austin Merrick",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8485687?v=4",
+      "profile": "https://onsclom.net",
+      "contributions": [
+        "code",
+        "ideas",
+        "design"
+      ]
+    },
+    {
+      "login": "efpage",
+      "name": "Eckehard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29945129?v=4",
+      "profile": "http://www.efpage.de",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
+    },
+    {
+      "login": "mindplay-dk",
+      "name": "Rasmus Schultz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/103348?v=4",
+      "profile": "https://twitter.com/mindplaydk",
+      "contributions": [
+        "ideas"
       ]
     },
     {
