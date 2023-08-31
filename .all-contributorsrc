@@ -9,7 +9,16 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
-      "login": "tamo",
+      "login": "icecream17",
+      "name": "icecream17",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58114641?v=4",
+      "profile": "https://lichess.org/@/StevenEmily",
+      "contributions": [
+        "code"
+      ]
+     },
+    {
+     "login": "tamo",
       "name": "Tamotsu Takahashi",
       "avatar_url": "https://avatars.githubusercontent.com/u/383537?v=4",
       "profile": "http://tamo.tdiary.net/",
