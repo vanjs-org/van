@@ -129,6 +129,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://enpitsulin.xyz"><img src="https://avatars.githubusercontent.com/u/29378026?v=4?s=100" width="100px;" alt="enpitsulin"/><br /><sub><b>enpitsulin</b></sub></a><br /><a href="#example-enpitsuLin" title="Examples">💡</a> <a href="#code-enpitsuLin" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://lichess.org/@/StevenEmily"><img src="https://avatars.githubusercontent.com/u/58114641?v=4?s=100" width="100px;" alt="icecream17"/><br /><sub><b>icecream17</b></sub></a><br /><a href="#code-icecream17" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://tamo.tdiary.net/"><img src="https://avatars.githubusercontent.com/u/383537?v=4?s=100" width="100px;" alt="Tamotsu Takahashi"/><br /><sub><b>Tamotsu Takahashi</b></sub></a><br /><a href="#code-tamo" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ryanolsonx"><img src="https://avatars.githubusercontent.com/u/238929?v=4?s=100" width="100px;" alt="Ryan Olson"/><br /><sub><b>Ryan Olson</b></sub></a><br /><a href="#content-ryanolsonx" title="Content">🖋</a></td>

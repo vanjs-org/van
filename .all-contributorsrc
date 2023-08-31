@@ -9,6 +9,14 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "enpitsuLin",
+      "name": "enpitsulin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29378026?v=4",
+      "profile": "http://enpitsulin.xyz",
+      "contributions": [
+        "example",
+        "code"
+      ]
       "login": "icecream17",
       "name": "icecream17",
       "avatar_url": "https://avatars.githubusercontent.com/u/58114641?v=4",
@@ -16,7 +24,7 @@
       "contributions": [
         "code"
       ]
-     },
+    },
     {
      "login": "tamo",
       "name": "Tamotsu Takahashi",
