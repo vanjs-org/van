@@ -9,6 +9,15 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "ryanolsonx",
+      "name": "Ryan Olson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/238929?v=4",
+      "profile": "https://github.com/ryanolsonx",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
       "login": "Tao-VanJS",
       "name": "Tao Xin",
       "avatar_url": "https://avatars.githubusercontent.com/u/132854319?v=4",
