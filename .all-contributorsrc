@@ -1,4 +1,22 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "FredericHeem",
+      "name": "FredericH",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4118089?v=4",
+      "profile": "http://fr.linkedin.com/in/fredericheem",
+      "contributions": [
+        "example",
+        "code"
+      ]
+    }
+  ]
 }
