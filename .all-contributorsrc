@@ -1,4 +1,21 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "mindplay-dk",
+      "name": "Rasmus Schultz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/103348?v=4",
+      "profile": "https://twitter.com/mindplaydk",
+      "contributions": [
+        "ideas"
+      ]
+    }
+  ]
 }
