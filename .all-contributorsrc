@@ -18,6 +18,94 @@
         "ideas",
         "design"
       ]
+    },
+    {
+      "login": "ebraminio",
+      "name": "ebraminio",
+      "avatar_url": "https://avatars.githubusercontent.com/u/833473?v=4",
+      "profile": "https://github.com/ebraminio",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {   
+      "login": "FredericHeem",
+      "name": "FredericH",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4118089?v=4",
+      "profile": "http://fr.linkedin.com/in/fredericheem",
+      "contributions": [
+        "example",
+        "code"
+      ]
+    },
+    {
+      "login": "andrewgryan",
+      "name": "andrewgryan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22789046?v=4",
+      "profile": "https://github.com/andrewgryan",
+      "contributions": [
+        "design",
+        "code",
+        "bug"
+      ]
+    },
+    { 
+      "login": "EFord36",
+      "name": "Elliot Ford",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20516159?v=4",
+      "profile": "https://github.com/EFord36",
+      "contributions": [
+        "code"
+      ]
+    },
+    {      
+      "login": "enpitsuLin",
+      "name": "enpitsulin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29378026?v=4",
+      "profile": "http://enpitsulin.xyz",
+      "contributions": [
+        "example",
+        "code"
+      ]
+    },
+    {
+      "login": "icecream17",
+      "name": "icecream17",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58114641?v=4",
+      "profile": "https://lichess.org/@/StevenEmily",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+     "login": "tamo",
+      "name": "Tamotsu Takahashi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/383537?v=4",
+      "profile": "http://tamo.tdiary.net/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ryanolsonx",
+      "name": "Ryan Olson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/238929?v=4",
+      "profile": "https://github.com/ryanolsonx",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "Tao-VanJS",
+      "name": "Tao Xin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/132854319?v=4",
+      "profile": "http://vanjs.org",
+      "contributions": [
+        "design",
+        "code",
+        "doc"
+      ]
     }
   ]
 }
