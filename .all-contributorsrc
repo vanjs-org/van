@@ -1,4 +1,21 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "Tolluset",
+      "name": "Lee Byonghun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50096419?v=4",
+      "profile": "https://tolluset.gitbook.io/wiki/",
+      "contributions": [
+        "code"
+      ]
+    }
+  ]
 }
