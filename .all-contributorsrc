@@ -1,4 +1,21 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "cloudspeech",
+      "name": "cloudspeech",
+      "avatar_url": "https://avatars.githubusercontent.com/u/850521?v=4",
+      "profile": "https://github.com/cloudspeech",
+      "contributions": [
+        "ideas"
+      ]
+    }
+  ]
 }
