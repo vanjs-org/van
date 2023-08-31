@@ -126,6 +126,13 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/caputdraconis"><img src="https://avatars.githubusercontent.com/u/19674494?v=4?s=100" width="100px;" alt="caputdraconis"/><br /><sub><b>caputdraconis</b></sub></a><br /><a href="#code-caputdraconis" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
