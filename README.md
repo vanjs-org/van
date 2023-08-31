@@ -126,6 +126,13 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://fr.linkedin.com/in/fredericheem"><img src="https://avatars.githubusercontent.com/u/4118089?v=4?s=100" width="100px;" alt="FredericH"/><br /><sub><b>FredericH</b></sub></a><br /><a href="#example-FredericHeem" title="Examples">💡</a> <a href="#code-FredericHeem" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
