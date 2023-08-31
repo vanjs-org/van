@@ -9,6 +9,15 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "stephenhandley",
+      "name": "Stephen Handley",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3257?v=4",
+      "profile": "https://person.sh",
+      "contributions": [
+        "example"
+      ]
+    },
+    {
       "login": "ndrean",
       "name": "Neven DREAN",
       "avatar_url": "https://avatars.githubusercontent.com/u/6793008?v=4",
