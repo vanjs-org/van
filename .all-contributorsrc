@@ -19,6 +19,45 @@
       ]
     },
     {
+      "login": "awesome-club",
+      "name": "awesome",
+      "avatar_url": "https://avatars.githubusercontent.com/u/102911334?v=4",
+      "profile": "https://github.com/awesome-club",
+      "contributions": [
+        "video"
+      ]
+    },
+    {
+      "login": "onsclom",
+      "name": "Austin Merrick",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8485687?v=4",
+      "profile": "https://onsclom.net",
+      "contributions": [
+        "code",
+        "ideas",
+        "design"
+      ]
+    },
+    {
+      "login": "efpage",
+      "name": "Eckehard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29945129?v=4",
+      "profile": "http://www.efpage.de",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
+    },
+    {
+      "login": "mindplay-dk",
+      "name": "Rasmus Schultz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/103348?v=4",
+      "profile": "https://twitter.com/mindplaydk",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
       "login": "cqh963852",
       "name": "cqh",
       "avatar_url": "https://avatars.githubusercontent.com/u/17702287?v=4",
