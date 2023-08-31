@@ -126,6 +126,13 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://danielupshaw.com/"><img src="https://avatars.githubusercontent.com/u/595446?v=4?s=100" width="100px;" alt="Daniel Upshaw"/><br /><sub><b>Daniel Upshaw</b></sub></a><br /><a href="#plugin-groovenectar" title="Plugin/utility libraries">🔌</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
