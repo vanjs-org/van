@@ -179,7 +179,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/6793008?v=4",
       "profile": "https://github.com/ndrean",
       "contributions": [
-        "example"
+        "example",
+        "bug"
       ]
     },
     {
@@ -227,5 +228,6 @@
         "plugin"
       ]
     }
-  ]
+  ],
+  "repoType": "github"
 }
