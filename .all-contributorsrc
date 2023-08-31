@@ -179,7 +179,7 @@
         "code"
       ]
     },
-    {      
+    {
       "login": "enpitsuLin",
       "name": "enpitsulin",
       "avatar_url": "https://avatars.githubusercontent.com/u/29378026?v=4",
@@ -199,7 +199,7 @@
       ]
     },
     {
-     "login": "tamo",
+      "login": "tamo",
       "name": "Tamotsu Takahashi",
       "avatar_url": "https://avatars.githubusercontent.com/u/383537?v=4",
       "profile": "http://tamo.tdiary.net/",
@@ -225,6 +225,15 @@
         "design",
         "code",
         "doc"
+      ]
+    },
+    {
+      "login": "caputdraconis050630",
+      "name": "caputdraconis",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60993104?v=4",
+      "profile": "http://caputdraconis.tistory.com",
+      "contributions": [
+        "code"
       ]
     }
   ]
