@@ -129,6 +129,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/cloudspeech"><img src="https://avatars.githubusercontent.com/u/850521?v=4?s=100" width="100px;" alt="cloudspeech"/><br /><sub><b>cloudspeech</b></sub></a><br /><a href="#ideas-cloudspeech" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://gion.ro"><img src="https://avatars.githubusercontent.com/u/867609?v=4?s=100" width="100px;" alt="Ionut Stoica"/><br /><sub><b>Ionut Stoica</b></sub></a><br /><a href="#ideas-iongion" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://person.sh"><img src="https://avatars.githubusercontent.com/u/3257?v=4?s=100" width="100px;" alt="Stephen Handley"/><br /><sub><b>Stephen Handley</b></sub></a><br /><a href="#example-stephenhandley" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ndrean"><img src="https://avatars.githubusercontent.com/u/6793008?v=4?s=100" width="100px;" alt="Neven DREAN"/><br /><sub><b>Neven DREAN</b></sub></a><br /><a href="#example-ndrean" title="Examples">💡</a></td>
