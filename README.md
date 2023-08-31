@@ -119,9 +119,9 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 **VanJS** can be extended via add-ons. Add-ons add more features to **VanJS** and/or provide an alternative styled API. Below is a curated list of add-ons built by **VanJS** community:
 
 * [van_dml.js](https://github.com/vanjs-org/van/tree/main/addons/van_dml): adds a a new flavour of composition to **VanJS**. Author: [Eckehard](https://github.com/efpage).
-* [idealjs/van-jsx](https://github.com/idealjs/van-jsx): a JSX wrapper for **VanJS**, for people who like the JSX syntax more. Author: [idealjs](https://github.com/idealjs).
+* [idealjs/van-jsx](https://github.com/vanjs-org/van/tree/main/addons/van_jsx): a JSX wrapper for **VanJS**, for people who like the JSX syntax more. Author: * [cqh963852](https://github.com/cqh963852).
 
-## Contributors (14)
+## Contributors (15)
 
 *Some authors can't be recognized by Github as contributors for weird reasons (e.g.: [1](https://github.com/vanjs-org/van/pull/29#issuecomment-1583616491), [2](https://github.com/vanjs-org/van/pull/40#issuecomment-1585307358)). Their names are shown here. Authors are ordered chronologically by first contribution:*
 
@@ -139,3 +139,4 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [Lee Byonghun](https://github.com/Tolluset)
 * [caputdraconis](https://github.com/caputdraconis050630)
 * [Achille Lacoin](https://github.com/pomdtr)
+* [cqh963852](https://github.com/cqh963852)
