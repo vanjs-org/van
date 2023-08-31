@@ -9,6 +9,15 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "pomdtr",
+      "name": "Achille Lacoin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17577332?v=4",
+      "profile": "https://github.com/pomdtr",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "caputdraconis",
       "name": "caputdraconis",
       "avatar_url": "https://avatars.githubusercontent.com/u/19674494?v=4",
