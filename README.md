@@ -126,6 +126,13 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://onsclom.net"><img src="https://avatars.githubusercontent.com/u/8485687?v=4?s=100" width="100px;" alt="Austin Merrick"/><br /><sub><b>Austin Merrick</b></sub></a><br /><a href="#code-onsclom" title="Code">💻</a> <a href="#ideas-onsclom" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-onsclom" title="Design">🎨</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
