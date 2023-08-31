@@ -1,4 +1,21 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "pomdtr",
+      "name": "Achille Lacoin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17577332?v=4",
+      "profile": "https://github.com/pomdtr",
+      "contributions": [
+        "code"
+      ]
+    }
+  ]
 }
