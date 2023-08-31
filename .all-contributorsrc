@@ -9,6 +9,16 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "FredericHeem",
+      "name": "FredericH",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4118089?v=4",
+      "profile": "http://fr.linkedin.com/in/fredericheem",
+      "contributions": [
+        "example",
+        "code"
+      ]
+    },
+    {
       "login": "andrewgryan",
       "name": "andrewgryan",
       "avatar_url": "https://avatars.githubusercontent.com/u/22789046?v=4",
@@ -37,6 +47,8 @@
         "example",
         "code"
       ]
+    },
+    {
       "login": "icecream17",
       "name": "icecream17",
       "avatar_url": "https://avatars.githubusercontent.com/u/58114641?v=4",

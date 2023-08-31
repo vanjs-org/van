@@ -129,6 +129,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://fr.linkedin.com/in/fredericheem"><img src="https://avatars.githubusercontent.com/u/4118089?v=4?s=100" width="100px;" alt="FredericH"/><br /><sub><b>FredericH</b></sub></a><br /><a href="#example-FredericHeem" title="Examples">💡</a> <a href="#code-FredericHeem" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/andrewgryan"><img src="https://avatars.githubusercontent.com/u/22789046?v=4?s=100" width="100px;" alt="andrewgryan"/><br /><sub><b>andrewgryan</b></sub></a><br /><a href="#design-andrewgryan" title="Design">🎨</a> <a href="#code-andrewgryan" title="Code">💻</a> <a href="#bug-andrewgryan" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/EFord36"><img src="https://avatars.githubusercontent.com/u/20516159?v=4?s=100" width="100px;" alt="Elliot Ford"/><br /><sub><b>Elliot Ford</b></sub></a><br /><a href="#code-EFord36" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://enpitsulin.xyz"><img src="https://avatars.githubusercontent.com/u/29378026?v=4?s=100" width="100px;" alt="enpitsulin"/><br /><sub><b>enpitsulin</b></sub></a><br /><a href="#example-enpitsuLin" title="Examples">💡</a> <a href="#code-enpitsuLin" title="Code">💻</a></td>
