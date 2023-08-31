@@ -126,6 +126,13 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://enpitsulin.xyz"><img src="https://avatars.githubusercontent.com/u/29378026?v=4?s=100" width="100px;" alt="enpitsulin"/><br /><sub><b>enpitsulin</b></sub></a><br /><a href="#example-enpitsuLin" title="Examples">💡</a> <a href="#code-enpitsuLin" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
