@@ -1,4 +1,21 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "tamo",
+      "name": "Tamotsu Takahashi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/383537?v=4",
+      "profile": "http://tamo.tdiary.net/",
+      "contributions": [
+        "code"
+      ]
+    }
+  ]
 }
