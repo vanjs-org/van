@@ -1,4 +1,21 @@
 {
   "projectName": "van",
-  "projectOwner": "vanjs-org"
+  "projectOwner": "vanjs-org",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "iongion",
+      "name": "Ionut Stoica",
+      "avatar_url": "https://avatars.githubusercontent.com/u/867609?v=4",
+      "profile": "http://gion.ro",
+      "contributions": [
+        "ideas"
+      ]
+    }
+  ]
 }
