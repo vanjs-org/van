@@ -129,7 +129,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="http://vanjs.org"><img src="https://avatars.githubusercontent.com/u/132854319?v=4?s=100" width="100px;" alt="Tao Xin"/><br /><sub><b>Tao Xin</b></sub></a><br /><a href="#design-Tao-VanJS" title="Design">🎨</a> <a href="#code-Tao-VanJS" title="Code">💻</a> <a href="#doc-Tao-VanJS" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://vanjs.org"><img src="https://avatars.githubusercontent.com/u/132854319?v=4?s=100" width="100px;" alt="Tao Xin"/><br /><sub><b>Tao Xin</b></sub></a><br /><a href="#design-Tao-VanJS" title="Design">🎨</a> <a href="#code-Tao-VanJS" title="Code">💻</a> <a href="#doc-Tao-VanJS" title="Documentation">📖</a> <a href="#example-Tao-VanJS" title="Examples">💡</a></td>
     </tr>
   </tbody>
 </table>
