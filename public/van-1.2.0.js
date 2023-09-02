@@ -130,4 +130,6 @@ let updateDoms = () => {
   for (let s of changedStatesArray) s._oldVal = s._val
 }
 
-export default {add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive}
+let hydrate = (dom, f) => dom.replaceWith(bind(f, dom))
+
+export default {add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive, hydrate}

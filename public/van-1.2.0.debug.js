@@ -56,14 +56,15 @@ const validateChild = child => {
   return child
 }
 
+const withResultValidation = f => dom => {
+  const r = validateChild(f(dom))
+  if (r !== dom && r instanceof Node)
+    expect(!r.isConnected,
+      "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to document")
+  return r
+}
+
 const checkChildren = children => children.flat(Infinity).map(c => {
-  const withResultValidation = f => dom => {
-    const r = validateChild(f(dom))
-    if (r !== dom && r instanceof Node)
-      expect(!r.isConnected,
-        "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to document")
-    return r
-  }
   if (isState(c)) return withResultValidation(() => c.val)
   if (typeof c === "function") return withResultValidation(c)
   expect(!c?.isConnected, "You can't add a DOM Node that is already connected to document")
@@ -114,4 +115,10 @@ const tagsNS = ns => {
   return _tagsNS(ns)
 }
 
-export default {add, _, tags: _tagsNS(), tagsNS, state, val: van.val, oldVal: van.oldVal, derive, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
+const hydrate = (dom, f) => {
+  expect(dom instanceof Node, "1st argument of `van.hydrate` function must be a DOM Node object")
+  expect(typeof(f) === "function", "2nd argument of `van.hydrate` function must be a function")
+  return van.hydrate(dom, withResultValidation(f))
+}
+
+export default {add, _, tags: _tagsNS(), tagsNS, state, val: van.val, oldVal: van.oldVal, derive, hydrate, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}

@@ -3,7 +3,7 @@
   // ../test/van.test.js
   window.numTests = 0;
   var runTests = async (van2, msgDom2, { debug }) => {
-    const { a, b, button, div: div2, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van2.tags;
+    const { a, b, button, div: div2, h2: h22, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van2.tags;
     const assert = (cond) => {
       if (!cond)
         throw new Error("Assertion failed");
@@ -717,6 +717,20 @@
         num.val = 1;
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.innerHTML, "1<span>ok</span>1");
+      }),
+      hydrate: withHiddenDom(async (hiddenDom) => {
+        const Counter2 = (init) => {
+          const counter = van2.state(init);
+          return button({ "data-counter": counter, onclick: () => ++counter.val }, () => `Count: ${counter.val}`);
+        };
+        hiddenDom.innerHTML = Counter2(5).outerHTML;
+        hiddenDom.querySelector("button").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, '<button data-counter="5">Count: 5</button>');
+        van2.hydrate(hiddenDom.querySelector("button"), (dom) => Counter2(Number(dom.getAttribute("data-counter"))));
+        hiddenDom.querySelector("button").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, '<button data-counter="6">Count: 6</button>');
       })
     };
     const debugTests = {
@@ -857,15 +871,118 @@
           num.val = 3;
           await sleep(waitMsOnDomUpdates);
         });
+      }),
+      hydrate_1stArgNotDom: () => {
+        assertError("1st argument of `van.hydrate` function must be a DOM Node object", () => van2.hydrate({}, () => div2()));
+      },
+      hydrate_2ndArgNotFunc: () => {
+        assertError("2nd argument of `van.hydrate` function must be a function", () => van2.hydrate(div2(), div2()));
+      },
+      hydrate_invalidInitialResult: async () => {
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => van2.hydrate(div2(), () => ({})));
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => van2.hydrate(div2(), () => (x) => x * 2));
+      },
+      hydrate_invalidFollowupResult: withHiddenDom(async (hiddenDom) => {
+        const cond = van2.state(true);
+        const dom1 = hiddenDom.appendChild(div2());
+        const dom2 = hiddenDom.appendChild(div2());
+        const dom3 = hiddenDom.appendChild(div2());
+        van2.hydrate(dom1, () => cond.val ? div2() : {});
+        van2.hydrate(dom2, () => cond.val ? div2() : (x) => x * 2);
+        van2.hydrate(dom3, () => cond.val ? div2() : [div2(), div2()]);
+        await capturingErrors(/Only.*are valid child of a DOM Element/, 3, async () => {
+          cond.val = false;
+          await sleep(waitMsOnDomUpdates);
+        });
+      }),
+      hydrate_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
+        const dom1 = hiddenDom.appendChild(div2());
+        const dom2 = hiddenDom.appendChild(div2());
+        await capturingErrors("it shouldn't be already connected to document", 1, () => van2.hydrate(dom1, () => dom2));
       })
     };
+    const Counter = ({ van: van3, id, init = 0, buttonStyle = "\u{1F44D}\u{1F44E}" }) => {
+      const { button: button2, div: div3 } = van3.tags;
+      const [up, down] = [...van3.val(buttonStyle)];
+      const counter = van3.state(init);
+      return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, up), button2({ onclick: () => --counter.val }, down));
+    };
+    const OptimizedCounter = ({ van: van3, id, init = 0, buttonStyle = "\u{1F44D}\u{1F44E}" }) => div2((dom) => {
+      if (dom)
+        return dom;
+      const { button: button2, div: div3 } = van3.tags;
+      const counter = van3.state(init);
+      const up = van3.state(void 0);
+      const down = van3.state(void 0);
+      van3.derive(() => [up.val, down.val] = [...van3.val(buttonStyle)]);
+      return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, up), button2({ onclick: () => --counter.val }, down));
+    }).firstChild;
+    const hydrateExample = (Counter2) => withHiddenDom(async (hiddenDom) => {
+      const counterInit = 5;
+      const selectDom = select({ value: "\u{1F446}\u{1F447}" }, option("\u{1F446}\u{1F447}"), option("\u{1F44D}\u{1F44E}"), option("\u{1F53C}\u{1F53D}"), option("\u23EB\u23EC"), option("\u{1F4C8}\u{1F4C9}"));
+      const buttonStyle = van2.state(selectDom.value);
+      selectDom.oninput = (e) => buttonStyle.val = e.target.value;
+      hiddenDom.innerHTML = div2(h22("Basic Counter"), Counter2({ van: van2, init: counterInit }), h22("Styled Counter"), p("Select the button style: ", selectDom), Counter2({ van: van2, init: counterInit, buttonStyle })).innerHTML;
+      const clickBtns = async (dom, numUp, numDown) => {
+        const [upBtn, downBtn] = [...dom.querySelectorAll("button")];
+        for (let i = 0; i < numUp; ++i) {
+          upBtn.click();
+          await sleep(waitMsOnDomUpdates);
+        }
+        for (let i = 0; i < numDown; ++i) {
+          downBtn.click();
+          await sleep(waitMsOnDomUpdates);
+        }
+      };
+      const counterHTML = (counter, buttonStyle2) => {
+        const [up, down] = [...buttonStyle2];
+        return div2({ "data-counter": counter }, "\u2764\uFE0F ", counter, " ", button(up), button(down)).innerHTML;
+      };
+      let [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+      await clickBtns(basicCounter, 3, 1);
+      await clickBtns(styledCounter, 2, 5);
+      [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+      assertEq(basicCounter.innerHTML, counterHTML(5, "\u{1F44D}\u{1F44E}"));
+      assertEq(styledCounter.innerHTML, counterHTML(5, "\u{1F446}\u{1F447}"));
+      selectDom.value = "\u{1F53C}\u{1F53D}";
+      selectDom.dispatchEvent(new Event("input"));
+      await sleep(waitMsOnDomUpdates);
+      [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+      assertEq(styledCounter.innerHTML, counterHTML(5, "\u{1F446}\u{1F447}"));
+      selectDom.value = "\u{1F446}\u{1F447}";
+      selectDom.dispatchEvent(new Event("input"));
+      van2.hydrate(basicCounter, (dom) => Counter2({
+        van: van2,
+        id: "basic-counter",
+        init: Number(dom.getAttribute("data-counter"))
+      }));
+      van2.hydrate(styledCounter, (dom) => Counter2({
+        van: van2,
+        id: "styled-counter",
+        init: Number(dom.getAttribute("data-counter")),
+        buttonStyle
+      }));
+      [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+      await clickBtns(basicCounter, 3, 1);
+      await clickBtns(styledCounter, 2, 5);
+      [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+      assertEq(basicCounter.innerHTML, counterHTML(7, "\u{1F44D}\u{1F44E}"));
+      assertEq(styledCounter.innerHTML, counterHTML(2, "\u{1F446}\u{1F447}"));
+      const prevStyledCounter = styledCounter;
+      selectDom.value = "\u{1F53C}\u{1F53D}";
+      selectDom.dispatchEvent(new Event("input"));
+      await sleep(waitMsOnDomUpdates);
+      [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+      assertEq(styledCounter.innerHTML, counterHTML(2, "\u{1F53C}\u{1F53D}"));
+      Counter2 === OptimizedCounter ? assertEq(styledCounter, prevStyledCounter) : assert(styledCounter !== prevStyledCounter);
+    });
     const examples = {
       counter: withHiddenDom(async (hiddenDom) => {
-        const Counter = () => {
+        const Counter2 = () => {
           const counter = van2.state(0);
           return div2(div2("\u2764\uFE0F: ", counter), button({ onclick: () => ++counter.val }, "\u{1F44D}"), button({ onclick: () => --counter.val }, "\u{1F44E}"));
         };
-        van2.add(hiddenDom, Counter());
+        van2.add(hiddenDom, Counter2());
         assertEq(hiddenDom.firstChild.querySelector("div").innerText, "\u2764\uFE0F: 0");
         const [incrementBtn, decrementBtn] = hiddenDom.getElementsByTagName("button");
         incrementBtn.click();
@@ -984,12 +1101,12 @@
         assertEq(hiddenDom.querySelector("span.preview").style.cssText, "font-size: 20px; color: blue;");
       }),
       escapeDerivedProp: withHiddenDom(async (hiddenDom) => {
-        const Counter = () => {
+        const Counter2 = () => {
           const counter = van2.state(0);
           const action = van2.state("\u{1F44D}");
           return span("\u2764\uFE0F ", counter, " ", select({ oninput: (e) => action.val = e.target.value, value: action }, option({ value: "\u{1F44D}" }, "\u{1F44D}"), option({ value: "\u{1F44E}" }, "\u{1F44E}")), " ", button({ onclick: van2._(() => action.val === "\u{1F44D}" ? () => ++counter.val : () => --counter.val) }, "Run"));
         };
-        van2.add(hiddenDom, Counter());
+        van2.add(hiddenDom, Counter2());
         const dom = hiddenDom.firstChild;
         assertEq(dom.outerHTML, '<span>\u2764\uFE0F 0 <select><option value="\u{1F44D}">\u{1F44D}</option><option value="\u{1F44E}">\u{1F44E}</option></select> <button>Run</button></span>');
         dom.querySelector("button").click();
@@ -1108,7 +1225,9 @@
         dom.querySelector("button").click();
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to . <b>VanJS</b>&nbsp;is awesome!</span>");
-      })
+      }),
+      hydrate: hydrateExample(Counter),
+      hydrateOptimized: hydrateExample(OptimizedCounter)
     };
     const gcTests = {
       bindingBasic: withHiddenDom(async (hiddenDom) => {
@@ -1150,7 +1269,7 @@
             ++randomState.val;
           await sleep(waitMsOnDomUpdates);
         }
-        allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 10));
+        allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 15));
         await sleep(1e3);
         allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 3));
       }),

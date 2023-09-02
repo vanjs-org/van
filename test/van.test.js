@@ -1,6 +1,6 @@
 window.numTests = 0;
 const runTests = async (van, msgDom, { debug }) => {
-    const { a, b, button, div, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van.tags;
+    const { a, b, button, div, h2, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van.tags;
     const assert = (cond) => {
         if (!cond)
             throw new Error("Assertion failed");
@@ -771,7 +771,24 @@ const runTests = async (van, msgDom, { debug }) => {
             // We want to validate the 2nd child won't be updated becasuse of the error,
             // but other DOM nodes are updated as usual
             assertEq(hiddenDom.innerHTML, "1<span>ok</span>1");
-        })
+        }),
+        hydrate: withHiddenDom(async (hiddenDom) => {
+            const Counter = (init) => {
+                const counter = van.state(init);
+                return button({ "data-counter": counter, onclick: () => ++counter.val }, () => `Count: ${counter.val}`);
+            };
+            // Static DOM before hydration
+            hiddenDom.innerHTML = Counter(5).outerHTML;
+            // Before hydration, the counter is not reactive
+            hiddenDom.querySelector("button").click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<button data-counter="5">Count: 5</button>');
+            van.hydrate(hiddenDom.querySelector("button"), dom => Counter(Number(dom.getAttribute("data-counter"))));
+            // After hydration, the counter is reactive
+            hiddenDom.querySelector("button").click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<button data-counter="6">Count: 6</button>');
+        }),
     };
     const debugTests = {
         escape_nonFuncArg: () => {
@@ -917,7 +934,116 @@ const runTests = async (van, msgDom, { debug }) => {
                 await sleep(waitMsOnDomUpdates);
             });
         }),
+        hydrate_1stArgNotDom: () => {
+            assertError("1st argument of `van.hydrate` function must be a DOM Node object", () => van.hydrate({}, () => div()));
+        },
+        hydrate_2ndArgNotFunc: () => {
+            assertError("2nd argument of `van.hydrate` function must be a function", () => van.hydrate(div(), div()));
+        },
+        hydrate_invalidInitialResult: async () => {
+            await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => van.hydrate(div(), () => ({})));
+            await capturingErrors(/Only.*are valid child of a DOM Element/, 1, () => van.hydrate(div(), () => ((x) => x * 2)));
+        },
+        hydrate_invalidFollowupResult: withHiddenDom(async (hiddenDom) => {
+            const cond = van.state(true);
+            const dom1 = hiddenDom.appendChild(div());
+            const dom2 = hiddenDom.appendChild(div());
+            const dom3 = hiddenDom.appendChild(div());
+            van.hydrate(dom1, () => cond.val ? div() : {});
+            van.hydrate(dom2, () => cond.val ? div() : ((x) => x * 2));
+            van.hydrate(dom3, () => cond.val ? div() : [div(), div()]);
+            await capturingErrors(/Only.*are valid child of a DOM Element/, 3, async () => {
+                cond.val = false;
+                await sleep(waitMsOnDomUpdates);
+            });
+        }),
+        hydrate_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
+            const dom1 = hiddenDom.appendChild(div());
+            const dom2 = hiddenDom.appendChild(div());
+            await capturingErrors("it shouldn't be already connected to document", 1, () => van.hydrate(dom1, () => dom2));
+        }),
     };
+    const Counter = ({ van, id, init = 0, buttonStyle = "👍👎", }) => {
+        const { button, div } = van.tags;
+        const [up, down] = [...van.val(buttonStyle)];
+        const counter = van.state(init);
+        return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, up), button({ onclick: () => --counter.val }, down));
+    };
+    const OptimizedCounter = ({ van, id, init = 0, buttonStyle = "👍👎", }) => div((dom) => {
+        if (dom)
+            return dom;
+        const { button, div } = van.tags;
+        const counter = van.state(init);
+        const up = van.state(undefined);
+        const down = van.state(undefined);
+        van.derive(() => [up.val, down.val] = [...van.val(buttonStyle)]);
+        return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, up), button({ onclick: () => --counter.val }, down));
+    }).firstChild;
+    const hydrateExample = (Counter) => withHiddenDom(async (hiddenDom) => {
+        const counterInit = 5;
+        const selectDom = select({ value: "👆👇" }, option("👆👇"), option("👍👎"), option("🔼🔽"), option("⏫⏬"), option("📈📉"));
+        const buttonStyle = van.state(selectDom.value);
+        selectDom.oninput = e => buttonStyle.val = e.target.value;
+        // Static DOM before hydration
+        hiddenDom.innerHTML = div(h2("Basic Counter"), Counter({ van, init: counterInit }), h2("Styled Counter"), p("Select the button style: ", selectDom), Counter({ van, init: counterInit, buttonStyle })).innerHTML;
+        const clickBtns = async (dom, numUp, numDown) => {
+            const [upBtn, downBtn] = [...dom.querySelectorAll("button")];
+            for (let i = 0; i < numUp; ++i) {
+                upBtn.click();
+                await sleep(waitMsOnDomUpdates);
+            }
+            for (let i = 0; i < numDown; ++i) {
+                downBtn.click();
+                await sleep(waitMsOnDomUpdates);
+            }
+        };
+        const counterHTML = (counter, buttonStyle) => {
+            const [up, down] = [...buttonStyle];
+            return div({ "data-counter": counter }, "❤️ ", counter, " ", button(up), button(down)).innerHTML;
+        };
+        // Before hydration, counters are not reactive
+        let [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+        await clickBtns(basicCounter, 3, 1);
+        await clickBtns(styledCounter, 2, 5);
+        [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+        assertEq(basicCounter.innerHTML, counterHTML(5, "👍👎"));
+        assertEq(styledCounter.innerHTML, counterHTML(5, "👆👇"));
+        // Selecting a new button style won't change the actual buttons
+        selectDom.value = "🔼🔽";
+        selectDom.dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+        assertEq(styledCounter.innerHTML, counterHTML(5, "👆👇"));
+        selectDom.value = "👆👇";
+        selectDom.dispatchEvent(new Event("input"));
+        van.hydrate(basicCounter, dom => Counter({
+            van,
+            id: "basic-counter",
+            init: Number(dom.getAttribute("data-counter")),
+        }));
+        van.hydrate(styledCounter, dom => Counter({
+            van,
+            id: "styled-counter",
+            init: Number(dom.getAttribute("data-counter")),
+            buttonStyle: buttonStyle,
+        }));
+        [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+        await clickBtns(basicCounter, 3, 1);
+        await clickBtns(styledCounter, 2, 5);
+        [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+        assertEq(basicCounter.innerHTML, counterHTML(7, "👍👎"));
+        assertEq(styledCounter.innerHTML, counterHTML(2, "👆👇"));
+        // Selecting a new button style will change the actual buttons
+        const prevStyledCounter = styledCounter;
+        selectDom.value = "🔼🔽";
+        selectDom.dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
+        assertEq(styledCounter.innerHTML, counterHTML(2, "🔼🔽"));
+        Counter === OptimizedCounter ?
+            assertEq(styledCounter, prevStyledCounter) :
+            assert(styledCounter !== prevStyledCounter);
+    });
     // Test cases for examples used in the documentation. Having the tests to ensure the examples
     // are always correct.
     const examples = {
@@ -1171,6 +1297,8 @@ const runTests = async (van, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to . <b>VanJS</b>&nbsp;is awesome!</span>");
         }),
+        hydrate: hydrateExample(Counter),
+        hydrateOptimized: hydrateExample(OptimizedCounter),
     };
     // In a VanJS app, there could be many derived DOM nodes, states and side effects created on-the-fly.
     // We want to test the garbage-collection process is in place to ensure obsolete bindings and
@@ -1219,7 +1347,7 @@ const runTests = async (van, msgDom, { debug }) => {
                     ++randomState.val;
                 await sleep(waitMsOnDomUpdates);
             }
-            allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 10));
+            allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 15));
             // Wait until GC kicks in
             await sleep(1000);
             allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 3));

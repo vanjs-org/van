@@ -122,7 +122,8 @@
     for (let s of changedStatesArray)
       s._oldVal = s._val;
   };
-  var van_default = { add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive };
+  var hydrate = (dom, f) => dom.replaceWith(bind(f, dom));
+  var van_default = { add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive, hydrate };
 
   // van.debug.js
   var capturedErrors;
@@ -165,16 +166,16 @@
     );
     return child;
   };
+  var withResultValidation = (f) => (dom) => {
+    const r = validateChild(f(dom));
+    if (r !== dom && r instanceof Node)
+      expect(
+        !r.isConnected,
+        "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to document"
+      );
+    return r;
+  };
   var checkChildren = (children) => children.flat(Infinity).map((c) => {
-    const withResultValidation = (f) => (dom) => {
-      const r = validateChild(f(dom));
-      if (r !== dom && r instanceof Node)
-        expect(
-          !r.isConnected,
-          "If the result of complex binding function is not the same as previous one, it shouldn't be already connected to document"
-        );
-      return r;
-    };
     if (isState2(c))
       return withResultValidation(() => c.val);
     if (typeof c === "function")
@@ -222,7 +223,12 @@
     expect(typeof ns === "string", "Must provide a string for parameter `ns` in `van.tagsNS`");
     return _tagsNS(ns);
   };
-  var van_debug_default = { add: add2, _: _2, tags: _tagsNS(), tagsNS: tagsNS2, state: state2, val: van_default.val, oldVal: van_default.oldVal, derive: derive2, startCapturingErrors, stopCapturingErrors, get capturedErrors() {
+  var hydrate2 = (dom, f) => {
+    expect(dom instanceof Node, "1st argument of `van.hydrate` function must be a DOM Node object");
+    expect(typeof f === "function", "2nd argument of `van.hydrate` function must be a function");
+    return van_default.hydrate(dom, withResultValidation(f));
+  };
+  var van_debug_default = { add: add2, _: _2, tags: _tagsNS(), tagsNS: tagsNS2, state: state2, val: van_default.val, oldVal: van_default.oldVal, derive: derive2, hydrate: hydrate2, startCapturingErrors, stopCapturingErrors, get capturedErrors() {
     return capturedErrors;
   } };
 

@@ -122,7 +122,8 @@
     for (let s of changedStatesArray)
       s._oldVal = s._val;
   };
-  var van_default = { add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive };
+  var hydrate = (dom, f) => dom.replaceWith(bind(f, dom));
+  var van_default = { add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive, hydrate };
 
   // van.forbundle.js
   window.van = van_default;
