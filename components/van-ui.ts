@@ -3,9 +3,7 @@ import van, { ChildDom, State } from "vanjs-core"
 // Quote all tag names so that they're not mangled by minifier
 const {"button": button, "div": div, "input": input, "label": label, "span": span} = van.tags
 
-export interface CSSPropertyBag {
-  readonly [key: string]: string | number
-}
+export type CSSPropertyBag = Record<string, string | number>
 
 const toStyleStr = (style: CSSPropertyBag) =>
   Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("")
@@ -79,10 +77,6 @@ export interface TabsProps {
   readonly tabContentStyleOverrides?: CSSPropertyBag
 }
 
-export interface TabsContent {
-  readonly [key: string]: ChildDom | readonly ChildDom[]
-}
-
 let tabsId = 0
 
 export const Tabs = (
@@ -102,7 +96,7 @@ export const Tabs = (
     tabContentClass = "",
     tabContentStyleOverrides = {},
   }: TabsProps,
-  contents: TabsContent,
+  contents: Record<string, ChildDom | readonly ChildDom[]>,
 ) => {
   const activeTabState = activeTab ?? van.state(Object.keys(contents)[0])
   const tabButtonRowStylesStr = toStyleStr({
