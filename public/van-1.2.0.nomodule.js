@@ -110,7 +110,7 @@
     }
     return add(dom, ...children);
   }, { get: (tag, name) => tag.bind(_undefined, name) });
-  var update = (dom, newDom) => newDom !== dom && (newDom ? dom.replaceWith(newDom) : dom.remove());
+  var update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove();
   var updateDoms = () => {
     let changedStatesArray = [...changedStates].filter((s) => s._val !== s._oldVal);
     changedStates = _undefined;

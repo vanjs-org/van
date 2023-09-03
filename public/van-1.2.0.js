@@ -119,7 +119,7 @@ let tagsNS = ns => new Proxy((name, ...args) => {
   return add(dom, ...children)
 }, {get: (tag, name) => tag.bind(_undefined, name)})
 
-let update = (dom, newDom) => newDom !== dom && (newDom ? dom.replaceWith(newDom) : dom.remove())
+let update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove()
 
 let updateDoms = () => {
   let changedStatesArray = [...changedStates].filter(s => s._val !== s._oldVal)
