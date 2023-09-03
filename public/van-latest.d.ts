@@ -136,7 +136,7 @@ export interface Van {
   readonly _: (f: () => PropValue) => () => PropValue
   readonly tags: Tags
   readonly tagsNS: (namespaceURI: string) => Readonly<Record<string, TagFunc<Element>>>
-  readonly hydrate: <T extends Node>(dom: T, f: (dom: T) => T) => T
+  readonly hydrate: <T extends Node>(dom: T, f: (dom: T) => T | null | undefined) => T
 }
 
 declare const van: Van

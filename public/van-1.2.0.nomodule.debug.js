@@ -110,19 +110,16 @@
     }
     return add(dom, ...children);
   }, { get: (tag, name) => tag.bind(_undefined, name) });
+  var update = (dom, newDom) => newDom !== dom && (newDom ? dom.replaceWith(newDom) : dom.remove());
   var updateDoms = () => {
     let changedStatesArray = [...changedStates].filter((s) => s._val !== s._oldVal);
     changedStates = _undefined;
-    for (let b of new Set(changedStatesArray.flatMap((s) => s._bindings = keepConnected(s._bindings)))) {
-      let dom = b._dom, newDom = bind(b.f, dom);
-      b._dom = _undefined;
-      if (newDom !== dom)
-        newDom != _undefined ? dom.replaceWith(newDom) : dom.remove();
-    }
+    for (let b of new Set(changedStatesArray.flatMap((s) => s._bindings = keepConnected(s._bindings))))
+      update(b._dom, bind(b.f, b._dom)), b._dom = _undefined;
     for (let s of changedStatesArray)
       s._oldVal = s._val;
   };
-  var hydrate = (dom, f) => dom.replaceWith(bind(f, dom));
+  var hydrate = (dom, f) => update(dom, bind(f, dom));
   var van_default = { add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive, hydrate };
 
   // van.debug.js
