@@ -666,6 +666,15 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
       }),
+      stateDerivedChild_0ToNotRemoveDom: withHiddenDom(async (hiddenDom) => {
+        const state1 = van2.state(0), state2 = van2.state(1);
+        const dom = div2(state1, () => 1 - state1.val, state2, () => 1 - state2.val);
+        van2.add(hiddenDom, dom);
+        assertEq(dom.outerHTML, "<div>0110</div>");
+        state1.val = 1, state2.val = 0;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(dom.outerHTML, "<div>1001</div>");
+      }),
       stateDerivedChild_dynamicPrimitive: withHiddenDom(async (hiddenDom) => {
         const a2 = van2.state(1), b2 = van2.state(2), deleted = van2.state(false);
         const dom = div2(() => deleted.val ? null : a2.val + b2.val);
@@ -718,7 +727,7 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.innerHTML, "1<span>ok</span>1");
       }),
-      hydrate: withHiddenDom(async (hiddenDom) => {
+      hydrate_normal: withHiddenDom(async (hiddenDom) => {
         const Counter2 = (init) => {
           const counter = van2.state(init);
           return button({ "data-counter": counter, onclick: () => ++counter.val }, () => `Count: ${counter.val}`);
@@ -731,6 +740,30 @@
         hiddenDom.querySelector("button").click();
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.innerHTML, '<button data-counter="6">Count: 6</button>');
+      }),
+      hydrate_nullToRemoveDom: withHiddenDom(async (hiddenDom) => {
+        van2.add(hiddenDom, div2());
+        van2.hydrate(hiddenDom.querySelector("div"), () => null);
+        assertEq(hiddenDom.innerHTML, "");
+        van2.add(hiddenDom, div2());
+        const s = van2.state(1);
+        van2.hydrate(hiddenDom.querySelector("div"), () => s.val === 1 ? pre() : null);
+        assertEq(hiddenDom.innerHTML, "<pre></pre>");
+        s.val = 2;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, "");
+      }),
+      hydrate_undefinedToRemoveDom: withHiddenDom(async (hiddenDom) => {
+        van2.add(hiddenDom, div2());
+        van2.hydrate(hiddenDom.querySelector("div"), () => void 0);
+        assertEq(hiddenDom.innerHTML, "");
+        van2.add(hiddenDom, div2());
+        const s = van2.state(1);
+        van2.hydrate(hiddenDom.querySelector("div"), () => s.val === 1 ? pre() : void 0);
+        assertEq(hiddenDom.innerHTML, "<pre></pre>");
+        s.val = 2;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, "");
       })
     };
     const debugTests = {
