@@ -1,7 +1,5 @@
 import { ChildDom, State } from "vanjs-core";
-export interface CSSPropertyBag {
-    readonly [key: string]: string | number;
-}
+export type CSSPropertyBag = Record<string, string | number>;
 export interface ModalProps {
     readonly closed: State<boolean>;
     readonly backgroundColor?: string;
@@ -28,10 +26,7 @@ export interface TabsProps {
     readonly tabContentClass?: string;
     readonly tabContentStyleOverrides?: CSSPropertyBag;
 }
-export interface TabsContent {
-    readonly [key: string]: ChildDom | readonly ChildDom[];
-}
-export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: TabsContent) => HTMLDivElement;
+export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: Record<string, ChildDom | readonly ChildDom[]>) => HTMLDivElement;
 export interface ToggleProps {
     readonly on?: boolean | State<boolean>;
     readonly size?: number;

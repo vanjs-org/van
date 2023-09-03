@@ -1,8 +1,8 @@
 set -e
 
-npm run build
-npm publish
-npm prune
+# npm run build
+# npm publish
+# npm prune
 
 VER=$(node_modules/node-jq/bin/jq -r '.version' package.json)
 
