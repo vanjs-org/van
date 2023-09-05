@@ -1335,7 +1335,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
   const OptimizedCounter = ({
     van: {state, derive, val, tags: {button, div}},
     id, init = 0, buttonStyle = "👍👎",
-  }: CounterProps) => <HTMLDivElement>div((dom: Node) => {
+  }: CounterProps) => <HTMLDivElement>div((dom: Node | undefined) => {
     if (dom) return dom
 
     const counter = state(init)
