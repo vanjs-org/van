@@ -826,6 +826,17 @@ const runTests = async (van, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, "");
         }),
+        hydrate_0NotToRemoveDom: withHiddenDom(async (hiddenDom) => {
+            van.add(hiddenDom, div(), div());
+            const s = van.state(0);
+            const [dom1, dom2] = hiddenDom.querySelectorAll("div");
+            van.hydrate(dom1, (() => s.val));
+            van.hydrate(dom2, (() => 1 - s.val));
+            assertEq(hiddenDom.innerHTML, "01");
+            s.val = 1;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, "10");
+        }),
     };
     const debugTests = {
         escape_nonFuncArg: () => {
@@ -1006,14 +1017,12 @@ const runTests = async (van, msgDom, { debug }) => {
         const counter = van.state(init);
         return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, up), button({ onclick: () => --counter.val }, down));
     };
-    const OptimizedCounter = ({ van, id, init = 0, buttonStyle = "👍👎", }) => div((dom) => {
+    const OptimizedCounter = ({ van: { state, derive, val, tags: { button, div } }, id, init = 0, buttonStyle = "👍👎", }) => div((dom) => {
         if (dom)
             return dom;
-        const { button, div } = van.tags;
-        const counter = van.state(init);
-        const up = van.state(undefined);
-        const down = van.state(undefined);
-        van.derive(() => [up.val, down.val] = [...van.val(buttonStyle)]);
+        const counter = state(init);
+        const up = state(undefined), down = state(undefined);
+        derive(() => [up.val, down.val] = [...val(buttonStyle)]);
         return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, up), button({ onclick: () => --counter.val }, down));
     }).firstChild;
     const hydrateExample = (Counter) => withHiddenDom(async (hiddenDom) => {

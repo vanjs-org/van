@@ -764,6 +764,17 @@
         s.val = 2;
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.innerHTML, "");
+      }),
+      hydrate_0NotToRemoveDom: withHiddenDom(async (hiddenDom) => {
+        van2.add(hiddenDom, div2(), div2());
+        const s = van2.state(0);
+        const [dom1, dom2] = hiddenDom.querySelectorAll("div");
+        van2.hydrate(dom1, () => s.val);
+        van2.hydrate(dom2, () => 1 - s.val);
+        assertEq(hiddenDom.innerHTML, "01");
+        s.val = 1;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, "10");
       })
     };
     const debugTests = {
@@ -940,14 +951,12 @@
       const counter = van3.state(init);
       return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, up), button2({ onclick: () => --counter.val }, down));
     };
-    const OptimizedCounter = ({ van: van3, id, init = 0, buttonStyle = "\u{1F44D}\u{1F44E}" }) => div2((dom) => {
+    const OptimizedCounter = ({ van: { state, derive, val, tags: { button: button2, div: div3 } }, id, init = 0, buttonStyle = "\u{1F44D}\u{1F44E}" }) => div3((dom) => {
       if (dom)
         return dom;
-      const { button: button2, div: div3 } = van3.tags;
-      const counter = van3.state(init);
-      const up = van3.state(void 0);
-      const down = van3.state(void 0);
-      van3.derive(() => [up.val, down.val] = [...van3.val(buttonStyle)]);
+      const counter = state(init);
+      const up = state(void 0), down = state(void 0);
+      derive(() => [up.val, down.val] = [...val(buttonStyle)]);
       return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, up), button2({ onclick: () => --counter.val }, down));
     }).firstChild;
     const hydrateExample = (Counter2) => withHiddenDom(async (hiddenDom) => {
