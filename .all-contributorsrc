@@ -228,6 +228,15 @@
       "contributions": [
         "plugin"
       ]
+    },
+    {
+      "login": "barrymun",
+      "name": "barrymun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15635312?v=4",
+      "profile": "https://github.com/barrymun",
+      "contributions": [
+        "example"
+      ]
     }
   ],
   "repoType": "github"
