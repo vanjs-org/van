@@ -1333,21 +1333,17 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
   }
 
   const OptimizedCounter = ({
-    van: {state, derive, val, tags: {button, div}},
-    id, init = 0, buttonStyle = "👍👎",
-  }: CounterProps) => <HTMLDivElement>div((dom: Node | undefined) => {
-    if (dom) return dom
+    van, id, init = 0, buttonStyle = "👍👎",
+  }: CounterProps) => {
+    const {button, div} = van.tags
 
-    const counter = state(init)
-    const up = state(<string | undefined>undefined), down = state(<string | undefined>undefined)
-    derive(() => [up.val, down.val] = [...val(buttonStyle)])
-
+    const counter = van.state(init)
     return div({...(id ? {id} : {}), "data-counter": counter},
       "❤️ ", counter, " ",
-      button({onclick: () => ++counter.val}, up),
-      button({onclick: () => --counter.val}, down),
+      button({onclick: () => ++counter.val}, () => [...van.val(buttonStyle)][0]),
+      button({onclick: () => --counter.val}, () => [...van.val(buttonStyle)][1]),
     )
-  }).firstChild
+  }
 
   const hydrateExample = (
     Counter: (props: CounterProps) => HTMLDivElement,

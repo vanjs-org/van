@@ -951,14 +951,11 @@
       const counter = van3.state(init);
       return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, up), button2({ onclick: () => --counter.val }, down));
     };
-    const OptimizedCounter = ({ van: { state, derive, val, tags: { button: button2, div: div3 } }, id, init = 0, buttonStyle = "\u{1F44D}\u{1F44E}" }) => div3((dom) => {
-      if (dom)
-        return dom;
-      const counter = state(init);
-      const up = state(void 0), down = state(void 0);
-      derive(() => [up.val, down.val] = [...val(buttonStyle)]);
-      return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, up), button2({ onclick: () => --counter.val }, down));
-    }).firstChild;
+    const OptimizedCounter = ({ van: van3, id, init = 0, buttonStyle = "\u{1F44D}\u{1F44E}" }) => {
+      const { button: button2, div: div3 } = van3.tags;
+      const counter = van3.state(init);
+      return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, () => [...van3.val(buttonStyle)][0]), button2({ onclick: () => --counter.val }, () => [...van3.val(buttonStyle)][1]));
+    };
     const hydrateExample = (Counter2) => withHiddenDom(async (hiddenDom) => {
       const counterInit = 5;
       const selectDom = select({ value: "\u{1F446}\u{1F447}" }, option("\u{1F446}\u{1F447}"), option("\u{1F44D}\u{1F44E}"), option("\u{1F53C}\u{1F53D}"), option("\u23EB\u23EC"), option("\u{1F4C8}\u{1F4C9}"));

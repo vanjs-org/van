@@ -1017,14 +1017,11 @@ const runTests = async (van, msgDom, { debug }) => {
         const counter = van.state(init);
         return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, up), button({ onclick: () => --counter.val }, down));
     };
-    const OptimizedCounter = ({ van: { state, derive, val, tags: { button, div } }, id, init = 0, buttonStyle = "👍👎", }) => div((dom) => {
-        if (dom)
-            return dom;
-        const counter = state(init);
-        const up = state(undefined), down = state(undefined);
-        derive(() => [up.val, down.val] = [...val(buttonStyle)]);
-        return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, up), button({ onclick: () => --counter.val }, down));
-    }).firstChild;
+    const OptimizedCounter = ({ van, id, init = 0, buttonStyle = "👍👎", }) => {
+        const { button, div } = van.tags;
+        const counter = van.state(init);
+        return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, () => [...van.val(buttonStyle)][0]), button({ onclick: () => --counter.val }, () => [...van.val(buttonStyle)][1]));
+    };
     const hydrateExample = (Counter) => withHiddenDom(async (hiddenDom) => {
         const counterInit = 5;
         const selectDom = select({ value: "👆👇" }, option("👆👇"), option("👍👎"), option("🔼🔽"), option("⏫⏬"), option("📈📉"));
