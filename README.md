@@ -102,7 +102,7 @@ Simplicity at its core. 4 major functions (`van.tags`, `van.add`, `van.state`, `
 * Learn by [Examples](https://vanjs.org/demo) (and also [Community Examples](https://vanjs.org/demo#community-examples))
 * Convert HTML snippet to **VanJS** code with our online [HTML to **VanJS** Converter](https://vanjs.org/convert)
 * Check out [VanUI](https://github.com/vanjs-org/van/tree/main/components) - A collection of grab 'n go reusable UI components for **VanJS**
-* Want server-side rendering? Check out [Mini-Van](https://github.com/vanjs-org/mini-van) (the entire [vanjs.org](https://vanjs.org/) site is built on top of Mini-Van)
+* Want server-side rendering? Check out [Mini-Van](https://github.com/vanjs-org/mini-van) and [Hydration](https://vanjs.org/ssr) (the entire [vanjs.org](https://vanjs.org/) site is built on top of Mini-Van)
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page
 * [How did **VanJS** get its name?](https://vanjs.org/about#name)
 
