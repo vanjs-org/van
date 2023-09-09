@@ -20,4 +20,4 @@ This is a [Bun 1.0](https://bun.sh/blog/bun-v1.0)-based variation of the fullsta
 * The `src/server.ts` file is a few lines shorter, primarily thanks to the elimination of the need of importing external dependencies.
 * The minified bundle of client `.js` file is slightly larger (`2.6kB` vs. `3.0kB`). This is because as a new bundler and minifier, Bun has less optimization options compared to [terser](https://terser.org/).
 
-You can preview the app view [CodeSandbox](TODO).
+You can preview the app view [CodeSandbox](https://codesandbox.io/p/sandbox/modest-edison-y8hx38?file=/package.json:1,1).
