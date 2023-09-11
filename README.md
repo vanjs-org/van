@@ -75,7 +75,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Grab 'n Go
 
-***No installation***, ***no configuration***, ***no dependencies***, ***no transpiling***, ***no IDE setups***. Adding a line to your script or HTML file is all you need to start coding. **VanJS** allows you to focus on the business logic of your application, rather than getting bogged down in frameworks and tools.
+***No installation***, ***no configuration***, ***no dependencies***, ***no transpiling***, ***no IDE setups***. Adding a line to your script or HTML file is all you need to start coding. And any code with **VanJS** can be pasted and executed directly in your browser's developer console. **VanJS** allows you to focus on the business logic of your application, rather than getting bogged down in frameworks and tools.
 
 ### Ultra-Lightweight
 
@@ -93,7 +93,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Easy to Learn
 
-Simplicity at its core. 4 major functions (`van.tags`, `van.add`, `van.state`, `van.derive`) + 4 auxiliary functions (`van.tagsNS`, `van._`, `van.val`, `van.oldVal`). The [walkthrough tutorial](https://vanjs.org/tutorial) is the same as the full API reference, and can be learned within 1 hour for most developers.
+Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `van.derive`, `van.hydrate`) + 4 auxiliary functions (`van.tagsNS`, `van._`, `van.val`, `van.oldVal`). The [walkthrough tutorial](https://vanjs.org/tutorial) is the same as the full API reference, and can be learned within 1 hour for most developers.
 
 ## Want to Learn More?
 
