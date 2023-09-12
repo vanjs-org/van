@@ -19,33 +19,35 @@ const attrsToVanCode = (attrs: Record<string, string>, children: readonly Dom[])
       .flatMap(([k, v]) => k !== dummy ? `${quoteIfNeeded(k)}: ${JSON.stringify(v)}` : [])
       .join(", ")}}${children.length > 0 ? "," : ""}`
 
-const filterDoms = (doms: readonly ChildNode[]) =>
-  <Dom[]>doms.filter(c => c instanceof Element && c.name !== dummy || c instanceof Text)
+const filterDoms = (doms: readonly ChildNode[], skipEmptyText: boolean) =>
+  <Dom[]>doms.filter(
+    c => c.type === "tag" && c.name !== dummy ||
+    c.type === "text" && (!skipEmptyText || /\S/.test(c.data)))
 
 export const htmlToVanCode = (html: string, {
   indent = 2,
   skipEmptyText = false,
   htmlTagPred = s => s.toLowerCase() === s,
-}: Options) => {
+}: Options = {}) => {
   const domsToVanCode = (
     doms: readonly Dom[], prefix: string, skipEmptyText: boolean, tagsUsed: Set<string>,
   ) => doms.flatMap((dom): string | string[] => {
     const suffix = !prefix && doms.length <= 1 ? "" : ","
-    if (dom instanceof Text) return `${prefix}${JSON.stringify(dom.data)}${suffix}`
+    if (dom.type === "text") return `${prefix}${JSON.stringify(dom.data)}${suffix}`
     tagsUsed.add(dom.name)
-    if (dom.name === "pre") skipEmptyText = false
+    const localSkipEmptyText = skipEmptyText && dom.name !== "pre"
 
-    const children = filterDoms(dom.children)
+    const children = filterDoms(dom.children, localSkipEmptyText)
     return dom.children.length > 0 ? [
       `${prefix}${dom.name}(${attrsToVanCode(dom.attribs, children)}`,
-      ...domsToVanCode(children, prefix + " ".repeat(indent), skipEmptyText, tagsUsed),
+      ...domsToVanCode(children, prefix + " ".repeat(indent), localSkipEmptyText, tagsUsed),
       `${prefix})${suffix}`,
     ] : `${prefix}${dom.name}(${attrsToVanCode(dom.attribs, children)})${suffix}`
   })
 
   const doms = parse(html, <any>{lowerCaseTags: false, lowerCaseAttributeNames: false})
   const tagsUsed = new Set<string>
-  const code = domsToVanCode(filterDoms(doms), "", skipEmptyText, tagsUsed)
+  const code = domsToVanCode(filterDoms(doms, skipEmptyText), "", skipEmptyText, tagsUsed)
   const tags: string[] = [], components: string[] = []
   for (const tag of tagsUsed) (htmlTagPred(tag) ? tags : components).push(tag)
   return {code, tags: tags.sort(), components: components.sort()}

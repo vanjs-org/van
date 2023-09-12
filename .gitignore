@@ -5,4 +5,3 @@ public/hello-nomodule.html
 public/van-latest.min.pre-*.js
 public/*.gz
 dist
-!components/dist
