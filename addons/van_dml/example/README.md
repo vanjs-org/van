@@ -18,12 +18,26 @@ van_dml.js extends the `tag`-function of `van` and introduces some new functions
     const { begin, end, base, sp, css } = van    // new functions intorduced by van_dml
 ```
 
-### Auto-append with `begin()` and `end`
+### css(s)
+This adds dynamic style definitions to the page. The example is only to demonstrate the usage, the same definition could have been inserted in the \<style\>-tag in the head. Definitions can be introduced or replaced with this command.
+```JS
+    css(`body {
+      background-image: linear-gradient(0deg, #6ac 0%, #eff 100%);
+      background-attachment: fixed;
+      background-size: 100% 100vh;
+      padding: 20px;
+      text-align: center;
+      font-family: helvetica;
+    }`)
+```
+Dynamic CSS can be used to create responsive pages with ease. Just use JS to select, which CSS should be applied.
+
+### Auto-append with `begin()` and `end()`
 
 begin opens any DOM element for writing. Elements created between `begin()` and `end()` will be automatic appended as a child to the object selecte with `begin(el)`
 ```JS
     begin(document.body)
-	// some tag functions here
+    // some tag functions here
     end()
 ```
 `end()` returns to the previous used element or - if non was selected - finishes the append mode. Calls of `begin() ... end()` can be nested:
@@ -31,8 +45,9 @@ begin opens any DOM element for writing. Elements created between `begin()` and 
 ```JS
     begin(document.body) // open document
     ...
-	begin(div(...))  // create div and open for append
+  	begin(div(...))  // create div and open for append
     ...
+
     end(2);  // close all open appends
     if (sp() !== 0) alert("SP-Error") // check the stack pointer, should be zero at the end
 ```

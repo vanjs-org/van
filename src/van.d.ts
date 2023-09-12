@@ -1,36 +1,27 @@
-export type State<T> = {
+export interface State<T> {
   val: T
-  onnew(l: (val: T, oldVal: T) => void): void
+  readonly oldVal: T
 }
 
 // Defining readonly view of State<T> for covariance.
-// Basically we want State<string> implements StateView<string | number>
-export interface StateView<T> {
-  readonly val: T
-}
+// Basically we want StateView<string> to implement StateView<string | number>
+export type StateView<T> = Readonly<State<T>>
 
 export type Primitive = string | number | boolean | bigint
 
-export type PropValue = Primitive | Function | null
+export type PropValue = Primitive | ((e: any) => void) | null
 
-export interface DerivedProp {
-  readonly deps: unknown[]
-  readonly f: (...args: readonly any[]) => PropValue
-}
+export type Props = Record<string, PropValue | StateView<PropValue> | (() => PropValue)>
 
-export interface Props {
-  readonly [key: string]: PropValue | StateView<PropValue> | DerivedProp
-}
+export type ValidChildDomValue = Primitive | Node | null | undefined
 
-export type ChildDom = Primitive | Node | StateView<Primitive | null | undefined> | readonly ChildDom[] | null | undefined
+export type BindingFunc = (dom: Node | undefined) => ValidChildDomValue
+
+export type ChildDom = ValidChildDomValue | StateView<Primitive | null | undefined> | BindingFunc | readonly ChildDom[]
 
 export type TagFunc<Result> = (first?: Props | ChildDom, ...rest: readonly ChildDom[]) => Result
 
-interface TagsBase {
-  readonly [key: string]: TagFunc<Element>
-}
-
-interface Tags extends TagsBase {
+interface Tags extends Readonly<Record<string, TagFunc<Element>>> {
   // Register known element types
   // Source: https://developer.mozilla.org/en-US/docs/Web/HTML/Element
 
@@ -136,22 +127,16 @@ interface Tags extends TagsBase {
   readonly template: TagFunc<HTMLTemplateElement>
 }
 
-type ValOf<T> = T extends StateView<unknown> ? T["val"] : T
-
-type BindFuncArgs<T extends readonly unknown[]> = T extends [infer OnlyOne] ?
-  [ValOf<OnlyOne>] : T extends [infer First, ...infer Rest extends unknown[]] ?
-  [ValOf<First>, ...BindFuncArgs<Rest>] : never
-
-type BindFunc<T extends unknown[]> = (...arg: readonly [...BindFuncArgs<T>, Element, ...BindFuncArgs<T>]) => Primitive | Node | null | undefined
-
-declare function bind<T extends unknown[]>(...args: [...T, BindFunc<T>]): Node | []
-
 export interface Van {
   readonly state: <T>(initVal: T) => State<T>
+  readonly val: <T>(s: T | StateView<T>) => T
+  readonly oldVal: <T>(s: T | StateView<T>) => T
+  readonly derive: <T>(f: () => T) => State<T>
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
+  readonly _: (f: () => PropValue) => () => PropValue
   readonly tags: Tags
-  readonly tagsNS: (namespaceURI: string) => TagsBase
-  readonly bind: typeof bind
+  readonly tagsNS: (namespaceURI: string) => Readonly<Record<string, TagFunc<Element>>>
+  readonly hydrate: <T extends Node>(dom: T, f: (dom: T) => T | null | undefined) => T
 }
 
 declare const van: Van

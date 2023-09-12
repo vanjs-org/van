@@ -1,0 +1,12 @@
+{
+  "name": "vanjs-web-terminal",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "deno run --allow-net --allow-run --allow-read server.ts --allowRemote --skipLogin"
+  },
+  "devDependencies": {
+    "deno-bin": "^1.36.0"
+  }
+}
