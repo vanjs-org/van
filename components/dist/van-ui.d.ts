@@ -99,4 +99,4 @@ export interface OptionGroupProps {
     readonly optionClass?: string;
     readonly optionStyleOverrides?: CSSPropertyBag;
 }
-export declare const OptionGroup: ({ selected, normalColor, hoverColor, selectedColor, selectedHoverColor, fontColor, transitionSec, optionGroupClass, optionGroupStyleOverrides, optionClass, optionStyleOverrides, }: OptionGroupProps, options: string[]) => HTMLDivElement;
+export declare const OptionGroup: ({ selected, normalColor, hoverColor, selectedColor, selectedHoverColor, fontColor, transitionSec, optionGroupClass, optionGroupStyleOverrides, optionClass, optionStyleOverrides, }: OptionGroupProps, options: readonly string[]) => HTMLDivElement;

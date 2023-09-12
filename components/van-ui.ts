@@ -437,7 +437,7 @@ export const OptionGroup = (
     optionClass = "",
     optionStyleOverrides = {},
   }: OptionGroupProps,
-  options: string[],
+  options: readonly string[],
 ) => {
   const buttonGroupStylesStr = toStyleStr({
     display: "flex",
