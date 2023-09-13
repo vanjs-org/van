@@ -1,4 +1,5 @@
 import parse from "html-dom-parser";
+import { marked } from 'marked';
 const dummy = "dummy";
 const quoteIfNeeded = (key) => /^[a-zA-Z_][a-zA-Z_0-9]+$/.test(key) ? key : `"${key}"`;
 const attrsToVanCode = (attrs, children) => Object.keys(attrs).length === 0 ? "" :
@@ -29,3 +30,4 @@ export const htmlToVanCode = (html, { indent = 2, skipEmptyText = false, htmlTag
         (htmlTagPred(tag) ? tags : components).push(tag);
     return { code, tags: tags.sort(), components: components.sort() };
 };
+export const mdToVanCode = (md, { indent = 2, htmlTagPred = s => s.toLowerCase() === s, renderer, } = {}) => htmlToVanCode(marked.use({ renderer }).parse(md), { indent, skipEmptyText: true, htmlTagPred });

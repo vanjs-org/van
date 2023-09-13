@@ -1,5 +1,5 @@
 import test from "ava"
-import { htmlToVanCode } from "./converter.js"
+import { htmlToVanCode, mdToVanCode } from "./converter.js"
 
 test("htmlToVanCode: Hello", t => t.deepEqual(
   htmlToVanCode('<div><p>👋Hello</p><ul><li>🗺️World</li><li><a href="https://vanjs.org/">🍦VanJS</a></li></ul></div>'),
@@ -308,5 +308,173 @@ test("htmlToVanCode: nested spans", t => t.deepEqual(
     ],
     tags: ["span"],
     components: [],
+  },
+))
+
+test("mdToVanCode: Hello", t => t.deepEqual(
+  mdToVanCode(`👋Hello
+* 🗺️World
+* [🍦VanJS](https://vanjs.org/)
+`),
+  {
+    code: [
+      'p(',
+      '  "👋Hello",',
+      '),',
+      'ul(',
+      '  li(',
+      '    "🗺️World",',
+      '  ),',
+      '  li(',
+      '    a({href: "https://vanjs.org/"},',
+      '      "🍦VanJS",',
+      '    ),',
+      '  ),',
+      '),',
+    ],
+    tags: ["a", "li", "p", "ul"],
+    components: [],
+  },
+))
+
+test("mdToVanCode: typical content", t => t.deepEqual(
+  mdToVanCode(`# Heading 1
+## Heading 2
+
+First paragraph
+
+Second paragrah, with [link](https://example.com/) and \`symbol\` and some code blocks
+
+\`\`\`js
+const Hello = () => div(
+  p("👋Hello"),
+  ul(
+    li("🗺️World"),
+    li(a({href: "https://vanjs.org/"}, "🍦VanJS")),
+  ),
+)
+\`\`\`
+
+<CustomElement>content 1</CustomElement>
+<CustomElement dummy>content 2</CustomElement>
+<Pair>first<dummy></dummy>second</Pair>
+`),
+  {
+    code: [
+      'h1(',
+      '  "Heading 1",',
+      '),',
+      'h2(',
+      '  "Heading 2",',
+      '),',
+      'p(',
+      '  "First paragraph",',
+      '),',
+      'p(',
+      '  "Second paragrah, with ",',
+      '  a({href: "https://example.com/"},',
+      '    "link",',
+      '  ),',
+      '  " and ",',
+      '  code(',
+      '    "symbol",',
+      '  ),',
+      '  " and some code blocks",',
+      '),',
+      'pre(',
+      '  code({class: "language-js"},',
+      '    "const Hello = () => div(\\n  p(\\"👋Hello\\"),\\n  ul(\\n    li(\\"🗺️World\\"),\\n    li(a({href: \\"https://vanjs.org/\\"}, \\"🍦VanJS\\")),\\n  ),\\n)\\n",',
+      '  ),',
+      '),',
+      'p(',
+      '  CustomElement(',
+      '    "content 1",',
+      '  ),',
+      '  CustomElement({},',
+      '    "content 2",',
+      '  ),',
+      '  Pair(',
+      '    "first",',
+      '    "second",',
+      '  ),',
+      '),',
+    ],
+    tags: ["a", "code", "h1", "h2", "p", "pre"],
+    components: ["CustomElement", "Pair"],
+  },
+))
+
+test("mdToVanCode: custom renderer", t => t.deepEqual(
+  mdToVanCode(`# Heading 1
+## Heading 2
+
+First paragraph
+
+Second paragrah, with [link](https://example.com/) and \`symbol\` and some code blocks
+
+\`\`\`js
+const Hello = () => div(
+  p("👋Hello"),
+  ul(
+    li("🗺️World"),
+    li(a({href: "https://vanjs.org/"}, "🍦VanJS")),
+  ),
+)
+\`\`\`
+
+<CustomElement>content 1</CustomElement>
+<CustomElement dummy>content 2</CustomElement>
+<Pair>first<dummy></dummy>second</Pair>
+`,
+    {
+      renderer: {
+        codespan: s => `<Symbol>${s}</Symbol>`,
+        link: (href, _unused_title, text) => `<Link>${text}<dummy></dummy>${href}</Link>`
+      },
+    },
+  ),
+  {
+    code: [
+      'h1(',
+      '  "Heading 1",',
+      '),',
+      'h2(',
+      '  "Heading 2",',
+      '),',
+      'p(',
+      '  "First paragraph",',
+      '),',
+      'p(',
+      '  "Second paragrah, with ",',
+      '  Link(',
+      '    "link",',
+      '    "https://example.com/",',
+      '  ),',
+      '  " and ",',
+      '  Symbol(',
+      '    "symbol",',
+      '  ),',
+      '  " and some code blocks",',
+      '),',
+      'pre(',
+      '  code({class: "language-js"},',
+      '    "const Hello = () => div(\\n  p(\\"👋Hello\\"),\\n  ul(\\n    li(\\"🗺️World\\"),\\n    li(a({href: \\"https://vanjs.org/\\"}, \\"🍦VanJS\\")),\\n  ),\\n)\\n",',
+      '  ),',
+      '),',
+      'p(',
+      '  CustomElement(',
+      '    "content 1",',
+      '  ),',
+      '  CustomElement({},',
+      '    "content 2",',
+      '  ),',
+      '  Pair(',
+      '    "first",',
+      '    "second",',
+      '  ),',
+      '),',
+    ],
+    tags: ["code", "h1", "h2", "p", "pre"],
+    components: ["CustomElement", "Link", "Pair", "Symbol"],
   },
 ))
