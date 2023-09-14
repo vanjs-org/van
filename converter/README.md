@@ -296,6 +296,6 @@ The same as the [return value](#return-value) of `htmlToVanCode`.
 
 ## Showroom
 
-The https://vanjs.org/ website is using this library to keep `README.md` files in sync with web pages ([source code](https://github.com/vanjs-org/vanjs-org.github.io/tree/master/codegen) of the code generation):
+The https://vanjs.org/ website is using this library to keep `README.md` files in sync with their corresponding web pages ([source code](https://github.com/vanjs-org/vanjs-org.github.io/tree/master/codegen) of the code generation):
 * The [VanUI](https://vanjs.org/vanui) page is kept in sync with the [`README.md`](https://github.com/vanjs-org/van/tree/main/components#readme) file in GitHub with the help of this library.
 * This [`README.md`](https://github.com/vanjs-org/van/tree/main/converter#readme) file is kept in sync with this [page](https://vanjs.org/converter-lib) in https://vanjs.org/ website.
