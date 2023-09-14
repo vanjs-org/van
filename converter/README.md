@@ -280,7 +280,7 @@ Note that, you can insert custom HTML snippets, or even [custom **VanJS** compon
   ```js
   {
     codespan: s => `<Symbol>${s}</Symbol>`,
-    link: (href, _unused_title, text) => `<Link>${text}<dummy></dummy>${href}</Link>`,
+    link: (href, _unused_title, text) => `<Link>${text}<DUMMY></DUMMY>${href}</Link>`,
   }
   ```
 
