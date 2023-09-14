@@ -16,7 +16,7 @@
           <a href="https://vanjs.org/demo">📚 Examples</a>
         </td>
         <td>
-          <a href="https://vanjs.org/convert">📝 HTML to VanJS Converter</a>
+          <a href="https://vanjs.org/convert">📝 HTML/MD to VanJS Converter</a>
         </td>
         <td>
           <a href="https://github.com/vanjs-org/van/discussions">💬 Discuss</a>
@@ -48,7 +48,7 @@ van.add(document.body, Hello())
 
 [Try on jsfiddle](https://jsfiddle.net/gh/get/library/pure/vanjs-org/vanjs-org.github.io/tree/master/jsfiddle/home/hello)
 
-You can convert any HTML snippet into **VanJS** code with our online [converter](https://vanjs.org/convert).
+You can convert any HTML or MD snippet into **VanJS** code with our online [converter](https://vanjs.org/convert).
 
 **VanJS** helps you manage states and UI bindings as well, with a more natural API:
 
@@ -100,7 +100,7 @@ Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `
 * [Get Started](https://vanjs.org/start) (CDN, NPM or local download)
 * Learn from the [Tutorial](https://vanjs.org/tutorial)
 * Learn by [Examples](https://vanjs.org/demo) (and also [Community Examples](https://vanjs.org/demo#community-examples))
-* Convert HTML snippet to **VanJS** code with our online [HTML to **VanJS** Converter](https://vanjs.org/convert)
+* Convert HTML or MD snippet to **VanJS** code with our online [HTML/MD to **VanJS** Converter](https://vanjs.org/convert)
 * Check out [VanUI](https://github.com/vanjs-org/van/tree/main/components) - A collection of grab 'n go reusable UI components for **VanJS**
 * Want server-side rendering? Check out [Mini-Van](https://github.com/vanjs-org/mini-van) and [Hydration](https://vanjs.org/ssr) (the entire [vanjs.org](https://vanjs.org/) site is built on top of Mini-Van)
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page

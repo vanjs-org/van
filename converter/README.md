@@ -1,6 +1,6 @@
 # MD and HTML to VanJS Code Converter
 
-This is a library that can convert any MD or HTML snippet into valid **VanJS** code.
+This is a library that can convert any MD or HTML snippet into valid **VanJS** code. The UI version of the code converter is [here](https://vanjs.org/convert).
 
 ## Installation
 
@@ -57,6 +57,8 @@ The following result will be returned:
 ```
 
 ### Using VanJS Components
+
+_This is only supported in the converter library, not in the UI._
 
 The input HTML string can be a mix of HTML elements and custom UI components built with **VanJS**. To use custom UI components, just specify the component similar to regular HTML tags. For instance, assume we have custom UI components similar to the ones shown in https://vanjs.org/ home page:
 
@@ -182,6 +184,8 @@ A plain object with the following fields:
 
 ### `DUMMY`
 
+_This is only supported in the converter library, not in the UI._
+
 There are 2 special cases while specifying custom **VanJS** components in the input HTML string. The first special case is that, sometimes, a custom component needs properties being specified in its first argument, even for empty properties `{}` (e.g.: the `Counter` component defined in the [section](#using-vanjs-components) above). In this case, you can specify the special `DUMMY` property as a placeholder. For instance:
 
 ```html
@@ -275,7 +279,7 @@ Note that, you can insert custom HTML snippets, or even [custom **VanJS** compon
 * `indent`: Type `number`. Default `2`. Optional. The indent level of the generated **VanJS code**.
 * `spacing`: Type `boolean`. Default `false`. Optional. The style of the property object in the generated **VanJS** code. If `true`, the property object will look like `{href: "https://vanjs.org/"}`; Otherwise, the property object will look like `{ href: "https://vanjs.org/" }`.
 * `htmlTagPred`: Type `(name: string) => boolean`. Default `s => s.toLowerCase() === s`. Optional. A predicate function to check whether a specific tag snippet such as `<Counter>` represents a native HTML element or a custom UI component built with **VanJS**. By default, it will be considered a native HTML element if the letters in the `name` are all lowercase.
-* `renderer`: Optional. A custom object used to override how tokens in the MD string are being rendered. The specification of the `renderer` object can be found in Marked [doc](https://marked.js.org/using_pro#renderer). For instance, the `renderer` object:
+* `renderer`: Optional. _Custom renderer is only supported in the converter library, not in the UI._ A custom object used to override how tokens in the MD string are being rendered. The specification of the `renderer` object can be found in Marked [doc](https://marked.js.org/using_pro#renderer). For instance, the `renderer` object:
 
   ```js
   {
