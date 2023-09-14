@@ -1,4 +1,4 @@
-# MD and HTML to VanJS Code Converter
+# HTML and MD to VanJS Code Converter
 
 This is a library that can convert any MD or HTML snippet into valid **VanJS** code. The UI version of the code converter is [here](https://vanjs.org/convert).
 
