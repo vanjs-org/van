@@ -39,8 +39,8 @@ test("htmlToVanCode: <input>", t => t.deepEqual(
   },
 ))
 
-test("htmlToVanCode: dummy tag", t => t.deepEqual(
-  htmlToVanCode('<p>Hello<dummy></dummy>World!</p>'),
+test("htmlToVanCode: DUMMY tag", t => t.deepEqual(
+  htmlToVanCode('<p>Hello<DUMMY></DUMMY>World!</p>'),
   {
     code: [
       'p(',
@@ -53,8 +53,8 @@ test("htmlToVanCode: dummy tag", t => t.deepEqual(
   },
 ))
 
-test("htmlToVanCode: dummy props", t => t.deepEqual(
-  htmlToVanCode('<div dummy><a dummy></a></div>'),
+test("htmlToVanCode: DUMMY props", t => t.deepEqual(
+  htmlToVanCode('<div DUMMY><a DUMMY></a></div>'),
   {
     code: [
       'div({},',
@@ -84,6 +84,31 @@ test("htmlToVanCode: custom indent", t => t.deepEqual(
       '            ),',
       '        ),',
       '    ),',
+      ')',
+    ],
+    tags: ["a", "div", "li", "p", "ul"],
+    components: [],
+  },
+))
+
+test("htmlToVanCode: spacing", t => t.deepEqual(
+  htmlToVanCode('<div><p>👋Hello</p><ul><li>🗺️World</li><li><a href="https://vanjs.org/">🍦VanJS</a></li></ul></div>', {spacing: true}),
+  {
+    code: [
+      'div(',
+      '  p(',
+      '    "👋Hello",',
+      '  ),',
+      '  ul(',
+      '    li(',
+      '      "🗺️World",',
+      '    ),',
+      '    li(',
+      '      a({ href: "https://vanjs.org/" },',
+      '        "🍦VanJS",',
+      '      ),',
+      '    ),',
+      '  ),',
       ')',
     ],
     tags: ["a", "div", "li", "p", "ul"],
@@ -213,7 +238,7 @@ test("htmlToVanCode: not skip empty text", t => t.deepEqual(
 ))
 
 test("htmlToVanCode: custom components", t => t.deepEqual(
-  htmlToVanCode('<div><Symbol>Hello</Symbol><Link>🍦VanJS<dummy></dummy>https://vanjs.org/</Link></div>'),
+  htmlToVanCode('<div><Symbol>Hello</Symbol><Link>🍦VanJS<DUMMY></DUMMY>https://vanjs.org/</Link></div>'),
   {
     code: [
       'div(',
@@ -337,13 +362,65 @@ test("mdToVanCode: Hello", t => t.deepEqual(
   },
 ))
 
+test("mdToVanCode: custom indent", t => t.deepEqual(
+  mdToVanCode(`👋Hello
+* 🗺️World
+* [🍦VanJS](https://vanjs.org/)
+`, {indent: 4}),
+  {
+    code: [
+      'p(',
+      '    "👋Hello",',
+      '),',
+      'ul(',
+      '    li(',
+      '        "🗺️World",',
+      '    ),',
+      '    li(',
+      '        a({href: "https://vanjs.org/"},',
+      '            "🍦VanJS",',
+      '        ),',
+      '    ),',
+      '),',
+    ],
+    tags: ["a", "li", "p", "ul"],
+    components: [],
+  },
+))
+
+test("mdToVanCode: spacing", t => t.deepEqual(
+  mdToVanCode(`👋Hello
+* 🗺️World
+* [🍦VanJS](https://vanjs.org/)
+`, {spacing: true}),
+  {
+    code: [
+      'p(',
+      '  "👋Hello",',
+      '),',
+      'ul(',
+      '  li(',
+      '    "🗺️World",',
+      '  ),',
+      '  li(',
+      '    a({ href: "https://vanjs.org/" },',
+      '      "🍦VanJS",',
+      '    ),',
+      '  ),',
+      '),',
+    ],
+    tags: ["a", "li", "p", "ul"],
+    components: [],
+  },
+))
+
 test("mdToVanCode: typical content", t => t.deepEqual(
   mdToVanCode(`# Heading 1
 ## Heading 2
 
 First paragraph
 
-Second paragrah, with [link](https://example.com/) and \`symbol\` and some code blocks
+Second paragraph, with [link](https://example.com/) and \`symbol\` and some code blocks
 
 \`\`\`js
 const Hello = () => div(
@@ -356,8 +433,8 @@ const Hello = () => div(
 \`\`\`
 
 <CustomElement>content 1</CustomElement>
-<CustomElement dummy>content 2</CustomElement>
-<Pair>first<dummy></dummy>second</Pair>
+<CustomElement DUMMY>content 2</CustomElement>
+<Pair>first<DUMMY></DUMMY>second</Pair>
 `),
   {
     code: [
@@ -371,7 +448,7 @@ const Hello = () => div(
       '  "First paragraph",',
       '),',
       'p(',
-      '  "Second paragrah, with ",',
+      '  "Second paragraph, with ",',
       '  a({href: "https://example.com/"},',
       '    "link",',
       '  ),',
@@ -410,7 +487,7 @@ test("mdToVanCode: custom renderer", t => t.deepEqual(
 
 First paragraph
 
-Second paragrah, with [link](https://example.com/) and \`symbol\` and some code blocks
+Second paragraph, with [link](https://example.com/) and \`symbol\` and some code blocks
 
 \`\`\`js
 const Hello = () => div(
@@ -423,13 +500,13 @@ const Hello = () => div(
 \`\`\`
 
 <CustomElement>content 1</CustomElement>
-<CustomElement dummy>content 2</CustomElement>
-<Pair>first<dummy></dummy>second</Pair>
+<CustomElement DUMMY>content 2</CustomElement>
+<Pair>first<DUMMY></DUMMY>second</Pair>
 `,
     {
       renderer: {
         codespan: s => `<Symbol>${s}</Symbol>`,
-        link: (href, _unused_title, text) => `<Link>${text}<dummy></dummy>${href}</Link>`
+        link: (href, _unused_title, text) => `<Link>${text}<DUMMY></DUMMY>${href}</Link>`
       },
     },
   ),
@@ -445,7 +522,7 @@ const Hello = () => div(
       '  "First paragraph",',
       '),',
       'p(',
-      '  "Second paragrah, with ",',
+      '  "Second paragraph, with ",',
       '  Link(',
       '    "link",',
       '    "https://example.com/",',

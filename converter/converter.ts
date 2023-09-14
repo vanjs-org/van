@@ -3,17 +3,11 @@ import { ChildNode, Element, Text } from "domhandler"
 import { marked } from 'marked'
 import { RendererObject } from "MarkedOptions"
 
-const dummy = "dummy"
+const dummy = "DUMMY"
 
 const quoteIfNeeded = (key: string) => /^[a-zA-Z_][a-zA-Z_0-9]+$/.test(key) ? key : `"${key}"`
 
 type Dom = Element | Text
-
-const attrsToVanCode = (attrs: Record<string, string>, children: readonly Dom[]) =>
-  Object.keys(attrs).length === 0 ? "" :
-    `{${Object.entries(attrs)
-      .flatMap(([k, v]) => k !== dummy ? `${quoteIfNeeded(k)}: ${JSON.stringify(v)}` : [])
-      .join(", ")}}${children.length > 0 ? "," : ""}`
 
 const filterDoms = (doms: readonly ChildNode[], skipEmptyText: boolean) =>
   <Dom[]>doms.filter(
@@ -22,15 +16,25 @@ const filterDoms = (doms: readonly ChildNode[], skipEmptyText: boolean) =>
 
 export interface HtmlToVanCodeOptions {
   indent?: number
+  spacing?: boolean
   skipEmptyText?: boolean
   htmlTagPred?: (name: string) => boolean
 }
 
 export const htmlToVanCode = (html: string, {
   indent = 2,
+  spacing = false,
   skipEmptyText = false,
   htmlTagPred = s => s.toLowerCase() === s,
 }: HtmlToVanCodeOptions = {}) => {
+  const attrsToVanCode = (attrs: Record<string, string>, children: readonly Dom[]) => {
+    const space = spacing ? " " : ""
+    return Object.keys(attrs).length === 0 ? "" :
+      `{${space}${Object.entries(attrs)
+        .flatMap(([k, v]) => k !== dummy ? `${quoteIfNeeded(k)}: ${JSON.stringify(v)}` : [])
+        .join(", ")}${space}}${children.length > 0 ? "," : ""}`
+  }
+
   const domsToVanCode = (
     doms: readonly Dom[], prefix: string, skipEmptyText: boolean, tagsUsed: Set<string>,
   ) => doms.flatMap((dom): string | string[] => {
@@ -57,13 +61,15 @@ export const htmlToVanCode = (html: string, {
 
 interface MdToVanCodeOptions {
   indent?: number
+  spacing?: boolean
   htmlTagPred?: (name: string) => boolean
   renderer?: RendererObject
 }
 
 export const mdToVanCode = (md: string, {
   indent = 2,
+  spacing = false,
   htmlTagPred = s => s.toLowerCase() === s,
   renderer,
 }: MdToVanCodeOptions = {}) =>
-  htmlToVanCode(marked.use({renderer}).parse(md), {indent, skipEmptyText: true, htmlTagPred})
+  htmlToVanCode(marked.use({renderer}).parse(md), {indent, spacing, skipEmptyText: true, htmlTagPred})
