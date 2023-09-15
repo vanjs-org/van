@@ -8,7 +8,7 @@ You can preview the terminal app via [CodeSandbox](https://codesandbox.io/p/sand
 
 ## Features
 
-Compare to the ordinary Unix terminal that you're familar with, this web-based terminal has 2 notable improvements:
+Compare to the ordinary Unix terminal that you're familiar with, this web-based terminal has 2 notable improvements:
 
 1. Command `ps ...` will render an HTML table instead of text output.
 2. Command `tree` (need the exact text match) will render an interactive tree-view of your current directory, like the one in the screenshot below:
