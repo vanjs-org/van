@@ -13,3 +13,6 @@ for d in $(ls examples); do(
   cd examples/$d
   npm update vanjs-core -S
 )done
+
+cd ../bun-examples/hydration
+npm update vanjs-core -S
