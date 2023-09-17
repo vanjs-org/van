@@ -2,5 +2,8 @@
   "deno.enablePaths": [
     "demo/terminal/server.ts",
     "components/scripts"
+  ],
+  "cSpell.words": [
+    "skiplong"
   ]
 }

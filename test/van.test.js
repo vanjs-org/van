@@ -222,7 +222,7 @@ const runTests = async (van, msgDom, { debug }) => {
             text.val = "fail";
             await sleep(waitMsOnDomUpdates);
             // The binding function for `class` property throws an error.
-            // We want to validate the `class` property won't be updated becasuse of the error,
+            // We want to validate the `class` property won't be updated because of the error,
             // but other properties and child nodes are updated as usual.
             assertEq(dom.outerHTML, '<div><div class="hello" data-name="fail">fail</div><div class="hello" data-name="fail">fail</div></div>');
         }),
@@ -545,7 +545,7 @@ const runTests = async (van, msgDom, { debug }) => {
             assertEq(s3.val, 1);
             s0.val = 3;
             // The derivation function for `s2` throws an error.
-            // We want to validate the `val` of `s2` becomes `undefined` becasuse of the error,
+            // We want to validate the `val` of `s2` becomes `undefined` because of the error,
             // but other derived states are updated as usual.
             assertEq(s1.val, 6);
             assertEq(s2.val, undefined);
@@ -626,7 +626,7 @@ const runTests = async (van, msgDom, { debug }) => {
             const numItems = van.state(0);
             const items = van.derive(() => [...Array(numItems.val).keys()].map(i => `Item ${i + 1}`));
             const selectedIndex = van.derive(() => (items.val, 0));
-            const domFunc = dom => {
+            const domFunc = (dom) => {
                 // If items aren't changed, we don't need to regenerate the entire dom
                 if (dom && items.val === items.oldVal) {
                     const itemDoms = dom.childNodes;
@@ -777,7 +777,7 @@ const runTests = async (van, msgDom, { debug }) => {
             num.val = 1;
             await sleep(waitMsOnDomUpdates);
             // The binding function 2nd child of hiddenDom throws an error.
-            // We want to validate the 2nd child won't be updated becasuse of the error,
+            // We want to validate the 2nd child won't be updated because of the error,
             // but other DOM nodes are updated as usual
             assertEq(hiddenDom.innerHTML, "1<span>ok</span>1");
         }),

@@ -15,7 +15,7 @@ export type Props = Record<string, PropValue | StateView<PropValue> | (() => Pro
 
 export type ValidChildDomValue = Primitive | Node | null | undefined
 
-export type BindingFunc = (dom: Node | undefined) => ValidChildDomValue
+export type BindingFunc = ((dom?: Node) => ValidChildDomValue) | ((dom?: Element) => Element)
 
 export type ChildDom = ValidChildDomValue | StateView<Primitive | null | undefined> | BindingFunc | readonly ChildDom[]
 
@@ -40,17 +40,30 @@ interface Tags extends Readonly<Record<string, TagFunc<Element>>> {
   readonly body: TagFunc<HTMLBodyElement>
 
   // Content sectioning
+  readonly address: TagFunc<HTMLElement>
+  readonly article: TagFunc<HTMLElement>
+  readonly aside: TagFunc<HTMLElement>
+  readonly footer: TagFunc<HTMLElement>
+  readonly header: TagFunc<HTMLElement>
   readonly h1: TagFunc<HTMLHeadingElement>
   readonly h2: TagFunc<HTMLHeadingElement>
   readonly h3: TagFunc<HTMLHeadingElement>
   readonly h4: TagFunc<HTMLHeadingElement>
   readonly h5: TagFunc<HTMLHeadingElement>
   readonly h6: TagFunc<HTMLHeadingElement>
+  readonly hgroup: TagFunc<HTMLElement>
+  readonly main: TagFunc<HTMLElement>
+  readonly nav: TagFunc<HTMLElement>
+  readonly section: TagFunc<HTMLElement>
 
   // Text content
   readonly blockquote: TagFunc<HTMLQuoteElement>
+  readonly dd: TagFunc<HTMLElement>
   readonly div: TagFunc<HTMLDivElement>
   readonly dl: TagFunc<HTMLDListElement>
+  readonly dt: TagFunc<HTMLElement>
+  readonly figcaption: TagFunc<HTMLElement>
+  readonly figure: TagFunc<HTMLElement>
   readonly hr: TagFunc<HTMLHRElement>
   readonly li: TagFunc<HTMLLIElement>
   readonly menu: TagFunc<HTMLMenuElement>
@@ -61,11 +74,34 @@ interface Tags extends Readonly<Record<string, TagFunc<Element>>> {
 
   // Inline text semantics
   readonly a: TagFunc<HTMLAnchorElement>
+  readonly abbr: TagFunc<HTMLElement>
+  readonly b: TagFunc<HTMLElement>
+  readonly bdi: TagFunc<HTMLElement>
+  readonly bdo: TagFunc<HTMLElement>
   readonly br: TagFunc<HTMLBRElement>
+  readonly cite: TagFunc<HTMLElement>
+  readonly code: TagFunc<HTMLElement>
   readonly data: TagFunc<HTMLDataElement>
+  readonly dfn: TagFunc<HTMLElement>
+  readonly em: TagFunc<HTMLElement>
+  readonly i: TagFunc<HTMLElement>
+  readonly kbd: TagFunc<HTMLElement>
+  readonly mark: TagFunc<HTMLElement>
   readonly q: TagFunc<HTMLQuoteElement>
+  readonly rp: TagFunc<HTMLElement>
+  readonly rt: TagFunc<HTMLElement>
+  readonly ruby: TagFunc<HTMLElement>
+  readonly s: TagFunc<HTMLElement>
+  readonly samp: TagFunc<HTMLElement>
+  readonly small: TagFunc<HTMLElement>
   readonly span: TagFunc<HTMLSpanElement>
+  readonly strong: TagFunc<HTMLElement>
+  readonly sub: TagFunc<HTMLElement>
+  readonly sup: TagFunc<HTMLElement>
   readonly time: TagFunc<HTMLTimeElement>
+  readonly u: TagFunc<HTMLElement>
+  readonly var: TagFunc<HTMLElement>
+  readonly wbr: TagFunc<HTMLElement>
 
   // Image and multimedia
   readonly area: TagFunc<HTMLAreaElement>
@@ -84,6 +120,7 @@ interface Tags extends Readonly<Record<string, TagFunc<Element>>> {
 
   // Scripting
   readonly canvas: TagFunc<HTMLCanvasElement>
+  readonly noscript: TagFunc<HTMLElement>
   readonly script: TagFunc<HTMLScriptElement>
 
   // Demarcating edits
@@ -121,6 +158,7 @@ interface Tags extends Readonly<Record<string, TagFunc<Element>>> {
   // Interactive elements
   readonly details: TagFunc<HTMLDetailsElement>
   readonly dialog: TagFunc<HTMLDialogElement>
+  readonly summary: TagFunc<HTMLElement>
 
   // Web Components
   readonly slot: TagFunc<HTMLSlotElement>
