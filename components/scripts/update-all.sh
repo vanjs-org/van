@@ -1,5 +1,7 @@
 set -e
 
+npm prune
+
 VER=$(node_modules/node-jq/bin/jq -r '.version' package.json)
 
 for d in $(ls examples); do(
