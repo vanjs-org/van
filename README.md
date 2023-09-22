@@ -87,13 +87,17 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 >
 > _-- Antoine de Saint-Exupéry, Airman's Odyssey_
 
+### Easy to Learn
+
+Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `van.derive`, `van.hydrate`) + 4 auxiliary functions (`van.tagsNS`, `van._`, `van.val`, `van.oldVal`). The the entire tutorial plus the API reference is [just one single web page](https://vanjs.org/tutorial), and can be learned within 1 hour for most developers.
+
+### Performance
+
+**VanJS** is among the fastest web frameworks, according to the [results](https://krausest.github.io/js-framework-benchmark/2023/table_chrome_117.0.5938.62.html) by https://github.com/krausest/js-framework-benchmark.
+
 ### TypeScript Support
 
 **VanJS** provides first-class support for TypeScript. Simply download the corresponding `.d.ts` file along with your `.js` file, and you'll be able to take advantage of type-checking, IntelliSense, large-scale refactoring provided by your preferred development environment. Refer to the [Download Table](https://vanjs.org/start#download-table) to find the right `.d.ts` file to work with.
-
-### Easy to Learn
-
-Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `van.derive`, `van.hydrate`) + 4 auxiliary functions (`van.tagsNS`, `van._`, `van.val`, `van.oldVal`). The [walkthrough tutorial](https://vanjs.org/tutorial) is the same as the full API reference, and can be learned within 1 hour for most developers.
 
 ## Want to Learn More?
 
