@@ -93,7 +93,7 @@ Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `
 
 ### Performance
 
-**VanJS** is among the fastest web frameworks, according to the [results](https://krausest.github.io/js-framework-benchmark/2023/table_chrome_117.0.5938.62.html) by https://github.com/krausest/js-framework-benchmark.
+**VanJS** is among the fastest web frameworks, according to the [results](https://krausest.github.io/js-framework-benchmark/2023/table_chrome_117.0.5938.62.html) by [krausest/js-framework-benchmark](https://github.com/krausest/js-framework-benchmark).
 
 ### TypeScript Support
 
