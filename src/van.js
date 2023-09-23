@@ -91,7 +91,7 @@ let add = (dom, ...children) => {
   for (let c of children.flat(Infinity)) {
     let protoOfC = protoOf(c ?? 0)
     let child = protoOfC === stateProto ? bind(() => c.val) :
-      protoOfC === funcProto ? bind(c) : c
+      protoOfC === funcProto ? bind(c, dom) : c
     if (child != _undefined) dom.append(child)
   }
   return dom
