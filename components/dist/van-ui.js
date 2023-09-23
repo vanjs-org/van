@@ -1,6 +1,6 @@
 import van from "vanjs-core";
 // Quote all tag names so that they're not mangled by minifier
-const { "button": button, "div": div, "input": input, "label": label, "span": span } = van.tags;
+const { "button": button, "div": div, "header": header, "input": input, "label": label, "span": span } = van.tags;
 const toStyleStr = (style) => Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("");
 export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackground = false, backgroundClass = "", backgroundStyleOverrides = {}, modalClass = "", modalStyleOverrides = {}, }, ...children) => {
     const backgroundStyle = Object.assign({ display: "flex", "align-items": "center", "justify-content": "center", left: 0, right: 0, top: 0, bottom: 0, position: "fixed", "z-index": 10000, "background-color": backgroundColor, "backdrop-filter": blurBackground ? "blur(0.25rem)" : "none" }, backgroundStyleOverrides);
@@ -93,4 +93,8 @@ export const OptionGroup = ({ selected, normalColor = "#e2eef7", hoverColor = "#
         style: buttonStylesStr,
         onclick: () => selected.val = o,
     }, o)));
+};
+export const Banner = ({ backgroundColor = "#fff1a8", fontColor = "currentcolor", sticky = false, bannerClass = "", bannerStyleOverrides = {}, }, ...children) => {
+    const bannerStyleStr = toStyleStr(Object.assign({ "background-color": backgroundColor, color: fontColor, top: 0, position: sticky ? "sticky" : "static", "z-index": 10 }, bannerStyleOverrides));
+    return header({ class: bannerClass, style: bannerStyleStr }, children);
 };

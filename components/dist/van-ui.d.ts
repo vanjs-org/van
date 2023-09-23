@@ -100,3 +100,11 @@ export interface OptionGroupProps {
     readonly optionStyleOverrides?: CSSPropertyBag;
 }
 export declare const OptionGroup: ({ selected, normalColor, hoverColor, selectedColor, selectedHoverColor, fontColor, transitionSec, optionGroupClass, optionGroupStyleOverrides, optionClass, optionStyleOverrides, }: OptionGroupProps, options: readonly string[]) => HTMLDivElement;
+export interface BannerProps {
+    readonly backgroundColor?: string;
+    readonly fontColor?: string;
+    readonly sticky?: boolean;
+    readonly bannerClass?: string;
+    readonly bannerStyleOverrides?: CSSPropertyBag;
+}
+export declare const Banner: ({ backgroundColor, fontColor, sticky, bannerClass, bannerStyleOverrides, }: BannerProps, ...children: readonly ChildDom[]) => HTMLElement;

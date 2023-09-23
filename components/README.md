@@ -56,6 +56,7 @@ The following UI components has been implemented so far:
 * [Tooltip](#tooltip) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1))
 * [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 * [OptionGroup](#optiongroup) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/option-group?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+* [Banner](#banner) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/banner?file=/src/main.ts:1,1))
 
 ### Modal
 
@@ -391,10 +392,42 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `optionClass`: Type `string`. Default `""`. Optional. The `class` attribute of the options. You can specify multiple CSS classes separated by `" "`.
 * `optionStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the options.
 
-### Planned for Future
+### Banner
 
-The following UI components are planned to be added in the future:
-* Banner
+Creates a banner element for the current container.
+
+#### Signature
+
+```js
+Banner({...props}, ...children) => <The created banner element>
+```
+
+#### Examples
+
+```ts
+van.add(document.body,
+  h2("Sticky Banner"),
+  div({style: "width: 300px; height: 200px; overflow-y: auto; border: 1px solid #000;"},
+    Banner({sticky: true}, "👋Hello 🗺️World"),
+    div({style: "padding: 0 10px"}, Array.from({length: 10}).map((_, i) => p("Line ", i))),
+  ),
+  h2("Non-sticky Banner"),
+  div({style: "width: 300px; height: 200px; overflow-y: auto; border: 1px solid #000;"},
+    Banner({sticky: false}, "👋Hello ", a({href: "https://vanjs.org/"}, "🍦VanJS")),
+    div({style: "padding: 0 10px"}, Array.from({length: 10}).map((_, i) => p("Line ", i))),
+  ),
+)
+```
+
+You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/banner?file=/src/main.ts:1,1).
+
+#### Property Reference
+
+* `backgroundColor`: Type `string`. Default `#fff1a8`. Optional. The background color of the banner.
+* `fontColor`: Type `string`. Default `currentcolor`. Optional. The font color of the banner.
+* `sticky`: Type `boolean`. Default `false`. Optional. Whether the banner is sticky on the top.
+* `bannerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the created banner element. You can specify multiple CSS classes separated by `" "`.
+* `bannerStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the created banner element.
 
 ### Property Bag for Style Overrides
 

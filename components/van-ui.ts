@@ -1,7 +1,7 @@
 import van, { ChildDom, State } from "vanjs-core"
 
 // Quote all tag names so that they're not mangled by minifier
-const {"button": button, "div": div, "input": input, "label": label, "span": span} = van.tags
+const {"button": button, "div": div, "header": header, "input": input, "label": label, "span": span} = van.tags
 
 export type CSSPropertyBag = Record<string, string | number>
 
@@ -469,4 +469,33 @@ export const OptionGroup = (
       onclick: () => selected.val = o,
     }, o)),
   )
+}
+
+export interface BannerProps {
+  readonly backgroundColor?: string
+  readonly fontColor?: string
+  readonly sticky?: boolean
+  readonly bannerClass?: string
+  readonly bannerStyleOverrides?: CSSPropertyBag
+}
+
+export const Banner = (
+  {
+    backgroundColor = "#fff1a8",
+    fontColor = "currentcolor",
+    sticky = false,
+    bannerClass = "",
+    bannerStyleOverrides = {},
+  }: BannerProps,
+  ...children: readonly ChildDom[]
+) => {
+  const bannerStyleStr = toStyleStr({
+    "background-color": backgroundColor,
+    color: fontColor,
+    top: 0,
+    position: sticky ? "sticky" : "static",
+    "z-index": 10,
+    ...bannerStyleOverrides,
+  })
+  return header({class: bannerClass, style: bannerStyleStr}, children)
 }
