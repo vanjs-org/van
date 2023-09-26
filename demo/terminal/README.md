@@ -4,7 +4,7 @@ In this demo, we're going to show how to use [**VanJS**](https://vanjs.org/) to 
 
 The program is heavily tested in macOS, and should in theory works in Linux, or in any environment that has `/bin/sh`.
 
-You can preview the terminal app via [CodeSandbox](https://codesandbox.io/p/sandbox/nifty-haze-hf7695?file=/client.html:1,1).
+You can preview the terminal app via [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/demo/terminal).
 
 ## Features
 

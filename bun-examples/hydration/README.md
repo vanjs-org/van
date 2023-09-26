@@ -20,4 +20,4 @@ This is a [Bun 1.0](https://bun.sh/blog/bun-v1.0)-based variation of the fullsta
 * The [`src/server.ts`](https://github.com/vanjs-org/van/blob/main/bun-examples/hydration/src/server.ts) file is a few lines shorter than the [Node.js based one](https://github.com/vanjs-org/vanjs-org.github.io/blob/master/hydration-example/src/server.ts), primarily thanks to the elimination of external dependencies.
 * The minified bundle of client `.js` file is slightly larger (`3.0kB` vs. `2.6kB`). This is because as a new bundler and minifier, Bun has less size optimization options compared to [terser](https://terser.org/).
 
-You can preview the app via [CodeSandbox](https://codesandbox.io/p/sandbox/modest-edison-y8hx38?file=/package.json:1,1).
+You can preview the app via [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/bun-examples/hydration?file=%2Fsrc%2Fserver.ts%3A1%2C1).
