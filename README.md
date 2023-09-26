@@ -93,7 +93,7 @@ Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `
 
 ### Performance
 
-**VanJS** is among the fastest web frameworks, according to the [results](https://krausest.github.io/js-framework-benchmark/2023/table_chrome_117.0.5938.62.html) by [krausest/js-framework-benchmark](https://github.com/krausest/js-framework-benchmark). For SSR, **Mini-Van** is [**1.75X** to **2X** efficient](https://github.com/vanjs-org/mini-van/tree/main/bench#react-vs-mini-van) compared to React.
+**VanJS** is among the fastest web frameworks, according to the [results](https://krausest.github.io/js-framework-benchmark/2023/table_chrome_117.0.5938.62.html) by [krausest/js-framework-benchmark](https://github.com/krausest/js-framework-benchmark). For SSR, **Mini-Van** is [**1.75X** to **2X** more efficient](https://github.com/vanjs-org/mini-van/tree/main/bench#react-vs-mini-van) compared to React.
 
 ### TypeScript Support
 
