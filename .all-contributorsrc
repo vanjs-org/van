@@ -237,6 +237,15 @@
       "contributions": [
         "example"
       ]
+    },
+    {
+      "login": "eevleevs",
+      "name": "Giulio Malventi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5012744?v=4",
+      "profile": "https://github.com/eevleevs",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "repoType": "github"
