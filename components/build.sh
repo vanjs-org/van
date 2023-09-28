@@ -1,1 +1,3 @@
-npx tsc -d -m es2020 -t es2017 --moduleResolution node van-ui.ts --outDir dist
+npx tsc
+deno run --allow-read --allow-write scripts/to-bundle.ts
+npx terser dist/van-ui.nomodule.js --compress --toplevel --mangle --mangle-props regex=/^_.+/ -f wrap_func_args=false -o dist/van-ui.nomodule.min.js

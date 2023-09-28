@@ -41,7 +41,7 @@ const example2 = () => {
 
 const ModalDemo = () => {
   return div(
-    h1("Model Demo"),
+    h1("Modal Demo"),
     p("This is a demo for the ", code("Modal"), " component in ", b("VanUI"), "."),
     p(button({onclick: example1}, "Example 1"), " ", button({onclick: example2}, "Example 2")),
   )

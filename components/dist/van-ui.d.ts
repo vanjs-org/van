@@ -9,7 +9,7 @@ export interface ModalProps {
     readonly modalClass?: string;
     readonly modalStyleOverrides?: CSSPropertyBag;
 }
-export declare const Modal: ({ closed, backgroundColor, blurBackground, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement;
+export declare const Modal: ({ closed, backgroundColor, blurBackground, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
 export interface TabsProps {
     readonly activeTab?: State<string> | undefined;
     readonly resultClass?: string;

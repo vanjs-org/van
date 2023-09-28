@@ -33,6 +33,8 @@ More on **VanJS**:
 
 ## Installation
 
+### Via NPM
+
 The library is published as NPM package [vanjs-ui](https://www.npmjs.com/package/vanjs-ui).
 
 Run the following command to install the package:
@@ -46,6 +48,20 @@ To use the NPM package, add this line to your script:
 ```js
 import { <components you want to import> } from "vanjs-ui"
 ```
+
+### Via a Script Tag
+
+Alternatively, you can import **VanUI** from CDN via a `<script type="text/javascript">` tag:
+
+```html
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.8.1/dist/van-ui.nomodule.min.js"></script>
+```
+
+`https://cdn.jsdelivr.net/npm/vanjs-ui@0.8.1/dist/van-ui.nomodule.js` can be used for the non-minified version.
+
+Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
+
+Try on jsfiddle: [Modal](https://jsfiddle.net/hx8nL64r/5/), [MessageBoard](https://jsfiddle.net/a5vg0xw2/).
 
 ## Documentation
 

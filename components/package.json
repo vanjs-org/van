@@ -1,10 +1,12 @@
 {
   "name": "vanjs-ui",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A collection of grab-n-go reusable UI components for VanJS",
   "files": [
     "dist/van-ui.js",
-    "dist/van-ui.d.ts"
+    "dist/van-ui.d.ts",
+    "dist/van-ui.nomodule.js",
+    "dist/van-ui.nomodule.min.js"
   ],
   "main": "dist/van-ui.js",
   "browser": "dist/van-ui.js",
@@ -37,6 +39,7 @@
   },
   "devDependencies": {
     "node-jq": "^4.0.1",
+    "terser": "^5.20.0",
     "typescript": "^5.1.6"
   }
 }
