@@ -61,7 +61,7 @@ Alternatively, you can import **VanUI** from CDN via a `<script type="text/javas
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
-Try on jsfiddle: [Modal](https://jsfiddle.net/hx8nL64r/5/), [MessageBoard](https://jsfiddle.net/a5vg0xw2/).
+Try on jsfiddle: [Modal](https://jsfiddle.net/ez4gdjrs/), [MessageBoard](https://jsfiddle.net/6aqmzwyv/1/).
 
 ## Documentation
 
