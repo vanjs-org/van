@@ -97,7 +97,7 @@ Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `
 
 ### TypeScript Support
 
-**VanJS** provides first-class support for TypeScript. Simply download the corresponding `.d.ts` file along with your `.js` file, and you'll be able to take advantage of type-checking, IntelliSense, large-scale refactoring provided by your preferred development environment. Refer to the [Download Table](https://vanjs.org/start#download-table) to find the right `.d.ts` file to work with.
+**VanJS** provides first-class support for TypeScript. With the `.d.ts` file in place, you'll be able to take advantage of type-checking, IntelliSense, large-scale refactoring provided by your preferred development environment. Refer to the [Download Table](https://vanjs.org/start#download-table) to find the right `.d.ts` file to work with.
 
 ## Want to Learn More?
 
