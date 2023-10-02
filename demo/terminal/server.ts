@@ -10,7 +10,6 @@ const flags = parse(Deno.args, {
   default: {port: 8000},
 })
 
-const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 let cwd = Deno.cwd()
 
@@ -91,21 +90,15 @@ const serveHttp = async (conn: Deno.Conn, req: Request) => {
     }
     if (!flags.skipLogin && getCookies(req.headers)["SessionId"] !== sessionId)
       return Response.json({
-        stderr: "Expired session ID, please reload this page to relogin:"})
+        stderr: "Expired session ID, please reload this page to re-login:"})
 
     const cmd = await req.text()
     try {
       if (cmd === "tree") return Response.json(
         {tree: await tree(url.searchParams.get("path") ?? cwd)})
-      const p = new Deno.Command("sh", {
-        cwd,
-        stdin: "piped",
-        stdout: "piped",
-        stderr: "piped",
-      }).spawn()
-      const stdinWriter = p.stdin.getWriter()
-      await stdinWriter.write(encoder.encode(cmd + ";echo;pwd"))
-      await stdinWriter.close()
+      const p = new Deno.Command("sh",
+        {cwd, args: ["-c", cmd + ";echo;pwd"], stdout: "piped", stderr: "piped"})
+        .spawn()
       const output = await p.output()
       const lines = decoder.decode(output.stdout).trim().split("\n")
       const stdout = lines.slice(0, -1).join("\n")
