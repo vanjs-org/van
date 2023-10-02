@@ -1,21 +1,21 @@
 # Example
 
-This is a  demo showing the design pattern and the usage of the commands introduced by van_dml. 
+This is a  demo showing the design pattern and the usage of the commands introduced by van_dml.
 
-To use van_dml, include the script right after vanJS (an ES6-module will come soon)
+To use van_dml, include the script right after VanJS (an ES6-module will come soon).
 ```HTML
-  <script src="van-latest.nomodule-min.js"></script>
-  <script src="van_dml.js"></script>
+<script src="van-latest.nomodule-min.js"></script>
+<script src="van_dml.js"></script>
 ```
-if you want to load the modules from a cdn, you can use
-```JS
-  <script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-latest.nomodule.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/addons/van_dml/src/van_dml.js"></script>
+if you want to load the modules from a cdn, you can use:
+```HTML
+<script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-latest.nomodule.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/addons/van_dml/src/van_dml.js"></script>
 ```
-van_dml.js extends the `tag`-function of `van` and introduces some new functions. 
+van_dml.js extends the `tag`-function of `van` and introduces some new functions.
 ```JS
     const { h1, h2, div, p, button } = van.tags; // some HTML-tags
-    const { begin, end, base, sp, css } = van    // new functions intorduced by van_dml
+    const { begin, end, base, sp, css } = van    // new functions introduced by van_dml
 ```
 
 ### css(s)
@@ -34,7 +34,7 @@ Dynamic CSS can be used to create responsive pages with ease. Just use JS to sel
 
 ### Auto-append with `begin()` and `end()`
 
-begin opens any DOM element for writing. Elements created between `begin()` and `end()` will be automatic appended as a child to the object selecte with `begin(el)`
+begin opens any DOM element for writing. Elements created between `begin()` and `end()` will be automatic appended as a child to the object selected with `begin(el)`
 ```JS
     begin(document.body)
     // some tag functions here
@@ -62,7 +62,7 @@ The following code creates a user defined element - a rounded button. Styles are
       b.style.borderRadius = "50vh"
       return b
     }
-	
+
     rbutton({ style: "margin: 3px;" }, `Button ${i}`).onclick = () => alert(`Button ${i} pressed`)
 ```
 onclick is applied to the button externally, which is convenient. It was also possible to use this definition to get the same result:

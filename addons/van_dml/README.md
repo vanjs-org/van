@@ -5,22 +5,24 @@ _Author: [Eckehard](https://github.com/efpage)_
 **van_dml.js** adds a new flavour of composition to VanJS. This is heavily inspired by the [DML](https://github.com/efpage/dml)-framework for dynamic page creation.
 
 Van_DML extends the core of VanJS. You can enable van_dml like this:
-```JS
-    <script src="van-latest.nomodule-min.js"></script>
-    <script src="van_dml.js"></script>
+```HTML
+<script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-latest.nomodule.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/vanjs-org/van/addons/van_dml/src/van_dml.js"></script>
 
+<script>
     const { h1, h2, div, p, button } = van.tags;
     const { begin, end, base, sp, css } = van  // new functions of van_dml
+</script>
 ```
 ## How does it work?
-`begin(ID)` selects an element "ID" as a base. ID can be a DOM element or a HTML-ID. All elements created after `begin()` are automatically appended as childs to this object.
+`begin(ID)` selects an element "ID" as a base. ID can be a DOM element or a HTML-ID. All elements created after `begin()` are automatically appended as children to this object.
 `end()` finishes the automatic appending.
 
 `begin()` and `end()` can be nested like this:
 ```JS
     const { h1, h2, div, p, button } = van.tags;
     const { begin, end, base, sp, css } = van
-    
+
     begin(document.body)
         h1("Headline")
         begin(div({style: "border: 1px solid black"}))
@@ -115,7 +117,7 @@ If a rule already exists, it will be overwritten by the new definition. Results 
         button({onclick: () => css(".class1 {background-color: green;}")},"set class1 green")
     );
 ```
-**!Attention:**: css() adds new rules to the first stylesheet (`window.document.styleSheets[0]`). If the first stylesheet was loaded from an external source, this may cause CORS errors. For more information see [here](https://davidwalsh.name/add-rules-stylesheets) and [here](https://stackoverflow.com/questions/49088507/cannot-access-rules-in-external-cssstylesheet). Always add a ***local CSS-file*** first, as the dynamic rules are included in the first style sheet. 
+**!Attention:**: css() adds new rules to the first stylesheet (`window.document.styleSheets[0]`). If the first stylesheet was loaded from an external source, this may cause CORS errors. For more information see [here](https://davidwalsh.name/add-rules-stylesheets) and [here](https://stackoverflow.com/questions/49088507/cannot-access-rules-in-external-cssstylesheet). Always add a ***local CSS-file*** first, as the dynamic rules are included in the first style sheet.
 
 ## Support
 
