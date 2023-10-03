@@ -5,7 +5,7 @@ import Counter from "./components/counter.js"
 const {body, div, h1, h2, head, link, meta, option, p, script, select, title} = van.tags
 
 const server = Bun.serve({
-  port: Bun.argv[2] ?? "8080",
+  port: Bun.argv[2] ?? 8080,
   fetch(req) {
     const url = new URL(req.url)
     if (url.pathname.endsWith(".js")) return new Response(Bun.file("." + url.pathname))
