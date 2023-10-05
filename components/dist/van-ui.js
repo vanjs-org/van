@@ -1,6 +1,6 @@
 import van from "vanjs-core";
 // Quote all tag names so that they're not mangled by minifier
-const { "button": button, "div": div, "header": header, "input": input, "label": label, "span": span } = van.tags;
+const { "button": button, "div": div, "header": header, "input": input, "label": label, "span": span, "style": style } = van.tags;
 const toStyleStr = (style) => Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("");
 export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackground = false, backgroundClass = "", backgroundStyleOverrides = {}, modalClass = "", modalStyleOverrides = {}, }, ...children) => {
     const backgroundStyle = {
@@ -238,4 +238,140 @@ export const Banner = ({ backgroundColor = "#fff1a8", fontColor = "currentcolor"
         ...bannerStyleOverrides,
     });
     return header({ class: bannerClass, style: bannerStyleStr }, children);
+};
+export const FloatingWindow = ({ title, closed, x = van.state(100), y = van.state(100), width = van.state(300), height = van.state(200), windowStyleOverrides = {}, headerStyleOverrides = {}, childrenContainerStyleOverrides = {}, closeCross = false }, ...children) => {
+    let dragging = van.state(false);
+    let resizingDirection = van.state(null);
+    let startX = van.state(0);
+    let startY = van.state(0);
+    let startWidth = van.state(0);
+    let startHeight = van.state(0);
+    const onMouseDown = (e) => {
+        dragging.val = true;
+        startX.val = e.clientX;
+        startY.val = e.clientY;
+        document.body.style.userSelect = 'none';
+    };
+    const onResizeMouseDown = (direction) => (e) => {
+        resizingDirection.val = direction;
+        startX.val = e.clientX;
+        startY.val = e.clientY;
+        startWidth.val = width.val;
+        startHeight.val = height.val;
+        document.body.style.userSelect = 'none';
+    };
+    const onMouseMove = (e) => {
+        if (dragging.val) {
+            x.val += e.clientX - startX.val;
+            y.val += e.clientY - startY.val;
+            startX.val = e.clientX;
+            startY.val = e.clientY;
+        }
+        else if (resizingDirection.val) {
+            const deltaX = e.clientX - startX.val;
+            const deltaY = e.clientY - startY.val;
+            if (resizingDirection.val.includes('right')) {
+                width.val = startWidth.val + deltaX;
+            }
+            if (resizingDirection.val.includes('bottom')) {
+                height.val = startHeight.val + deltaY;
+            }
+        }
+    };
+    const onMouseUp = () => {
+        dragging.val = false;
+        resizingDirection.val = null;
+        document.body.style.userSelect = '';
+    };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    const grabAreaBgColor = 'transparent';
+    return () => closed.val ? null : van.add(div({
+        style: toStyleStr({
+            position: 'fixed',
+            left: `${x.val}px`,
+            top: `${y.val}px`,
+            width: `${width.val}px`,
+            height: `${height.val}px`,
+            'background-color': 'white',
+            border: '1px solid black',
+            'border-radius': '0.5rem',
+            overflow: 'hidden',
+            ...windowStyleOverrides,
+        }),
+    }, div({
+        style: toStyleStr({
+            cursor: 'move',
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: "1rem"
+        }),
+        onmousedown: onMouseDown,
+    }), header({
+        style: toStyleStr({
+            cursor: 'move',
+            'background-color': 'lightgray',
+            "user-select": 'none',
+            display: 'flex',
+            "justify-content": 'space-between',
+            "align-items": 'center',
+            padding: '0.5rem',
+            ...headerStyleOverrides,
+        }),
+        onmousedown: onMouseDown,
+    }, title, closeCross ? span({
+        style: toStyleStr({
+            cursor: 'pointer',
+            fontSize: '18px',
+            transition: 'background-color 0.3s, color 0.3s',
+            "border-radius": '50%',
+            width: '24px',
+            height: '24px',
+            display: 'flex',
+            "align-items": 'center',
+            "justify-content": 'center',
+        }),
+        class: "vanui-close-cross",
+        onclick: () => closed.val = true,
+    }, '×') : null), style({ type: "text/css" }, `
+      .vanui-close-cross:hover {${toStyleStr({
+        "background-color": "red",
+        color: "white",
+    })}}
+      `), div({
+        style: toStyleStr({
+            cursor: 'e-resize',
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            width: '10px',
+            height: '100%',
+            'background-color': grabAreaBgColor,
+        }),
+        onmousedown: onResizeMouseDown('right'),
+    }), div({
+        style: toStyleStr({
+            cursor: 's-resize',
+            position: 'absolute',
+            left: 0,
+            bottom: 0,
+            width: '100%',
+            height: '10px',
+            'background-color': grabAreaBgColor,
+        }),
+        onmousedown: onResizeMouseDown('bottom'),
+    }), div({
+        style: toStyleStr({
+            cursor: 'se-resize',
+            position: 'absolute',
+            right: 0,
+            bottom: 0,
+            width: '10px',
+            height: '10px',
+            'background-color': grabAreaBgColor,
+        }),
+        onmousedown: onResizeMouseDown('rightbottom'),
+    }), div({ style: toStyleStr(childrenContainerStyleOverrides) }, children)));
 };
