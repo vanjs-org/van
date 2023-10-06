@@ -66,7 +66,7 @@ const example3 = () => {
   const height = van.state(300)
 
   const crossId = `custom-cross-${++windowId}`;
-  
+
   document.head.appendChild(
     style({ type: "text/css" }, `
     #${crossId}:hover {${toStyleStr({
@@ -91,7 +91,6 @@ const example3 = () => {
     headerStyleOverrides: {
       display: "none",
     },
-
   },
     div(
       span({
@@ -99,9 +98,11 @@ const example3 = () => {
           position: "absolute",
           top: "0px",
           right: "0px",
-          padding: "0.5rem",
+          padding: "0 0.5rem",
+          height: "2.5rem",
+          display: "inline-flex",
+          "align-items": "center",
           cursor: "pointer",
-          height: "1.2rem",
         }),
         id: crossId,
         onclick: () => closed.val = true,
@@ -113,8 +114,12 @@ const example3 = () => {
           }),
           tabButtonActiveColor: "white",
           tabButtonBorderStyle: "none",
+          tabButtonRowColor: "lightblue",
           tabButtonRowStyleOverrides: {
-            "background-color": "lightblue",
+            height: "2.5rem",
+          },
+          tabButtonStyleOverrides: {
+            height: "100%",
           },
         },
         {
