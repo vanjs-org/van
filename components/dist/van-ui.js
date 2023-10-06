@@ -239,6 +239,7 @@ export const Banner = ({ backgroundColor = "#fff1a8", fontColor = "currentcolor"
     });
     return header({ class: bannerClass, style: bannerStyleStr }, children);
 };
+let windowId = 0;
 export const FloatingWindow = ({ title, closed, x = van.state(100), y = van.state(100), width = van.state(300), height = van.state(200), windowStyleOverrides = {}, headerStyleOverrides = {}, childrenContainerStyleOverrides = {}, closeCross = false }, ...children) => {
     let dragging = van.state(false);
     let resizingDirection = van.state(null);
@@ -286,6 +287,13 @@ export const FloatingWindow = ({ title, closed, x = van.state(100), y = van.stat
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
     const grabAreaBgColor = 'transparent';
+    const crossId = `vanui-close-cross-${++windowId}`;
+    document.head.appendChild(style({ type: "text/css" }, `
+    #${crossId}:hover {${toStyleStr({
+        "background-color": "red",
+        color: "white",
+    })}}
+    `));
     return () => closed.val ? null : van.add(div({
         style: toStyleStr({
             position: 'fixed',
@@ -333,14 +341,9 @@ export const FloatingWindow = ({ title, closed, x = van.state(100), y = van.stat
             "align-items": 'center',
             "justify-content": 'center',
         }),
-        class: "vanui-close-cross",
+        id: crossId,
         onclick: () => closed.val = true,
-    }, '×') : null), style({ type: "text/css" }, `
-      .vanui-close-cross:hover {${toStyleStr({
-        "background-color": "red",
-        color: "white",
-    })}}
-      `), div({
+    }, '×') : null), div({
         style: toStyleStr({
             cursor: 'e-resize',
             position: 'absolute',

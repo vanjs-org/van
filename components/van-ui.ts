@@ -54,8 +54,8 @@ export const Modal = (
   }
 
   return () => closed.val ? null : div(
-    {class: backgroundClass, style: toStyleStr(backgroundStyle)},
-    div({class: modalClass, style: toStyleStr(modalStyle)}, children),
+    { class: backgroundClass, style: toStyleStr(backgroundStyle) },
+    div({ class: modalClass, style: toStyleStr(modalStyle) }, children),
   )
 }
 
@@ -126,8 +126,8 @@ export const Tabs = (
 #${id} .vanui-tab-button:hover { background-color: ${tabButtonHoverColor} }
 #${id} .vanui-tab-button.active { background-color: ${tabButtonActiveColor} }`))
 
-  return div({id, class: resultClass, style},
-    div({class: tabButtonRowClass, style: tabButtonRowStylesStr},
+  return div({ id, class: resultClass, style },
+    div({ class: tabButtonRowClass, style: tabButtonRowStylesStr },
       Object.keys(contents).map(k =>
         button({
           class: () => ["vanui-tab-button"].concat(
@@ -222,8 +222,8 @@ export const Toggle = ({
     transform: `translateX(${0.76 * size}rem)`,
     ...circleWhenOnStyleOverrides,
   })
-  return label({class: toggleClass, style: toggleStylesStr},
-    input({type: "checkbox", style: inputStylesStr, oninput: e => onState.val = e.target.checked}),
+  return label({ class: toggleClass, style: toggleStylesStr },
+    input({ type: "checkbox", style: inputStylesStr, oninput: e => onState.val = e.target.checked }),
     span(
       {
         class: sliderClass,
@@ -313,7 +313,7 @@ export class MessageBoard {
       ...closerStyleOverrides
     })
 
-    parentDom.appendChild(this._dom = div({class: boardClass, style: boardStylesStr}))
+    parentDom.appendChild(this._dom = div({ class: boardClass, style: boardStylesStr }))
   }
 
   show({
@@ -324,10 +324,10 @@ export class MessageBoard {
   }: MessageProps) {
     const removed = van.state(false)
     van.derive(() => setTimeout((v: boolean) => removed.val = v, this._fadeOutSec * 1000, closed.val))
-    const msgDom = div({class: this._messageClass, style: this._messageStylesStr},
+    const msgDom = div({ class: this._messageClass, style: this._messageStylesStr },
       div(message),
       closer ? div(
-        {class: this._closerClass, style: this._closerStylesStr, onclick: () => closed.val = true},
+        { class: this._closerClass, style: this._closerStylesStr, onclick: () => closed.val = true },
         closer,
       ) : null,
     )
@@ -396,9 +396,9 @@ export const Tooltip = ({
     left: "50%",
     ...triangleStyleOverrides,
   })
-  const dom = span({class: tooltipClass, style: tooltipStylesStr},
+  const dom = span({ class: tooltipClass, style: tooltipStylesStr },
     text,
-    div({class: triangleClass, style: triangleStylesStr}),
+    div({ class: triangleClass, style: triangleStylesStr }),
   )
   van.derive(() => show.val ?
     (dom.style.opacity = "1", dom.style.visibility = "visible") :
@@ -459,7 +459,7 @@ export const OptionGroup = (
 #${id} .vanui-button.selected { background-color: ${selectedColor} }
 #${id} .vanui-button.selected:hover { background-color: ${selectedHoverColor} }`))
 
-  return div({id, class: optionGroupClass, style: buttonGroupStylesStr},
+  return div({ id, class: optionGroupClass, style: buttonGroupStylesStr },
     options.map(o => button({
       class: () => ["vanui-button"].concat(
         optionClass ? optionClass : [],
@@ -497,7 +497,7 @@ export const Banner = (
     "z-index": 10,
     ...bannerStyleOverrides,
   })
-  return header({class: bannerClass, style: bannerStyleStr}, children)
+  return header({ class: bannerClass, style: bannerStyleStr }, children)
 }
 
 export interface FloatingWindowProps {
@@ -512,6 +512,7 @@ export interface FloatingWindowProps {
   readonly childrenContainerStyleOverrides?: CSSPropertyBag
   readonly closeCross?: boolean
 }
+let windowId = 0;
 
 export const FloatingWindow = (
   {
@@ -579,9 +580,16 @@ export const FloatingWindow = (
 
   document.addEventListener('mousemove', onMouseMove)
   document.addEventListener('mouseup', onMouseUp)
-
   const grabAreaBgColor = 'transparent';
-
+  const crossId = `vanui-close-cross-${++windowId}`;
+  document.head.appendChild(
+    style({ type: "text/css" }, `
+    #${crossId}:hover {${toStyleStr({
+      "background-color": "red",
+      color: "white",
+    })}}
+    `)
+  );
   return () => closed.val ? null : van.add(
     div({
       style: toStyleStr({
@@ -634,16 +642,10 @@ export const FloatingWindow = (
             "align-items": 'center',
             "justify-content": 'center',
           }),
-          class: "vanui-close-cross",
+          id: crossId,
           onclick: () => closed.val = true,
         }, '×') : null
       ),
-      style({ type: "text/css" }, `
-      .vanui-close-cross:hover {${toStyleStr({
-        "background-color": "red",
-        color: "white",
-      })}}
-      `),
       div({
         style: toStyleStr({
           cursor: 'e-resize',

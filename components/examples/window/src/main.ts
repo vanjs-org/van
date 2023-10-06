@@ -56,12 +56,25 @@ const example2 = () => {
   ))
 }
 
+let windowId = 0;
+
 const example3 = () => {
   const closed = van.state(false)
   const x = van.state(200)
   const y = van.state(200)
   const width = van.state(500)
   const height = van.state(300)
+
+  const crossId = `custom-cross-${++windowId}`;
+  
+  document.head.appendChild(
+    style({ type: "text/css" }, `
+    #${crossId}:hover {${toStyleStr({
+      "background-color": "red",
+      color: "white",
+    })}}
+    `),
+  );
 
   van.add(document.body, FloatingWindow({
     title: "Example Window 3",
@@ -90,14 +103,9 @@ const example3 = () => {
           cursor: "pointer",
           height: "1.2rem",
         }),
-        class: "custom-cross",
+        id: crossId,
         onclick: () => closed.val = true,
       }, "×"),
-      style({ type: "text/css" }, `
-      .custom-cross:hover {${toStyleStr({
-        "background-color": "red",
-        color: "white",
-      })}`),
       Tabs(
         {
           style: toStyleStr({
