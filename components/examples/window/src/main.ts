@@ -77,19 +77,14 @@ const example3 = () => {
   );
 
   van.add(document.body, FloatingWindow({
-    title: "Example Window 3",
     closed,
     x,
     y,
     width,
     height,
-    closeCross: true,
     windowStyleOverrides: {
       "background-color": "lightgray",
       padding: "0px",
-    },
-    headerStyleOverrides: {
-      display: "none",
     },
   },
     div(
@@ -148,7 +143,6 @@ const example4 = () => {
   const height = van.state(300)
 
   van.add(document.body, FloatingWindow({
-    title: "Example Window 4",
     closed,
     x,
     y,
@@ -159,9 +153,6 @@ const example4 = () => {
       "background-color": "lightgray",
       padding: "0px",
       border: "1px solid red",
-    },
-    headerStyleOverrides: {
-      display: "none",
     },
     childrenContainerStyleOverrides: {
       display: "flex",

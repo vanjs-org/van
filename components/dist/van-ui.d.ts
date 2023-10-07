@@ -1,5 +1,6 @@
 import { ChildDom, State } from "vanjs-core";
 export type CSSPropertyBag = Record<string, string | number>;
+export type CSSStyles = Record<string, CSSPropertyBag>;
 export interface ModalProps {
     readonly closed: State<boolean>;
     readonly backgroundColor?: string;
@@ -109,7 +110,7 @@ export interface BannerProps {
 }
 export declare const Banner: ({ backgroundColor, fontColor, sticky, bannerClass, bannerStyleOverrides, }: BannerProps, ...children: readonly ChildDom[]) => HTMLElement;
 export interface FloatingWindowProps {
-    readonly title: string | ChildDom;
+    readonly title?: string | ChildDom;
     readonly closed: State<boolean>;
     readonly x?: State<number>;
     readonly y?: State<number>;

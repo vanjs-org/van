@@ -8,6 +8,14 @@ export type CSSPropertyBag = Record<string, string | number>
 const toStyleStr = (style: CSSPropertyBag) =>
   Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("")
 
+export type CSSStyles = Record<string, CSSPropertyBag>;
+
+const toStyleSheet = (styles: CSSStyles): string => {
+  return Object.entries(styles)
+    .map(([selector, properties]) => `${selector} { ${toStyleStr(properties)} }`)
+    .join("\n");
+};
+
 export interface ModalProps {
   readonly closed: State<boolean>
   readonly backgroundColor?: string
@@ -501,7 +509,7 @@ export const Banner = (
 }
 
 export interface FloatingWindowProps {
-  readonly title: string | ChildDom
+  readonly title?: string | ChildDom
   readonly closed: State<boolean>
   readonly x?: State<number>
   readonly y?: State<number>
@@ -582,104 +590,120 @@ export const FloatingWindow = (
   document.addEventListener('mouseup', onMouseUp)
   const grabAreaBgColor = 'transparent';
   const crossId = `vanui-close-cross-${++windowId}`;
-  document.head.appendChild(
-    style({ type: "text/css" }, `
-    #${crossId}:hover {${toStyleStr({
+
+  if (document.getElementById('vanui-window-style') == null) {
+    const static_styles = style({ type: "text/css", id: "vanui-window-style" }, toStyleSheet({
+      ".vanui-window-dragarea": {
+        cursor: 'move',
+        position: 'absolute',
+        left: '0',
+        top: '0',
+        width: '100%',
+        height: '1rem',
+      },
+      ".vanui-window-resize-right": {
+        cursor: 'e-resize',
+        position: 'absolute',
+        right: '0',
+        top: '0',
+        width: '10px',
+        height: '100%',
+        'background-color': grabAreaBgColor,
+      },
+      ".vanui-window-resize-bottom": {
+        cursor: 's-resize',
+        position: 'absolute',
+        left: '0',
+        bottom: '0',
+        width: '100%',
+        height: '10px',
+        'background-color': grabAreaBgColor,
+      },
+      ".vanui-window-resize-rightbottom": {
+        cursor: 'se-resize',
+        position: 'absolute',
+        right: '0',
+        bottom: '0',
+        width: '10px',
+        height: '10px',
+        'background-color': grabAreaBgColor,
+      },
+    }));
+    document.head.appendChild(static_styles);
+  }
+
+  const dynamic_styles = style({ type: "text/css" }, toStyleSheet({
+    [`#${crossId}`]: {
+      cursor: 'pointer',
+      fontSize: '18px',
+      transition: 'background-color 0.3s, color 0.3s',
+      "border-radius": '50%',
+      width: '24px',
+      height: '24px',
+      display: 'flex',
+      "align-items": 'center',
+      "justify-content": 'center',
+    },
+    [`#${crossId}:hover`]: {
       "background-color": "red",
       color: "white",
-    })}}
-    `)
-  );
+    },
+    [`#vanui-window-${windowId}`]: {
+      position: 'fixed',
+      'background-color': 'white',
+      border: '1px solid black',
+      'border-radius': '0.5rem',
+      overflow: 'hidden',
+    },
+
+    [`#vanui-window-${windowId}-header`]: {
+      cursor: 'move',
+      'background-color': 'lightgray',
+      "user-select": 'none',
+      display: 'flex',
+      "justify-content": 'space-between',
+      "align-items": 'center',
+      padding: '0.5rem',
+    }
+  }));
+
+  document.head.appendChild(dynamic_styles);
+
   return () => closed.val ? null : van.add(
     div({
+      id: `vanui-window-${windowId}`,
       style: toStyleStr({
-        position: 'fixed',
         left: `${x.val}px`,
         top: `${y.val}px`,
         width: `${width.val}px`,
         height: `${height.val}px`,
-        'background-color': 'white',
-        border: '1px solid black',
-        'border-radius': '0.5rem',
-        overflow: 'hidden',
         ...windowStyleOverrides,
       }),
     },
-      div({
-        style: toStyleStr({
-          cursor: 'move',
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: '100%',
-          height: "1rem"
-        }),
-        onmousedown: onMouseDown,
-      }),
-      header({
-        style: toStyleStr({
-          cursor: 'move',
-          'background-color': 'lightgray',
-          "user-select": 'none',
-          display: 'flex',
-          "justify-content": 'space-between',
-          "align-items": 'center',
-          padding: '0.5rem',
-          ...headerStyleOverrides,
-        }),
+      title != null ? header({
+        id: `vanui-window-${windowId}-header`,
+        style: toStyleStr(headerStyleOverrides),
         onmousedown: onMouseDown,
       },
         title,
         closeCross ? span({
-          style: toStyleStr({
-            cursor: 'pointer',
-            fontSize: '18px',
-            transition: 'background-color 0.3s, color 0.3s',
-            "border-radius": '50%',
-            width: '24px',
-            height: '24px',
-            display: 'flex',
-            "align-items": 'center',
-            "justify-content": 'center',
-          }),
           id: crossId,
           onclick: () => closed.val = true,
-        }, '×') : null
-      ),
+        }, '×') : null,
+      ) : div({
+        class: 'vanui-window-dragarea',
+        onmousedown: onMouseDown,
+      }),
       div({
-        style: toStyleStr({
-          cursor: 'e-resize',
-          position: 'absolute',
-          right: 0,
-          top: 0,
-          width: '10px',
-          height: '100%',
-          'background-color': grabAreaBgColor,
-        }),
+        class: 'vanui-window-resize-right',
         onmousedown: onResizeMouseDown('right'),
       }),
       div({
-        style: toStyleStr({
-          cursor: 's-resize',
-          position: 'absolute',
-          left: 0,
-          bottom: 0,
-          width: '100%',
-          height: '10px',
-          'background-color': grabAreaBgColor,
-        }),
+        class: 'vanui-window-resize-bottom',
         onmousedown: onResizeMouseDown('bottom'),
       }),
       div({
-        style: toStyleStr({
-          cursor: 'se-resize',
-          position: 'absolute',
-          right: 0,
-          bottom: 0,
-          width: '10px',
-          height: '10px',
-          'background-color': grabAreaBgColor,
-        }),
+        class: 'vanui-window-resize-rightbottom',
         onmousedown: onResizeMouseDown('rightbottom'),
       }),
       div({ style: toStyleStr(childrenContainerStyleOverrides) }, children),
