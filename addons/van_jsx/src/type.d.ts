@@ -1,4 +1,4 @@
-import { State, ChildDom } from "vanjs-core";
+import { ChildDom } from "vanjs-core";
 
 export type PropsWithChildren<TProps> = TProps & {
   children?: ChildDom | undefined;
