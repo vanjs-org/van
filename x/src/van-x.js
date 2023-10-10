@@ -3,14 +3,14 @@ import van from "vanjs-core"
 // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
 
 // Global variables - aliasing some builtin symbols to reduce the bundle size.
-let Obj = Object, protoOf = Obj.getPrototypeOf, objProto = protoOf({}), funcProto = protoOf(protoOf)
+let Obj = Object, protoOf = Obj.getPrototypeOf, objProto = protoOf({}), funcProto = protoOf(protoOf), {state, derive} = van
 
 let toReactiveObj = (v, protoOfV = protoOf(v)) => protoOfV === objProto ? reactive(v) : v
 
 let toState = v => {
   let protoOfV = protoOf(v)
   return protoOfV === funcProto ?
-    van.derive(() => toReactiveObj(v())) : van.state(toReactiveObj(v))
+    derive(() => toReactiveObj(v())) : state(toReactiveObj(v, protoOfV))
 }
 
 let statesSym = Symbol()
@@ -19,7 +19,8 @@ let reactive = srcObj => new Proxy(
   Obj.fromEntries(Obj.entries(srcObj).map(([k, v]) => [k, toState(v)])),
   {
     get: (obj, name) => name === statesSym ? obj : obj[name].val,
-    set: (obj, name, val) => (obj[name].val = toReactiveObj(val), 1),
+    set: (obj, name, val) => name in obj ?
+      (obj[name].val = toReactiveObj(val), 1) : Reflect.set(obj, name, state(toReactiveObj(val)))
   }
 )
 

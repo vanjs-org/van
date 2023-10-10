@@ -28,7 +28,7 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
   }
 
   const tests = {
-    reactive: withHiddenDom(async hiddenDom => {
+    reactive_basic: withHiddenDom(async hiddenDom => {
       const base = vanX.reactive({
         a: 1,
         b: 2,
@@ -89,7 +89,39 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       derived.b.squared = 101
       await sleep(waitMsOnDomUpdates)
       assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 21</code></div><div><code>10<sup>2</sup> = 101</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3,4,5 is 5.</div></div>')
-    })
+    }),
+
+    reactive_insertNewField: withHiddenDom(async hiddenDom => {
+      interface ObjWithName {
+        name: {first: string, last: string}
+      }
+      const base = vanX.reactive(<ObjWithName>{})
+      base.name = {first: "Tao", last: "Xin"}
+      const derived = vanX.reactive({
+        fullName: () => `${base.name.first} ${base.name.last}`,
+      })
+
+      van.add(hiddenDom,
+        div("Name: ", () => `${base.name.first} ${base.name.last}`),
+        // Directly using the state object
+        div("Full name: ", vanX.stateFields(derived).fullName),
+      )
+
+      assertEq(hiddenDom.innerHTML, '<div>Name: Tao Xin</div><div>Full name: Tao Xin</div>')
+
+      base.name.first = "Alexander"
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div>Name: Alexander Xin</div><div>Full name: Alexander Xin</div>')
+
+      base.name = {first: "Vanilla", last: "JavaScript"}
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div>')
+
+      base.name.first = "Van"
+      base.name.last = "JS"
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
+    }),
   }
 
   type Suite = Record<string, () => void | Promise<void>>
