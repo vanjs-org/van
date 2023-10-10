@@ -1,20 +1,12 @@
-export type PropsWithChildren<P> = P & {
-  children?: ComponentChildren | undefined;
+import { ChildDom } from "vanjs-core";
+
+export type PropsWithChildren<TProps> = TProps & {
+  children?: ChildDom | undefined;
 };
 
-export interface FunctionComponent<P = {}> {
-  (props: PropsWithChildren<P>, context?: any): Element | Element[] | null;
+export interface FunctionComponent<TProps = {}> {
+  (props: PropsWithChildren<TProps>, context?: any): ChildDom | null;
 }
 
-export type ComponentType<P = {}> = FunctionComponent<P>;
-export type FunctionChild<P> = (props: P) => Element;
-export type ComponentChild =
-  | FunctionChild<any>
-  | Element
-  | string
-  | number
-  | bigint
-  | boolean
-  | null
-  | undefined;
-export type ComponentChildren = ComponentChild[] | ComponentChild;
+export type ComponentType<TProps = {}> = FunctionComponent<TProps>;
+export type FunctionChild<TProps> = (props: TProps) => ChildDom;

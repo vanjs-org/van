@@ -1,6 +1,5 @@
 import * as CSS from "csstype";
-import { State } from "vanjs-core";
-import { ComponentChildren } from "./type";
+import { State, ChildDom } from "vanjs-core";
 
 export declare const jsx: (
   jsxTag: string | Function,
@@ -10,7 +9,7 @@ export declare const jsx: (
     ref,
     ...props
   }: {
-    children?: ComponentChildren;
+    children?: ChildDom;
     style?:
       | CSS.Properties<0 | (string & {}), string & {}>
       | (() => CSS.Properties)
