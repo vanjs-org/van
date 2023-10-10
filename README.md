@@ -125,7 +125,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [van_dml.js](https://github.com/vanjs-org/van/tree/main/addons/van_dml): adds a a new flavour of composition to **VanJS**. Author: [Eckehard](https://github.com/efpage).
 * [van-jsx](https://github.com/vanjs-org/van/tree/main/addons/van_jsx): a JSX wrapper for **VanJS**, for people who like the JSX syntax more. Author: [cqh963852](https://github.com/cqh963852).
 
-## Contributors (25)
+## Contributors (26)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
@@ -166,6 +166,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="http://danielupshaw.com/"><img src="https://avatars.githubusercontent.com/u/595446?v=4?s=100" width="100px;" alt="Daniel Upshaw"/><br /><sub><b>Daniel Upshaw</b></sub></a><br /><a href="#plugin-groovenectar" title="Plugin/utility libraries">🔌</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/barrymun"><img src="https://avatars.githubusercontent.com/u/15635312?v=4?s=100" width="100px;" alt="barrymun"/><br /><sub><b>barrymun</b></sub></a><br /><a href="#example-barrymun" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/eevleevs"><img src="https://avatars.githubusercontent.com/u/5012744?v=4?s=100" width="100px;" alt="Giulio Malventi"/><br /><sub><b>Giulio Malventi</b></sub></a><br /><a href="#content-eevleevs" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yahia-berashish"><img src="https://avatars.githubusercontent.com/u/74679313?v=4?s=100" width="100px;" alt="Yahia Berashish"/><br /><sub><b>Yahia Berashish</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Ayahia-berashish" title="Bug reports">🐛</a> <a href="https://github.com/vanjs-org/van/commits?author=yahia-berashish" title="Code">💻</a> <a href="#plugin-yahia-berashish" title="Plugin/utility libraries">🔌</a></td>
     </tr>
   </tbody>
 </table>

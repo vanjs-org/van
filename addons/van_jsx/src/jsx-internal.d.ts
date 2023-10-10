@@ -1,6 +1,6 @@
 import * as CSS from "csstype";
-import { State } from "vanjs-core";
-import { ComponentChildren, FunctionChild } from "./type";
+import { State, ChildDom } from "vanjs-core";
+import { FunctionChild } from "./type";
 
 type OriginalElement = HTMLElement;
 
@@ -8,12 +8,12 @@ export declare namespace JSX {
   type HTMLAttributes<T> = Partial<Omit<T, "style" | "children">> & {
     style?: CSS.Properties;
     ref?: State<T>;
-    children?: ComponentChildren;
+    children?: ChildDom;
   };
   type SVGAttributes<T> = Partial<Omit<T, "style" | "children">> & {
     style?: CSS.Properties;
     ref?: State<T>;
-    children?: ComponentChildren;
+    children?: ChildDom;
   };
   export type ElementType = string | FunctionChild<any>;
   export interface Element extends OriginalElement {}
