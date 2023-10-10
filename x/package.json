@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "description": "The official extension library for VanJS",
   "file": [
-    "dist/van-x.js",
-    "dist/van-x.d.ts"
+    "src/van-x.js",
+    "src/van-x.d.ts"
   ],
-  "main": "dist/van-x.js",
-  "browser": "dist/van-x.js",
+  "main": "src/van-x.js",
+  "browser": "src/van-x.js",
   "scripts": {
     "build": "bash scripts/build.sh"
   },

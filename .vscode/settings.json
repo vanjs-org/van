@@ -1,7 +1,8 @@
 {
   "deno.enablePaths": [
     "demo/terminal/server.ts",
-    "components/scripts"
+    "components/scripts",
+    "x/scripts"
   ],
   "cSpell.words": [
     "currentcolor",

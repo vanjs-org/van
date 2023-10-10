@@ -1369,8 +1369,7 @@
         if (debug && name.endsWith("_excludeDebug"))
           continue;
         ++window.numTests;
-        const result = van2.state("");
-        const msg = van2.state("");
+        const result = van2.state(""), msg = van2.state("");
         van2.add(msgDom2, div2(pre(`Running ${k}.${name}...`), pre(result), pre(" "), pre(button({ onclick: async () => {
           try {
             await func();
