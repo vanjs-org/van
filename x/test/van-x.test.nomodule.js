@@ -1,3 +1,4 @@
+window.numTests = 0;
 const runTests = async (van, vanX, file) => {
     const { button, code, div, h2, p, pre, sup } = van.tags;
     const assertEq = (lhs, rhs) => {
@@ -43,8 +44,27 @@ const runTests = async (van, vanX, file) => {
             });
             van.add(hiddenDom, div(p(code(() => `${base.a} * 2 = ${derived.a.double}`)), p(code(() => base.a, sup(2), " = ", () => derived.a.squared)), p(code(() => `${base.b} * 2 = ${derived.b.double}`)), p(code(() => base.b, sup(2), " = ", () => derived.b.squared)), p("Name: ", () => `${base.name.first} ${base.name.last}`), 
             // Directly using the state object
-            p("Full name: ", derived[vanX.statesSym].fullName), p("The length of ", () => base.list.toString(), " is ", () => derived.length, ".")));
-            assertEq(hiddenDom.innerHTML, '');
+            p("Full name: ", vanX.stateFields(derived).fullName), p("The length of ", () => base.list.toString(), " is ", () => derived.length, ".")));
+            assertEq(hiddenDom.innerHTML, '<div><p><code>1 * 2 = 2</code></p><p><code>1<sup>2</sup> = 1</code></p><p><code>2 * 2 = 4</code></p><p><code>2<sup>2</sup> = 4</code></p><p>Name: Tao Xin</p><p>Full name: Tao Xin</p><p>The length of 1,2,3 is 3.</p></div>');
+            base.a = 5;
+            base.b = 10;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<div><p><code>5 * 2 = 10</code></p><p><code>5<sup>2</sup> = 25</code></p><p><code>10 * 2 = 20</code></p><p><code>10<sup>2</sup> = 100</code></p><p>Name: Tao Xin</p><p>Full name: Tao Xin</p><p>The length of 1,2,3 is 3.</p></div>');
+            base.name = { first: "Vanilla", last: "JavaScript" };
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<div><p><code>5 * 2 = 10</code></p><p><code>5<sup>2</sup> = 25</code></p><p><code>10 * 2 = 20</code></p><p><code>10<sup>2</sup> = 100</code></p><p>Name: Vanilla JavaScript</p><p>Full name: Vanilla JavaScript</p><p>The length of 1,2,3 is 3.</p></div>');
+            base.name.first = "Van";
+            base.name.last = "JS";
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<div><p><code>5 * 2 = 10</code></p><p><code>5<sup>2</sup> = 25</code></p><p><code>10 * 2 = 20</code></p><p><code>10<sup>2</sup> = 100</code></p><p>Name: Van JS</p><p>Full name: Van JS</p><p>The length of 1,2,3 is 3.</p></div>');
+            base.list = [1, 2, 3, 4, 5];
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<div><p><code>5 * 2 = 10</code></p><p><code>5<sup>2</sup> = 25</code></p><p><code>10 * 2 = 20</code></p><p><code>10<sup>2</sup> = 100</code></p><p>Name: Van JS</p><p>Full name: Van JS</p><p>The length of 1,2,3,4,5 is 5.</p></div>');
+            // Validate we can alter the values deeply under `derived` object
+            derived.b.double = 21;
+            derived.b.squared = 101;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<div><p><code>5 * 2 = 10</code></p><p><code>5<sup>2</sup> = 25</code></p><p><code>10 * 2 = 21</code></p><p><code>10<sup>2</sup> = 101</code></p><p>Name: Van JS</p><p>Full name: Van JS</p><p>The length of 1,2,3,4,5 is 5.</p></div>');
         })
     };
     const suites = { tests };
@@ -78,4 +98,3 @@ const runTests = async (van, vanX, file) => {
         }
     }
 };
-export {};

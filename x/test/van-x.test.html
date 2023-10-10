@@ -32,17 +32,18 @@
 
     <script type="text/javascript" src="../../public/van-latest.nomodule.min.js"></script>
     <script type="text/javascript" src="van-x.test.nomodule.js"></script>
-    <script type="text/javascript" src="van-x.nomodule.js"></script>
+    <script type="text/javascript" src="../dist/van-x.nomodule.js"></script>
     <script>
-      runTests(van, vanX, "van-x.nomodule.js")
+      vanXDev = vanX
     </script>
-    <script type="text/javascript" src="van-x.nomodule.min.js"></script>
+    <script type="text/javascript" src="../dist/van-x.nomodule.min.js"></script>
     <script>
-      runTests(van, vanX, "van-x.nomodule.min.js")
-    </script>
-    <script>
-      document.getElementById("numTests").innerText = window.numTests
-      document.getElementById("endMsg").style.display = ""
+      (async () => {
+        await runTests(van, vanXDev, "van-x.nomodule.js")
+        await runTests(van, vanX, "van-x.nomodule.min.js")
+        document.getElementById("numTests").innerText = window.numTests
+        document.getElementById("endMsg").style.display = ""
+      })()
     </script>
   </body>
 </html>
