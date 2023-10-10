@@ -246,6 +246,17 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "yahia-berashish",
+      "name": "Yahia Berashish",
+      "avatar_url": "https://avatars.githubusercontent.com/u/74679313?v=4",
+      "profile": "https://github.com/yahia-berashish",
+      "contributions": [
+        "bug",
+        "code",
+        "plugin"
+      ]
     }
   ],
   "repoType": "github"
