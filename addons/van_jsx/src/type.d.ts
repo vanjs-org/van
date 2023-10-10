@@ -1,3 +1,5 @@
+import { State } from "vanjs-core";
+
 export type PropsWithChildren<P> = P & {
   children?: ComponentChildren | undefined;
 };
@@ -9,6 +11,7 @@ export interface FunctionComponent<P = {}> {
 export type ComponentType<P = {}> = FunctionComponent<P>;
 export type FunctionChild<P> = (props: P) => Element;
 export type ComponentChild =
+  | State
   | FunctionChild<any>
   | Element
   | string
