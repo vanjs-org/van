@@ -1,0 +1,19 @@
+{
+  "name": "van-x-example-reactive",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "terser": "^5.21.0",
+    "vanjs-core": "^1.2.1",
+    "vanjs-ext": "0.1.0-rc.1"
+  }
+}

@@ -14,7 +14,7 @@
     Obj.fromEntries(Obj.entries(srcObj).map(([k, v]) => [k, toState(v)])),
     {
       get: (obj, name) => name === statesSym ? obj : obj[name].val,
-      set: (obj, name, val) => obj[name].val = toReactiveObj(val),
+      set: (obj, name, val) => (obj[name].val = toReactiveObj(val), 1),
     }
   )
   let stateFields = obj => obj[statesSym]
