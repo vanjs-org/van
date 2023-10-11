@@ -41,12 +41,18 @@
           ([k, v]) => doms[k] = itemFunc(v, () => delete obj[k])))
       }
       if (s.val === s.oldVal) return dom
-      let oldObj = derived.oldVal, oldDoms = oldObj[domsSym], insertedKeys = new Set
+      let oldObj = derived.oldVal, oldDoms = oldObj[domsSym], insertedKeys = new Set, doms = obj[domsSym] = {}
       for (let k in oldObj) k in obj || delete oldObj[k]
       let oldKeys = Obj.keys(oldObj), oldKeyIndex = 0
       for (let [k, v] of Obj.entries(obj))
         if (k in oldKeys) {
-          oldObj[k]
+          oldObj[k].val = v.val
+          if (k === oldKeys[oldKeyIndex])
+            do {} while (insertedKeys.has(oldKeys[++oldKeyIndex]))
+          else {
+            dom.insertBefore(oldDoms, oldDoms[oldKeys[oldKeyIndex]])
+            insertedKeys.add(k)
+          }
         } else {
         }
       return dom

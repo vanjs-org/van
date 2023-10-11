@@ -114,7 +114,7 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       interface ObjWithFullName { fullName: string }
       const derived = vanX.reactive(<ObjWithFullName>{})
       assertEq(Object.keys(derived).toString(), "")
-      derived.fullName = <any>vanX.calc(() => `${base.name.first} ${base.name.last}`)
+      derived.fullName = vanX.calc(() => `${base.name.first} ${base.name.last}`)
       assertEq(Object.keys(derived).toString(), "fullName")
 
       van.add(hiddenDom,
