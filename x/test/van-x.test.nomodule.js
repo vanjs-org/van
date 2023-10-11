@@ -80,9 +80,10 @@ const runTests = async (van, vanX, file) => {
             base.name = { first: "Tao", last: "Xin" };
             assertEq(Object.keys(base).toString(), "name");
             assertEq(Object.keys(base.name).toString(), "first,last");
-            const derived = vanX.reactive({
-                fullName: vanX.calc(() => `${base.name.first} ${base.name.last}`),
-            });
+            const derived = vanX.reactive({});
+            assertEq(Object.keys(derived).toString(), "");
+            derived.fullName = vanX.calc(() => `${base.name.first} ${base.name.last}`);
+            assertEq(Object.keys(derived).toString(), "fullName");
             van.add(hiddenDom, div("Name: ", () => `${base.name.first} ${base.name.last}`), 
             // Directly using the state object
             div("Full name: ", vanX.stateFields(derived).fullName));

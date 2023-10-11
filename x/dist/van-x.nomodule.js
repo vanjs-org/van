@@ -2,8 +2,8 @@
   window.vanX = {}
   // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
   // Global variables - aliasing some builtin symbols to reduce the bundle size.
-  let Obj = Object, Ref = Reflect, {state, derive} = van
-  let statesSym = Symbol(), isCalcFunc = Symbol(), domsSym = Symbol()
+  let Obj = Object, Ref = Reflect, Sym = Symbol, {state, derive} = van
+  let statesSym = Sym(), isCalcFunc = Sym(), domsSym = Sym()
   let calc = f => (f[isCalcFunc] = 1, f)
   let toState = v => v[isCalcFunc] ? derive(() => reactive(v())) : state(reactive(v))
   let reactive = srcObj => {
@@ -16,7 +16,7 @@
         set: (obj, name, v) => {
           let states = obj[statesSym]
           return name in states ? (states[name].val = reactive(v), 1) : (
-            name in obj || Ref.set(states, name, state(reactive(v))),
+            name in obj || Ref.set(states, name, toState(v)),
             Ref.set(obj, name, v)
           )
         }
@@ -40,8 +40,15 @@
         return containerFunc(Obj.entries(obj).map(
           ([k, v]) => doms[k] = itemFunc(v, () => delete obj[k])))
       }
-      let oldObj = derived.oldVal, oldDoms = oldObj[domsSym]
+      if (s.val === s.oldVal) return dom
+      let oldObj = derived.oldVal, oldDoms = oldObj[domsSym], insertedKeys = new Set
       for (let k in oldObj) k in obj || delete oldObj[k]
+      let oldKeys = Obj.keys(oldObj), oldKeyIndex = 0
+      for (let [k, v] of Obj.entries(obj))
+        if (k in oldKeys) {
+          oldObj[k]
+        } else {
+        }
       return dom
     }
   }
