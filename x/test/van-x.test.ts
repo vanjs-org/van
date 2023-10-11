@@ -41,17 +41,23 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       const derived = vanX.reactive({
         // Derived individual fields
         a: {
-          double: () => base.a * 2,
-          squared: () => base.a * base.a,
+          double: vanX.calc(() => base.a * 2),
+          squared: vanX.calc(() => base.a * base.a),
         },
         // Derived object
-        b: () => ({
+        b: vanX.calc(() => ({
           double: base.b * 2,
           squared: base.b * base.b,
-        }),
-        fullName: () => `${base.name.first} ${base.name.last}`,
-        length: () => base.list.length,
+        })),
+        fullName: vanX.calc(() => `${base.name.first} ${base.name.last}`),
+        list: vanX.calc(() => ({
+          length: base.list.length,
+          sum: base.list.reduce((acc, val) => acc + val, 0),
+        })),
       })
+
+      assertEq(Object.keys(base).toString(), "a,b,name,list")
+      assertEq(Object.keys(derived).toString(), "a,b,fullName,list")
 
       van.add(hiddenDom, div(
         div(code(() => `${base.a} * 2 = ${derived.a.double}`)),
@@ -61,34 +67,39 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
         div("Name: ", () => `${base.name.first} ${base.name.last}`),
         // Directly using the state object
         div("Full name: ", vanX.stateFields(derived).fullName),
-        div("The length of ", () => base.list.toString(), " is ", () => derived.length, "."),
+        div("The length of ", () => base.list.toString(), " is ", () => derived.list.length, "."),
+        div("The sum of ", () => base.list.toString(), " is ", () => derived.list.sum, "."),
       ))
 
-      assertEq(hiddenDom.innerHTML, '<div><div><code>1 * 2 = 2</code></div><div><code>1<sup>2</sup> = 1</code></div><div><code>2 * 2 = 4</code></div><div><code>2<sup>2</sup> = 4</code></div><div>Name: Tao Xin</div><div>Full name: Tao Xin</div><div>The length of 1,2,3 is 3.</div></div>')
+      assertEq(hiddenDom.innerHTML, '<div><div><code>1 * 2 = 2</code></div><div><code>1<sup>2</sup> = 1</code></div><div><code>2 * 2 = 4</code></div><div><code>2<sup>2</sup> = 4</code></div><div>Name: Tao Xin</div><div>Full name: Tao Xin</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>')
 
       base.a = 5
       base.b = 10
       await sleep(waitMsOnDomUpdates)
-      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Tao Xin</div><div>Full name: Tao Xin</div><div>The length of 1,2,3 is 3.</div></div>')
+      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Tao Xin</div><div>Full name: Tao Xin</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>')
 
       base.name = {first: "Vanilla", last: "JavaScript"}
       await sleep(waitMsOnDomUpdates)
-      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div><div>The length of 1,2,3 is 3.</div></div>')
+      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>')
 
       base.name.first = "Van"
       base.name.last = "JS"
       await sleep(waitMsOnDomUpdates)
-      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3 is 3.</div></div>')
+      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>')
 
       base.list = [1, 2, 3, 4, 5]
       await sleep(waitMsOnDomUpdates)
-      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3,4,5 is 5.</div></div>')
+      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3,4,5 is 5.</div><div>The sum of 1,2,3,4,5 is 15.</div></div>')
+
+      base.list[2] = 5
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,5,4,5 is 5.</div><div>The sum of 1,2,5,4,5 is 17.</div></div>')
 
       // Validate we can alter the values deeply under `derived` object
       derived.b.double = 21
       derived.b.squared = 101
       await sleep(waitMsOnDomUpdates)
-      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 21</code></div><div><code>10<sup>2</sup> = 101</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3,4,5 is 5.</div></div>')
+      assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 21</code></div><div><code>10<sup>2</sup> = 101</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,5,4,5 is 5.</div><div>The sum of 1,2,5,4,5 is 17.</div></div>')
     }),
 
     reactive_insertNewField: withHiddenDom(async hiddenDom => {
@@ -96,9 +107,12 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
         name: {first: string, last: string}
       }
       const base = vanX.reactive(<ObjWithName>{})
+      assertEq(Object.keys(base).toString(), "")
       base.name = {first: "Tao", last: "Xin"}
+      assertEq(Object.keys(base).toString(), "name")
+      assertEq(Object.keys(base.name).toString(), "first,last")
       const derived = vanX.reactive({
-        fullName: () => `${base.name.first} ${base.name.last}`,
+        fullName: vanX.calc(() => `${base.name.first} ${base.name.last}`),
       })
 
       van.add(hiddenDom,
@@ -119,6 +133,58 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       base.name.first = "Van"
       base.name.last = "JS"
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
+    }),
+
+    reactive_existingClassWithMethod: withHiddenDom(async hiddenDom => {
+      class Person {
+        constructor(public firstName: string, public lastName: string) {}
+        fullName() { return `${this.firstName} ${this.lastName}` }
+      }
+
+      const person = vanX.reactive(new Person("Tao", "Xin"))
+
+      van.add(hiddenDom,
+        div("Name: ", () => `${person.firstName} ${person.lastName}`),
+        div("Full name: ", () => person.fullName()),
+      )
+
+      assertEq(hiddenDom.innerHTML, '<div>Name: Tao Xin</div><div>Full name: Tao Xin</div>')
+
+      person.firstName = "Vanilla"
+      person.lastName = "JavaScript"
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div>')
+
+      person.firstName = "Van"
+      person.lastName = "JS"
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
+    }),
+
+    reactive_existingClassWithCustomGet: withHiddenDom(async hiddenDom => {
+      class Person {
+        constructor(public firstName: string, public lastName: string) {}
+        get fullName() { return `${this.firstName} ${this.lastName}` }
+      }
+
+      const person = vanX.reactive(new Person("Tao", "Xin"))
+
+      van.add(hiddenDom,
+        div("Name: ", () => `${person.firstName} ${person.lastName}`),
+        div("Full name: ", () => person.fullName),
+      )
+
+      assertEq(hiddenDom.innerHTML, '<div>Name: Tao Xin</div><div>Full name: Tao Xin</div>')
+
+      person.firstName = "Vanilla"
+      person.lastName = "JavaScript"
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div>')
+
+      person.firstName = "Van"
+      person.lastName = "JS"
       await sleep(waitMsOnDomUpdates)
       assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
     }),

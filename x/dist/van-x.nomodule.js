@@ -2,24 +2,33 @@
   window.vanX = {}
   // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
   // Global variables - aliasing some builtin symbols to reduce the bundle size.
-  let Obj = Object, protoOf = Obj.getPrototypeOf, funcProto = protoOf(protoOf), {state, derive, val} = van
-  let statesSym = Symbol(), domsSym = Symbol()
-  let toReactiveObj = v => v instanceof Obj ? reactive(v) : v
-  let toState = v => protoOf(v ?? 0) === funcProto ?
-    derive(() => toReactiveObj(v())) : state(toReactiveObj(v))
-  let reactive = srcObj => new Proxy(
-    Obj.fromEntries(Obj.entries(srcObj).map(([k, v]) => [k, toState(v)])),
-    {
-      get: (obj, name) => name === statesSym ? obj : val(obj[name]),
-      set: (obj, name, v) => name in obj ?
-        (obj[name].val = toReactiveObj(v), 1) : Reflect.set(obj, name, state(toReactiveObj(v)))
-    },
-  )
+  let Obj = Object, Ref = Reflect, {state, derive} = van
+  let statesSym = Symbol(), isCalcFunc = Symbol(), domsSym = Symbol()
+  let calc = f => (f[isCalcFunc] = 1, f)
+  let toState = v => v[isCalcFunc] ? derive(() => reactive(v())) : state(reactive(v))
+  let reactive = srcObj => {
+    if (!(srcObj instanceof Obj)) return srcObj
+    let proxy = new Proxy(
+      (srcObj[statesSym] = Obj.fromEntries(Obj.entries(srcObj).map(([k, v]) => [k, toState(v)])),
+      srcObj),
+      {
+        get: (obj, name) => obj[statesSym][name]?.val ?? Ref.get(obj, name, proxy),
+        set: (obj, name, v) => {
+          let states = obj[statesSym]
+          return name in states ? (states[name].val = reactive(v), 1) : (
+            name in obj || Ref.set(states, name, state(reactive(v))),
+            Ref.set(obj, name, v)
+          )
+        }
+      },
+    )
+    return proxy
+  }
   let stateFields = obj => obj[statesSym]
   let withDeleteHandler = srcObj => new Proxy(srcObj,
     {
       deleteProperty: (obj, name) =>
-        Reflect.deleteProperty(obj, name) && (obj[domsSym][name].remove(), 1)
+        Ref.deleteProperty(obj, name) && (obj[domsSym][name].remove(), 1)
     },
   )
   let keyedItems = (containerFunc, s, itemFunc) => {
@@ -36,5 +45,5 @@
       return dom
     }
   }
-  window.vanX = {reactive, stateFields}
+  window.vanX = {calc, reactive, stateFields}
 }

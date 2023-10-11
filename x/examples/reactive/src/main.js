@@ -39,16 +39,19 @@ const Reactive = () => {
   const derived = vanX.reactive({
     // Derived individual fields
     a: {
-      double: () => base.a * 2,
-      squared: () => base.a * base.a,
+      double: vanX.calc(() => base.a * 2),
+      squared: vanX.calc(() => base.a * base.a),
     },
     // Derived object
-    b: () => ({
+    b: vanX.calc(() => ({
       double: base.b * 2,
       squared: base.b * base.b,
-    }),
-    fullName: () => `${base.name.first} ${base.name.last}`,
-    length: () => base.list.length,
+    })),
+    fullName: vanX.calc(() => `${base.name.first} ${base.name.last}`),
+    list: vanX.calc(() => ({
+      length: base.list.length,
+      sum: base.list.reduce((acc, val) => acc + Number(val), 0),
+    })),
   })
 
   return div(
@@ -66,7 +69,8 @@ const Reactive = () => {
     div("Name: ", () => `${base.name.first} ${base.name.last}`),
     // Directly using the state object
     div("Full name: ", vanX.stateFields(derived).fullName),
-    div("The length of ", () => base.list.toString(), " is ", () => derived.length, "."),
+    div("The length of ", () => base.list.toString(), " is ", () => derived.list.length, "."),
+    div("The sum of ", () => base.list.toString(), " is ", () => derived.list.sum, "."),
   )
 }
 
