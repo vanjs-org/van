@@ -15,7 +15,7 @@ export declare const reactive: <T extends object>(obj: T) => Reactive<T>
 export type StateOf<T> = { [K in keyof T]: State<_Reactive<T[K]>> }
 export declare const stateFields: <T extends object>(obj: Reactive<T>) => StateOf<T>
 
-export type ContainerFunc<Result extends Element> = (...dom: Node[]) => Result
+export type ContainerFunc<Result extends Element> = (doms: Node[]) => Result
 
 type ValueOf<T> = T[keyof T]
 type ValidKeyed = Reactive<object> | Record<string, State<any>>
