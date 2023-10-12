@@ -110,6 +110,10 @@ Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page
 * [How did **VanJS** get its name?](https://vanjs.org/about#name)
 
+## IDE Plug-ins
+
+* [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=TaoXin.vanjs-importtag)
+
 ## Support & Feedback
 
 🙏 **VanJS** aims to build a better world by reducing the entry barrier for UI programming, with no intention or plan on commercialization whatsoever. If you find **VanJS** interesting, or could be useful for you some day, please consider starring the project. It takes just a few seconds but your support means the world to us and helps spread **VanJS** to a wider audience.
