@@ -8,7 +8,7 @@ declare global {
 window.numTests = 0
 
 const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
-  const {button, code, div, h2, pre, sup} = van.tags
+  const {button, code, div, h2, li, pre, sup, ul} = van.tags
 
   const assertEq = (lhs: string | number | Node | undefined, rhs: string | number | Node | undefined) => {
     if (lhs !== rhs) throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}.`)
@@ -189,6 +189,72 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       person.lastName = "JS"
       await sleep(waitMsOnDomUpdates)
       assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
+    }),
+
+    keyedItems_arraySetItem: withHiddenDom(async hiddenDom => {
+      {
+        const keyed = van.state([van.state(1), van.state(2), van.state(3)])
+        van.add(hiddenDom, vanX.keyedItems(ul, keyed, v => li(v)))
+
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
+
+        keyed.val[1].val = 5
+        await sleep(waitMsOnDomUpdates)
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>')
+
+        keyed.val[2].val = 6
+        await sleep(waitMsOnDomUpdates)
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>')
+      }
+
+      {
+        hiddenDom.firstChild!.remove()
+        const keyed = van.state(vanX.reactive([1, 2, 3]))
+        van.add(hiddenDom, vanX.keyedItems(ul, keyed, v => li(v)))
+
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
+
+        keyed.val[1] = 5
+        await sleep(waitMsOnDomUpdates)
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>')
+
+        keyed.val[2] = 6
+        await sleep(waitMsOnDomUpdates)
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>')
+      }
+    }),
+
+    keyedItems_objSetItem: withHiddenDom(async hiddenDom => {
+      {
+        const keyed = van.state({a: van.state(1), b: van.state(2), c: van.state(3)})
+        van.add(hiddenDom, vanX.keyedItems(ul, keyed, v => li(v)))
+
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
+
+        keyed.val.b.val = 5
+        await sleep(waitMsOnDomUpdates)
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>')
+
+        keyed.val.c.val = 6
+        await sleep(waitMsOnDomUpdates)
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>')
+      }
+
+      {
+        hiddenDom.firstChild!.remove()
+        const keyed = van.state(vanX.reactive({a: 1, b: 2, c: 3}))
+        van.add(hiddenDom, vanX.keyedItems(ul, keyed, v => li(v)))
+
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
+
+        keyed.val.b = 5
+        await sleep(waitMsOnDomUpdates)
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>')
+
+        keyed.val.c = 6
+        await sleep(waitMsOnDomUpdates)
+        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>')
+      }
     }),
   }
 

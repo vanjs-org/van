@@ -73,4 +73,4 @@ let keyedItems = (containerFunc, s, itemFunc) => {
   }
 }
 
-export {calc, reactive, stateFields}
+export {calc, reactive, stateFields, keyedItems}
