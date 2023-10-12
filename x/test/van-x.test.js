@@ -193,6 +193,42 @@ const runTests = async (van, vanX, file) => {
                 assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>');
             }
         }),
+        keyedItems_arrayDelete: withHiddenDom(async (hiddenDom) => {
+            const keyed = van.state([van.state("a"), van.state("b"), van.state("c")]);
+            van.add(hiddenDom, vanX.keyedItems(ul, keyed, (v, deleter) => li(v, button({ onclick: deleter }, "❌"))));
+            assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li></ul>');
+            const deleteBtns = [...hiddenDom.querySelectorAll("button")];
+            deleteBtns[1].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>c<button>❌</button></li></ul>');
+            assertEq(Object.keys(keyed.val).toString(), "0,2");
+            deleteBtns[0].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>c<button>❌</button></li></ul>');
+            assertEq(Object.keys(keyed.val).toString(), "2");
+            deleteBtns[2].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul></ul>');
+            assertEq(Object.keys(keyed.val).toString(), "");
+        }),
+        keyedItems_objDelete: withHiddenDom(async (hiddenDom) => {
+            const keyed = van.state(vanX.reactive({ a: "a", b: "b", c: "c" }));
+            van.add(hiddenDom, vanX.keyedItems(ul, keyed, (v, deleter) => li(v, button({ onclick: deleter }, "❌"))));
+            assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li></ul>');
+            const deleteBtns = [...hiddenDom.querySelectorAll("button")];
+            deleteBtns[1].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>c<button>❌</button></li></ul>');
+            assertEq(Object.keys(keyed.val).toString(), "a,c");
+            deleteBtns[0].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>c<button>❌</button></li></ul>');
+            assertEq(Object.keys(keyed.val).toString(), "c");
+            deleteBtns[2].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul></ul>');
+            assertEq(Object.keys(keyed.val).toString(), "");
+        }),
     };
     const suites = { tests };
     const msgDom = van.add(document.getElementById("msgPanel"), h2("Running tests for ", file))

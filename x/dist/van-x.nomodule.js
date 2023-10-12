@@ -9,8 +9,10 @@
   let reactive = srcObj => {
     if (!(srcObj instanceof Obj)) return srcObj
     let proxy = new Proxy(
-      (srcObj[statesSym] = Obj.fromEntries(Obj.entries(srcObj).map(([k, v]) => [k, toState(v)])),
-      srcObj),
+      (srcObj[statesSym] = new Proxy(
+        Obj.fromEntries(Obj.entries(srcObj).map(([k, v]) => [k, toState(v)])),
+        { deleteProperty: (states, name) => Ref.deleteProperty(states, name) && Ref.deleteProperty(srcObj, name) }
+      ), srcObj),
       {
         get: (obj, name) => obj[statesSym][name]?.val ?? Ref.get(obj, name, proxy),
         set: (obj, name, v) => {
