@@ -39,7 +39,7 @@ let withDeleteHandler = srcObj => new Proxy(srcObj,
   },
 )
 
-let items = (containerFunc, s, itemFunc) => {
+let list = (containerFunc, s, itemFunc) => {
   let derived = derive(() => withDeleteHandler(s.val[statesSym] ?? s.val))
   return dom => {
     let obj = derived.val
@@ -76,4 +76,4 @@ let items = (containerFunc, s, itemFunc) => {
   }
 }
 
-export {calc, reactive, stateFields, items}
+export {calc, reactive, stateFields, list}

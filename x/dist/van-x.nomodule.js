@@ -32,7 +32,7 @@
       deleteProperty: (obj, name) => refDelete(obj, name) && (obj[domsSym][name].remove(), 1)
     },
   )
-  let items = (containerFunc, s, itemFunc) => {
+  let list = (containerFunc, s, itemFunc) => {
     let derived = derive(() => withDeleteHandler(s.val[statesSym] ?? s.val))
     return dom => {
       let obj = derived.val
@@ -65,5 +65,5 @@
       return dom
     }
   }
-  window.vanX = {calc, reactive, stateFields, items}
+  window.vanX = {calc, reactive, stateFields, list}
 }
