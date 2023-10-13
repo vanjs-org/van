@@ -1,6 +1,6 @@
 window.numTests = 0;
-const runTests = async (van, vanX, file) => {
-    const { a, button, code, div, h2, li, pre, sup, ul } = van.tags;
+window.runTests = async (van, vanX, file) => {
+    const { a, button, code, div, h2, li, pre, span, sup, ul } = van.tags;
     const assertEq = (lhs, rhs) => {
         if (lhs !== rhs)
             throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}.`);
@@ -470,6 +470,50 @@ const runTests = async (van, vanX, file) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(base.obj).toString(), "");
+        }),
+        keyedItems_replace_sortArray: withHiddenDom(async (hiddenDom) => {
+            const arr = Array.from({ length: 10 }).map((_, i) => i);
+            const shuffled = arr.toSorted(() => Math.random() - 0.5);
+            const keyed = van.state(shuffled.map(v => van.state(v.toString())));
+            van.add(hiddenDom, vanX.keyedItems(ul, keyed, (v, deleter) => li(span(v), button({ onclick: () => v.val += "!" }, "❗"), a({ onclick: deleter }, "❌"))));
+            assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), shuffled.toString());
+            keyed.val = arr.map(v => van.state(v.toString()));
+            // Wait longer to ensure all DOM updates are propagated
+            await sleep(longWaitMsOnDomUpdates);
+            assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), arr.toString());
+            // Validate increment and delete buttons still work in the new DOM tree
+            const incBtns = hiddenDom.querySelectorAll("button");
+            const deleteBtns = hiddenDom.querySelectorAll("a");
+            incBtns[2].click();
+            incBtns[5].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,6,7,8,9");
+            deleteBtns[6].click();
+            deleteBtns[8].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,7,9");
+        }),
+        keyedItems_replace_sortObj: withHiddenDom(async (hiddenDom) => {
+            const arr = Array.from({ length: 10 }).map((_, i) => i);
+            const shuffled = arr.toSorted(() => Math.random() - 0.5);
+            const keyed = van.state(vanX.reactive(Object.fromEntries(shuffled.map(v => ["k" + v, v.toString()]))));
+            van.add(hiddenDom, vanX.keyedItems(ul, keyed, (v, deleter) => li(span(v), button({ onclick: () => v.val += "!" }, "❗"), a({ onclick: deleter }, "❌"))));
+            assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), shuffled.toString());
+            keyed.val = vanX.reactive(Object.fromEntries(arr.map(v => ["k" + v, v.toString()])));
+            // Wait longer to ensure all DOM updates are propagated
+            await sleep(longWaitMsOnDomUpdates);
+            assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), arr.toString());
+            // Validate increment and delete buttons still work in the new DOM tree
+            const incBtns = hiddenDom.querySelectorAll("button");
+            const deleteBtns = hiddenDom.querySelectorAll("a");
+            incBtns[2].click();
+            incBtns[5].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,6,7,8,9");
+            deleteBtns[6].click();
+            deleteBtns[8].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,7,9");
         }),
     };
     const suites = { tests };
