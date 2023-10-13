@@ -39,8 +39,8 @@ let withDeleteHandler = srcObj => new Proxy(srcObj,
   },
 )
 
-let list = (containerFunc, s, itemFunc) => {
-  let derived = derive(() => withDeleteHandler(s.val[statesSym] ?? s.val))
+let list = (containerFunc, items, itemFunc) => {
+  let derived = derive(() => withDeleteHandler(items.val[statesSym] ?? items.val))
   return dom => {
     let obj = derived.val
     if (!dom) {
