@@ -191,10 +191,10 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
     }),
 
-    keyedItems_arraySetItem: withHiddenDom(async hiddenDom => {
+    items_arraySetItem: withHiddenDom(async hiddenDom => {
       {
         const keyed = van.state([van.state(1), van.state(2), van.state(3)])
-        van.add(hiddenDom, vanX.keyedItems(ul, keyed, v => li(v)))
+        van.add(hiddenDom, vanX.items(ul, keyed, v => li(v)))
 
         assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
@@ -210,7 +210,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       {
         hiddenDom.firstChild!.remove()
         const keyed = van.state(vanX.reactive([1, 2, 3]))
-        van.add(hiddenDom, vanX.keyedItems(ul, keyed, v => li(v)))
+        van.add(hiddenDom, vanX.items(ul, keyed, v => li(v)))
 
         assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
@@ -224,10 +224,10 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       }
     }),
 
-    keyedItems_objSetItem: withHiddenDom(async hiddenDom => {
+    items_objSetItem: withHiddenDom(async hiddenDom => {
       {
         const keyed = van.state({a: van.state(1), b: van.state(2), c: van.state(3)})
-        van.add(hiddenDom, vanX.keyedItems(ul, keyed, v => li(v)))
+        van.add(hiddenDom, vanX.items(ul, keyed, v => li(v)))
 
         assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
@@ -243,7 +243,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       {
         hiddenDom.firstChild!.remove()
         const keyed = van.state(vanX.reactive({a: 1, b: 2, c: 3}))
-        van.add(hiddenDom, vanX.keyedItems(ul, keyed, v => li(v)))
+        van.add(hiddenDom, vanX.items(ul, keyed, v => li(v)))
 
         assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
@@ -257,9 +257,9 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       }
     }),
 
-    keyedItems_arrayDelete: withHiddenDom(async hiddenDom => {
+    items_arrayDelete: withHiddenDom(async hiddenDom => {
       const keyed = van.state([van.state("a"), van.state("b"), van.state("c")])
-      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+      van.add(hiddenDom, vanX.items(ul, keyed,
         (v, deleter) => li(v, button({onclick: deleter}, "❌"))))
 
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li></ul>')
@@ -281,9 +281,9 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(keyed.val).toString(), "")
     }),
 
-    keyedItems_objDelete: withHiddenDom(async hiddenDom => {
+    items_objDelete: withHiddenDom(async hiddenDom => {
       const keyed = van.state(vanX.reactive({a: "a", b: "b", c: "c"}))
-      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+      van.add(hiddenDom, vanX.items(ul, keyed,
         (v, deleter) => li(v, button({onclick: deleter}, "❌"))))
 
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li></ul>')
@@ -305,9 +305,9 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(keyed.val).toString(), "")
     }),
 
-    keyedItems_replace_filterArray: withHiddenDom(async hiddenDom => {
+    items_replace_filterArray: withHiddenDom(async hiddenDom => {
       const base = vanX.reactive({list: [1, 2, 3]})
-      van.add(hiddenDom, vanX.keyedItems(ul, vanX.stateFields(base).list,
+      van.add(hiddenDom, vanX.items(ul, vanX.stateFields(base).list,
         (v, deleter) => li(v, button({onclick: () => ++v.val}, "👍"), a({onclick: deleter}, "❌"))
       ))
 
@@ -346,9 +346,9 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(base.list).toString(), "")
     }),
 
-    keyedItems_replace_filterObj: withHiddenDom(async hiddenDom => {
+    items_replace_filterObj: withHiddenDom(async hiddenDom => {
       const keyed = van.state({a: van.state(1), b: van.state(2), c: van.state(3)})
-      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+      van.add(hiddenDom, vanX.items(ul, keyed,
         (v, deleter) => li(v, button({onclick: () => ++v.val}, "👍"), a({onclick: deleter}, "❌"))
       ))
 
@@ -388,9 +388,9 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(keyed.val).toString(), "")
     }),
 
-    keyedItems_replace_updateArray: withHiddenDom(async hiddenDom => {
+    items_replace_updateArray: withHiddenDom(async hiddenDom => {
       const keyed = van.state(vanX.reactive([1, 2, 3]))
-      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+      van.add(hiddenDom, vanX.items(ul, keyed,
         (v, deleter) => li(v, button({onclick: () => ++v.val}, "👍"), a({onclick: deleter}, "❌"))
       ))
 
@@ -431,11 +431,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(keyed.val).toString(), "")
     }),
 
-    keyedItems_replace_updateObj: withHiddenDom(async hiddenDom => {
+    items_replace_updateObj: withHiddenDom(async hiddenDom => {
       const base = vanX.reactive({
         obj: {a: 1, b: 2, c: 3}
       })
-      van.add(hiddenDom, vanX.keyedItems(ul, vanX.stateFields(base).obj,
+      van.add(hiddenDom, vanX.items(ul, vanX.stateFields(base).obj,
         (v, deleter) => li(v, button({onclick: () => ++v.val}, "👍"), a({onclick: deleter}, "❌"))
       ))
 
@@ -476,9 +476,9 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(base.obj).toString(), "")
     }),
 
-    keyedItems_replace_doubleArray: withHiddenDom(async hiddenDom => {
+    items_replace_doubleArray: withHiddenDom(async hiddenDom => {
       const keyed = van.state([van.state("a"), van.state("b")])
-      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+      van.add(hiddenDom, vanX.items(ul, keyed,
         (v, deleter) => li(v, button({onclick: () => v.val += "!" }, "❗"), a({onclick: deleter}, "❌"))
       ))
 
@@ -526,9 +526,9 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(keyed.val).toString(), "")
     }),
 
-    keyedItems_replace_doubleObj: withHiddenDom(async hiddenDom => {
+    items_replace_doubleObj: withHiddenDom(async hiddenDom => {
       const keyed = van.state(vanX.reactive({a: "a", b: "b"}))
-      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+      van.add(hiddenDom, vanX.items(ul, keyed,
         (v, deleter) => li(v, button({onclick: () => v.val += "!" }, "❗"), a({onclick: deleter}, "❌"))
       ))
 
@@ -578,9 +578,9 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(keyed.val).toString(), "")
     }),
 
-    keyedItems_replace_doubleObj_prepend: withHiddenDom(async hiddenDom => {
+    items_replace_doubleObj_prepend: withHiddenDom(async hiddenDom => {
       const base = vanX.reactive({obj: {a: "a", b: "b"}})
-      van.add(hiddenDom, vanX.keyedItems(ul, vanX.stateFields(base).obj,
+      van.add(hiddenDom, vanX.items(ul, vanX.stateFields(base).obj,
         (v, deleter) => li(v, button({onclick: () => v.val += "!" }, "❗"), a({onclick: deleter}, "❌"))
       ))
 
@@ -630,12 +630,12 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(base.obj).toString(), "")
     }),
 
-    keyedItems_replace_sortArray: withHiddenDom(async hiddenDom => {
+    items_replace_sortArray: withHiddenDom(async hiddenDom => {
       const arr = Array.from({length: 10}).map((_, i) => i)
       const shuffled = arr.toSorted(() => Math.random() - 0.5)
       const keyed = van.state(shuffled.map(v => van.state(v.toString())))
 
-      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+      van.add(hiddenDom, vanX.items(ul, keyed,
         (v, deleter) => li(span(v), button({onclick: () => v.val += "!" }, "❗"), a({onclick: deleter}, "❌"))
       ))
 
@@ -673,14 +673,14 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       )
     }),
 
-    keyedItems_replace_sortObj: withHiddenDom(async hiddenDom => {
+    items_replace_sortObj: withHiddenDom(async hiddenDom => {
       const arr = Array.from({length: 10}).map((_, i) => i)
       const shuffled = arr.toSorted(() => Math.random() - 0.5)
       const keyed = van.state(vanX.reactive(Object.fromEntries(
         shuffled.map(v => ["k" + v, v.toString()])
       )))
 
-      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+      van.add(hiddenDom, vanX.items(ul, keyed,
         (v, deleter) => li(span(v), button({onclick: () => v.val += "!" }, "❗"), a({onclick: deleter}, "❌"))
       ))
 
