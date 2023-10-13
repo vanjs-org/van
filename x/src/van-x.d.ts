@@ -1,24 +1,25 @@
 import type { State } from "vanjs-core"
 
 declare const reactiveSym: unique symbol
-interface ReactiveMarker { [reactiveSym]?: 1 }
+export interface ReactiveObj { [reactiveSym]: never }
 
 type _Reactive<T> = T extends object ?
-  T extends Function ? T : { [K in keyof T]: _Reactive<T[K]> } & ReactiveMarker :
+  T extends Function ? T : T & ReactiveObj :
   T
+
 export type Reactive<T extends object> = _Reactive<T>
-export type DeReactive<T extends ReactiveMarker> = Omit<T, typeof reactiveSym>
+export type DeReactive<T> = T extends ReactiveObj ? Omit<T, typeof reactiveSym> : T
 
 export declare const calc: <R>(f: () => R) => R
 export declare const reactive: <T extends object>(obj: T) => Reactive<T>
 
 export type StateOf<T> = { [K in keyof T]: State<_Reactive<T[K]>> }
-export declare const stateFields: <T extends object>(obj: Reactive<T>) => StateOf<T>
+export declare const stateFields: <T extends Reactive<object>>(obj: T) => StateOf<DeReactive<T>>
 
 export type ContainerFunc<Result extends Element> = (doms: Node[]) => Result
 
 type ValueOf<T> = T[keyof T]
-type ValidKeyed = Reactive<object> | Record<string, State<any>>
+type ValidKeyed = State<any>[] | Record<string, State<any>> | ReactiveObj
 export type ValueType<T extends ValidKeyed> =
   T extends State<infer V>[] ? V :
   T extends Record<string, State<infer V>> ? V :

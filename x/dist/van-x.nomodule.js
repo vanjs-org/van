@@ -41,17 +41,18 @@
         return containerFunc(Obj.entries(obj).map(
           ([k, v]) => doms[k] = itemFunc(v, () => delete derived.val[k])))
       }
-      if (s.val === s.oldVal) return dom
-      let oldObj = derived.oldVal, itemDoms = obj[domsSym] = oldObj[domsSym], insertedKeys = new Set
+      let oldObj = derived.oldVal
+      if (obj === oldObj) return dom
+      let itemDoms = obj[domsSym] = oldObj[domsSym], insertedKeys = new Set
       for (let k in oldObj) k in obj || (delete oldObj[k], delete itemDoms[k])
-      let oldKeys = Obj.keys(oldObj), oldKeyIndex = 0
+      let oldKeys = Obj.keys(oldObj), oldKeyIndex = 0, changedItems = []
       for (let [k, v] of Obj.entries(obj)) {
         let curOldKey = oldKeys[oldKeyIndex]
-        if (k in oldKeys) {
-          oldObj[k].val = v.val
-          obj[k] = oldObj[k]
+        if (k in oldObj) {
+          let itemState = obj[k] = oldObj[k]
+          itemState.val !== v.val && changedItems.push([itemState, v.val])
           if (k === curOldKey)
-            do {} while (insertedKeys.has(oldKeys[++oldKeyIndex]))
+            while (insertedKeys.has(oldKeys[++oldKeyIndex]));
           else {
             dom.insertBefore(itemDoms[k], itemDoms[curOldKey])
             insertedKeys.add(k)
@@ -60,6 +61,7 @@
           dom.insertBefore(itemDoms[k] = itemFunc(v, () => delete derived.val[k]),
             itemDoms[curOldKey])
       }
+      setTimeout(() => { for (let [k, v] of changedItems) k.val = v })
       return dom
     }
   }

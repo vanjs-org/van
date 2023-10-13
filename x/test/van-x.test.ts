@@ -8,14 +8,14 @@ declare global {
 window.numTests = 0
 
 const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
-  const {button, code, div, h2, li, pre, sup, ul} = van.tags
+  const {a, button, code, div, h2, li, pre, sup, ul} = van.tags
 
   const assertEq = (lhs: string | number | Node | undefined, rhs: string | number | Node | undefined) => {
     if (lhs !== rhs) throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}.`)
   }
 
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-  const waitMsOnDomUpdates = 5
+  const waitMsOnDomUpdates = 5, longWaitMsOnDomUpdates = 20
 
   const withHiddenDom = (func: (dom: Element) => void | Promise<void>) => async () => {
     const dom = div({class: "hidden"})
@@ -264,7 +264,7 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li></ul>')
 
-      const deleteBtns = [...hiddenDom.querySelectorAll("button")]
+      const deleteBtns = hiddenDom.querySelectorAll("button")
       deleteBtns[1].click()
       await sleep(waitMsOnDomUpdates)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>c<button>❌</button></li></ul>')
@@ -288,7 +288,7 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li></ul>')
 
-      const deleteBtns = [...hiddenDom.querySelectorAll("button")]
+      const deleteBtns = hiddenDom.querySelectorAll("button")
       deleteBtns[1].click()
       await sleep(waitMsOnDomUpdates)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>c<button>❌</button></li></ul>')
@@ -303,6 +303,331 @@ const runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       await sleep(waitMsOnDomUpdates)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(keyed.val).toString(), "")
+    }),
+
+    keyedItems_replace_filterArray: withHiddenDom(async hiddenDom => {
+      const base = vanX.reactive({list: [1, 2, 3]})
+      van.add(hiddenDom, vanX.keyedItems(ul, vanX.stateFields(base).list,
+        (v, deleter) => li(v, button({onclick: () => ++v.val}, "👍"), a({onclick: deleter}, "❌"))
+      ))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>')
+
+      let incBtns = hiddenDom.querySelectorAll("button")
+      incBtns[0].click()
+      incBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
+
+      incBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
+
+      base.list = base.list.filter(v => v % 2 === 0)
+      // Wait longer to ensure all DOM updates are propagated
+      await sleep(longWaitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
+
+      // Validate increment and delete buttons still work in the new DOM tree
+      incBtns = hiddenDom.querySelectorAll("button")
+      const deleteBtns = hiddenDom.querySelectorAll("a")
+      incBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>5<button>👍</button><a>❌</a></li></ul>')
+
+      deleteBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>5<button>👍</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(base.list).toString(), "1")
+
+      deleteBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul></ul>')
+      assertEq(Object.keys(base.list).toString(), "")
+    }),
+
+    keyedItems_replace_filterObj: withHiddenDom(async hiddenDom => {
+      const keyed = van.state({a: van.state(1), b: van.state(2), c: van.state(3)})
+      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+        (v, deleter) => li(v, button({onclick: () => ++v.val}, "👍"), a({onclick: deleter}, "❌"))
+      ))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>')
+
+      let incBtns = hiddenDom.querySelectorAll("button")
+      incBtns[0].click()
+      incBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
+
+      incBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
+
+      keyed.val = <any>Object.fromEntries(
+        Object.entries(keyed.val).filter((([_, v]) => v.val % 2 === 0)))
+      // Wait longer to ensure all DOM updates are propagated
+      await sleep(longWaitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
+
+      // Validate increment and delete buttons still work in the new DOM tree
+      incBtns = hiddenDom.querySelectorAll("button")
+      const deleteBtns = hiddenDom.querySelectorAll("a")
+      incBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>5<button>👍</button><a>❌</a></li></ul>')
+
+      deleteBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>5<button>👍</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "c")
+
+      deleteBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "")
+    }),
+
+    keyedItems_replace_updateArray: withHiddenDom(async hiddenDom => {
+      const keyed = van.state(vanX.reactive([1, 2, 3]))
+      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+        (v, deleter) => li(v, button({onclick: () => ++v.val}, "👍"), a({onclick: deleter}, "❌"))
+      ))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>')
+
+      let incBtns = hiddenDom.querySelectorAll("button")
+      incBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>')
+
+      keyed.val = vanX.reactive(keyed.val.map(v => v * 2))
+      // Wait longer to ensure all DOM updates are propagated
+      await sleep(longWaitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li></ul>')
+
+      // Validate increment and delete buttons still work in the new DOM tree
+      incBtns = hiddenDom.querySelectorAll("button")
+      const deleteBtns = hiddenDom.querySelectorAll("a")
+
+      incBtns[0].click()
+      incBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>')
+
+      deleteBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "0,2")
+
+      deleteBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "0")
+
+      deleteBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "")
+    }),
+
+    keyedItems_replace_updateObj: withHiddenDom(async hiddenDom => {
+      const base = vanX.reactive({
+        obj: {a: 1, b: 2, c: 3}
+      })
+      van.add(hiddenDom, vanX.keyedItems(ul, vanX.stateFields(base).obj,
+        (v, deleter) => li(v, button({onclick: () => ++v.val}, "👍"), a({onclick: deleter}, "❌"))
+      ))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>')
+
+      let incBtns = hiddenDom.querySelectorAll("button")
+      incBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>')
+
+      base.obj = <any>Object.fromEntries(Object.entries(base.obj).map(([k, v]) => [k, v * 2]))
+      // Wait longer to ensure all DOM updates are propagated
+      await sleep(longWaitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li></ul>')
+
+      // Validate increment and delete buttons still work in the new DOM tree
+      incBtns = hiddenDom.querySelectorAll("button")
+      const deleteBtns = hiddenDom.querySelectorAll("a")
+
+      incBtns[0].click()
+      incBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>')
+
+      deleteBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(base.obj).toString(), "a,c")
+
+      deleteBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(base.obj).toString(), "a")
+
+      deleteBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul></ul>')
+      assertEq(Object.keys(base.obj).toString(), "")
+    }),
+
+    keyedItems_replace_doubleArray: withHiddenDom(async hiddenDom => {
+      const keyed = van.state([van.state("a"), van.state("b")])
+      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+        (v, deleter) => li(v, button({onclick: () => v.val += "!" }, "❗"), a({onclick: deleter}, "❌"))
+      ))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b<button>❗</button><a>❌</a></li></ul>')
+
+      let incBtns = hiddenDom.querySelectorAll("button")
+      incBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
+
+      keyed.val = keyed.val.flatMap(v => [van.state(v.val), van.state(v.val + "-2")])
+      // Wait longer to ensure all DOM updates are propagated
+      await sleep(longWaitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>a-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li></ul>')
+
+      // Validate increment and delete buttons still work in the new DOM tree
+      incBtns = hiddenDom.querySelectorAll("button")
+      const deleteBtns = hiddenDom.querySelectorAll("a")
+
+      incBtns[1].click()
+      incBtns[3].click()
+      incBtns[2].click()
+      incBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>a-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
+
+      deleteBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "0,2,3")
+
+      deleteBtns[3].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "0,2")
+
+      deleteBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "0")
+
+      deleteBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "")
+    }),
+
+    keyedItems_replace_doubleObj: withHiddenDom(async hiddenDom => {
+      const keyed = van.state(vanX.reactive({a: "a", b: "b"}))
+      van.add(hiddenDom, vanX.keyedItems(ul, keyed,
+        (v, deleter) => li(v, button({onclick: () => v.val += "!" }, "❗"), a({onclick: deleter}, "❌"))
+      ))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b<button>❗</button><a>❌</a></li></ul>')
+
+      let incBtns = hiddenDom.querySelectorAll("button")
+      incBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
+
+      keyed.val = <any>vanX.reactive(Object.fromEntries(Object.entries(keyed.val).flatMap(
+        ([k, v]) => [[k, v], [k + "-2", v + "-2"]]
+      )))
+      // Wait longer to ensure all DOM updates are propagated
+      await sleep(longWaitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>a-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li></ul>')
+
+      // Validate increment and delete buttons still work in the new DOM tree
+      incBtns = hiddenDom.querySelectorAll("button")
+      const deleteBtns = hiddenDom.querySelectorAll("a")
+
+      incBtns[1].click()
+      incBtns[3].click()
+      incBtns[2].click()
+      incBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>a-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
+
+      deleteBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "a,b,b-2")
+
+      deleteBtns[3].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "a,b")
+
+      deleteBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "a")
+
+      deleteBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul></ul>')
+      assertEq(Object.keys(keyed.val).toString(), "")
+    }),
+
+    keyedItems_replace_doubleObj_prepend: withHiddenDom(async hiddenDom => {
+      const base = vanX.reactive({obj: {a: "a", b: "b"}})
+      van.add(hiddenDom, vanX.keyedItems(ul, vanX.stateFields(base).obj,
+        (v, deleter) => li(v, button({onclick: () => v.val += "!" }, "❗"), a({onclick: deleter}, "❌"))
+      ))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b<button>❗</button><a>❌</a></li></ul>')
+
+      let incBtns = hiddenDom.querySelectorAll("button")
+      incBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
+
+      base.obj = <any>Object.fromEntries(Object.entries(base.obj).flatMap(
+        ([k, v]) => [[k + "-2", v + "-2"], [k, v]]
+      ))
+      // Wait longer to ensure all DOM updates are propagated
+      await sleep(longWaitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a-2<button>❗</button><a>❌</a></li><li>a<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
+
+      // Validate increment and delete buttons still work in the new DOM tree
+      incBtns = hiddenDom.querySelectorAll("button")
+      const deleteBtns = hiddenDom.querySelectorAll("a")
+
+      incBtns[1].click()
+      incBtns[3].click()
+      incBtns[2].click()
+      incBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>a!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
+
+      deleteBtns[1].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(base.obj).toString(), "a-2,b-2,b")
+
+      deleteBtns[3].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(base.obj).toString(), "a-2,b-2")
+
+      deleteBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li></ul>')
+      assertEq(Object.keys(base.obj).toString(), "a-2")
+
+      deleteBtns[0].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul></ul>')
+      assertEq(Object.keys(base.obj).toString(), "")
     }),
   }
 
