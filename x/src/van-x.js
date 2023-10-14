@@ -11,7 +11,7 @@ let calc = f => (f[isCalcFunc] = 1, f)
 let toState = v => v[isCalcFunc] ? derive(() => reactive(v())) : state(reactive(v))
 
 let reactive = srcObj => {
-  if (!(srcObj instanceof Obj)) return srcObj
+  if (!(srcObj instanceof Obj) || srcObj[statesSym]) return srcObj
   let proxy = new Proxy(
     (srcObj[statesSym] = new Proxy(
       Obj.fromEntries(Obj.entries(srcObj).map(([k, v]) => [k, toState(v)])),

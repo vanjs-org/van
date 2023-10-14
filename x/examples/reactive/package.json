@@ -14,6 +14,6 @@
   "dependencies": {
     "terser": "^5.21.0",
     "vanjs-core": "^1.2.1",
-    "vanjs-ext": "^0.1.0-rc.3"
+    "vanjs-ext": "^0.1.0-rc.4"
   }
 }

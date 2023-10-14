@@ -13,10 +13,9 @@ const TodoList = () => {
   const inputDom = input({type: "text"})
   let id = 0
 
-  const addItem = (text: string) => data.items = {
-    ...data.items,
-    ["k" + ++id]: {text, done: false},
-  }
+  const addItem = (text: string) => data.items = Object.fromEntries(
+    Object.entries(data.items).concat([["k" + ++id, {text, done: false}]])
+  )
 
   const clearCompleted = () => data.items = Object.fromEntries(
     Object.entries(data.items).filter((([_, v]) => !v.done))
@@ -31,9 +30,9 @@ const TodoList = () => {
   )
 
   const duplicateList = () => data.items = Object.fromEntries(
-    Object.entries(data.items).flatMap(([k, {text, done}]) => [
-      [k, {text, done}],
-      ["k" + ++id, {text: text + " - copy", done}],
+    Object.entries(data.items).flatMap(([k, v]) => [
+      [k, v],
+      ["k" + ++id, {text: v.text + " - copy", done: v.done}],
     ])
   )
 
