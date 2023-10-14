@@ -325,15 +325,15 @@ window.runTests = async (van, vanX, file) => {
         }),
         list_replace_updateObj: withHiddenDom(async (hiddenDom) => {
             const base = vanX.reactive({
-                obj: { a: 1, b: 2, c: 3 }
+                items: { a: 1, b: 2, c: 3 }
             });
-            van.add(hiddenDom, vanX.list(ul, vanX.stateFields(base).obj, (v, deleter) => li(v, button({ onclick: () => ++v.val }, "👍"), a({ onclick: deleter }, "❌"))));
+            van.add(hiddenDom, vanX.list(ul, vanX.stateFields(base).items, (v, deleter) => li(v, button({ onclick: () => ++v.val }, "👍"), a({ onclick: deleter }, "❌"))));
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>');
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[1].click();
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>');
-            base.obj = Object.fromEntries(Object.entries(base.obj).map(([k, v]) => [k, v * 2]));
+            base.items = Object.fromEntries(Object.entries(base.items).map(([k, v]) => [k, v * 2]));
             // Wait longer to ensure all DOM updates are propagated
             await sleep(longWaitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li></ul>');
@@ -347,15 +347,15 @@ window.runTests = async (van, vanX, file) => {
             deleteBtns[1].click();
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>');
-            assertEq(Object.keys(base.obj).toString(), "a,c");
+            assertEq(Object.keys(base.items).toString(), "a,c");
             deleteBtns[2].click();
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li></ul>');
-            assertEq(Object.keys(base.obj).toString(), "a");
+            assertEq(Object.keys(base.items).toString(), "a");
             deleteBtns[0].click();
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
-            assertEq(Object.keys(base.obj).toString(), "");
+            assertEq(Object.keys(base.items).toString(), "");
         }),
         list_replace_doubleArray: withHiddenDom(async (hiddenDom) => {
             const items = van.state([van.state("a"), van.state("b")]);
@@ -434,14 +434,14 @@ window.runTests = async (van, vanX, file) => {
             assertEq(Object.keys(items.val).toString(), "");
         }),
         list_replace_doubleObj_prepend: withHiddenDom(async (hiddenDom) => {
-            const base = vanX.reactive({ obj: { a: "a", b: "b" } });
-            van.add(hiddenDom, vanX.list(ul, vanX.stateFields(base).obj, (v, deleter) => li(v, button({ onclick: () => v.val += "!" }, "❗"), a({ onclick: deleter }, "❌"))));
+            const base = vanX.reactive({ items: { a: "a", b: "b" } });
+            van.add(hiddenDom, vanX.list(ul, vanX.stateFields(base).items, (v, deleter) => li(v, button({ onclick: () => v.val += "!" }, "❗"), a({ onclick: deleter }, "❌"))));
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b<button>❗</button><a>❌</a></li></ul>');
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[1].click();
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
-            base.obj = Object.fromEntries(Object.entries(base.obj).flatMap(([k, v]) => [[k + "-2", v + "-2"], [k, v]]));
+            base.items = Object.fromEntries(Object.entries(base.items).flatMap(([k, v]) => [[k + "-2", v + "-2"], [k, v]]));
             // Wait longer to ensure all DOM updates are propagated
             await sleep(longWaitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2<button>❗</button><a>❌</a></li><li>a<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
@@ -457,19 +457,19 @@ window.runTests = async (van, vanX, file) => {
             deleteBtns[1].click();
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>');
-            assertEq(Object.keys(base.obj).toString(), "a-2,b-2,b");
+            assertEq(Object.keys(base.items).toString(), "a-2,b-2,b");
             deleteBtns[3].click();
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>');
-            assertEq(Object.keys(base.obj).toString(), "a-2,b-2");
+            assertEq(Object.keys(base.items).toString(), "a-2,b-2");
             deleteBtns[2].click();
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li></ul>');
-            assertEq(Object.keys(base.obj).toString(), "a-2");
+            assertEq(Object.keys(base.items).toString(), "a-2");
             deleteBtns[0].click();
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
-            assertEq(Object.keys(base.obj).toString(), "");
+            assertEq(Object.keys(base.items).toString(), "");
         }),
         list_replace_sortArray: withHiddenDom(async (hiddenDom) => {
             const arr = Array.from({ length: 10 }).map((_, i) => i);

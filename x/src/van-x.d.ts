@@ -27,5 +27,5 @@ export type ValueType<T extends ValidKeyed> =
   T extends Reactive<infer O> ? ValueOf<DeReactive<O>> : unknown
 
 export declare const list: <T extends ValidKeyed, Result extends Element>
-  (containerFunc: ContainerFunc<Result>, s: State<T>,
+  (containerFunc: ContainerFunc<Result>, items: State<T>,
     itemFunc: (v: State<ValueType<T>>, deleter: () => void) => Node) => Result
