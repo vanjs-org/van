@@ -40,7 +40,8 @@
   }
   let addToContainer = (items, k, v, binding) =>
     add(binding._containerDom, toBindFunc(items, k, v, binding.f))
-  let onAdd = (items, k, v) => filterBindings(items).forEach(addToContainer.bind(items, k, v))
+  let onAdd = (items, k, v) => filterBindings(items).forEach(
+    addToContainer.bind(_undefined, items, k, v))
   let onDelete = (items, k) => {
     for (let b of filterBindings(items))
       [...b._containerDom.childNodes].find(dom => dom[keySym] === k)?.remove()

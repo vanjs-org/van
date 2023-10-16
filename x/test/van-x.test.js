@@ -176,6 +176,28 @@ window.runTests = async (van, vanX, file) => {
                 assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>');
             }
         }),
+        list_arrayAdd: withHiddenDom(async (hiddenDom) => {
+            const items = vanX.reactive([1, 2, 3]);
+            van.add(hiddenDom, vanX.list(ul, items, v => li(v)));
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            items.push(4);
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li></ul>');
+            items.push(5);
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li></ul>');
+        }),
+        list_objAdd: withHiddenDom(async (hiddenDom) => {
+            const items = vanX.reactive({ a: 1, b: 2, c: 3 });
+            van.add(hiddenDom, vanX.list(ul, items, v => li(v)));
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            items.d = 4;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li></ul>');
+            items.e = 5;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li></ul>');
+        }),
         list_arrayDelete: withHiddenDom(async (hiddenDom) => {
             const items = vanX.reactive(["a", "b", "c"]);
             van.add(hiddenDom, vanX.list(ul, items, (v, deleter) => li(v, button({ onclick: deleter }, "❌"))));
