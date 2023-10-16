@@ -13,19 +13,15 @@ export type DeReactive<T> = T extends ReactiveObj ? Omit<T, typeof reactiveSym> 
 export declare const calc: <R>(f: () => R) => R
 export declare const reactive: <T extends object>(obj: T) => Reactive<T>
 
-export type StateOf<T> = { [K in keyof T]: State<_Reactive<T[K]>> }
+export type StateOf<T> = { readonly [K in keyof T]: State<_Reactive<T[K]>> }
 export declare const stateFields: <T extends Reactive<object>>(obj: T) => StateOf<DeReactive<T>>
 
-export type ContainerFunc<Result extends Element> = (doms: Node[]) => Result
+export type ValueType<T> = T extends (infer V)[] ? V : T[keyof T]
+export declare const list: <T extends ReactiveObj, ElementType extends Element>
+  (containerFunc: () => ElementType, items: T,
+  itemFunc: (s: State<ValueType<T>>, deleter: () => void) => Node) => ElementType
 
-type ValueOf<T> = T[keyof T]
-type ValidKeyed = State<any>[] | Record<string, State<any>> | ReactiveObj
-export type ValueType<T extends ValidKeyed> =
-  T extends State<infer V>[] ? V :
-  T extends Record<string, State<infer V>> ? V :
-  T extends Reactive<(infer V)[]> ? V :
-  T extends Reactive<infer O> ? ValueOf<DeReactive<O>> : unknown
-
-export declare const list: <T extends ValidKeyed, Result extends Element>
-  (containerFunc: ContainerFunc<Result>, items: State<T>,
-    itemFunc: (v: State<ValueType<T>>, deleter: () => void) => Node) => Result
+export type ReplaceFunc<T> =
+  T extends (infer V)[] ? (items: V[]) => V[] :
+  (items: [string, T[keyof T]][]) => [string, T[keyof T]][]
+export declare const replace: <T extends Reactive>(items: T, f: ReplaceFunc<T>) => void
