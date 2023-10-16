@@ -440,6 +440,43 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
+        replace_doubleArray_prepend: withHiddenDom(async (hiddenDom) => {
+            const items = vanX.reactive(["a", "b"]);
+            van.add(hiddenDom, vanX.list(ul, items, (v, deleter) => li(v, button({ onclick: () => v.val += "!" }, "❗"), a({ onclick: deleter }, "❌"))));
+            assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b<button>❗</button><a>❌</a></li></ul>');
+            let incBtns = hiddenDom.querySelectorAll("button");
+            incBtns[1].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
+            vanX.replace(items, l => l.flatMap(v => [v + "-2", v]));
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>a-2<button>❗</button><a>❌</a></li><li>a<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
+            // Validate increment and delete buttons still work in the new DOM tree
+            incBtns = hiddenDom.querySelectorAll("button");
+            const deleteBtns = hiddenDom.querySelectorAll("a");
+            incBtns[1].click();
+            incBtns[3].click();
+            incBtns[2].click();
+            incBtns[0].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>a!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>');
+            deleteBtns[1].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>');
+            assertEq(Object.keys(items).toString(), "0,2,3");
+            deleteBtns[3].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>');
+            assertEq(Object.keys(items).toString(), "0,2");
+            deleteBtns[2].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li></ul>');
+            assertEq(Object.keys(items).toString(), "0");
+            deleteBtns[0].click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul></ul>');
+            assertEq(Object.keys(items).toString(), "");
+        }),
         replace_doubleObj_prepend: withHiddenDom(async (hiddenDom) => {
             const items = vanX.reactive({ a: "a", b: "b" });
             van.add(hiddenDom, vanX.list(ul, items, (v, deleter) => li(v, button({ onclick: () => v.val += "!" }, "❗"), a({ onclick: deleter }, "❌"))));
