@@ -2,8 +2,8 @@
   window.vanX = {}
   // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
   // Global variables - aliasing some builtin symbols to reduce the bundle size.
-  let Obj = Object, {get: refGet, set: refSet, deleteProperty: refDelete} = Reflect, Sym = Symbol, {state, derive, add, tags} = van, itemsToGc, gcCycleInMs = 1000, _undefined
-  let statesSym = Sym(), objSym = Sym(), isCalcFunc = Sym(), bindingsSym = Sym(), keySym = Sym()
+  let Obj = Object, {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect, Sym = Symbol, {state, derive, add, tags} = van, itemsToGc, gcCycleInMs = 1000, _undefined
+  let statesSym = Sym(), objSym = Sym(), isCalcFunc = Sym(), bindingsSym = Sym(), keysGenSym = Sym(), keySym = Sym()
   let calc = f => (f[isCalcFunc] = 1, f)
   let toState = v => v[isCalcFunc] ? derive(() => reactive(v())) : state(reactive(v))
   let reactive = srcObj => {
@@ -12,6 +12,7 @@
       (srcObj[statesSym] = Obj.fromEntries(Obj.entries(srcObj).map(([k, v]) => [k, toState(v)])),
       srcObj[objSym] = srcObj,
       srcObj[bindingsSym] = [],
+      srcObj[keysGenSym] = state(1),
       srcObj),
       {
         get: (obj, name) => obj[statesSym][name]?.val ?? refGet(obj, name, proxy),
@@ -20,13 +21,16 @@
           if (name in states) return states[name].val = reactive(v), 1
           let existingKey = name in obj
           if (!refSet(obj, name, v)) return
-          existingKey || refSet(states, name, toState(v)) && onAdd(obj, name, states[name])
+          existingKey ||
+            refSet(states, name, toState(v)) &&
+            (++obj[keysGenSym].val, onAdd(obj, name, states[name]))
           return 1
         },
         deleteProperty: (obj, name) => (
           refDelete(obj[statesSym], name) && onDelete(obj, name),
-          refDelete(obj, name)
+          refDelete(obj, name) && ++obj[keysGenSym].val
         ),
+        ownKeys: obj => (obj[keysGenSym].val, refOwnKeys(obj)),
       },
     )
     return proxy

@@ -202,6 +202,23 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(vanX.stateFields(data)).toString(), "")
     },
 
+    reactive_json: () => {
+      interface Data { a?: number, b?: number, c?: number }
+      const data = vanX.reactive(<Data>{a: 1, b: 2})
+      const json = van.derive(() => JSON.stringify(data))
+
+      assertEq(json.val, '{"a":1,"b":2}')
+
+      data.a = 3
+      assertEq(json.val, '{"a":3,"b":2}')
+
+      data.c = 4
+      assertEq(json.val, '{"a":3,"b":2,"c":4}')
+
+      delete data.b
+      assertEq(json.val, '{"a":3,"c":4}')
+    },
+
     list_arraySetItem: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive([1, 2, 3])
       van.add(hiddenDom, vanX.list(ul, items, v => li(v)))
