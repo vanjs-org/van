@@ -17,10 +17,11 @@
         get: (obj, name) => obj[statesSym][name]?.val ?? refGet(obj, name, proxy),
         set(obj, name, v) {
           let states = obj[statesSym]
-          return name in states ? (states[name].val = reactive(v), 1) : (
-            name in obj || refSet(states, name, toState(v)) && onAdd(obj, name, states[name]),
-            refSet(obj, name, v)
-          )
+          if (name in states) return states[name].val = reactive(v), 1
+          let existingKey = name in obj
+          if (!refSet(obj, name, v)) return
+          existingKey || refSet(states, name, toState(v)) && onAdd(obj, name, states[name])
+          return 1
         },
         deleteProperty: (obj, name) => (
           refDelete(obj[statesSym], name) && onDelete(obj, name),
@@ -38,8 +39,16 @@
     dom[keySym] = k
     return dom
   }
-  let addToContainer = (items, k, v, binding) =>
-    add(binding._containerDom, toBindFunc(items, k, v, binding.f))
+  let addToContainer = (items, k, v, {_containerDom, f}, skipReorder) => {
+    add(_containerDom, toBindFunc(items, k, v, f))
+    if (!skipReorder && Array.isArray(items) && k != items.length - 1) {
+      let doms = {}
+      for (let dom of _containerDom.childNodes) doms[dom[keySym]] = dom
+      let dom = _containerDom.firstChild
+      for (let key of Obj.keys(items))
+        dom === doms[key] ? dom = dom.nextSibling : _containerDom.insertBefore(doms[key], dom)
+    }
+  }
   let onAdd = (items, k, v) => filterBindings(items).forEach(
     addToContainer.bind(_undefined, items, k, v))
   let onDelete = (items, k) => {
@@ -54,7 +63,7 @@
     let binding = {_containerDom: containerFunc(), f: itemFunc}
     items[bindingsSym].push(binding)
     addItemsToGc(items)
-    for (let [k, v] of Obj.entries(items[statesSym])) addToContainer(items, k, v, binding)
+    for (let [k, v] of Obj.entries(items[statesSym])) addToContainer(items, k, v, binding, 1)
     return binding._containerDom
   }
   let replace = (items, f) => {
