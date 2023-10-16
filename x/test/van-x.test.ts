@@ -647,7 +647,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       )
     }),
 
-    list_replace_sortObj: withHiddenDom(async hiddenDom => {
+    replace_sortObj: withHiddenDom(async hiddenDom => {
       const arr = Array.from({length: 10}).map((_, i) => i)
       const shuffled = arr.toSorted(() => Math.random() - 0.5)
       const items = vanX.reactive(<Record<string, string>>Object.fromEntries(
