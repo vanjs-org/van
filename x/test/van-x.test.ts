@@ -282,6 +282,50 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(items).toString(), "")
     }),
 
+    list_array_multipleBindings: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive([1, 2, 3])
+      van.add(hiddenDom,
+        vanX.list(div, items, v => div(v, button({onclick: () => ++v.val}, "👍"))),
+        vanX.list(ul, items, (v, deleter) => li(v, button({onclick: deleter}, "❌"))),
+      )
+
+      assertEq(hiddenDom.innerHTML, '<div><div>1<button>👍</button></div><div>2<button>👍</button></div><div>3<button>👍</button></div></div><ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>')
+
+      const incBtns = hiddenDom.querySelectorAll("div button")
+      const deleteBtns = hiddenDom.querySelectorAll("ul button")
+
+      ;(<HTMLButtonElement>incBtns[0]).click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div><div>2<button>👍</button></div><div>2<button>👍</button></div><div>3<button>👍</button></div></div><ul><li>2<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>')
+
+      ;(<HTMLButtonElement>deleteBtns[1]).click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div><div>2<button>👍</button></div><div>3<button>👍</button></div></div><ul><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>')
+      assertEq(Object.keys(items).toString(), "0,2")
+    }),
+
+    list_obj_multipleBindings: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive({a: 1, b: 2, c: 3})
+      van.add(hiddenDom,
+        vanX.list(div, items, v => div(v, button({onclick: () => ++v.val}, "👍"))),
+        vanX.list(ul, items, (v, deleter) => li(v, button({onclick: deleter}, "❌"))),
+      )
+
+      assertEq(hiddenDom.innerHTML, '<div><div>1<button>👍</button></div><div>2<button>👍</button></div><div>3<button>👍</button></div></div><ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>')
+
+      const incBtns = hiddenDom.querySelectorAll("div button")
+      const deleteBtns = hiddenDom.querySelectorAll("ul button")
+
+      ;(<HTMLButtonElement>incBtns[2]).click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div><div>1<button>👍</button></div><div>2<button>👍</button></div><div>4<button>👍</button></div></div><ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>4<button>❌</button></li></ul>')
+
+      ;(<HTMLButtonElement>deleteBtns[1]).click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div><div>1<button>👍</button></div><div>4<button>👍</button></div></div><ul><li>1<button>❌</button></li><li>4<button>❌</button></li></ul>')
+      assertEq(Object.keys(items).toString(), "a,c")
+    }),
+
     replace_filterArray: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive([1, 2, 3])
       van.add(hiddenDom, vanX.list(ul, items,
