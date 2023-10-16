@@ -336,6 +336,30 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(items).toString(), "0,1,3,4")
     }),
 
+    list_arraySplice: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive(["a", "b", "c", "d", "e"])
+      van.add(hiddenDom, vanX.list(ul, items,
+        (v, deleter) => li(v, button({onclick: deleter}, "❌"))))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>')
+
+      const deleteBtns = hiddenDom.querySelectorAll("button")
+      deleteBtns[2].click()
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>')
+      assertEq(Object.keys(items).toString(), "0,1,3,4")
+
+      assertEq(items.splice(1, 1).toString(), "b")
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>')
+      assertEq(Object.keys(items).toString(), "0,2,3")
+
+      assertEq(items.splice(1, 2, "f").toString(), ",d")
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>f<button>❌</button></li><li>e<button>❌</button></li></ul>')
+      assertEq(Object.keys(items).toString(), "0,1,2")
+    }),
+
     list_array_multipleBindings: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive([1, 2, 3])
       van.add(hiddenDom,
