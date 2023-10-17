@@ -1,6 +1,6 @@
 window.numTests = 0;
 window.runTests = async (van, vanX, file) => {
-    const { a, button, code, div, h2, li, pre, span, sup, ul } = van.tags;
+    const { a, button, code, div, h2, li, ol, pre, span, sup, ul } = van.tags;
     const assertEq = (lhs, rhs) => {
         if (lhs !== rhs)
             throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}.`);
@@ -152,7 +152,20 @@ window.runTests = async (van, vanX, file) => {
             assertEq(JSON.stringify(data), '{}');
             assertEq(Object.keys(vanX.stateFields(data)).toString(), "");
         },
-        reactive_json: () => {
+        reactive_arrayJson: () => {
+            const data = vanX.reactive([1, 2]);
+            const json = van.derive(() => JSON.stringify(data));
+            assertEq(json.val, '[1,2]');
+            data[0] = 3;
+            assertEq(json.val, '[3,2]');
+            data.push(4);
+            assertEq(json.val, '[3,2,4]');
+            delete data[1];
+            assertEq(json.val, '[3,null,4]');
+            vanX.replace(data, _ => [1, 2, 3, 4]);
+            assertEq(json.val, '[1,2,3,4]');
+        },
+        reactive_objJson: () => {
             const data = vanX.reactive({ a: 1, b: 2 });
             const json = van.derive(() => JSON.stringify(data));
             assertEq(json.val, '{"a":1,"b":2}');
@@ -162,6 +175,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq(json.val, '{"a":3,"b":2,"c":4}');
             delete data.b;
             assertEq(json.val, '{"a":3,"c":4}');
+            vanX.replace(data, _ => [["a", 1], ["b", 2], ["c", 3], ["d", 4]]);
         },
         list_arraySetItem: withHiddenDom(async (hiddenDom) => {
             const items = vanX.reactive([1, 2, 3]);
@@ -189,25 +203,35 @@ window.runTests = async (van, vanX, file) => {
         }),
         list_arrayAdd: withHiddenDom(async (hiddenDom) => {
             const items = vanX.reactive([1, 2, 3]);
-            van.add(hiddenDom, vanX.list(ul, items, v => li(v)));
-            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            van.add(hiddenDom, vanX.list(ul, items, (v, deleter) => li(v, button({ onclick: deleter }, "❌"))));
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>');
             items.push(4);
             await sleep(waitMsOnDomUpdates);
-            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li></ul>');
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li></ul>');
             items.push(5);
             await sleep(waitMsOnDomUpdates);
-            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li></ul>');
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li><li>5<button>❌</button></li></ul>');
+            const deleteBtns = hiddenDom.querySelectorAll("button");
+            deleteBtns[3].click();
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>5<button>❌</button></li></ul>');
+            deleteBtns[4].click();
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>');
         }),
         list_objAdd: withHiddenDom(async (hiddenDom) => {
             const items = vanX.reactive({ a: 1, b: 2, c: 3 });
-            van.add(hiddenDom, vanX.list(ul, items, v => li(v)));
-            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            van.add(hiddenDom, vanX.list(ul, items, (v, deleter) => li(v, button({ onclick: deleter }, "❌"))));
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>');
             items.d = 4;
             await sleep(waitMsOnDomUpdates);
-            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li></ul>');
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li></ul>');
             items.e = 5;
             await sleep(waitMsOnDomUpdates);
-            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li></ul>');
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li><li>5<button>❌</button></li></ul>');
+            const deleteBtns = hiddenDom.querySelectorAll("button");
+            deleteBtns[3].click();
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>5<button>❌</button></li></ul>');
+            deleteBtns[4].click();
+            assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>');
         }),
         list_arrayDelete: withHiddenDom(async (hiddenDom) => {
             const items = vanX.reactive(["a", "b", "c"]);
@@ -591,7 +615,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [10, ...shuffled].toString());
             hiddenDom.querySelector("a").click();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [...shuffled].toString());
-            vanX.replace(items, l => l.toSorted());
+            vanX.replace(items, l => l.sort());
             await sleep(waitMsOnDomUpdates);
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), arr.toString());
             // Validate increment and delete buttons still work in the new DOM tree
@@ -614,7 +638,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [10, shuffled].toString());
             hiddenDom.querySelector("a").click();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [...shuffled].toString());
-            vanX.replace(items, kvs => kvs.toSorted(([_1, v1], [_2, v2]) => v1.localeCompare(v2)));
+            vanX.replace(items, kvs => kvs.sort(([_1, v1], [_2, v2]) => v1.localeCompare(v2)));
             await sleep(waitMsOnDomUpdates);
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), arr.toString());
             // Validate increment and delete buttons still work in the new DOM tree
@@ -630,7 +654,46 @@ window.runTests = async (van, vanX, file) => {
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,7,9");
         }),
     };
-    const suites = { tests };
+    const gcTests = {
+        list_activeGc: withHiddenDom(async (hiddenDom) => {
+            const items = vanX.reactive([1, 2, 3]);
+            const bindingSymbol = Object.getOwnPropertySymbols(items).find(k => Array.isArray(items[k]) && items[k].length === 0);
+            const ordered = van.state(false);
+            van.add(hiddenDom, () => vanX.list(ordered.val ? ol : ul, items, v => li(v)));
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            for (let i = 0; i < 10; ++i) {
+                ordered.val = !ordered.val;
+                await sleep(waitMsOnDomUpdates);
+                assertEq(hiddenDom.innerHTML, ordered.val ?
+                    '<ol><li>1</li><li>2</li><li>3</li></ol>' :
+                    '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            }
+            // Trigger the GC
+            vanX.replace(items, l => l.filter(_ => 1));
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            assertEq(items[bindingSymbol].length, 1);
+        }),
+        list_passiveGc: withHiddenDom(async (hiddenDom) => {
+            const items = vanX.reactive([1, 2, 3]);
+            const bindingSymbol = Object.getOwnPropertySymbols(items).find(k => Array.isArray(items[k]) && items[k].length === 0);
+            const ordered = van.state(false);
+            van.add(hiddenDom, () => vanX.list(ordered.val ? ol : ul, items, v => li(v)));
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            for (let i = 0; i < 10; ++i) {
+                ordered.val = !ordered.val;
+                await sleep(waitMsOnDomUpdates);
+                assertEq(hiddenDom.innerHTML, ordered.val ?
+                    '<ol><li>1</li><li>2</li><li>3</li></ol>' :
+                    '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            }
+            // Wait for the GC to be triggered
+            await sleep(1000);
+            assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
+            assertEq(items[bindingSymbol].length, 1);
+        }),
+    };
+    const suites = { tests, gcTests };
     const msgDom = van.add(document.getElementById("msgPanel"), h2("Running tests for ", file))
         .appendChild(div({ class: "testMsg" }));
     for (const [k, v] of Object.entries(suites)) {

@@ -2,20 +2,23 @@
   window.vanX = {}
   // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
   // Global variables - aliasing some builtin symbols to reduce the bundle size.
-  let Obj = Object, {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect, Sym = Symbol, {state, derive, add, tags} = van, itemsToGc, gcCycleInMs = 1000, _undefined
+  let {fromEntries, entries, keys} = Object, {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect, Sym = Symbol, {state, derive, add, tags} = van, itemsToGc, gcCycleInMs = 1000, _undefined
   let statesSym = Sym(), objSym = Sym(), isCalcFunc = Sym(), bindingsSym = Sym(), keysGenSym = Sym(), keySym = Sym()
   let calc = f => (f[isCalcFunc] = 1, f)
   let toState = v => v[isCalcFunc] ? derive(() => reactive(v())) : state(reactive(v))
   let reactive = srcObj => {
-    if (!(srcObj instanceof Obj) || srcObj[statesSym]) return srcObj
+    if (!(srcObj instanceof Object) || srcObj[statesSym]) return srcObj
     let proxy = new Proxy(
-      (srcObj[statesSym] = Obj.fromEntries(Obj.entries(srcObj).map(([k, v]) => [k, toState(v)])),
+      (srcObj[statesSym] = fromEntries(entries(srcObj).map(([k, v]) => [k, toState(v)])),
       srcObj[objSym] = srcObj,
       srcObj[bindingsSym] = [],
       srcObj[keysGenSym] = state(1),
       srcObj),
       {
-        get: (obj, name) => obj[statesSym][name]?.val ?? refGet(obj, name, proxy),
+        get: (obj, name) => obj[statesSym][name]?.val ?? (
+          name === "length" && obj[keysGenSym].val,
+          refGet(obj, name, proxy)
+        ),
         set(obj, name, v) {
           let states = obj[statesSym]
           if (name in states) return states[name].val = reactive(v), 1
@@ -23,7 +26,7 @@
           if (!refSet(obj, name, v)) return
           existingKey ||
             refSet(states, name, toState(v)) &&
-            (++obj[keysGenSym].val, onAdd(obj, name, states[name]))
+            (++obj[keysGenSym].val, onAdd(proxy, name, states[name]))
           return 1
         },
         deleteProperty: (obj, name) => (
@@ -49,7 +52,7 @@
       let doms = {}
       for (let dom of _containerDom.childNodes) doms[dom[keySym]] = dom
       let dom = _containerDom.firstChild
-      for (let key of Obj.keys(items))
+      for (let key of keys(items))
         dom === doms[key] ? dom = dom.nextSibling : _containerDom.insertBefore(doms[key], dom)
     }
   }
@@ -67,15 +70,15 @@
     let binding = {_containerDom: containerFunc(), f: itemFunc}
     items[bindingsSym].push(binding)
     addItemsToGc(items)
-    for (let [k, v] of Obj.entries(items[statesSym])) addToContainer(items, k, v, binding, 1)
+    for (let [k, v] of entries(items[statesSym])) addToContainer(items, k, v, binding, 1)
     return binding._containerDom
   }
   let replace = (items, f) => {
     let newKvs = Array.isArray(items) ?
-      Obj.entries(f(items.filter(_ => 1))) : f(Obj.entries(items))
-    let obj = items[objSym], newObj = Obj.fromEntries(newKvs)
+      entries(f(items.filter(_ => 1))) : f(entries(items))
+    let obj = items[objSym], newObj = fromEntries(newKvs)
     let states = items[statesSym]
-    let newStates = Obj.fromEntries(newKvs.map(([k, v]) => {
+    let newStates = fromEntries(newKvs.map(([k, v]) => {
       let s = states[k]
       s ? s.val = v : s = toState(v)
       return [k, s]
@@ -85,7 +88,7 @@
       for (let dom of [..._containerDom.childNodes])
         dom[keySym] in newStates ? doms[dom[keySym]] = dom : dom.remove()
       let dom = _containerDom.firstChild
-      for (let [k, s] of Obj.entries(newStates))
+      for (let [k, s] of entries(newStates))
         dom === doms[k] ? dom = dom.nextSibling :
           _containerDom.insertBefore(doms[k] ??
             tags.div(toBindFunc(items, k, s, f)).firstChild, dom)
@@ -93,6 +96,7 @@
     for (let k in obj) delete obj[k]
     for (let k in newObj) obj[k] = newObj[k]
     items[statesSym] = newStates
+    ++items[keysGenSym].val
   }
   window.vanX = {calc, reactive, stateFields, list, replace}
 }

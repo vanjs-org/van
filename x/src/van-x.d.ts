@@ -14,7 +14,7 @@ export declare const calc: <R>(f: () => R) => R
 export declare const reactive: <T extends object>(obj: T) => Reactive<T>
 
 export type StateOf<T> = { readonly [K in keyof T]: State<_Reactive<T[K]>> }
-export declare const stateFields: <T extends Reactive<object>>(obj: T) => StateOf<DeReactive<T>>
+export declare const stateFields: <T extends ReactiveObj>(obj: T) => StateOf<DeReactive<T>>
 
 export type ValueType<T> = T extends (infer V)[] ? V : T[keyof T]
 export declare const list: <T extends ReactiveObj, ElementType extends Element>
@@ -24,4 +24,4 @@ export declare const list: <T extends ReactiveObj, ElementType extends Element>
 export type ReplaceFunc<T> =
   T extends (infer V)[] ? (items: V[]) => V[] :
   (items: [string, T[keyof T]][]) => [string, T[keyof T]][]
-export declare const replace: <T extends Reactive>(items: T, f: ReplaceFunc<T>) => void
+export declare const replace: <T extends ReactiveObj>(items: T, f: ReplaceFunc<T>) => void

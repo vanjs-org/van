@@ -1,10 +1,12 @@
 {
   "name": "vanjs-ext",
-  "version": "0.1.0-rc.4",
+  "version": "0.1.0-rc.7",
   "description": "The official extension library for VanJS",
   "files": [
     "src/van-x.js",
-    "src/van-x.d.ts"
+    "src/van-x.d.ts",
+    "dist/van-x.nomodule.js",
+    "dist/van-x.nomodule.min.js"
   ],
   "main": "src/van-x.js",
   "browser": "src/van-x.js",
