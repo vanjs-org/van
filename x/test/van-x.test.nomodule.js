@@ -615,7 +615,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [10, ...shuffled].toString());
             hiddenDom.querySelector("a").click();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [...shuffled].toString());
-            vanX.replace(items, l => l.sort());
+            vanX.replace(items, l => l.toSorted());
             await sleep(waitMsOnDomUpdates);
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), arr.toString());
             // Validate increment and delete buttons still work in the new DOM tree
@@ -638,7 +638,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [10, shuffled].toString());
             hiddenDom.querySelector("a").click();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [...shuffled].toString());
-            vanX.replace(items, kvs => kvs.sort(([_1, v1], [_2, v2]) => v1.localeCompare(v2)));
+            vanX.replace(items, kvs => kvs.toSorted(([_1, v1], [_2, v2]) => v1.localeCompare(v2)));
             await sleep(waitMsOnDomUpdates);
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), arr.toString());
             // Validate increment and delete buttons still work in the new DOM tree

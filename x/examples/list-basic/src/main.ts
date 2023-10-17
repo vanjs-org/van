@@ -11,9 +11,9 @@ const List = () => {
     div(inputDom, button({onclick: () => items.push(inputDom.value)}, "Add")),
     vanX.list(ul, items, (v, deleter) => li(v, " ", a({onclick: deleter}, "❌"))),
     div(
-      button({onclick: () => vanX.replace(items, l => l.sort())}, "A -> Z"),
+      button({onclick: () => vanX.replace(items, l => l.toSorted())}, "A -> Z"),
       button({onclick: () => vanX.replace(items,
-        l => l.sort((a, b) => b.localeCompare(a)))}, "Z -> A"),
+        l => l.toSorted((a, b) => b.localeCompare(a)))}, "Z -> A"),
       button({onclick: () => vanX.replace(items, l => l.map(v => v + "!"))}, 'Append "!"'),
     ),
   )

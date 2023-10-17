@@ -844,7 +844,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
         [...shuffled].toString(),
       )
 
-      vanX.replace(items, l => l.sort())
+      vanX.replace(items, l => l.toSorted())
       await sleep(waitMsOnDomUpdates)
       assertEq(
         [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(),
@@ -894,7 +894,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
         [...shuffled].toString(),
       )
 
-      vanX.replace(items, kvs => kvs.sort(([_1, v1], [_2, v2]) => v1.localeCompare(v2)))
+      vanX.replace(items, kvs => kvs.toSorted(([_1, v1], [_2, v2]) => v1.localeCompare(v2)))
       await sleep(waitMsOnDomUpdates)
       assertEq(
         [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(),

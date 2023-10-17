@@ -29,9 +29,9 @@ const TodoList = () => {
       button({onclick: () => vanX.replace(items, l => l.filter(([_, v]) => !v.done))},
         "Clear Completed"),
       button({onclick: () => vanX.replace(items, l =>
-        l.sort(([_1, {text: t1}], [_2, {text: t2}]) => t1.localeCompare(t2)))}, "A -> Z"),
+        l.toSorted(([_1, a], [_2, b]) => a.text.localeCompare(b.text)))}, "A -> Z"),
       button({onclick: () => vanX.replace(items, l =>
-        l.sort(([_1, {text: t1}], [_2, {text: t2}]) => t2.localeCompare(t1)))}, "Z -> A"),
+        l.toSorted(([_1, a], [_2, b]) => b.text.localeCompare(a.text)))}, "Z -> A"),
       button({onclick: () => vanX.replace(items, l =>
         l.flatMap(([k1, v1]) => [
           [k1, v1],
