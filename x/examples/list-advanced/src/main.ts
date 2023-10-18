@@ -22,7 +22,7 @@ const TodoList = () => {
         type: "text", value: () => v.text,
         style: () => v.done ? "text-decoration: line-through;" : "",
         oninput: e => v.text = e.target.value,
-      }, () => v.text), " ",
+      }), " ",
       a({onclick: deleter}, "❌"),
     )),
     div(
