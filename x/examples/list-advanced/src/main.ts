@@ -10,7 +10,7 @@ const TodoList = () => {
   van.derive(() => localStorage.setItem("items", JSON.stringify(items)))
 
   const inputDom = input({type: "text"})
-  let id = Math.max(...Object.keys(items).map(v => Number(v.slice(1))))
+  let id = Math.max(0, ...Object.keys(items).map(v => Number(v.slice(1))))
 
   return div(
     div(inputDom, button(
