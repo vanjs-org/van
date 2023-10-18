@@ -1,5 +1,4 @@
 {
-  window.vanX = {}
   // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
   // Global variables - aliasing some builtin symbols to reduce the bundle size.
   let {fromEntries, entries, keys} = Object, {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect, Sym = Symbol, {state, derive, add, tags} = van, itemsToGc, gcCycleInMs = 1000, _undefined

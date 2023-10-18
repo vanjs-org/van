@@ -9,7 +9,7 @@ const result = lines.slice(2).flatMap(line =>
 
 Deno.writeTextFileSync("dist/van-x.nomodule.js",
   `{
-${["window.vanX = {}"].concat(result).map(l => "  " + l).join("\n")}
+${result.map(l => "  " + l).join("\n")}
 }`)
 
 Deno.writeTextFileSync("test/van-x.test.nomodule.js",
