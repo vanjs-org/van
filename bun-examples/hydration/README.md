@@ -8,7 +8,7 @@ This is a [Bun 1.0](https://bun.sh/blog/bun-v1.0)-based variation of the fullsta
 ```json
   "dependencies": {
     "mini-van-plate": "^0.5.0",
-    "vanjs-core": "^1.2.1"
+    "vanjs-core": "^1.2.2"
   },
   "devDependencies": {
     "bun": "^1.0.0",
