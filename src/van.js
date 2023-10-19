@@ -55,7 +55,8 @@ let stateProto = {
   },
 }
 
-let state = initVal => Obj.create(stateProto, {
+let state = initVal => ({
+  __proto__: stateProto,
   _val: initVal,
   _oldVal: initVal,
   _bindings: [],
