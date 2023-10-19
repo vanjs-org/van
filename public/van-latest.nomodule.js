@@ -52,8 +52,7 @@
       }
     }
   };
-  var state = (initVal) => ({
-    __proto__: stateProto,
+  var state = (initVal) => Obj.create(stateProto, {
     _val: initVal,
     _oldVal: initVal,
     _bindings: [],
