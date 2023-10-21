@@ -117,7 +117,7 @@ Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `
 
 ## See Also
 
-[A Guide to Reading VanJS Codebase](https://vanjs.org/about#source-guide)
+[A Guide to Reading **VanJS** Codebase](https://vanjs.org/about#source-guide)
 
 ## Support & Feedback
 
