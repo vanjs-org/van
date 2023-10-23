@@ -3,12 +3,16 @@ import van from "vanjs-core"
 // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
 
 // Global variables - aliasing some builtin symbols to reduce the bundle size.
-let {fromEntries, entries, keys} = Object, {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect, Sym = Symbol, {state, derive, add, tags} = van, itemsToGc, gcCycleInMs = 1000, _undefined
-let statesSym = Sym(), objSym = Sym(), isCalcFunc = Sym(), bindingsSym = Sym(), keysGenSym = Sym(), keySym = Sym()
+let {fromEntries, entries, keys, getPrototypeOf} = Object
+let {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect
+let Sym = Symbol, {state, derive, add, tags} = van, stateProto = getPrototypeOf(state())
+let itemsToGc, gcCycleInMs = 1000, _undefined
+let statesSym = Sym(), objSym = Sym(), isCalcFunc = Sym(), bindingsSym = Sym(), keysGenSym = Sym()
+let keySym = Sym()
 
 let calc = f => (f[isCalcFunc] = 1, f)
 
-let toState = v => v[isCalcFunc] ? derive(() => reactive(v())) : state(reactive(v))
+let toState = v => v?.[isCalcFunc] ? derive(() => reactive(v())) : state(reactive(v))
 
 let reactive = srcObj => {
   if (!(srcObj instanceof Object) || srcObj[statesSym]) return srcObj
@@ -19,10 +23,11 @@ let reactive = srcObj => {
     srcObj[keysGenSym] = state(1),
     srcObj),
     {
-      get: (obj, name) => obj[statesSym][name]?.val ?? (
-        name === "length" && obj[keysGenSym].val,
-        refGet(obj, name, proxy)
-      ),
+      get: (obj, name) =>
+        getPrototypeOf(obj[statesSym][name] ?? 0) === stateProto ? obj[statesSym][name].val : (
+          name === "length" && obj[keysGenSym].val,
+          refGet(obj, name, proxy)
+        ),
       set(obj, name, v) {
         let states = obj[statesSym]
         if (name in states) return states[name].val = reactive(v), 1

@@ -240,6 +240,29 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       vanX.replace(data, _ => [["a", 1], ["b", 2], ["c", 3], ["d", 4]])
     },
 
+    reactive_nullOrUndefinedFields: withHiddenDom(async hiddenDom => {
+      const data = vanX.reactive({
+        a: null,
+        b: undefined,
+        c: <number | null>1,
+        d: <number | undefined>2,
+      })
+
+      van.add(hiddenDom,
+        div("a: ", () => String(data.a)),
+        div("b: ", () => String(data.b)),
+        div("c: ", () => String(data.c)),
+        div("d: ", () => String(data.d)),
+      )
+
+      assertEq(hiddenDom.innerHTML, '<div>a: null</div><div>b: undefined</div><div>c: 1</div><div>d: 2</div>')
+
+      data.c = null
+      data.d = undefined
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<div>a: null</div><div>b: undefined</div><div>c: null</div><div>d: undefined</div>')
+    }),
+
     list_arraySetItem: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive([1, 2, 3])
       van.add(hiddenDom, vanX.list(ul, items, v => li(v)))
