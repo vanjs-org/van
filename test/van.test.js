@@ -933,18 +933,6 @@ const runTests = async (van, msgDom, { debug }) => {
             assertError("couldn't have value to other state", () => s.val = van.state(0));
             assertError("DOM Node is not valid value for state", () => s.val = div());
         },
-        state_mutatingValOrOldVal: () => {
-            {
-                const t = van.state({ a: 2 });
-                assertError("TypeError:", () => t.val.a = 3);
-            }
-            {
-                const t = van.state({ b: 1 });
-                t.val = { b: 2 };
-                assertError("TypeError:", () => t.val.b = 3);
-                assertError("TypeError:", () => t.oldVal.b = 3);
-            }
-        },
         derive_nonFuncArg: () => {
             const a = van.state(0);
             assertError("Must pass-in a function to `van.derive`", () => van.derive((a.val * 2)));

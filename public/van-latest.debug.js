@@ -28,11 +28,8 @@ const checkStateValValid = v => {
   return v
 }
 
-const state = initVal => new Proxy(van.state(Object.freeze(checkStateValValid(initVal))), {
-  set: (s, prop, val) => {
-    prop === "val" && Object.freeze(checkStateValValid(val))
-    return Reflect.set(s, prop, val)
-  }
+const state = initVal => new Proxy(van.state(checkStateValValid(initVal)), {
+  set: (s, prop, val) => (prop === "val" && checkStateValValid(val), Reflect.set(s, prop, val)),
 })
 
 const derive = f => {
