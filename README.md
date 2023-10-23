@@ -138,6 +138,8 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
+[Emoji key](https://allcontributors.org/docs/en/emoji-key)
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
