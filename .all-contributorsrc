@@ -258,6 +258,15 @@
         "plugin",
         "ideas"
       ]
+    },
+    {
+      "login": "metaleap",
+      "name": "Phil Schumann",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22109?v=4",
+      "profile": "http://metaleap.net",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "repoType": "github"
