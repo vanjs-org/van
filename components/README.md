@@ -35,9 +35,7 @@ More on **VanJS**:
 
 ### Via NPM
 
-The library is published as NPM package [vanjs-ui](https://www.npmjs.com/package/vanjs-ui).
-
-Run the following command to install the package:
+The library is published as NPM package [vanjs-ui](https://www.npmjs.com/package/vanjs-ui). Run the following command to install the package:
 
 ```shell
 npm install vanjs-ui
@@ -61,7 +59,7 @@ Alternatively, you can import **VanUI** from CDN via a `<script type="text/javas
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
-Try on jsfiddle: [Modal](https://jsfiddle.net/ez4gdjrs/), [MessageBoard](https://jsfiddle.net/6aqmzwyv/1/).
+Try on jsfiddle: [Modal](https://jsfiddle.net/mks9253o/1/), [MessageBoard](https://jsfiddle.net/nwsduza3/).
 
 ## Documentation
 
