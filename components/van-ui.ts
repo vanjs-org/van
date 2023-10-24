@@ -1,12 +1,20 @@
 import van, { ChildDom, State } from "vanjs-core"
 
 // Quote all tag names so that they're not mangled by minifier
-const {"button": button, "div": div, "header": header, "input": input, "label": label, "span": span} = van.tags
+const { "button": button, "div": div, "header": header, "input": input, "label": label, "span": span, "style": style } = van.tags
 
 export type CSSPropertyBag = Record<string, string | number>
 
 const toStyleStr = (style: CSSPropertyBag) =>
   Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("")
+
+export type CSSStyles = Record<string, CSSPropertyBag>;
+
+const toStyleSheet = (styles: CSSStyles): string => {
+  return Object.entries(styles)
+    .map(([selector, properties]) => `${selector} { ${toStyleStr(properties)} }`)
+    .join("\n");
+};
 
 export interface ModalProps {
   readonly closed: State<boolean>
@@ -54,8 +62,8 @@ export const Modal = (
   }
 
   return () => closed.val ? null : div(
-    {class: backgroundClass, style: toStyleStr(backgroundStyle)},
-    div({class: modalClass, style: toStyleStr(modalStyle)}, children),
+    { class: backgroundClass, style: toStyleStr(backgroundStyle) },
+    div({ class: modalClass, style: toStyleStr(modalStyle) }, children),
   )
 }
 
@@ -126,8 +134,8 @@ export const Tabs = (
 #${id} .vanui-tab-button:hover { background-color: ${tabButtonHoverColor} }
 #${id} .vanui-tab-button.active { background-color: ${tabButtonActiveColor} }`))
 
-  return div({id, class: resultClass, style},
-    div({class: tabButtonRowClass, style: tabButtonRowStylesStr},
+  return div({ id, class: resultClass, style },
+    div({ class: tabButtonRowClass, style: tabButtonRowStylesStr },
       Object.keys(contents).map(k =>
         button({
           class: () => ["vanui-tab-button"].concat(
@@ -222,8 +230,8 @@ export const Toggle = ({
     transform: `translateX(${0.76 * size}rem)`,
     ...circleWhenOnStyleOverrides,
   })
-  return label({class: toggleClass, style: toggleStylesStr},
-    input({type: "checkbox", style: inputStylesStr, oninput: e => onState.val = e.target.checked}),
+  return label({ class: toggleClass, style: toggleStylesStr },
+    input({ type: "checkbox", style: inputStylesStr, oninput: e => onState.val = e.target.checked }),
     span(
       {
         class: sliderClass,
@@ -313,7 +321,7 @@ export class MessageBoard {
       ...closerStyleOverrides
     })
 
-    parentDom.appendChild(this._dom = div({class: boardClass, style: boardStylesStr}))
+    parentDom.appendChild(this._dom = div({ class: boardClass, style: boardStylesStr }))
   }
 
   show({
@@ -324,10 +332,10 @@ export class MessageBoard {
   }: MessageProps) {
     const removed = van.state(false)
     van.derive(() => setTimeout((v: boolean) => removed.val = v, this._fadeOutSec * 1000, closed.val))
-    const msgDom = div({class: this._messageClass, style: this._messageStylesStr},
+    const msgDom = div({ class: this._messageClass, style: this._messageStylesStr },
       div(message),
       closer ? div(
-        {class: this._closerClass, style: this._closerStylesStr, onclick: () => closed.val = true},
+        { class: this._closerClass, style: this._closerStylesStr, onclick: () => closed.val = true },
         closer,
       ) : null,
     )
@@ -396,9 +404,9 @@ export const Tooltip = ({
     left: "50%",
     ...triangleStyleOverrides,
   })
-  const dom = span({class: tooltipClass, style: tooltipStylesStr},
+  const dom = span({ class: tooltipClass, style: tooltipStylesStr },
     text,
-    div({class: triangleClass, style: triangleStylesStr}),
+    div({ class: triangleClass, style: triangleStylesStr }),
   )
   van.derive(() => show.val ?
     (dom.style.opacity = "1", dom.style.visibility = "visible") :
@@ -459,7 +467,7 @@ export const OptionGroup = (
 #${id} .vanui-button.selected { background-color: ${selectedColor} }
 #${id} .vanui-button.selected:hover { background-color: ${selectedHoverColor} }`))
 
-  return div({id, class: optionGroupClass, style: buttonGroupStylesStr},
+  return div({ id, class: optionGroupClass, style: buttonGroupStylesStr },
     options.map(o => button({
       class: () => ["vanui-button"].concat(
         optionClass ? optionClass : [],
@@ -497,5 +505,211 @@ export const Banner = (
     "z-index": 10,
     ...bannerStyleOverrides,
   })
-  return header({class: bannerClass, style: bannerStyleStr}, children)
+  return header({ class: bannerClass, style: bannerStyleStr }, children)
+}
+
+export interface FloatingWindowProps {
+  readonly title?: string | ChildDom
+  readonly closed: State<boolean>
+  readonly x?: State<number>
+  readonly y?: State<number>
+  readonly width?: State<number>
+  readonly height?: State<number>
+  readonly windowStyleOverrides?: CSSPropertyBag
+  readonly headerStyleOverrides?: CSSPropertyBag
+  readonly childrenContainerStyleOverrides?: CSSPropertyBag
+  readonly closeCross?: boolean
+  readonly zIndex?: State<number>
+}
+let windowId = 0;
+
+export const FloatingWindow = (
+  {
+    title,
+    closed,
+    x = van.state(100),
+    y = van.state(100),
+    width = van.state(300),
+    height = van.state(200),
+    windowStyleOverrides = {},
+    headerStyleOverrides = {},
+    childrenContainerStyleOverrides = {},
+    closeCross = false,
+    zIndex = van.state(1000)
+  }: FloatingWindowProps,
+  ...children: readonly ChildDom[]
+) => {
+  let dragging = van.state(false)
+  let resizingDirection = van.state<string | null>(null)
+  let startX = van.state(0)
+  let startY = van.state(0)
+  let startWidth = van.state(0)
+  let startHeight = van.state(0)
+
+  const onMouseDown = (e: MouseEvent) => {
+    dragging.val = true
+    startX.val = e.clientX
+    startY.val = e.clientY
+    document.body.style.userSelect = 'none'
+  }
+
+  const onResizeMouseDown = (direction: string) => (e: MouseEvent) => {
+    resizingDirection.val = direction
+    startX.val = e.clientX
+    startY.val = e.clientY
+    startWidth.val = width.val
+    startHeight.val = height.val
+    document.body.style.userSelect = 'none'
+  }
+
+  const onMouseMove = (e: MouseEvent) => {
+    if (dragging.val) {
+      x.val += e.clientX - startX.val
+      y.val += e.clientY - startY.val
+      startX.val = e.clientX
+      startY.val = e.clientY
+    } else if (resizingDirection.val) {
+      const deltaX = e.clientX - startX.val
+      const deltaY = e.clientY - startY.val
+
+      if (resizingDirection.val.includes('right')) {
+        width.val = startWidth.val + deltaX
+      }
+      if (resizingDirection.val.includes('bottom')) {
+        height.val = startHeight.val + deltaY
+      }
+    }
+  }
+
+
+  const onMouseUp = () => {
+    dragging.val = false
+    resizingDirection.val = null
+    document.body.style.userSelect = ''
+  }
+
+  document.addEventListener('mousemove', onMouseMove)
+  document.addEventListener('mouseup', onMouseUp)
+  const grabAreaBgColor = 'transparent';
+  const crossId = `vanui-close-cross-${++windowId}`;
+
+  if (document.getElementById('vanui-window-style') == null) {
+    const static_styles = style({ type: "text/css", id: "vanui-window-style" }, toStyleSheet({
+      ".vanui-window-dragarea": {
+        cursor: 'move',
+        position: 'absolute',
+        left: '0',
+        top: '0',
+        width: '100%',
+        height: '1rem',
+      },
+      ".vanui-window-resize-right": {
+        cursor: 'e-resize',
+        position: 'absolute',
+        right: '0',
+        top: '0',
+        width: '10px',
+        height: '100%',
+        'background-color': grabAreaBgColor,
+      },
+      ".vanui-window-resize-bottom": {
+        cursor: 's-resize',
+        position: 'absolute',
+        left: '0',
+        bottom: '0',
+        width: '100%',
+        height: '10px',
+        'background-color': grabAreaBgColor,
+      },
+      ".vanui-window-resize-rightbottom": {
+        cursor: 'se-resize',
+        position: 'absolute',
+        right: '0',
+        bottom: '0',
+        width: '10px',
+        height: '10px',
+        'background-color': grabAreaBgColor,
+      },
+    }));
+    document.head.appendChild(static_styles);
+  }
+
+  const dynamic_styles = style({ type: "text/css" }, toStyleSheet({
+    [`#${crossId}`]: {
+      cursor: 'pointer',
+      fontSize: '18px',
+      transition: 'background-color 0.3s, color 0.3s',
+      "border-radius": '50%',
+      width: '24px',
+      height: '24px',
+      display: 'flex',
+      "align-items": 'center',
+      "justify-content": 'center',
+    },
+    [`#${crossId}:hover`]: {
+      "background-color": "red",
+      color: "white",
+    },
+    [`#vanui-window-${windowId}`]: {
+      position: 'fixed',
+      'background-color': 'white',
+      border: '1px solid black',
+      'border-radius': '0.5rem',
+      overflow: 'hidden',
+    },
+
+    [`#vanui-window-${windowId}-header`]: {
+      cursor: 'move',
+      'background-color': 'lightgray',
+      "user-select": 'none',
+      display: 'flex',
+      "justify-content": 'space-between',
+      "align-items": 'center',
+      padding: '0.5rem',
+    }
+  }));
+
+  document.head.appendChild(dynamic_styles);
+
+  return () => closed.val ? null : van.add(
+    div({
+      id: `vanui-window-${windowId}`,
+      style: toStyleStr({
+        left: `${x.val}px`,
+        top: `${y.val}px`,
+        width: `${width.val}px`,
+        height: `${height.val}px`,
+        'z-index': zIndex.val,
+        ...windowStyleOverrides,
+      }),
+    },
+      title != null ? header({
+        id: `vanui-window-${windowId}-header`,
+        style: toStyleStr(headerStyleOverrides),
+        onmousedown: onMouseDown,
+      },
+        title,
+        closeCross ? span({
+          id: crossId,
+          onclick: () => closed.val = true,
+        }, '×') : null,
+      ) : div({
+        class: 'vanui-window-dragarea',
+        onmousedown: onMouseDown,
+      }),
+      div({
+        class: 'vanui-window-resize-right',
+        onmousedown: onResizeMouseDown('right'),
+      }),
+      div({
+        class: 'vanui-window-resize-bottom',
+        onmousedown: onResizeMouseDown('bottom'),
+      }),
+      div({
+        class: 'vanui-window-resize-rightbottom',
+        onmousedown: onResizeMouseDown('rightbottom'),
+      }),
+      div({ style: toStyleStr(childrenContainerStyleOverrides) }, children),
+    )
+  )
 }
