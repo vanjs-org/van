@@ -1,20 +1,20 @@
-import van, { ChildDom, State } from "vanjs-core"
+import van, {ChildDom, State} from "vanjs-core"
 
 // Quote all tag names so that they're not mangled by minifier
-const { "button": button, "div": div, "header": header, "input": input, "label": label, "span": span, "style": style } = van.tags
+const {"button": button, "div": div, "header": header, "input": input, "label": label, "span": span, "style": style} = van.tags
 
 export type CSSPropertyBag = Record<string, string | number>
 
 const toStyleStr = (style: CSSPropertyBag) =>
   Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("")
 
-export type CSSStyles = Record<string, CSSPropertyBag>;
+export type CSSStyles = Record<string, CSSPropertyBag>
 
 const toStyleSheet = (styles: CSSStyles): string => {
   return Object.entries(styles)
     .map(([selector, properties]) => `${selector} { ${toStyleStr(properties)} }`)
-    .join("\n");
-};
+    .join("\n")
+}
 
 export interface ModalProps {
   readonly closed: State<boolean>
@@ -62,8 +62,8 @@ export const Modal = (
   }
 
   return () => closed.val ? null : div(
-    { class: backgroundClass, style: toStyleStr(backgroundStyle) },
-    div({ class: modalClass, style: toStyleStr(modalStyle) }, children),
+    {class: backgroundClass, style: toStyleStr(backgroundStyle)},
+    div({class: modalClass, style: toStyleStr(modalStyle)}, children),
   )
 }
 
@@ -134,8 +134,8 @@ export const Tabs = (
 #${id} .vanui-tab-button:hover { background-color: ${tabButtonHoverColor} }
 #${id} .vanui-tab-button.active { background-color: ${tabButtonActiveColor} }`))
 
-  return div({ id, class: resultClass, style },
-    div({ class: tabButtonRowClass, style: tabButtonRowStylesStr },
+  return div({id, class: resultClass, style},
+    div({class: tabButtonRowClass, style: tabButtonRowStylesStr},
       Object.keys(contents).map(k =>
         button({
           class: () => ["vanui-tab-button"].concat(
@@ -230,8 +230,8 @@ export const Toggle = ({
     transform: `translateX(${0.76 * size}rem)`,
     ...circleWhenOnStyleOverrides,
   })
-  return label({ class: toggleClass, style: toggleStylesStr },
-    input({ type: "checkbox", style: inputStylesStr, oninput: e => onState.val = e.target.checked }),
+  return label({class: toggleClass, style: toggleStylesStr},
+    input({type: "checkbox", style: inputStylesStr, oninput: e => onState.val = e.target.checked}),
     span(
       {
         class: sliderClass,
@@ -321,7 +321,7 @@ export class MessageBoard {
       ...closerStyleOverrides
     })
 
-    parentDom.appendChild(this._dom = div({ class: boardClass, style: boardStylesStr }))
+    parentDom.appendChild(this._dom = div({class: boardClass, style: boardStylesStr}))
   }
 
   show({
@@ -332,10 +332,10 @@ export class MessageBoard {
   }: MessageProps) {
     const removed = van.state(false)
     van.derive(() => setTimeout((v: boolean) => removed.val = v, this._fadeOutSec * 1000, closed.val))
-    const msgDom = div({ class: this._messageClass, style: this._messageStylesStr },
+    const msgDom = div({class: this._messageClass, style: this._messageStylesStr},
       div(message),
       closer ? div(
-        { class: this._closerClass, style: this._closerStylesStr, onclick: () => closed.val = true },
+        {class: this._closerClass, style: this._closerStylesStr, onclick: () => closed.val = true},
         closer,
       ) : null,
     )
@@ -346,7 +346,7 @@ export class MessageBoard {
     return msgDom
   }
 
-  remove() { this._dom.remove() }
+  remove() {this._dom.remove()}
 }
 
 export interface TooltipProps {
@@ -404,9 +404,9 @@ export const Tooltip = ({
     left: "50%",
     ...triangleStyleOverrides,
   })
-  const dom = span({ class: tooltipClass, style: tooltipStylesStr },
+  const dom = span({class: tooltipClass, style: tooltipStylesStr},
     text,
-    div({ class: triangleClass, style: triangleStylesStr }),
+    div({class: triangleClass, style: triangleStylesStr}),
   )
   van.derive(() => show.val ?
     (dom.style.opacity = "1", dom.style.visibility = "visible") :
@@ -467,7 +467,7 @@ export const OptionGroup = (
 #${id} .vanui-button.selected { background-color: ${selectedColor} }
 #${id} .vanui-button.selected:hover { background-color: ${selectedHoverColor} }`))
 
-  return div({ id, class: optionGroupClass, style: buttonGroupStylesStr },
+  return div({id, class: optionGroupClass, style: buttonGroupStylesStr},
     options.map(o => button({
       class: () => ["vanui-button"].concat(
         optionClass ? optionClass : [],
@@ -505,7 +505,7 @@ export const Banner = (
     "z-index": 10,
     ...bannerStyleOverrides,
   })
-  return header({ class: bannerClass, style: bannerStyleStr }, children)
+  return header({class: bannerClass, style: bannerStyleStr}, children)
 }
 
 export interface FloatingWindowProps {
@@ -521,7 +521,7 @@ export interface FloatingWindowProps {
   readonly closeCross?: boolean
   readonly zIndex?: State<number>
 }
-let windowId = 0;
+let windowId = 0
 
 export const FloatingWindow = (
   {
@@ -581,7 +581,6 @@ export const FloatingWindow = (
     }
   }
 
-
   const onMouseUp = () => {
     dragging.val = false
     resizingDirection.val = null
@@ -590,11 +589,11 @@ export const FloatingWindow = (
 
   document.addEventListener('mousemove', onMouseMove)
   document.addEventListener('mouseup', onMouseUp)
-  const grabAreaBgColor = 'transparent';
-  const crossId = `vanui-close-cross-${++windowId}`;
+  const grabAreaBgColor = 'transparent'
+  const crossId = `vanui-close-cross-${++windowId}`
 
   if (document.getElementById('vanui-window-style') == null) {
-    const static_styles = style({ type: "text/css", id: "vanui-window-style" }, toStyleSheet({
+    const static_styles = style({type: "text/css", id: "vanui-window-style"}, toStyleSheet({
       ".vanui-window-dragarea": {
         cursor: 'move',
         position: 'absolute',
@@ -630,11 +629,11 @@ export const FloatingWindow = (
         height: '10px',
         'background-color': grabAreaBgColor,
       },
-    }));
-    document.head.appendChild(static_styles);
+    }))
+    document.head.appendChild(static_styles)
   }
 
-  const dynamic_styles = style({ type: "text/css" }, toStyleSheet({
+  const dynamic_styles = style({type: "text/css"}, toStyleSheet({
     [`#${crossId}`]: {
       cursor: 'pointer',
       fontSize: '18px',
@@ -667,9 +666,9 @@ export const FloatingWindow = (
       "align-items": 'center',
       padding: '0.5rem',
     }
-  }));
+  }))
 
-  document.head.appendChild(dynamic_styles);
+  document.head.appendChild(dynamic_styles)
 
   return () => closed.val ? null : van.add(
     div({
@@ -709,7 +708,7 @@ export const FloatingWindow = (
         class: 'vanui-window-resize-rightbottom',
         onmousedown: onResizeMouseDown('rightbottom'),
       }),
-      div({ style: toStyleStr(childrenContainerStyleOverrides) }, children),
+      div({style: toStyleStr(childrenContainerStyleOverrides)}, children),
     )
   )
 }
