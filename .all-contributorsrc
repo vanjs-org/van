@@ -267,6 +267,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "Duffscs",
+      "name": "Raphaël Gauthier",
+      "avatar_url": "https://avatars.githubusercontent.com/u/59032377?v=4",
+      "profile": "https://duffscs.github.io/blog/",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
     }
   ],
   "repoType": "github"
