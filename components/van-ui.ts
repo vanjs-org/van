@@ -519,6 +519,7 @@ export interface FloatingWindowProps {
   readonly headerStyleOverrides?: CSSPropertyBag
   readonly childrenContainerStyleOverrides?: CSSPropertyBag
   readonly closeCross?: boolean
+  readonly zIndex?: State<number>
 }
 let windowId = 0;
 
@@ -533,7 +534,8 @@ export const FloatingWindow = (
     windowStyleOverrides = {},
     headerStyleOverrides = {},
     childrenContainerStyleOverrides = {},
-    closeCross = false
+    closeCross = false,
+    zIndex = van.state(1000)
   }: FloatingWindowProps,
   ...children: readonly ChildDom[]
 ) => {
@@ -677,6 +679,7 @@ export const FloatingWindow = (
         top: `${y.val}px`,
         width: `${width.val}px`,
         height: `${height.val}px`,
+        'z-index': zIndex.val,
         ...windowStyleOverrides,
       }),
     },

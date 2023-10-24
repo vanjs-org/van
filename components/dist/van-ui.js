@@ -245,7 +245,7 @@ export const Banner = ({ backgroundColor = "#fff1a8", fontColor = "currentcolor"
     return header({ class: bannerClass, style: bannerStyleStr }, children);
 };
 let windowId = 0;
-export const FloatingWindow = ({ title, closed, x = van.state(100), y = van.state(100), width = van.state(300), height = van.state(200), windowStyleOverrides = {}, headerStyleOverrides = {}, childrenContainerStyleOverrides = {}, closeCross = false }, ...children) => {
+export const FloatingWindow = ({ title, closed, x = van.state(100), y = van.state(100), width = van.state(300), height = van.state(200), windowStyleOverrides = {}, headerStyleOverrides = {}, childrenContainerStyleOverrides = {}, closeCross = false, zIndex = van.state(1000) }, ...children) => {
     let dragging = van.state(false);
     let resizingDirection = van.state(null);
     let startX = van.state(0);
@@ -374,6 +374,7 @@ export const FloatingWindow = ({ title, closed, x = van.state(100), y = van.stat
             top: `${y.val}px`,
             width: `${width.val}px`,
             height: `${height.val}px`,
+            'z-index': zIndex.val,
             ...windowStyleOverrides,
         }),
     }, title != null ? header({

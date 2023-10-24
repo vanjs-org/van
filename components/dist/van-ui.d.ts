@@ -120,5 +120,6 @@ export interface FloatingWindowProps {
     readonly headerStyleOverrides?: CSSPropertyBag;
     readonly childrenContainerStyleOverrides?: CSSPropertyBag;
     readonly closeCross?: boolean;
+    readonly zIndex?: State<number>;
 }
-export declare const FloatingWindow: ({ title, closed, x, y, width, height, windowStyleOverrides, headerStyleOverrides, childrenContainerStyleOverrides, closeCross }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => Element | null;
+export declare const FloatingWindow: ({ title, closed, x, y, width, height, windowStyleOverrides, headerStyleOverrides, childrenContainerStyleOverrides, closeCross, zIndex }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => Element | null;
