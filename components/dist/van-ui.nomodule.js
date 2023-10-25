@@ -248,12 +248,12 @@
   };
   let curWindowZIndex = 0;
   window.topMostZIndex = () => ++curWindowZIndex;
-  window.FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 100, width = 300, height = 200, closeCross = "×", zIndex, disableMove = false, disableResize = false, windowClass = "", windowStyleOverrides = {}, headerClass = "", headerStyleOverrides = {}, childrenContainerClass = "", childrenContainerStyleOverrides = {}, crossClass = "", crossStyleOverrides = {}, }, ...children) => {
+  window.FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 100, width = 300, height = 200, closeCross = "×", customStacking = false, zIndex = 1, disableMove = false, disableResize = false, windowClass = "", windowStyleOverrides = {}, headerClass = "", headerStyleOverrides = {}, childrenContainerClass = "", childrenContainerStyleOverrides = {}, crossClass = "", crossStyleOverrides = {}, }, ...children) => {
       const xState = stateOf(x), yState = stateOf(y);
       const widthState = stateOf(width), heightState = stateOf(height);
-      let customZIndex = false;
-      zIndex ? customZIndex = true : zIndex = topMostZIndex();
       const zIndexState = stateOf(zIndex);
+      if (!customStacking)
+          zIndexState.val = topMostZIndex();
       const dragging = van.state(false), resizingDirection = van.state(null);
       const startX = van.state(0), startY = van.state(0);
       const startWidth = van.state(0), startHeight = van.state(0);
@@ -281,12 +281,10 @@
           else if (resizingDirection.val) {
               const deltaX = e.clientX - startX.val;
               const deltaY = e.clientY - startY.val;
-              if (resizingDirection.val.includes('right')) {
+              if (resizingDirection.val.includes('right'))
                   widthState.val = startWidth.val + deltaX;
-              }
-              if (resizingDirection.val.includes('bottom')) {
+              if (resizingDirection.val.includes('bottom'))
                   heightState.val = startHeight.val + deltaY;
-              }
           }
       };
       const onMouseUp = () => {
@@ -378,7 +376,7 @@
               'z-index': zIndexState.val,
               ...windowStyleOverrides,
           }),
-          ...(customZIndex ? {} : { onmousedown: () => zIndexState.val = topMostZIndex() }),
+          ...(customStacking ? {} : { onmousedown: () => zIndexState.val = topMostZIndex() }),
       }, title ? header({
           class: ["vanui-window-header"].concat(headerClass ? headerClass : []).join(" "),
           style: toStyleStr({ ...(disableMove ? { cursor: "auto" } : {}), ...headerStyleOverrides }),

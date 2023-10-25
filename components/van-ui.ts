@@ -520,6 +520,7 @@ export interface FloatingWindowProps {
   readonly width?: number | State<number>
   readonly height?: number | State<number>
   readonly closeCross?: ChildDom
+  readonly customStacking?: boolean
   readonly zIndex?: number | State<number>
   readonly disableMove?: boolean
   readonly disableResize?: boolean
@@ -547,7 +548,8 @@ export const FloatingWindow = (
     width = 300,
     height = 200,
     closeCross = "×",
-    zIndex,
+    customStacking = false,
+    zIndex = 1,
     disableMove = false,
     disableResize = false,
     windowClass = "",
@@ -563,9 +565,8 @@ export const FloatingWindow = (
 ) => {
   const xState = stateOf(x), yState = stateOf(y)
   const widthState = stateOf(width), heightState = stateOf(height)
-  let customZIndex = false
-  zIndex ? customZIndex = true : zIndex = topMostZIndex()
   const zIndexState = stateOf(zIndex)
+  if (!customStacking) zIndexState.val = topMostZIndex()
   const dragging = van.state(false), resizingDirection = van.state<string | null>(null)
   const startX = van.state(0), startY = van.state(0)
   const startWidth = van.state(0), startHeight = van.state(0)
@@ -596,12 +597,8 @@ export const FloatingWindow = (
       const deltaX = e.clientX - startX.val
       const deltaY = e.clientY - startY.val
 
-      if (resizingDirection.val.includes('right')) {
-        widthState.val = startWidth.val + deltaX
-      }
-      if (resizingDirection.val.includes('bottom')) {
-        heightState.val = startHeight.val + deltaY
-      }
+      if (resizingDirection.val.includes('right')) widthState.val = startWidth.val + deltaX
+      if (resizingDirection.val.includes('bottom')) heightState.val = startHeight.val + deltaY
     }
   }
 
@@ -698,7 +695,7 @@ export const FloatingWindow = (
         'z-index': zIndexState.val,
         ...windowStyleOverrides,
       }),
-      ...(customZIndex ? {} : {onmousedown: () => zIndexState.val = topMostZIndex()}),
+      ...(customStacking ? {} : {onmousedown: () => zIndexState.val = topMostZIndex()}),
     },
     title ? header(
       {
@@ -731,7 +728,7 @@ export const FloatingWindow = (
       }),
     ],
     div({class: childrenContainerClass, style: toStyleStr(childrenContainerStyleOverrides)},
-      children
+      children,
     ),
   )
 }

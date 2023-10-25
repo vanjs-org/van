@@ -117,6 +117,7 @@ export interface FloatingWindowProps {
     readonly width?: number | State<number>;
     readonly height?: number | State<number>;
     readonly closeCross?: ChildDom;
+    readonly customStacking?: boolean;
     readonly zIndex?: number | State<number>;
     readonly disableMove?: boolean;
     readonly disableResize?: boolean;
@@ -130,4 +131,4 @@ export interface FloatingWindowProps {
     readonly crossStyleOverrides?: CSSPropertyBag;
 }
 export declare const topMostZIndex: () => number;
-export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, zIndex, disableMove, disableResize, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
+export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, customStacking, zIndex, disableMove, disableResize, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;

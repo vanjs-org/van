@@ -97,22 +97,23 @@ const example4 = () => {
 }
 
 const example5 = () => {
-  const closed = van.state(false)
+  const zIndex = van.state(1)
+
+  van.add(document.body, FloatingWindow(
+    {title: ["z-index: ", zIndex], x: 200, y: 200, width: 300, height: 100, zIndex},
+  ))
+}
+
+const example6 = () => {
   const zIndex = van.state(1)
 
   van.add(document.body, FloatingWindow(
     {
-      closed,
-      x: 300,
-      y: 300,
-      width: 300,
-      height: 100,
-      title: "Custom z-index",
+      title: "Custom stacking", x: 300, y: 300, width: 300, height: 100, zIndex,
       childrenContainerStyleOverrides: {
         display: "flex",
         "justify-content": "space-between",
       },
-      zIndex: zIndex,
     },
     button({onclick: () => zIndex.val++}, "+"),
     p("z-index: ", zIndex),
@@ -120,7 +121,7 @@ const example5 = () => {
   ))
 }
 
-const example6 = () => {
+const example7 = () => {
   van.add(document.body, FloatingWindow(
     {title: "Not Movable", disableMove: true},
     div({style: "display: flex; justify-content: center;"},
@@ -129,7 +130,7 @@ const example6 = () => {
   ))
 }
 
-const example7 = () => {
+const example8 = () => {
   const closed = van.state(false)
 
   van.add(document.body, FloatingWindow(
@@ -143,7 +144,7 @@ const example7 = () => {
   ))
 }
 
-const example8 = () => {
+const example9 = () => {
   van.add(document.body, FloatingWindow(
     {title: "Not Resizable", x: 200, y: 200, disableResize: true},
     div(
@@ -161,10 +162,11 @@ const FloatingWindowDemo = () => {
       button({onclick: example2}, "Window with integrated close button"), " ",
       button({onclick: example3}, "Window with Tabs and custom close button"), " ",
       button({onclick: example4}, "Window without header or integrated close button"), " ",
-      button({onclick: example5}, "Window with custom z-index"), " ",
-      button({onclick: example6}, "Non-movable window"), " ",
-      button({onclick: example7}, "Non-movable window without title"), " ",
-      button({onclick: example8}, "Non-resizable window"),
+      button({onclick: example5}, "Window showing z-index"), " ",
+      button({onclick: example6}, "Window with custom stacking"), " ",
+      button({onclick: example7}, "Non-movable window"), " ",
+      button({onclick: example8}, "Non-movable window without title"), " ",
+      button({onclick: example9}, "Non-resizable window"),
     ),
   )
 }
