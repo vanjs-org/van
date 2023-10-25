@@ -1,12 +1,12 @@
 import van from "vanjs-core"
 import {example1, example2, example3, example4, example5, example6, example7, example8} from './example';
 
-const {button, div, h1, p} = van.tags
+const {b, button, code, div, h1, p} = van.tags
 
 const FloatingWindowDemo = () => {
   return div(
     h1("FloatingWindow Demo"),
-    p("This is a demo for the FloatingWindow component."),
+    p("This is a demo for the ", code("FloatingWindow"), " component in ", b("VanUI"), "."),
     p(
       button({onclick: example1}, "Window with custom close button"), " ",
       button({onclick: example2}, "Window with integrated close button"), " ",
