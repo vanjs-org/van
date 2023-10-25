@@ -6,7 +6,7 @@ const {button, div, h1, p} = van.tags
 const FloatingWindowDemo = () => {
   return div(
     h1("FloatingWindow Demo"),
-    p("This is a demo for the ", "FloatingWindow", " component."),
+    p("This is a demo for the FloatingWindow component."),
     p(
       button({onclick: example1}, "Window with custom close button"), " ",
       button({onclick: example2}, "Window with integrated close button"), " ",
