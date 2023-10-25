@@ -443,6 +443,12 @@ You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sa
 * `bannerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the created banner element. You can specify multiple CSS classes separated by `" "`.
 * `bannerStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the created banner element.
 
+### FloatingWindow
+
+_Author: @Duffscs_
+
+Creates a movable and resizable floating window.
+
 ### Property Bag for Style Overrides
 
 In the API of **VanUI**, you can specify an object as a property bag to override the styles of the created elements. The keys of the property bag are CSS property names, and the values of the property bag are CSS property values. Sample values of the property bag:

@@ -4,9 +4,11 @@
   const toStyleStr = (style) => Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("");
   const toStyleSheet = (styles) => {
       return Object.entries(styles)
-          .map(([selector, properties]) => `${selector} { ${toStyleStr(properties)} }`)
+          .map(([selector, props]) => `${selector} { ${toStyleStr(props)} }`)
           .join("\n");
   };
+  const stateProto = Object.getPrototypeOf(van.state(null));
+  const stateOf = (v) => (Object.getPrototypeOf(v ?? 0) === stateProto ? v : van.state(v));
   window.Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackground = false, backgroundClass = "", backgroundStyleOverrides = {}, modalClass = "", modalStyleOverrides = {}, }, ...children) => {
       const backgroundStyle = {
           display: "flex",
@@ -68,7 +70,7 @@
       }, v)));
   };
   window.Toggle = ({ on = false, size = 1, cursor = "pointer", offColor = "#ccc", onColor = "#2196F3", circleColor = "white", toggleClass = "", toggleStyleOverrides = {}, sliderClass = "", sliderStyleOverrides = {}, circleClass = "", circleStyleOverrides = {}, circleWhenOnStyleOverrides = {}, }) => {
-      const onState = typeof on === "boolean" ? van.state(on) : on;
+      const onState = stateOf(on);
       const toggleStylesStr = toStyleStr({
           position: "relative",
           display: "inline-block",
@@ -244,15 +246,18 @@
       });
       return header({ class: bannerClass, style: bannerStyleStr }, children);
   };
-  let windowId = 0;
-  window.FloatingWindow = ({ title, closed, x = van.state(100), y = van.state(100), width = van.state(300), height = van.state(200), windowStyleOverrides = {}, headerStyleOverrides = {}, childrenContainerStyleOverrides = {}, closeCross = false }, ...children) => {
-      let dragging = van.state(false);
-      let resizingDirection = van.state(null);
-      let startX = van.state(0);
-      let startY = van.state(0);
-      let startWidth = van.state(0);
-      let startHeight = van.state(0);
-      const onMouseDown = (e) => {
+  let curWindowZIndex = 0;
+  window.topMostZIndex = () => ++curWindowZIndex;
+  window.FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 100, width = 300, height = 200, closeCross = "×", zIndex, disableMove = false, disableResize = false, windowClass = "", windowStyleOverrides = {}, headerClass = "", headerStyleOverrides = {}, childrenContainerClass = "", childrenContainerStyleOverrides = {}, crossClass = "", crossStyleOverrides = {}, }, ...children) => {
+      const xState = stateOf(x), yState = stateOf(y);
+      const widthState = stateOf(width), heightState = stateOf(height);
+      let customZIndex = false;
+      zIndex ? customZIndex = true : zIndex = topMostZIndex();
+      const zIndexState = stateOf(zIndex);
+      const dragging = van.state(false), resizingDirection = van.state(null);
+      const startX = van.state(0), startY = van.state(0);
+      const startWidth = van.state(0), startHeight = van.state(0);
+      const onmousedown = (e) => {
           dragging.val = true;
           startX.val = e.clientX;
           startY.val = e.clientY;
@@ -262,14 +267,14 @@
           resizingDirection.val = direction;
           startX.val = e.clientX;
           startY.val = e.clientY;
-          startWidth.val = width.val;
-          startHeight.val = height.val;
+          startWidth.val = widthState.val;
+          startHeight.val = heightState.val;
           document.body.style.userSelect = 'none';
       };
       const onMouseMove = (e) => {
           if (dragging.val) {
-              x.val += e.clientX - startX.val;
-              y.val += e.clientY - startY.val;
+              xState.val += e.clientX - startX.val;
+              yState.val += e.clientY - startY.val;
               startX.val = e.clientX;
               startY.val = e.clientY;
           }
@@ -277,10 +282,10 @@
               const deltaX = e.clientX - startX.val;
               const deltaY = e.clientY - startY.val;
               if (resizingDirection.val.includes('right')) {
-                  width.val = startWidth.val + deltaX;
+                  widthState.val = startWidth.val + deltaX;
               }
               if (resizingDirection.val.includes('bottom')) {
-                  height.val = startHeight.val + deltaY;
+                  heightState.val = startHeight.val + deltaY;
               }
           }
       };
@@ -292,9 +297,15 @@
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
       const grabAreaBgColor = 'transparent';
-      const crossId = `vanui-close-cross-${++windowId}`;
-      if (document.getElementById('vanui-window-style') == null) {
-          const static_styles = style({ type: "text/css", id: "vanui-window-style" }, toStyleSheet({
+      if (!document.getElementById('vanui-window-style')) {
+          const staticStyles = style({ type: "text/css", id: "vanui-window-style" }, toStyleSheet({
+              ".vanui-window": {
+                  position: 'fixed',
+                  'background-color': 'white',
+                  border: '1px solid black',
+                  'border-radius': '0.5rem',
+                  overflow: 'hidden',
+              },
               ".vanui-window-dragarea": {
                   cursor: 'move',
                   position: 'absolute',
@@ -330,71 +341,68 @@
                   height: '10px',
                   'background-color': grabAreaBgColor,
               },
+              ".vanui-window-header": {
+                  cursor: 'move',
+                  'background-color': 'lightgray',
+                  "user-select": 'none',
+                  display: 'flex',
+                  "justify-content": 'space-between',
+                  "align-items": 'center',
+                  padding: '0.5rem',
+              },
+              ".vanui-window-cross": {
+                  cursor: 'pointer',
+                  fontSize: '18px',
+                  transition: 'background-color 0.3s, color 0.3s',
+                  "border-radius": '50%',
+                  width: '24px',
+                  height: '24px',
+                  display: 'flex',
+                  "align-items": 'center',
+                  "justify-content": 'center',
+              },
+              ".vanui-window-cross:hover": {
+                  "background-color": "red",
+                  color: "white",
+              },
           }));
-          document.head.appendChild(static_styles);
+          document.head.appendChild(staticStyles);
       }
-      const dynamic_styles = style({ type: "text/css" }, toStyleSheet({
-          [`#${crossId}`]: {
-              cursor: 'pointer',
-              fontSize: '18px',
-              transition: 'background-color 0.3s, color 0.3s',
-              "border-radius": '50%',
-              width: '24px',
-              height: '24px',
-              display: 'flex',
-              "align-items": 'center',
-              "justify-content": 'center',
-          },
-          [`#${crossId}:hover`]: {
-              "background-color": "red",
-              color: "white",
-          },
-          [`#vanui-window-${windowId}`]: {
-              position: 'fixed',
-              'background-color': 'white',
-              border: '1px solid black',
-              'border-radius': '0.5rem',
-              overflow: 'hidden',
-          },
-          [`#vanui-window-${windowId}-header`]: {
-              cursor: 'move',
-              'background-color': 'lightgray',
-              "user-select": 'none',
-              display: 'flex',
-              "justify-content": 'space-between',
-              "align-items": 'center',
-              padding: '0.5rem',
-          }
-      }));
-      document.head.appendChild(dynamic_styles);
-      return () => closed.val ? null : van.add(div({
-          id: `vanui-window-${windowId}`,
-          style: toStyleStr({
-              left: `${x.val}px`,
-              top: `${y.val}px`,
-              width: `${width.val}px`,
-              height: `${height.val}px`,
+      return () => closed.val ? null : div({
+          class: ["vanui-window"].concat(windowClass ? windowClass : []).join(" "),
+          style: () => toStyleStr({
+              left: `${xState.val}px`,
+              top: `${yState.val}px`,
+              width: `${widthState.val}px`,
+              height: `${heightState.val}px`,
+              'z-index': zIndexState.val,
               ...windowStyleOverrides,
           }),
-      }, title != null ? header({
-          id: `vanui-window-${windowId}-header`,
-          style: toStyleStr(headerStyleOverrides),
-          onmousedown: onMouseDown,
+          ...(customZIndex ? {} : { onmousedown: () => zIndexState.val = topMostZIndex() }),
+      }, title ? header({
+          class: ["vanui-window-header"].concat(headerClass ? headerClass : []).join(" "),
+          style: toStyleStr({ ...(disableMove ? { cursor: "auto" } : {}), ...headerStyleOverrides }),
+          ...(disableMove ? {} : { onmousedown }),
       }, title, closeCross ? span({
-          id: crossId,
+          class: ["vanui-window-cross"].concat(crossClass ? crossClass : []).join(" "),
+          style: toStyleStr(crossStyleOverrides),
           onclick: () => closed.val = true,
-      }, '×') : null) : div({
+      }, closeCross) : null) : disableMove ? null : div({
           class: 'vanui-window-dragarea',
-          onmousedown: onMouseDown,
-      }), div({
-          class: 'vanui-window-resize-right',
-          onmousedown: onResizeMouseDown('right'),
-      }), div({
-          class: 'vanui-window-resize-bottom',
-          onmousedown: onResizeMouseDown('bottom'),
-      }), div({
-          class: 'vanui-window-resize-rightbottom',
-          onmousedown: onResizeMouseDown('rightbottom'),
-      }), div({ style: toStyleStr(childrenContainerStyleOverrides) }, children)));
+          onmousedown,
+      }), disableResize ? [] : [
+          div({
+              class: 'vanui-window-resize-right',
+              onmousedown: onResizeMouseDown('right'),
+          }),
+          div({
+              class: 'vanui-window-resize-bottom',
+              onmousedown: onResizeMouseDown('bottom'),
+          }),
+          div({
+              class: 'vanui-window-resize-rightbottom',
+              onmousedown: onResizeMouseDown('rightbottom'),
+          }),
+      ], div({ class: childrenContainerClass, style: toStyleStr(childrenContainerStyleOverrides) }, children));
   };
 }

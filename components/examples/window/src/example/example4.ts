@@ -1,37 +1,24 @@
 import van from "vanjs-core"
-import { FloatingWindow } from "vanjs-ui"
+import {FloatingWindow} from "vanjs-ui"
 
-
-const { button } = van.tags
+const {button} = van.tags
 
 const example4 = () => {
-    const closed = van.state(false)
-    const x = van.state(300)
-    const y = van.state(300)
-    const width = van.state(500)
-    const height = van.state(300)
+  const closed = van.state(false)
 
-    van.add(document.body, FloatingWindow({
-        closed,
-        x,
-        y,
-        width,
-        height,
-        closeCross: true,
-        windowStyleOverrides: {
-            "background-color": "lightgray",
-            padding: "0px",
-            border: "1px solid red",
-        },
-        childrenContainerStyleOverrides: {
-            display: "flex",
-            "align-items": "center",
-            "justify-content": "center",
-            height: "100%",
-        }
+  van.add(document.body, FloatingWindow(
+    {
+      closed, x: 300, y: 300, width: 500, height: 300,
+      windowStyleOverrides: {"background-color": "lightgray"},
+      childrenContainerStyleOverrides: {
+        display: "flex",
+        "align-items": "center",
+        "justify-content": "center",
+        height: "100%",
+      }
     },
-        button({ onclick: () => closed.val = true }, "Close Window"),
-    ))
+    button({onclick: () => closed.val = true}, "Close Window"),
+  ))
 }
 
-export default example4;
+export default example4

@@ -27,7 +27,7 @@ export interface TabsProps {
     readonly tabContentClass?: string;
     readonly tabContentStyleOverrides?: CSSPropertyBag;
 }
-export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: Record<string, ChildDom | readonly ChildDom[]>) => HTMLDivElement;
+export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: Record<string, ChildDom>) => HTMLDivElement;
 export interface ToggleProps {
     readonly on?: boolean | State<boolean>;
     readonly size?: number;
@@ -58,8 +58,8 @@ export interface MessageBoardProps {
     readonly closerStyleOverrides?: CSSPropertyBag;
 }
 export interface MessageProps {
-    readonly message: ChildDom | readonly ChildDom[];
-    readonly closer?: ChildDom | readonly ChildDom[];
+    readonly message: ChildDom;
+    readonly closer?: ChildDom;
     readonly durationSec?: number;
     readonly closed?: State<boolean>;
 }
@@ -110,16 +110,24 @@ export interface BannerProps {
 }
 export declare const Banner: ({ backgroundColor, fontColor, sticky, bannerClass, bannerStyleOverrides, }: BannerProps, ...children: readonly ChildDom[]) => HTMLElement;
 export interface FloatingWindowProps {
-    readonly title?: string | ChildDom;
-    readonly closed: State<boolean>;
-    readonly x?: State<number>;
-    readonly y?: State<number>;
-    readonly width?: State<number>;
-    readonly height?: State<number>;
+    readonly title?: ChildDom;
+    readonly closed?: State<boolean>;
+    readonly x?: number | State<number>;
+    readonly y?: number | State<number>;
+    readonly width?: number | State<number>;
+    readonly height?: number | State<number>;
+    readonly closeCross?: ChildDom;
+    readonly zIndex?: number | State<number>;
+    readonly disableMove?: boolean;
+    readonly disableResize?: boolean;
+    readonly windowClass?: string;
     readonly windowStyleOverrides?: CSSPropertyBag;
+    readonly headerClass?: string;
     readonly headerStyleOverrides?: CSSPropertyBag;
+    readonly childrenContainerClass?: string;
     readonly childrenContainerStyleOverrides?: CSSPropertyBag;
-    readonly closeCross?: boolean;
-    readonly zIndex?: State<number>;
+    readonly crossClass?: string;
+    readonly crossStyleOverrides?: CSSPropertyBag;
 }
-export declare const FloatingWindow: ({ title, closed, x, y, width, height, windowStyleOverrides, headerStyleOverrides, childrenContainerStyleOverrides, closeCross, zIndex }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => Element | null;
+export declare const topMostZIndex: () => number;
+export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, zIndex, disableMove, disableResize, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
