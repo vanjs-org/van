@@ -13,8 +13,12 @@ export type PropValue = Primitive | ((e: any) => void) | null
 
 export type Props = Record<string, PropValue | StateView<PropValue> | (() => PropValue)>
 
-type PropsWithKnownKeys<ElementType> = Partial<{
-  [k in keyof ElementType]: PropValue | StateView<PropValue> | (() => PropValue)
+type KeysWithPrefix<T, Prefix extends string> = {
+  [K in keyof T]: K extends `${Prefix}${infer Rest}` ? K : never
+}[keyof T]
+
+type PropsWithEventHandlers<ElementType> = Partial<{
+  [K in keyof KeysWithPrefix<ElementType, "on">]: PropValue | StateView<PropValue> | (() => PropValue)
 }>
 
 export type ValidChildDomValue = Primitive | Node | null | undefined
