@@ -18,7 +18,7 @@ type KeysWithPrefix<T, Prefix extends string> = {
 }[keyof T]
 
 type PropsWithEventHandlers<ElementType> = Partial<{
-  [K in keyof KeysWithPrefix<ElementType, "on">]: PropValue | StateView<PropValue> | (() => PropValue)
+  [K in KeysWithPrefix<ElementType, "on">]: PropValue | StateView<PropValue> | (() => PropValue)
 }>
 
 export type ValidChildDomValue = Primitive | Node | null | undefined
@@ -27,7 +27,7 @@ export type BindingFunc = ((dom?: Node) => ValidChildDomValue) | ((dom?: Element
 
 export type ChildDom = ValidChildDomValue | StateView<Primitive | null | undefined> | BindingFunc | readonly ChildDom[]
 
-export type TagFunc<Result> = (first?: Props & PropsWithKnownKeys<Result> | ChildDom, ...rest: readonly ChildDom[]) => Result
+export type TagFunc<Result> = (first?: Props & PropsWithEventHandlers<Result> | ChildDom, ...rest: readonly ChildDom[]) => Result
 
 type Tags = Readonly<Record<string, TagFunc<Element>>> & {
   [K in keyof HTMLElementTagNameMap]: TagFunc<HTMLElementTagNameMap[K]>
