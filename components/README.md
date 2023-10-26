@@ -457,6 +457,8 @@ FloatingWindow({...props}, ...children) => <The created floating window>
 
 #### Examples
 
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/window?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
 Window with custom close button:
 
 ```ts
@@ -613,8 +615,6 @@ van.add(document.body, FloatingWindow(
   ),
 ))
 ```
-
-You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/window?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 #### Default `z-index` Stacking
 
