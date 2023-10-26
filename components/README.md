@@ -614,6 +614,8 @@ van.add(document.body, FloatingWindow(
 ))
 ```
 
+You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/window?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
 #### Default `z-index` Stacking
 
 By default, the `z-index` CSS property of each window comes from the sequence: `1`, `2`, `3`, `...`. Whenever a new window is created or is interacted with (`onmousedown` event is triggered), we assign the `z-index` property of the window to the next number in the sequence. This way, we are making sure that newly created or interacted windows are always brought to the front.
