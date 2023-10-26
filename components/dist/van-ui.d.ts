@@ -12,7 +12,7 @@ export interface ModalProps {
 }
 export declare const Modal: ({ closed, backgroundColor, blurBackground, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
 export interface TabsProps {
-    readonly activeTab?: State<string> | undefined;
+    readonly activeTab?: State<string>;
     readonly resultClass?: string;
     readonly style?: string;
     readonly tabButtonRowColor?: string;
@@ -121,6 +121,7 @@ export interface FloatingWindowProps {
     readonly zIndex?: number | State<number>;
     readonly disableMove?: boolean;
     readonly disableResize?: boolean;
+    readonly headerColor?: string;
     readonly windowClass?: string;
     readonly windowStyleOverrides?: CSSPropertyBag;
     readonly headerClass?: string;
@@ -131,4 +132,4 @@ export interface FloatingWindowProps {
     readonly crossStyleOverrides?: CSSPropertyBag;
 }
 export declare const topMostZIndex: () => number;
-export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, customStacking, zIndex, disableMove, disableResize, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
+export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, customStacking, zIndex, disableMove, disableResize, headerColor, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;

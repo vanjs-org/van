@@ -128,13 +128,13 @@ You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sa
 
 #### Property Reference
 
-* `closed`: Type `State<boolean>`. Required. A `State` object used to close the created modal window. Basically, setting `closed.val = true` will close the created modal window.
+* `closed`: Type `State<boolean>`. Required. A `State` object used to close the created modal window. Basically, setting `closed.val = true` will close the created modal window. You can also subscribe the closing event of the modal window via [`van.derive`](https://vanjs.org/tutorial#api-derive).
 * `backgroundColor`: Type `string`. Default `"rgba(0,0,0,.5)"`. Optional. The color of the background overlay when the modal is activated.
 * `blurBackground`: Type `boolean`. Default `false`. Optional. Whether to blur the background.
 * `backgroundClass`: Type `string`. Default `""`. Optional. The `class` attribute of the background overlay. You can specify multiple CSS classes separated by `" "`.
-* `backgroundStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the background overlay.
+* `backgroundStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the background overlay.
 * `modalClass`: Type `string`. Default `""`. Optional. The `class` attribute of the created modal element. You can specify multiple CSS classes separated by `" "`.
-* `modalStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the created modal element.
+* `modalStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the created modal element.
 
 ### Tabs
 
@@ -146,7 +146,7 @@ Creates a tab-view for tabs specified by the user.
 Tabs({...props}, tabContents) => <The created tab-view>
 ```
 
-The `tabContents` parameter is an object whose keys are the titles of the tabs and values (type: `ChildDom | ChildDom[]`) are the DOM element(s) for the tab contents.
+The `tabContents` parameter is an object whose keys are the titles of the tabs and values (type: `ChildDom`) are the DOM element(s) for the tab contents.
 
 #### Example
 
@@ -180,7 +180,7 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 
 #### Property Reference
 
-* `activeTab`: Type `State<string> | undefined`. Optional. If specified, you can activate a tab via the specified `State` object with `activeTab.val = "<tab title>"`, and subscribe to the changes of active tab via [`van.derive`](https://vanjs.org/tutorial#api-derive).
+* `activeTab`: Type `State<string>`. Optional. If specified, you can activate a tab via the specified `State` object with `activeTab.val = "<tab title>"`, and subscribe to the changes of active tab via [`van.derive`](https://vanjs.org/tutorial#api-derive).
 * `resultClass`: Type `string`. Default `""`. Optional. The `class` attribute of the result DOM element. You can specify multiple CSS classes separated by `" "`.
 * `style`: Type `string`. Default `""`. Optional. The `style` property of the result DOM element.
 * `tabButtonRowColor`: Type `string`. Default `"#f1f1f1"`. Optional. The background color of the container of tab buttons.
@@ -189,11 +189,11 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `tabButtonActiveColor`: Type `string`. Default `"#ccc"`. Optional. The color of the tab button for the currently active tab.
 * `transitionSec`: Type `number`. Default `0.3`. Optional. The duration of the transition when tab buttons change color.
 * `tabButtonRowClass`: Type `string`. Default `""`. Optional. The `class` attribute of the container of tab buttons. You can specify multiple CSS classes separated by `" "`.
-* `tabButtonRowStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the container of tab buttons.
+* `tabButtonRowStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the container of tab buttons.
 * `tabButtonClass`: Type `string`. Default `""`. The `class` attribute of tab buttons. You can specify multiple CSS classes separated by `" "`.
-* `tabButtonStyleOverrides`: Type `object`. Default `{}`. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for tab buttons. You can specify multiple CSS classes separated by `" "`.
+* `tabButtonStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for tab buttons. You can specify multiple CSS classes separated by `" "`.
 * `tabContentClass`: Type `string`. Default `""`. The `class` attribute of tab contents. You can specify multiple CSS classes separated by `" "`.
-* `tabContentStyleOverrides`: Type `object`. Default `{}`. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for tab contents.
+* `tabContentStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for tab contents.
 
 ### MessageBoard
 
@@ -248,18 +248,18 @@ Message board properties:
 * `fontColor`: Type `string`. Default `"white"`. Optional. The font color of the messages shown on the message board.
 * `fadeOutSec`: Type `number`. Default `0.3`. Optional. The duration of the fade out animation when messages are being closed.
 * `boardClass`: Type `string`. Default `""`. Optional. The `class` attribute of the message board. You can specify multiple CSS classes separated by `" "`.
-* `boardStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message board.
+* `boardStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message board.
 * `messageClass`: Type `string`. Default `""`. Optional. The `class` attribute of the message shown on the message board. You can specify multiple CSS classes separated by `" "`.
-* `messageStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message shown on the message board.
+* `messageStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message shown on the message board.
 * `closerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the message closer. You can specify multiple CSS classes separated by `" "`.
-* `closerStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message closer.
+* `closerStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the message closer.
 
 Message properties:
 
-* `message`: Type `ChildDom | readonly ChildDom[]`. Required. One or more `ChildDom` for the message we want to show.
-* `closer`: Type `ChildDom | readonly ChildDom[]`. Optional. If specified, we will render a closer DOM node with one or more `ChildDom` which can be clicked to close the shown message.
+* `message`: Type `ChildDom`. Required. One `ChildDom` or multiple `ChildDom` as an `Array` for the message we want to show.
+* `closer`: Type `ChildDom`. Optional. If specified, we will render a closer DOM node with one `ChildDom` or multiple `ChildDom`s as an `Array` which can be clicked to close the shown message.
 * `durationSec`: Type `number`. Optional. If specified, the shown message will be automatically closed after `durationSec` seconds.
-* `closed`: Type `State<boolean>`. Optional. If specified, the shown message can be closed via the `closed` `State` object with `closed.val = true`.
+* `closed`: Type `State<boolean>`. Optional. If specified, the shown message can be closed via the `closed` `State` object with `closed.val = true`. You can also subscribe the closing event of the message via [`van.derive`](https://vanjs.org/tutorial#api-derive).
 
 ### Tooltip
 
@@ -323,9 +323,9 @@ are needed for the tooltip element to be shown properly.
 * `fontColor`: Type `string`. Default: `"white"`. Optional. The font color of the tooltip.
 * `fadeInSec`: Type `number`. Default `0.3`. Optional. The duration of the fade-in animation.
 * `tooltipClass`: Type `string`. Default `""`. Optional. The `class` attribute of the tooltip. You can specify multiple CSS classes separated by `" "`.
-* `tooltipStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the tooltip.
+* `tooltipStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the tooltip.
 * `triangleClass`: Type `string`. Default `""`. Optional. The `class` attribute of the triangle in the bottom. You can specify multiple CSS classes separated by `" "`.
-* `triangleStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the triangle in the bottom.
+* `triangleStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the triangle in the bottom.
 
 ### Toggle
 
@@ -357,12 +357,12 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `onColor`: Type `string`. Default `"#2196F3"`. Optional. The color of the toggle when it's on.
 * `circleColor`: Type `string`. Default `"white"`. Optional. The color of the toggling circle.
 * `toggleClass`: Type `string`. Default `""`. Optional. The `class` attribute of the toggle. You can specify multiple CSS classes separated by `" "`.
-* `toggleStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggle.
+* `toggleStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggle.
 * `sliderClass`: Type `string`. Default `""`. Optional. The `class` attribute of the slider. You can specify multiple CSS classes separated by `" "`.
-* `sliderStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the slider.
+* `sliderStyleOverrides`. Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the slider.
 * `circleClass`. Type `string`. Default `""`. Optional. The `class` attribute of the toggling circle. You can specify multiple CSS classes separated by `" "`.
-* `circleStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle.
-* `circleWhenOnStyleOverrides`. Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle. Typically this is used to override the `transform` CSS property if the dimensions of the toggle is overridden.
+* `circleStyleOverrides`. Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle.
+* `circleWhenOnStyleOverrides`. Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the toggling circle. Typically this is used to override the `transform` CSS property if the dimensions of the toggle is overridden.
 
 ### OptionGroup
 
@@ -402,9 +402,9 @@ You can live preview the example with [CodeSandbox](https://codesandbox.io/p/san
 * `fontColor`: Type `string`. Default `"black"`. Optional. The font color of the options.
 * `transitionSec`: Type `number`. Default `0.3`. Optional. The duration of the transition when the options change color.
 * `optionGroupClass`: Type `string`. Default `""`. Optional. The `class` attribute of the entire option group. You can specify multiple CSS classes separated by `" "`.
-* `optionGroupStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the entire option group.
+* `optionGroupStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the entire option group.
 * `optionClass`: Type `string`. Default `""`. Optional. The `class` attribute of the options. You can specify multiple CSS classes separated by `" "`.
-* `optionStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the options.
+* `optionStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the options.
 
 ### Banner
 
@@ -441,13 +441,207 @@ You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sa
 * `fontColor`: Type `string`. Default `currentcolor`. Optional. The font color of the banner.
 * `sticky`: Type `boolean`. Default `false`. Optional. Whether the banner is sticky on the top.
 * `bannerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the created banner element. You can specify multiple CSS classes separated by `" "`.
-* `bannerStyleOverrides`: Type `object`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the created banner element.
+* `bannerStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the created banner element.
 
 ### FloatingWindow
 
-_Author: @Duffscs_
+_Author: [@Duffscs](https://github.com/Duffscs)_
 
 Creates a movable and resizable floating window.
+
+#### Signature
+
+```js
+FloatingWindow({...props}, ...children) => <The created floating window>
+```
+
+#### Examples
+
+Window with custom close button:
+
+```ts
+const closed = van.state(false)
+const width = van.state(300), height = van.state(220)
+
+van.add(document.body, FloatingWindow(
+  {title: "Example Window 1", closed, width, height, closeCross: null},
+  div({style: "display: flex; flex-direction: column; justify-content: center;"},
+    p("Hello, World!"),
+    button({onclick: () => width.val *= 2}, "Double Width"),
+    button({onclick: () => height.val *= 2}, "Double Height"),
+    button({onclick: () => closed.val = true}, "Close Window"),
+  ),
+))
+```
+
+Window with integrated close button:
+
+```ts
+van.add(document.body, FloatingWindow(
+  {title: "Example Window 2", x: 150, y: 150, headerColor: "lightblue"},
+  div({style: "display: flex; justify-content: center;"},
+    p("This is another floating window!"),
+  ),
+))
+```
+
+Window with `Tabs` and custom close button:
+
+```ts
+const closed = van.state(false)
+
+van.add(document.body, FloatingWindow(
+  {
+    closed, x: 200, y: 200, width: 500, height: 300,
+    childrenContainerStyleOverrides: { padding: 0 },
+  },
+  div(
+    span({
+      class: "vanui-window-cross",
+      style: "position: absolute; top: 8px; right: 8px;cursor: pointer;",
+      onclick: () => closed.val = true,
+    }, "×"),
+    Tabs(
+      {
+        style: "width: 100%;",
+        tabButtonActiveColor: "white",
+        tabButtonBorderStyle: "none",
+        tabButtonRowColor: "lightblue",
+        tabButtonRowStyleOverrides: {height: "2.5rem"},
+        tabButtonStyleOverrides: {height: "100%"},
+      },
+      {
+        Home: p(
+          "Welcome to ", b("VanJS"), " - the smallest reactive UI framework in the world.",
+        ),
+        "Getting Started": [
+          p("To install the ", b("VanJS"), " NPM package, run the line below:"),
+          pre(code("npm install vanjs-core")),
+        ],
+        About: p(
+          "The author of ", b("VanJS"), " is ",
+          a({href: "https://github.com/Tao-VanJS"}, " Tao Xin"), "."
+        ),
+      },
+    )
+  )
+))
+```
+
+Window without header or integrated close button:
+
+```ts
+const closed = van.state(false)
+
+van.add(document.body, FloatingWindow(
+  {
+    closed, x: 300, y: 300, width: 500, height: 300,
+    windowStyleOverrides: {"background-color": "lightgray"},
+    childrenContainerStyleOverrides: {
+      display: "flex",
+      "align-items": "center",
+      "justify-content": "center",
+      height: "100%",
+    }
+  },
+  button({onclick: () => closed.val = true}, "Close Window"),
+))
+```
+
+Window showing z-index:
+
+```ts
+const zIndex = van.state(1)
+
+van.add(document.body, FloatingWindow(
+  {title: ["z-index: ", zIndex], x: 200, y: 200, width: 300, height: 100, zIndex},
+))
+```
+
+Window with custom stacking:
+
+```ts
+const zIndex = van.state(1)
+
+van.add(document.body, FloatingWindow(
+  {title: "Custom stacking", x: 300, y: 300, customStacking: true, zIndex},
+  div({style: "display: flex; justify-content: space-between;"},
+    button({onclick: () => zIndex.val++}, "+"),
+    p("z-index: ", zIndex),
+    button({onclick: () => zIndex.val--}, "-"),
+  ),
+  div({style: "display: flex; justify-content: center;"},
+    button({onclick: () => zIndex.val = topMostZIndex()}, "Bring to Front"),
+  ),
+))
+```
+
+Non-movable window:
+
+```ts
+van.add(document.body, FloatingWindow(
+  {title: "Not Movable", disableMove: true},
+  div({style: "display: flex; justify-content: center;"},
+    p("This window is not movable!"),
+  ),
+))
+```
+
+Non-movable window without title:
+
+```ts
+const closed = van.state(false)
+
+van.add(document.body, FloatingWindow(
+  {closed, x: 150, y: 150, disableMove: true},
+  div(
+    p("This window is not movable!"),
+    p({style: "display: flex; justify-content: center;"},
+      button({onclick: () => closed.val = true}, "Close")
+    ),
+  ),
+))
+```
+
+Non-resizable window:
+
+```ts
+van.add(document.body, FloatingWindow(
+  {title: "Not Resizable", x: 200, y: 200, disableResize: true},
+  div(
+    p({style: "display: flex; justify-content: center;"}, "This window is not resizable!"),
+  ),
+))
+```
+
+#### Default `z-index` Stacking
+
+By default, the `z-index` CSS property of each window comes from the sequence: `1`, `2`, `3`, `...`. Whenever a new window is created or is interacted with (`onmousedown` event is triggered), we assign the `z-index` property of the window to the next number in the sequence. This way, we are making sure that newly created or interacted windows are always brought to the front.
+
+You can override the default stacking behavior by specifying `{customStacking: true}` in `props`. This way, you can manually control the `z-index` of the window via a **VanJS** state.
+
+#### Property Reference
+
+* `title`: Type `ChildDom`. Optional. One `ChildDom` or multiple `ChildDom` as an `Array` for the title of the created window. If not specified, the window won't have a title.
+* `closed`: Type `State<boolean>`. Optional. If specified, the created window can be closed via the `closed` `State` object with `closed.val = true`. You can also subscribe the closing event of the created window via [`van.derive`](https://vanjs.org/tutorial#api-derive).
+* `x`: Type `number | State<number>`. Default `100`. Optional. The x-coordinate of the created window, in pixels.
+* `y`: Type `number | State<number>`. Default `100`. Optional. The y-coordinate of the created window, in pixels.
+* `width`: Type `number | State<number>`. Default `300`. Optional. The width of the created window, in pixels.
+* `height`: Type `number | State<number>`. Default `200`. Optional. The height of the created window, in pixels.
+* `closeCross`: Type `ChildDom`. Default `"×"`. Optional. One `ChildDom` or multiple `ChildDom` as an `Array` for the close button of the created window. If its value is `null`, there won't be a close button. If `title` property is not specified, this property will be ignored and there won't be a close button.
+* `customStacking`: type `boolean`. Default `false`. Optional. If `true`, [default `z-index` stacking rule](#default-z-index-stacking) won't be triggered. Users are expected to manually set the `z-index` property of the created window via the `State` object for `z-index` property below.
+* `zIndex`: type `number | State<number>`. Optional. If a `State` object is specified, you can use the `State` object to track the change of `z-index` property via [`van.derive`](https://vanjs.org/tutorial#api-derive). If `customTracking` is `true`, you can use this property to manually set the `z-index` property of the created window.
+* `disableMove`: type `boolean`. Default `false`. Optional. If `true`, the created window can't be moved.
+* `disableResize`: type `boolean`. Default `false`. Optional. If `true`, the created window can't be resized.
+* `headerColor`: type `string`. Default `"lightgray"`. Optional. The background color of the window header (title bar).
+* `windowClass`: Type `string`. Default `""`. Optional. The `class` attribute of the created window. You can specify multiple CSS classes separated by `" "`.
+* `windowStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the created window.
+* `headerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the window header (title bar). You can specify multiple CSS classes separated by `" "`.
+* `headerStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the window header (title bar).
+* `childrenContainerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the container for `children` DOM nodes. You can specify multiple CSS classes separated by `" "`.
+* `childrenContainerStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the container of `children` DOM nodes.
+* `crossClass`: Type `string`. Default `""`. Optional. The `class` attribute of the close button. You can specify multiple CSS classes separated by `" "`.
+* `crossStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the close button.
 
 ### Property Bag for Style Overrides
 

@@ -1,5 +1,5 @@
 import van from "vanjs-core"
-import {FloatingWindow, Tabs} from "vanjs-ui";
+import {FloatingWindow, Tabs, topMostZIndex} from "vanjs-ui";
 
 const {a, b, button, code, div, h1, p, pre, span} = van.tags
 
@@ -9,32 +9,21 @@ const example1 = () => {
 
   van.add(document.body, FloatingWindow(
     {title: "Example Window 1", closed, width, height, closeCross: null},
-    div({style: "padding: 1rem;"},
+    div({style: "display: flex; flex-direction: column; justify-content: center;"},
       p("Hello, World!"),
-      p({style: "display: flex; justify-content: center;"},
-        button({onclick: () => width.val *= 2}, "Double Width"),
-      ),
-      p({style: "display: flex; justify-content: center;"},
-        button({onclick: () => height.val *= 2}, "Double Height"),
-      ),
-      p({style: "display: flex; justify-content: center;"},
-        button({onclick: () => closed.val = true}, "Close Window"),
-      ),
-    )
+      button({onclick: () => width.val *= 2}, "Double Width"),
+      button({onclick: () => height.val *= 2}, "Double Height"),
+      button({onclick: () => closed.val = true}, "Close Window"),
+    ),
   ))
 }
 
 const example2 = () => {
   van.add(document.body, FloatingWindow(
-    {
-      title: "Example Window 2", x: 150, y: 150,
-      headerStyleOverrides: {
-        "background-color": "lightblue",
-      },
-    },
+    {title: "Example Window 2", x: 150, y: 150, headerColor: "lightblue"},
     div({style: "display: flex; justify-content: center;"},
       p("This is another floating window!"),
-    )
+    ),
   ))
 }
 
@@ -42,13 +31,14 @@ const example3 = () => {
   const closed = van.state(false)
 
   van.add(document.body, FloatingWindow(
-    {closed, x: 200, y: 200, width: 500, height: 300},
+    {
+      closed, x: 200, y: 200, width: 500, height: 300,
+      childrenContainerStyleOverrides: { padding: 0 },
+    },
     div(
       span({
-        style:
-          "position: absolute; top: 8px; right: 8px;" +
-          "cursor: pointer;",
         class: "vanui-window-cross",
+        style: "position: absolute; top: 8px; right: 8px;cursor: pointer;",
         onclick: () => closed.val = true,
       }, "×"),
       Tabs(
@@ -108,16 +98,15 @@ const example6 = () => {
   const zIndex = van.state(1)
 
   van.add(document.body, FloatingWindow(
-    {
-      title: "Custom stacking", x: 300, y: 300, width: 300, height: 100, zIndex,
-      childrenContainerStyleOverrides: {
-        display: "flex",
-        "justify-content": "space-between",
-      },
-    },
-    button({onclick: () => zIndex.val++}, "+"),
-    p("z-index: ", zIndex),
-    button({onclick: () => zIndex.val--}, "-"),
+    {title: "Custom stacking", x: 300, y: 300, customStacking: true, zIndex},
+    div({style: "display: flex; justify-content: space-between;"},
+      button({onclick: () => zIndex.val++}, "+"),
+      p("z-index: ", zIndex),
+      button({onclick: () => zIndex.val--}, "-"),
+    ),
+    div({style: "display: flex; justify-content: center;"},
+      button({onclick: () => zIndex.val = topMostZIndex()}, "Bring to Front"),
+    ),
   ))
 }
 
@@ -136,7 +125,7 @@ const example8 = () => {
   van.add(document.body, FloatingWindow(
     {closed, x: 150, y: 150, disableMove: true},
     div(
-      p({style: "display: flex; justify-content: center;"}, "This window is not movable!"),
+      p("This window is not movable!"),
       p({style: "display: flex; justify-content: center;"},
         button({onclick: () => closed.val = true}, "Close")
       ),

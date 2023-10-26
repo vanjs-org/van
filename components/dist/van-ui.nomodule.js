@@ -248,7 +248,7 @@
   };
   let curWindowZIndex = 0;
   window.topMostZIndex = () => ++curWindowZIndex;
-  window.FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 100, width = 300, height = 200, closeCross = "×", customStacking = false, zIndex = 1, disableMove = false, disableResize = false, windowClass = "", windowStyleOverrides = {}, headerClass = "", headerStyleOverrides = {}, childrenContainerClass = "", childrenContainerStyleOverrides = {}, crossClass = "", crossStyleOverrides = {}, }, ...children) => {
+  window.FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 100, width = 300, height = 200, closeCross = "×", customStacking = false, zIndex = 1, disableMove = false, disableResize = false, headerColor = "lightgray", windowClass = "", windowStyleOverrides = {}, headerClass = "", headerStyleOverrides = {}, childrenContainerClass = "", childrenContainerStyleOverrides = {}, crossClass = "", crossStyleOverrides = {}, }, ...children) => {
       const xState = stateOf(x), yState = stateOf(y);
       const widthState = stateOf(width), heightState = stateOf(height);
       const zIndexState = stateOf(zIndex);
@@ -258,10 +258,12 @@
       const startX = van.state(0), startY = van.state(0);
       const startWidth = van.state(0), startHeight = van.state(0);
       const onmousedown = (e) => {
+          if (e.button !== 0)
+              return;
           dragging.val = true;
           startX.val = e.clientX;
           startY.val = e.clientY;
-          document.body.style.userSelect = 'none';
+          document.body.style.userSelect = "none";
       };
       const onResizeMouseDown = (direction) => (e) => {
           resizingDirection.val = direction;
@@ -269,7 +271,7 @@
           startY.val = e.clientY;
           startWidth.val = widthState.val;
           startHeight.val = heightState.val;
-          document.body.style.userSelect = 'none';
+          document.body.style.userSelect = "none";
       };
       const onMouseMove = (e) => {
           if (dragging.val) {
@@ -281,88 +283,90 @@
           else if (resizingDirection.val) {
               const deltaX = e.clientX - startX.val;
               const deltaY = e.clientY - startY.val;
-              if (resizingDirection.val.includes('right'))
+              if (resizingDirection.val.includes("right"))
                   widthState.val = startWidth.val + deltaX;
-              if (resizingDirection.val.includes('bottom'))
+              if (resizingDirection.val.includes("bottom"))
                   heightState.val = startHeight.val + deltaY;
           }
       };
       const onMouseUp = () => {
           dragging.val = false;
           resizingDirection.val = null;
-          document.body.style.userSelect = '';
+          document.body.style.userSelect = "";
       };
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-      const grabAreaBgColor = 'transparent';
-      if (!document.getElementById('vanui-window-style')) {
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+      const grabAreaBgColor = "transparent";
+      if (!document.getElementById("vanui-window-style")) {
           const staticStyles = style({ type: "text/css", id: "vanui-window-style" }, toStyleSheet({
               ".vanui-window": {
-                  position: 'fixed',
-                  'background-color': 'white',
-                  border: '1px solid black',
-                  'border-radius': '0.5rem',
-                  overflow: 'hidden',
+                  position: "fixed",
+                  "background-color": "white",
+                  border: "1px solid black",
+                  "border-radius": "0.5rem",
+                  overflow: "hidden",
               },
               ".vanui-window-dragarea": {
-                  cursor: 'move',
-                  position: 'absolute',
-                  left: '0',
-                  top: '0',
-                  width: '100%',
-                  height: '1rem',
+                  cursor: "move",
+                  position: "absolute",
+                  left: "0",
+                  top: "0",
+                  width: "100%",
+                  height: "1rem",
               },
               ".vanui-window-resize-right": {
-                  cursor: 'e-resize',
-                  position: 'absolute',
-                  right: '0',
-                  top: '0',
-                  width: '10px',
-                  height: '100%',
-                  'background-color': grabAreaBgColor,
+                  cursor: "e-resize",
+                  position: "absolute",
+                  right: "0",
+                  top: "0",
+                  width: "10px",
+                  height: "100%",
+                  "background-color": grabAreaBgColor,
               },
               ".vanui-window-resize-bottom": {
-                  cursor: 's-resize',
-                  position: 'absolute',
-                  left: '0',
-                  bottom: '0',
-                  width: '100%',
-                  height: '10px',
-                  'background-color': grabAreaBgColor,
+                  cursor: "s-resize",
+                  position: "absolute",
+                  left: "0",
+                  bottom: "0",
+                  width: "100%",
+                  height: "10px",
+                  "background-color": grabAreaBgColor,
               },
               ".vanui-window-resize-rightbottom": {
-                  cursor: 'se-resize',
-                  position: 'absolute',
-                  right: '0',
-                  bottom: '0',
-                  width: '10px',
-                  height: '10px',
-                  'background-color': grabAreaBgColor,
+                  cursor: "se-resize",
+                  position: "absolute",
+                  right: "0",
+                  bottom: "0",
+                  width: "10px",
+                  height: "10px",
+                  "background-color": grabAreaBgColor,
               },
               ".vanui-window-header": {
-                  cursor: 'move',
-                  'background-color': 'lightgray',
-                  "user-select": 'none',
-                  display: 'flex',
-                  "justify-content": 'space-between',
-                  "align-items": 'center',
-                  padding: '0.5rem',
+                  cursor: "move",
+                  "user-select": "none",
+                  display: "flex",
+                  "justify-content": "space-between",
+                  "align-items": "center",
+                  padding: "0.5rem",
               },
               ".vanui-window-cross": {
-                  cursor: 'pointer',
-                  fontSize: '18px',
-                  transition: 'background-color 0.3s, color 0.3s',
-                  "border-radius": '50%',
-                  width: '24px',
-                  height: '24px',
-                  display: 'flex',
-                  "align-items": 'center',
-                  "justify-content": 'center',
+                  cursor: "pointer",
+                  "font-family": "Arial",
+                  transition: "background-color 0.3s, color 0.3s",
+                  "border-radius": "50%",
+                  width: "24px",
+                  height: "24px",
+                  display: "flex",
+                  "align-items": "center",
+                  "justify-content": "center",
               },
               ".vanui-window-cross:hover": {
                   "background-color": "red",
                   color: "white",
               },
+              ".vanui-window-children": {
+                  padding: "0.5rem",
+              }
           }));
           document.head.appendChild(staticStyles);
       }
@@ -373,34 +377,41 @@
               top: `${yState.val}px`,
               width: `${widthState.val}px`,
               height: `${heightState.val}px`,
-              'z-index': zIndexState.val,
+              "z-index": zIndexState.val,
               ...windowStyleOverrides,
           }),
           ...(customStacking ? {} : { onmousedown: () => zIndexState.val = topMostZIndex() }),
       }, title ? header({
           class: ["vanui-window-header"].concat(headerClass ? headerClass : []).join(" "),
-          style: toStyleStr({ ...(disableMove ? { cursor: "auto" } : {}), ...headerStyleOverrides }),
+          style: toStyleStr({
+              "background-color": headerColor,
+              ...(disableMove ? { cursor: "auto" } : {}),
+              ...headerStyleOverrides,
+          }),
           ...(disableMove ? {} : { onmousedown }),
       }, title, closeCross ? span({
           class: ["vanui-window-cross"].concat(crossClass ? crossClass : []).join(" "),
           style: toStyleStr(crossStyleOverrides),
           onclick: () => closed.val = true,
       }, closeCross) : null) : disableMove ? null : div({
-          class: 'vanui-window-dragarea',
+          class: "vanui-window-dragarea",
           onmousedown,
       }), disableResize ? [] : [
           div({
-              class: 'vanui-window-resize-right',
-              onmousedown: onResizeMouseDown('right'),
+              class: "vanui-window-resize-right",
+              onmousedown: onResizeMouseDown("right"),
           }),
           div({
-              class: 'vanui-window-resize-bottom',
-              onmousedown: onResizeMouseDown('bottom'),
+              class: "vanui-window-resize-bottom",
+              onmousedown: onResizeMouseDown("bottom"),
           }),
           div({
-              class: 'vanui-window-resize-rightbottom',
-              onmousedown: onResizeMouseDown('rightbottom'),
+              class: "vanui-window-resize-rightbottom",
+              onmousedown: onResizeMouseDown("rightbottom"),
           }),
-      ], div({ class: childrenContainerClass, style: toStyleStr(childrenContainerStyleOverrides) }, children));
+      ], div({
+          class: ["vanui-window-children"].concat(childrenContainerClass ? childrenContainerClass : []).join(" "),
+          style: toStyleStr(childrenContainerStyleOverrides)
+      }, children));
   };
 }
