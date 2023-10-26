@@ -1,5 +1,5 @@
 {
-  "name": "vanjs-ui-example-toggle",
+  "name": "vanjs-ui-example-window",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -14,7 +14,7 @@
     "vite": "^4.3.9"
   },
   "dependencies": {
-    "vanjs-core": "^1.2.4",
+    "vanjs-core": "^1.2.1",
     "vanjs-ui": "^0.9.0"
   }
 }
