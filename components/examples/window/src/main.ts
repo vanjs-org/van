@@ -28,6 +28,18 @@ const example2 = () => {
 }
 
 const example3 = () => {
+  van.add(document.body, FloatingWindow(
+    {
+      title: "Example Window 3", x: 175, y: 175, closeCross: "❌",
+      crossHoverStyleOverrides: {"background-color": "transparent"},
+    },
+    div({style: "display: flex; justify-content: center;"},
+      p("This is a floating window with custom cross button!"),
+    ),
+  ))
+}
+
+const example4 = () => {
   const closed = van.state(false)
 
   van.add(document.body, FloatingWindow(
@@ -68,7 +80,7 @@ const example3 = () => {
   ))
 }
 
-const example4 = () => {
+const example5 = () => {
   const closed = van.state(false)
 
   van.add(document.body, FloatingWindow(
@@ -86,7 +98,7 @@ const example4 = () => {
   ))
 }
 
-const example5 = () => {
+const example6 = () => {
   const zIndex = van.state(1)
 
   van.add(document.body, FloatingWindow(
@@ -94,7 +106,7 @@ const example5 = () => {
   ))
 }
 
-const example6 = () => {
+const example7 = () => {
   const zIndex = van.state(1)
 
   van.add(document.body, FloatingWindow(
@@ -110,7 +122,7 @@ const example6 = () => {
   ))
 }
 
-const example7 = () => {
+const example8 = () => {
   van.add(document.body, FloatingWindow(
     {title: "Not Movable", disableMove: true},
     div({style: "display: flex; justify-content: center;"},
@@ -119,7 +131,7 @@ const example7 = () => {
   ))
 }
 
-const example8 = () => {
+const example9 = () => {
   const closed = van.state(false)
 
   van.add(document.body, FloatingWindow(
@@ -133,7 +145,7 @@ const example8 = () => {
   ))
 }
 
-const example9 = () => {
+const example10 = () => {
   van.add(document.body, FloatingWindow(
     {title: "Not Resizable", x: 200, y: 200, disableResize: true},
     div(
@@ -149,13 +161,14 @@ const FloatingWindowDemo = () => {
     p(
       button({onclick: example1}, "Window with custom close button"), " ",
       button({onclick: example2}, "Window with integrated close button"), " ",
-      button({onclick: example3}, "Window with Tabs and custom close button"), " ",
-      button({onclick: example4}, "Window without header or integrated close button"), " ",
-      button({onclick: example5}, "Window showing z-index"), " ",
-      button({onclick: example6}, "Window with custom stacking"), " ",
-      button({onclick: example7}, "Non-movable window"), " ",
-      button({onclick: example8}, "Non-movable window without title"), " ",
-      button({onclick: example9}, "Non-resizable window"),
+      button({onclick: example3}, "Window with customized close button"), " ",
+      button({onclick: example4}, "Window with Tabs and custom close button"), " ",
+      button({onclick: example5}, "Window without header or integrated close button"), " ",
+      button({onclick: example6}, "Window showing z-index"), " ",
+      button({onclick: example7}, "Window with custom stacking"), " ",
+      button({onclick: example8}, "Non-movable window"), " ",
+      button({onclick: example9}, "Non-movable window without title"), " ",
+      button({onclick: example10}, "Non-resizable window"),
     ),
   )
 }

@@ -488,6 +488,20 @@ van.add(document.body, FloatingWindow(
 ))
 ```
 
+Window with customized close button:
+
+```ts
+van.add(document.body, FloatingWindow(
+  {
+    title: "Example Window 3", x: 175, y: 175, closeCross: "❌",
+    crossHoverStyleOverrides: {"background-color": "transparent"},
+  },
+  div({style: "display: flex; justify-content: center;"},
+    p("This is a floating window with custom cross button!"),
+  ),
+))
+```
+
 Window with `Tabs` and custom close button:
 
 ```ts
@@ -645,6 +659,8 @@ You can override the default stacking behavior by specifying `{customStacking: t
 * `childrenContainerStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the container of `children` DOM nodes.
 * `crossClass`: Type `string`. Default `""`. Optional. The `class` attribute of the close button. You can specify multiple CSS classes separated by `" "`.
 * `crossStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the close button.
+* `crossHoverClass`: Type `string`. Default `""`. Optional. The `class` attribute of the close button when it's hovered over. You can specify multiple CSS classes separated by `" "`.
+* `crossStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the close button when it's hovered over.
 
 ### Property Bag for Style Overrides
 

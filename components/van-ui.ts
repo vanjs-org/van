@@ -534,6 +534,8 @@ export interface FloatingWindowProps {
   readonly childrenContainerStyleOverrides?: CSSPropertyBag
   readonly crossClass?: string
   readonly crossStyleOverrides?: CSSPropertyBag
+  readonly crossHoverClass?: string
+  readonly crossHoverStyleOverrides?: CSSPropertyBag
 }
 
 let curWindowZIndex = 0
@@ -562,6 +564,8 @@ export const FloatingWindow = (
     childrenContainerStyleOverrides = {},
     crossClass = "",
     crossStyleOverrides = {},
+    crossHoverClass = "",
+    crossHoverStyleOverrides = {},
   }: FloatingWindowProps,
   ...children: readonly ChildDom[]
 ) => {
@@ -572,6 +576,8 @@ export const FloatingWindow = (
   const dragging = van.state(false), resizingDirection = van.state<string | null>(null)
   const startX = van.state(0), startY = van.state(0)
   const startWidth = van.state(0), startHeight = van.state(0)
+  const crossHover = crossHoverClass || Object.keys(crossHoverStyleOverrides) ?
+    van.state(false) : null
 
   const onmousedown = (e: MouseEvent) => {
     if (e.button !== 0) return
@@ -714,9 +720,20 @@ export const FloatingWindow = (
       },
       title,
       closeCross ? span({
-        class: ["vanui-window-cross"].concat(crossClass ? crossClass : []).join(" "),
-        style: toStyleStr(crossStyleOverrides),
+        class: () => ["vanui-window-cross"]
+          .concat(crossClass ? crossClass : [])
+          .concat(crossHoverClass && crossHover!.val ? crossHoverClass : [])
+          .join(" "),
+        style: () => toStyleStr({
+          ...crossStyleOverrides,
+          ...(Object.keys(crossHoverStyleOverrides).length && crossHover!.val ?
+            crossHoverStyleOverrides : {}),
+        }),
         onclick: () => closed.val = true,
+        ...(crossHover ? {
+          onmouseenter: () => crossHover.val = true,
+          onmouseleave: () => crossHover.val = false,
+        } : {})
       }, closeCross) : null,
     ) : disableMove ? null : div({
       class: "vanui-window-dragarea",

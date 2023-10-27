@@ -248,7 +248,7 @@ export const Banner = ({ backgroundColor = "#fff1a8", fontColor = "currentcolor"
 };
 let curWindowZIndex = 0;
 export const topMostZIndex = () => ++curWindowZIndex;
-export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 100, width = 300, height = 200, closeCross = "×", customStacking = false, zIndex = 1, disableMove = false, disableResize = false, headerColor = "lightgray", windowClass = "", windowStyleOverrides = {}, headerClass = "", headerStyleOverrides = {}, childrenContainerClass = "", childrenContainerStyleOverrides = {}, crossClass = "", crossStyleOverrides = {}, }, ...children) => {
+export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 100, width = 300, height = 200, closeCross = "×", customStacking = false, zIndex = 1, disableMove = false, disableResize = false, headerColor = "lightgray", windowClass = "", windowStyleOverrides = {}, headerClass = "", headerStyleOverrides = {}, childrenContainerClass = "", childrenContainerStyleOverrides = {}, crossClass = "", crossStyleOverrides = {}, crossHoverClass = "", crossHoverStyleOverrides = {}, }, ...children) => {
     const xState = stateOf(x), yState = stateOf(y);
     const widthState = stateOf(width), heightState = stateOf(height);
     const zIndexState = stateOf(zIndex);
@@ -257,6 +257,8 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
     const dragging = van.state(false), resizingDirection = van.state(null);
     const startX = van.state(0), startY = van.state(0);
     const startWidth = van.state(0), startHeight = van.state(0);
+    const crossHover = crossHoverClass || Object.keys(crossHoverStyleOverrides) ?
+        van.state(false) : null;
     const onmousedown = (e) => {
         if (e.button !== 0)
             return;
@@ -390,9 +392,20 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
         }),
         ...(disableMove ? {} : { onmousedown }),
     }, title, closeCross ? span({
-        class: ["vanui-window-cross"].concat(crossClass ? crossClass : []).join(" "),
-        style: toStyleStr(crossStyleOverrides),
+        class: () => ["vanui-window-cross"]
+            .concat(crossClass ? crossClass : [])
+            .concat(crossHoverClass && crossHover.val ? crossHoverClass : [])
+            .join(" "),
+        style: () => toStyleStr({
+            ...crossStyleOverrides,
+            ...(Object.keys(crossHoverStyleOverrides).length && crossHover.val ?
+                crossHoverStyleOverrides : {}),
+        }),
         onclick: () => closed.val = true,
+        ...(crossHover ? {
+            onmouseenter: () => crossHover.val = true,
+            onmouseleave: () => crossHover.val = false,
+        } : {})
     }, closeCross) : null) : disableMove ? null : div({
         class: "vanui-window-dragarea",
         onmousedown,
