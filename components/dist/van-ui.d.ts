@@ -1,4 +1,4 @@
-import { ChildDom, State } from "vanjs-core";
+import { ChildDom, State, ValidChildDomValue } from "vanjs-core";
 export type CSSPropertyBag = Record<string, string | number>;
 export type CSSStyles = Record<string, CSSPropertyBag>;
 export interface ModalProps {
@@ -135,3 +135,19 @@ export interface FloatingWindowProps {
 }
 export declare const topMostZIndex: () => number;
 export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, customStacking, zIndex, disableMove, disableResize, headerColor, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, crossHoverClass, crossHoverStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
+interface AwaitProps<Value> {
+    value: Promise<Value>;
+    Loading?: () => ValidChildDomValue;
+    Error?: (reason: Error) => ValidChildDomValue;
+}
+export type AwaitState<Value> = {
+    status: 'pending';
+} | {
+    value: Value;
+    status: 'fulfilled';
+} | {
+    value: Error;
+    status: 'rejected';
+};
+export declare const Await: <T>({ value, Loading, Error }: AwaitProps<T>, children: (data: T) => ValidChildDomValue) => () => ValidChildDomValue;
+export {};
