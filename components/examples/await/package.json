@@ -1,0 +1,20 @@
+{
+  "name": "vanjs-ui-example-await",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "terser": "^5.19.2",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "vanjs-core": "^1.2.4",
+    "vanjs-ui": "^0.9.0"
+  }
+}
