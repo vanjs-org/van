@@ -181,6 +181,9 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="http://metaleap.net"><img src="https://avatars.githubusercontent.com/u/22109?v=4?s=100" width="100px;" alt="Phil Schumann"/><br /><sub><b>Phil Schumann</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Ametaleap" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://duffscs.github.io/blog/"><img src="https://avatars.githubusercontent.com/u/59032377?v=4?s=100" width="100px;" alt="Raphaël Gauthier"/><br /><sub><b>Raphaël Gauthier</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=Duffscs" title="Code">💻</a> <a href="#plugin-Duffscs" title="Plugin/utility libraries">🔌</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://hunter-gu.github.io/personal-blog/"><img src="https://avatars.githubusercontent.com/u/24472363?v=4?s=100" width="100px;" alt="Nail"/><br /><sub><b>Nail</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=Hunter-Gu" title="Code">💻</a> <a href="#plugin-Hunter-Gu" title="Plugin/utility libraries">🔌</a></td>
+    </tr>
   </tbody>
 </table>
 
