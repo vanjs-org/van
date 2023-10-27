@@ -277,6 +277,16 @@
         "code",
         "plugin"
       ]
+    },
+    {
+      "login": "Hunter-Gu",
+      "name": "Nail",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24472363?v=4",
+      "profile": "https://hunter-gu.github.io/personal-blog/",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
     }
   ],
   "repoType": "github"
