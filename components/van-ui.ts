@@ -1,4 +1,4 @@
-import van, {ChildDom, State} from "vanjs-core"
+import van, {ChildDom, State, ValidChildDomValue} from "vanjs-core"
 
 // Quote all tag names so that they're not mangled by minifier
 const {"button": button, "div": div, "header": header, "input": input, "label": label, "span": span, "style": style} = van.tags
@@ -761,3 +761,55 @@ export const FloatingWindow = (
     ),
   )
 }
+
+interface AwaitProps<Value> {
+  value: Promise<Value>;
+  Loading?: () => ValidChildDomValue;
+  Error?: (reason: Error) => ValidChildDomValue;
+}
+
+export type AwaitState<Value> =
+  | {
+      status: 'pending';
+    }
+  | {
+      value: Value;
+      status: 'fulfilled';
+    }
+  | {
+      value: Error;
+      status: 'rejected';
+    };
+
+export const Await = <T>(
+  { value, Loading, Error }: AwaitProps<T>,
+  children: (data: T) => ValidChildDomValue
+) => {
+  const data = van.state<AwaitState<T>>({ status: 'pending' });
+
+  const resolve = (promise: Promise<T>) => {
+    data.val = { status: 'pending' };
+    promise
+      .then((result) => {
+        data.val = {
+          value: result,
+          status: 'fulfilled',
+        };
+      })
+      .catch((err) => {
+        data.val = {
+          value: err,
+          status: 'rejected',
+        };
+      });
+  };
+
+  van.derive(() => resolve(value));
+
+  return () =>
+    data.val.status === 'pending'
+      ? Loading?.()
+      : data.val.status === 'rejected'
+      ? Error?.(data.val.value)
+      : children(data.val.value);
+};

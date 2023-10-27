@@ -427,3 +427,28 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
         style: toStyleStr(childrenContainerStyleOverrides)
     }, children));
 };
+export const Await = ({ value, Loading, Error }, children) => {
+    const data = van.state({ status: 'pending' });
+    const resolve = (promise) => {
+        data.val = { status: 'pending' };
+        promise
+            .then((result) => {
+            data.val = {
+                value: result,
+                status: 'fulfilled',
+            };
+        })
+            .catch((err) => {
+            data.val = {
+                value: err,
+                status: 'rejected',
+            };
+        });
+    };
+    van.derive(() => resolve(value));
+    return () => data.val.status === 'pending'
+        ? Loading?.()
+        : data.val.status === 'rejected'
+            ? Error?.(data.val.value)
+            : children(data.val.value);
+};
