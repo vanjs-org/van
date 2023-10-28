@@ -86,15 +86,12 @@ _Author: [@Hunter-Gu](https://github.com/Hunter-Gu)_
 #### Signature
 
 ```js
-Await(
-  {
-    value,  // A `Promise` object for asynchronous data
-    container,  // The container of the result. Default `div`
-    Loading,  // What to render when the data is being loaded
-    Error,  // What to render when error occurs
-  },
-  children,
-) => <The created UI element>
+Await({
+  value,  // A `Promise` object for asynchronous data
+  container,  // The container of the result. Default `div`
+  Loading,  // What to render when the data is being loaded
+  Error,  // What to render when error occurs
+}, children) => <The created UI element>
 ```
 
 The `children` parameter (type: `(data: T) => ValidChildDomValue`) is a function that takes the resolved data as input and returns a valid child DOM value (`Node`, primitives, `null` or `undefined`), used to indicate what to render after the data is loaded.
