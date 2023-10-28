@@ -161,8 +161,8 @@ const FloatingWindowDemo = () => {
     p(
       button({onclick: example1}, "Window with custom close button"), " ",
       button({onclick: example2}, "Window with integrated close button"), " ",
-      button({onclick: example3}, "Window with customized close button"), " ",
-      button({onclick: example4}, "Window with Tabs and custom close button"), " ",
+      button({onclick: example3}, "Close button with custom appearance"), " ",
+      button({onclick: example4}, "Window with Tabs"), " ",
       button({onclick: example5}, "Window without header or integrated close button"), " ",
       button({onclick: example6}, "Window showing z-index"), " ",
       button({onclick: example7}, "Window with custom stacking"), " ",

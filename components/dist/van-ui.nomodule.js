@@ -9,6 +9,15 @@
   };
   const stateProto = Object.getPrototypeOf(van.state(null));
   const stateOf = (v) => (Object.getPrototypeOf(v ?? 0) === stateProto ? v : van.state(v));
+  window.Await = ({ value, container = div, Loading, Error }, children) => {
+      const data = van.state({ status: "pending" });
+      value
+          .then(result => data.val = { status: "fulfilled", value: result })
+          .catch(err => data.val = { status: "rejected", value: err });
+      return container(() => data.val.status === "pending" ? Loading?.() ?? "" :
+          data.val.status === "rejected" ? Error?.(data.val.value) :
+              children(data.val.value));
+  };
   window.Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackground = false, backgroundClass = "", backgroundStyleOverrides = {}, modalClass = "", modalStyleOverrides = {}, }, ...children) => {
       const backgroundStyle = {
           display: "flex",
@@ -426,30 +435,5 @@
           class: ["vanui-window-children"].concat(childrenContainerClass ? childrenContainerClass : []).join(" "),
           style: toStyleStr(childrenContainerStyleOverrides)
       }, children));
-  };
-  window.Await = ({ value, Loading, Error }, children) => {
-      const data = van.state({ status: 'pending' });
-      const resolve = (promise) => {
-          data.val = { status: 'pending' };
-          promise
-              .then((result) => {
-              data.val = {
-                  value: result,
-                  status: 'fulfilled',
-              };
-          })
-              .catch((err) => {
-              data.val = {
-                  value: err,
-                  status: 'rejected',
-              };
-          });
-      };
-      van.derive(() => resolve(value));
-      return () => data.val.status === 'pending'
-          ? Loading?.()
-          : data.val.status === 'rejected'
-              ? Error?.(data.val.value)
-              : children(data.val.value);
   };
 }

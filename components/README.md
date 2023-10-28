@@ -63,15 +63,110 @@ Try on jsfiddle: [Modal](https://jsfiddle.net/mks9253o/1/), [MessageBoard](https
 
 ## Documentation
 
-The following UI components has been implemented so far:
-* [Modal](#modal) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/modal?file=%2Fsrc%2Fmain.ts%3A1%2C1))
-* [Tabs](#tabs) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1))
-* [MessageBoard](#message) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/message?file=/src/main.ts))
-* [Tooltip](#tooltip) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1))
-* [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
-* [OptionGroup](#optiongroup) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/option-group?file=%2Fsrc%2Fmain.ts%3A1%2C1))
-* [Banner](#banner) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/banner?file=/src/main.ts:1,1))
-* <span style="color:red; padding-right: 0.3rem;">**New!**</span> [FloatingWindow](#floatingwindow) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/window?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+The following components have been implemented so far:
+
+* Utility components:
+  * [Await](#await) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/await?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+* UI components:
+  * [Modal](#modal) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/modal?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+  * [Tabs](#tabs) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+  * [MessageBoard](#message) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/message?file=/src/main.ts))
+  * [Tooltip](#tooltip) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1))
+  * [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+  * [OptionGroup](#optiongroup) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/option-group?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+  * [Banner](#banner) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/banner?file=/src/main.ts:1,1))
+  * <span style="color:red; padding-right: 0.3rem;">**New!**</span> [FloatingWindow](#floatingwindow) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/window?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+
+### Await
+
+`Await` is a utility component that helps you build UI components based on asynchronous data (i.e.: a JavaScript [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object).
+
+#### Signature
+
+```js
+Await(
+  {
+    value,  // A `Promise` object for asynchronous data
+    container,  // The container of the result. Default `div`
+    Loading,  // What to render when the data is being loaded
+    Error,  // What to render when error occurs
+  },
+  children,
+) => <The created UI element>
+```
+
+The `children` parameter (type: `(data: T) => ValidChildDomValue`) is a function that takes the resolved data as input and returns a valid child DOM value (`Node`, primitives, `null` or `undefined`), used to indicate what to render after the data is loaded.
+
+#### Examples
+
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/await?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
+Example 1 (fetching the number of GitHub stars):
+
+```ts
+const Example1 = () => {
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+  const fetchWithDelay = (url: string, waitMs: number) =>
+    sleep(waitMs).then(() => fetch(url)).then(r => r.json())
+
+  const fetchStar = () =>
+    fetchWithDelay("https://api.github.com/repos/vanjs-org/van", 1000)
+      .then(data => data.stargazers_count)
+
+  const data = van.state(fetchStar())
+
+  return [
+    () => h2(
+      "Github Star: ",
+      Await({
+        value: data.val, container: span,
+        Loading: () => "🌀 Loading...",
+        Error: () => "🙀 Request failed.",
+      }, starNumber => `⭐️ ${starNumber}!`)
+    ),
+    () => Await({
+      value: data.val,
+      Loading: () => '',
+    }, () => button({onclick: () => (data.val = fetchStar())}, "Refetch")),
+  ]
+}
+```
+
+Example 2 (parallel `Await`):
+
+```ts
+const Example2 = () => {
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+  const loadNumber = () =>
+    sleep(Math.random() * 1000).then(() => Math.floor(Math.random() * 10))
+
+  const a = van.state(loadNumber()), b = van.state(loadNumber())
+
+  return [
+    h2("Parallel Await"),
+    () => {
+      const sum = van.derive(() => Promise.all([a.val, b.val]).then(([a, b]) => a + b))
+      return Await({
+        value: sum.val,
+        Loading: () => div(
+          Await({value: a.val, Loading: () => "🌀 Loading a..."}, () => "Done"),
+          Await({value: b.val, Loading: () => "🌀 Loading b..."}, () => "Done"),
+        ),
+      }, sum => "a + b = " + sum)
+    },
+    p(button({onclick: () => (a.val = loadNumber(), b.val = loadNumber())}, "Reload")),
+  ]
+}
+```
+
+#### Property Reference
+
+* `value`: Type `Promise`. Required. The asynchronous data that the result UI element is based on.
+* `container`: Type `TagFunction<Element>`. Default `div` (`van.tags.div`). Optional. The type of the wrapper HTML element for the result.
+* `Loading`: Type `() => ValidChildDomValue`. Optional. If specified, indicates what to render when the asynchronous data is being loaded.
+* `Error`: Type `(reason: Error) => ValidChildDomValue`. Optional. If specified, indicates what to render when error occurs while fetching the asynchronous data.
 
 ### Modal
 
@@ -84,6 +179,8 @@ Modal({...props}, ...children) => <The created modal window>
 ```
 
 #### Examples
+
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/modal?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 Example 1:
 
@@ -125,8 +222,6 @@ van.add(document.body, Modal({closed, blurBackground: true},
 ))
 ```
 
-You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/modal?file=%2Fsrc%2Fmain.ts%3A1%2C1).
-
 #### Property Reference
 
 * `closed`: Type `State<boolean>`. Required. A `State` object used to close the created modal window. Basically, setting `closed.val = true` will close the created modal window. You can also subscribe the closing event of the modal window via [`van.derive`](https://vanjs.org/tutorial#api-derive).
@@ -150,6 +245,8 @@ Tabs({...props}, tabContents) => <The created tab-view>
 The `tabContents` parameter is an object whose keys are the titles of the tabs and values (type: `ChildDom`) are the DOM element(s) for the tab contents.
 
 #### Example
+
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 ```ts
 van.add(document.body, Tabs(
@@ -176,8 +273,6 @@ van.add(document.body, Tabs(
   },
 ))
 ```
-
-You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tabs?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 #### Property Reference
 
@@ -222,6 +317,8 @@ board.remove()
 
 #### Examples
 
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/message?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
 ```ts
 const board = new MessageBoard({top: "20px"})
 
@@ -236,8 +333,6 @@ const example3 = () => {
 }
 document.addEventListener("keydown", e => e.key === "Escape" && (closed.val = true))
 ```
-
-You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/message?file=/src/main.ts).
 
 #### Property Reference
 
@@ -274,6 +369,8 @@ Tooltip({...props}) => <The created tooltip element>
 
 #### Examples
 
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
 ```ts
 const tooltip1Show = van.state(false)
 const tooltip2Show = van.state(false)
@@ -300,8 +397,6 @@ van.add(document.body,
   }, "Slow Fade-in", Tooltip({text: "Hi from the sloth!", show: tooltip3Show, fadeInSec: 5})),
 )
 ```
-
-You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/tooltip?file=/src/main.ts:1,1).
 
 Note that the lines:
 
@@ -340,14 +435,14 @@ Toggle({...props}) => <The created toggle switch>
 
 #### Example
 
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
 ```ts
 van.add(document.body, Toggle({
   size: 2,
   onColor: "#4CAF50"
 }))
 ```
-
-You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 #### Property Reference
 
@@ -379,6 +474,8 @@ The `options` parameter is a `string[]` for all the options.
 
 #### Example
 
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/option-group?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
 ```ts
 const selected = van.state("")
 const options = ["Water", "Coffee", "Juice"]
@@ -390,8 +487,6 @@ van.add(document.body,
     span(b("You selected:"), " ", selected) : b("You haven't selected anything.")),
 )
 ```
-
-You can live preview the example with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/option-group?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 #### Property Reference
 
@@ -419,6 +514,8 @@ Banner({...props}, ...children) => <The created banner element>
 
 #### Examples
 
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/banner?file=%2Fsrc%2Fmain.ts%3A1%2C1).
+
 ```ts
 van.add(document.body,
   h2("Sticky Banner"),
@@ -433,8 +530,6 @@ van.add(document.body,
   ),
 )
 ```
-
-You can live preview the examples with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/banner?file=/src/main.ts:1,1).
 
 #### Property Reference
 
@@ -488,7 +583,7 @@ van.add(document.body, FloatingWindow(
 ))
 ```
 
-Window with customized close button:
+Close button with custom appearance:
 
 ```ts
 van.add(document.body, FloatingWindow(
@@ -502,7 +597,7 @@ van.add(document.body, FloatingWindow(
 ))
 ```
 
-Window with `Tabs` and custom close button:
+Window with `Tabs`:
 
 ```ts
 const closed = van.state(false)
