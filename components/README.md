@@ -79,6 +79,8 @@ The following components have been implemented so far:
 
 ### Await
 
+_Author: [@Hunter-Gu](https://github.com/Hunter-Gu)_
+
 `Await` is a utility component that helps you build UI components based on asynchronous data (i.e.: a JavaScript [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) object).
 
 #### Signature
