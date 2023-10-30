@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "module": "es2020",
+        "target": "es2017",
+        "skipLibCheck": true
+    },
+    "files": [
+        "./van.test.ts"
+    ]
+}
