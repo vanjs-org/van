@@ -8,7 +8,7 @@
     "build": "bun build --minify src/client.ts --outdir dist && echo Run the following command to start the server: bun src/server.ts [port]"
   },
   "dependencies": {
-    "mini-van-plate": "^0.5.2",
+    "mini-van-plate": "^0.5.3",
     "vanjs-core": "^1.2.5"
   },
   "devDependencies": {
