@@ -183,6 +183,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://hunter-gu.github.io/personal-blog/"><img src="https://avatars.githubusercontent.com/u/24472363?v=4?s=100" width="100px;" alt="Nail"/><br /><sub><b>Nail</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=Hunter-Gu" title="Code">💻</a> <a href="#plugin-Hunter-Gu" title="Plugin/utility libraries">🔌</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/btakita"><img src="https://avatars.githubusercontent.com/u/3664?v=4?s=100" width="100px;" alt="Brian Takita"/><br /><sub><b>Brian Takita</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Abtakita" title="Bug reports">🐛</a> <a href="#ideas-btakita" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>
