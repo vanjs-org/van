@@ -31,7 +31,7 @@ const example3 = () => {
   van.add(document.body, FloatingWindow(
     {
       title: "Example Window 3", x: 175, y: 175, closeCross: "❌",
-      crossHoverStyleOverrides: {"background-color": "transparent"},
+      crossHoverStyleOverrides: {"background-color": "white"},
     },
     div({style: "display: flex; justify-content: center;"},
       p("This is a floating window with custom cross button!"),
