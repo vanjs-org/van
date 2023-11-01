@@ -3,21 +3,17 @@ import { State, ChildDom } from "vanjs-core";
 import { FunctionChild } from "./type";
 
 type OriginalElement = HTMLElement;
+type JSXProp<T, K extends keyof T> = T[K] | (() => T[K]) | State<T[K]>;
 
 export declare namespace JSX {
-  type JSXProp<T, K extends keyof T> = K extends "children"
-    ? ChildDom
-    : K extends "style"
-    ? CSS.Properties
-    : K extends "ref"
-    ? State<T>
-    : T[K] | (() => T[K]) | State<T[K]>;
   type HTMLAttributes<T> = {
-    [K in keyof T]?: JSXProp<T, K>;
-  };
+    [K in keyof Omit<T, "children" | "style">]?: JSXProp<T, K>;
+  } & Partial<{ children: ChildDom; style: CSS.Properties; ref: State<T> }>;
+
   type SVGAttributes<T> = {
-    [K in keyof T]?: JSXProp<T, K>;
-  };
+    [K in keyof Omit<T, "children" | "style">]?: JSXProp<T, K>;
+  } & Partial<{ children: ChildDom; style: CSS.Properties; ref: State<T> }>;
+
   export type ElementType = string | FunctionChild<any>;
   export interface Element extends OriginalElement {}
   export interface ElementAttributesProperty {
