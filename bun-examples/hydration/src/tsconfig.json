@@ -1,4 +1,4 @@
-
+// This file is for client-side scripts. i.e.: client.ts
 {
   "compilerOptions": {
     "target": "ESNext",
