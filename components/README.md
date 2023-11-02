@@ -61,6 +61,16 @@ Note that: **VanJS** needs to be imported via a `<script type="text/javascript">
 
 Try on jsfiddle: [Modal](https://jsfiddle.net/mks9253o/1/), [MessageBoard](https://jsfiddle.net/nwsduza3/).
 
+### TypeScript Support for Script Tag Integration
+
+To get TypeScript support for `<script>` tag integration, download [`van-ui.d.ts`](https://vanjs.org/autodownload?file=van-ui.d.ts) and add the code like following at the top of your `.ts` file:
+
+```ts
+import type { Modal as ModalType } from "./van-ui.d.ts"
+
+declare const Modal: typeof ModalType
+```
+
 ## Documentation
 
 The following components have been implemented so far:
