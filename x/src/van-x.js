@@ -98,7 +98,7 @@ let replace = (items, f) => {
   let states = items[statesSym]
   let newStates = fromEntries(newKvs.map(([k, v]) => {
     let s = states[k]
-    s ? s.val = v : s = toState(v)
+    s ? s.val = reactive(v) : s = toState(v)
     return [k, s]
   }))
 

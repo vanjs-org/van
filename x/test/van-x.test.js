@@ -667,6 +667,48 @@ window.runTests = async (van, vanX, file) => {
             await sleep(waitMsOnDomUpdates);
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,7,9");
         }),
+        replace_nestedArray: withHiddenDom(async (hiddenDom) => {
+            const items = vanX.reactive([{
+                    foo: 'bar',
+                    baz: { kind: 'dessert', amount: 'lots' }
+                }]);
+            van.add(hiddenDom, vanX.list(ul, items, ({ val: v }) => li(v.baz.kind)));
+            assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>');
+            items[0].baz.kind = "candy";
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>');
+            vanX.replace(items, () => [{
+                    foo: 'bar',
+                    baz: { kind: 'dessert', amount: 'lots' }
+                }]);
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>');
+            items[0].baz.kind = "candy";
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>');
+        }),
+        replace_nestedObj: withHiddenDom(async (hiddenDom) => {
+            const items = vanX.reactive({
+                a: {
+                    foo: 'bar',
+                    baz: { kind: 'dessert', amount: 'lots' }
+                },
+            });
+            van.add(hiddenDom, vanX.list(ul, items, ({ val: v }) => li(v.baz.kind)));
+            assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>');
+            items.a.baz.kind = "candy";
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>');
+            vanX.replace(items, () => [["a", {
+                        foo: 'bar',
+                        baz: { kind: 'dessert', amount: 'lots' }
+                    }]]);
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>');
+            items.a.baz.kind = "candy";
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>');
+        }),
     };
     const gcTests = {
         list_activeGc: withHiddenDom(async (hiddenDom) => {
