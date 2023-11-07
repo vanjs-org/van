@@ -90,7 +90,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Easy to Learn
 
-Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `van.derive`, `van.hydrate`) + 4 auxiliary functions (`van.tagsNS`, `van._`, `van.val`, `van.oldVal`). The the entire tutorial plus the API reference is [just one single web page](https://vanjs.org/tutorial), and can be learned within 1 hour for most developers.
+Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `van.derive`, `van.hydrate`) + 4 auxiliary functions (`van.tagsNS`, `van._`, `van.val`, `van.oldVal`). The entire tutorial plus the API reference is [just one single web page](https://vanjs.org/tutorial), and can be learned within 1 hour for most developers.
 
 ### Performance
 
