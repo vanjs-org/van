@@ -2,11 +2,11 @@ import type {Van, State} from "../src/van.d.ts"
 
 (<any>window).numTests = 0
 
-type BundleOptions = {
+interface BundleOptions {
   readonly debug: boolean
 }
 
-type VanForTesting = Van & {
+interface VanForTesting extends Van {
   readonly startCapturingErrors: () => void
   readonly stopCapturingErrors: () => void
   readonly capturedErrors: readonly string[]
@@ -1214,19 +1214,6 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       assertError("DOM Node is not valid value for state", () => s.val = div())
     },
 
-    state_mutatingValOrOldVal: () => {
-      {
-        const t = van.state({a: 2})
-        assertError("TypeError:", () => t.val.a = 3)
-      }
-      {
-        const t = van.state({b: 1})
-        t.val = {b: 2}
-        assertError("TypeError:", () => t.val.b = 3)
-        assertError("TypeError:", () => t.oldVal.b = 3)
-      }
-    },
-
     derive_nonFuncArg: () => {
       const a = van.state(0)
       assertError("Must pass-in a function to `van.derive`", () => van.derive(<any>(a.val * 2)))
@@ -1933,8 +1920,8 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
     },
   }
 
-  type Suite = { [name: string]: () => void | Promise<void> }
-  const suites: { [k: string]: Suite } = {tests, examples, gcTests}
+  type Suite = Record<string, () => void | Promise<void>>
+  const suites: Record<string, Suite> = {tests, examples, gcTests}
   const skipLong = new URL(location.href).searchParams.has("skiplong")
   if (debug) suites.debugTests = debugTests
 
@@ -1943,8 +1930,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       if (skipLong && name.startsWith("long_")) continue
       if (debug && name.endsWith("_excludeDebug")) continue
       ++(<any>window).numTests
-      const result = van.state("")
-      const msg = van.state("")
+      const result = van.state(""), msg = van.state("")
       van.add(msgDom, div(
         pre(`Running ${k}.${name}...`),
         pre(result),

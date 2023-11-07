@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "lib": ["ESNext"],
-    "module": "esnext",
-    "target": "esnext",
+    "module": "ESNext",
+    "target": "ESNext",
     "moduleResolution": "bundler",
     "moduleDetection": "force",
     "allowImportingTsExtensions": true,
@@ -18,5 +18,9 @@
     "types": [
       "bun-types" // add Bun global
     ]
-  }
+  },
+  "include": [
+    "src/components/*.ts",
+    "src/server.ts"
+  ]
 }

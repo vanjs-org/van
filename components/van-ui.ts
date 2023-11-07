@@ -1,12 +1,52 @@
-import van, { ChildDom, State } from "vanjs-core"
+import van, {ChildDom, State, TagFunc, ValidChildDomValue} from "vanjs-core"
 
 // Quote all tag names so that they're not mangled by minifier
-const {"button": button, "div": div, "header": header, "input": input, "label": label, "span": span} = van.tags
+const {"button": button, "div": div, "header": header, "input": input, "label": label, "span": span, "style": style} = van.tags
 
 export type CSSPropertyBag = Record<string, string | number>
 
 const toStyleStr = (style: CSSPropertyBag) =>
   Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("")
+
+export type CSSStyles = Record<string, CSSPropertyBag>
+
+const toStyleSheet = (styles: CSSStyles): string => {
+  return Object.entries(styles)
+    .map(([selector, props]) => `${selector} { ${toStyleStr(props)} }`)
+    .join("\n")
+}
+
+const stateProto = Object.getPrototypeOf(van.state(null))
+const stateOf = <T>(v: T | State<T>) =>
+  <State<T>>(Object.getPrototypeOf(v ?? 0) === stateProto ? v : van.state(v))
+
+interface AwaitProps<Value> {
+  value: Promise<Value>
+  container?: TagFunc<Element>
+  Loading?: () => ValidChildDomValue
+  Error?: (reason: Error) => ValidChildDomValue
+}
+
+export type AwaitState<Value> =
+  | {status: "pending"}
+  | {status: "fulfilled", value: Value}
+  | {status: "rejected", value: Error}
+
+export const Await = <T>(
+  {value, container = div, Loading, Error}: AwaitProps<T>,
+  children: (data: T) => ValidChildDomValue
+) => {
+  const data = van.state<AwaitState<T>>({status: "pending"})
+  value
+    .then(result => data.val = {status: "fulfilled", value: result})
+    .catch(err => data.val = {status: "rejected", value: err})
+
+  return container(() =>
+    data.val.status === "pending" ? Loading?.() ?? "" :
+    data.val.status === "rejected" ? Error?.(data.val.value) :
+    children(data.val.value),
+  )
+}
 
 export interface ModalProps {
   readonly closed: State<boolean>
@@ -60,7 +100,7 @@ export const Modal = (
 }
 
 export interface TabsProps {
-  readonly activeTab?: State<string> | undefined
+  readonly activeTab?: State<string>
   readonly resultClass?: string
   readonly style?: string
   readonly tabButtonRowColor?: string
@@ -96,7 +136,7 @@ export const Tabs = (
     tabContentClass = "",
     tabContentStyleOverrides = {},
   }: TabsProps,
-  contents: Record<string, ChildDom | readonly ChildDom[]>,
+  contents: Record<string, ChildDom>,
 ) => {
   const activeTabState = activeTab ?? van.state(Object.keys(contents)[0])
   const tabButtonRowStylesStr = toStyleStr({
@@ -181,7 +221,7 @@ export const Toggle = ({
   circleStyleOverrides = {},
   circleWhenOnStyleOverrides = {},
 }: ToggleProps) => {
-  const onState = typeof on === "boolean" ? van.state(on) : on
+  const onState = stateOf(on)
   const toggleStylesStr = toStyleStr({
     position: "relative",
     display: "inline-block",
@@ -253,8 +293,8 @@ export interface MessageBoardProps {
 }
 
 export interface MessageProps {
-  readonly message: ChildDom | readonly ChildDom[]
-  readonly closer?: ChildDom | readonly ChildDom[]
+  readonly message: ChildDom
+  readonly closer?: ChildDom
   readonly durationSec?: number
   readonly closed?: State<boolean>
 }
@@ -338,7 +378,7 @@ export class MessageBoard {
     return msgDom
   }
 
-  remove() { this._dom.remove() }
+  remove() {this._dom.remove()}
 }
 
 export interface TooltipProps {
@@ -498,4 +538,255 @@ export const Banner = (
     ...bannerStyleOverrides,
   })
   return header({class: bannerClass, style: bannerStyleStr}, children)
+}
+
+export interface FloatingWindowProps {
+  readonly title?: ChildDom
+  readonly closed?: State<boolean>
+  readonly x?: number | State<number>
+  readonly y?: number | State<number>
+  readonly width?: number | State<number>
+  readonly height?: number | State<number>
+  readonly closeCross?: ChildDom
+  readonly customStacking?: boolean
+  readonly zIndex?: number | State<number>
+  readonly disableMove?: boolean
+  readonly disableResize?: boolean
+  readonly headerColor?: string
+
+  readonly windowClass?: string
+  readonly windowStyleOverrides?: CSSPropertyBag
+  readonly headerClass?: string
+  readonly headerStyleOverrides?: CSSPropertyBag
+  readonly childrenContainerClass?: string
+  readonly childrenContainerStyleOverrides?: CSSPropertyBag
+  readonly crossClass?: string
+  readonly crossStyleOverrides?: CSSPropertyBag
+  readonly crossHoverClass?: string
+  readonly crossHoverStyleOverrides?: CSSPropertyBag
+}
+
+let curWindowZIndex = 0
+
+export const topMostZIndex = () => ++curWindowZIndex
+
+export const FloatingWindow = (
+  {
+    title,
+    closed = van.state(false),
+    x = 100,
+    y = 100,
+    width = 300,
+    height = 200,
+    closeCross = "×",
+    customStacking = false,
+    zIndex = 1,
+    disableMove = false,
+    disableResize = false,
+    headerColor = "lightgray",
+    windowClass = "",
+    windowStyleOverrides = {},
+    headerClass = "",
+    headerStyleOverrides = {},
+    childrenContainerClass = "",
+    childrenContainerStyleOverrides = {},
+    crossClass = "",
+    crossStyleOverrides = {},
+    crossHoverClass = "",
+    crossHoverStyleOverrides = {},
+  }: FloatingWindowProps,
+  ...children: readonly ChildDom[]
+) => {
+  const xState = stateOf(x), yState = stateOf(y)
+  const widthState = stateOf(width), heightState = stateOf(height)
+  const zIndexState = stateOf(zIndex)
+  if (!customStacking) zIndexState.val = topMostZIndex()
+  const dragging = van.state(false), resizingDirection = van.state<string | null>(null)
+  const startX = van.state(0), startY = van.state(0)
+  const startWidth = van.state(0), startHeight = van.state(0)
+  const crossHover = crossHoverClass || Object.keys(crossHoverStyleOverrides) ?
+    van.state(false) : null
+
+  const onmousedown = (e: MouseEvent) => {
+    if (e.button !== 0) return
+    dragging.val = true
+    startX.val = e.clientX
+    startY.val = e.clientY
+    document.body.style.userSelect = "none"
+  }
+
+  const onResizeMouseDown = (direction: string) => (e: MouseEvent) => {
+    resizingDirection.val = direction
+    startX.val = e.clientX
+    startY.val = e.clientY
+    startWidth.val = widthState.val
+    startHeight.val = heightState.val
+    document.body.style.userSelect = "none"
+  }
+
+  const onMouseMove = (e: MouseEvent) => {
+    if (dragging.val) {
+      xState.val += e.clientX - startX.val
+      yState.val += e.clientY - startY.val
+      startX.val = e.clientX
+      startY.val = e.clientY
+    } else if (resizingDirection.val) {
+      const deltaX = e.clientX - startX.val
+      const deltaY = e.clientY - startY.val
+
+      if (resizingDirection.val.includes("right")) widthState.val = startWidth.val + deltaX
+      if (resizingDirection.val.includes("bottom")) heightState.val = startHeight.val + deltaY
+    }
+  }
+
+  const onMouseUp = () => {
+    dragging.val = false
+    resizingDirection.val = null
+    document.body.style.userSelect = ""
+  }
+
+  document.addEventListener("mousemove", onMouseMove)
+  document.addEventListener("mouseup", onMouseUp)
+  const grabAreaBgColor = "transparent"
+
+  if (!document.getElementById("vanui-window-style")) {
+    const staticStyles = style({type: "text/css", id: "vanui-window-style"}, toStyleSheet({
+      ".vanui-window": {
+        position: "fixed",
+        "background-color": "white",
+        border: "1px solid black",
+        "border-radius": "0.5rem",
+        overflow: "hidden",
+      },
+      ".vanui-window-dragarea": {
+        cursor: "move",
+        position: "absolute",
+        left: "0",
+        top: "0",
+        width: "100%",
+        height: "1rem",
+      },
+      ".vanui-window-resize-right": {
+        cursor: "e-resize",
+        position: "absolute",
+        right: "0",
+        top: "0",
+        width: "10px",
+        height: "100%",
+        "background-color": grabAreaBgColor,
+      },
+      ".vanui-window-resize-bottom": {
+        cursor: "s-resize",
+        position: "absolute",
+        left: "0",
+        bottom: "0",
+        width: "100%",
+        height: "10px",
+        "background-color": grabAreaBgColor,
+      },
+      ".vanui-window-resize-rightbottom": {
+        cursor: "se-resize",
+        position: "absolute",
+        right: "0",
+        bottom: "0",
+        width: "10px",
+        height: "10px",
+        "background-color": grabAreaBgColor,
+      },
+      ".vanui-window-header": {
+        cursor: "move",
+        "user-select": "none",
+        display: "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        padding: "0.5rem",
+      },
+      ".vanui-window-cross": {
+        cursor: "pointer",
+        "font-family": "Arial",
+        transition: "background-color 0.3s, color 0.3s",
+        "border-radius": "50%",
+        width: "24px",
+        height: "24px",
+        display: "flex",
+        "align-items": "center",
+        "justify-content": "center",
+      },
+      ".vanui-window-cross:hover": {
+        "background-color": "red",
+        color: "white",
+      },
+      ".vanui-window-children": {
+        padding: "0.5rem",
+      }
+    }))
+    document.head.appendChild(staticStyles)
+  }
+
+  return () => closed.val ? null : div(
+    {
+      class: ["vanui-window"].concat(windowClass ? windowClass : []).join(" "),
+      style: () => toStyleStr({
+        left: `${xState.val}px`,
+        top: `${yState.val}px`,
+        width: `${widthState.val}px`,
+        height: `${heightState.val}px`,
+        "z-index": zIndexState.val,
+        ...windowStyleOverrides,
+      }),
+      ...(customStacking ? {} : {onmousedown: () => zIndexState.val = topMostZIndex()}),
+    },
+    title ? header(
+      {
+        class: ["vanui-window-header"].concat(headerClass ? headerClass : []).join(" "),
+        style: toStyleStr({
+          "background-color": headerColor,
+          ...(disableMove ? {cursor: "auto"} : {}),
+          ...headerStyleOverrides,
+        }),
+        ...(disableMove ? {} : {onmousedown}),
+      },
+      title,
+      closeCross ? span({
+        class: () => ["vanui-window-cross"]
+          .concat(crossClass ? crossClass : [])
+          .concat(crossHoverClass && crossHover!.val ? crossHoverClass : [])
+          .join(" "),
+        style: () => toStyleStr({
+          ...crossStyleOverrides,
+          ...(Object.keys(crossHoverStyleOverrides).length && crossHover!.val ?
+            crossHoverStyleOverrides : {}),
+        }),
+        onclick: () => closed.val = true,
+        ...(crossHover ? {
+          onmouseenter: () => crossHover.val = true,
+          onmouseleave: () => crossHover.val = false,
+        } : {})
+      }, closeCross) : null,
+    ) : disableMove ? null : div({
+      class: "vanui-window-dragarea",
+      onmousedown,
+    }),
+    disableResize ? [] : [
+      div({
+        class: "vanui-window-resize-right",
+        onmousedown: onResizeMouseDown("right"),
+      }),
+      div({
+        class: "vanui-window-resize-bottom",
+        onmousedown: onResizeMouseDown("bottom"),
+      }),
+      div({
+        class: "vanui-window-resize-rightbottom",
+        onmousedown: onResizeMouseDown("rightbottom"),
+      }),
+    ],
+    div(
+      {
+        class: ["vanui-window-children"].concat(childrenContainerClass ? childrenContainerClass : []).join(" "),
+        style: toStyleStr(childrenContainerStyleOverrides)
+      },
+      children,
+    ),
+  )
 }

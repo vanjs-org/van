@@ -868,18 +868,6 @@
         assertError("couldn't have value to other state", () => s.val = van2.state(0));
         assertError("DOM Node is not valid value for state", () => s.val = div2());
       },
-      state_mutatingValOrOldVal: () => {
-        {
-          const t2 = van2.state({ a: 2 });
-          assertError("TypeError:", () => t2.val.a = 3);
-        }
-        {
-          const t2 = van2.state({ b: 1 });
-          t2.val = { b: 2 };
-          assertError("TypeError:", () => t2.val.b = 3);
-          assertError("TypeError:", () => t2.oldVal.b = 3);
-        }
-      },
       derive_nonFuncArg: () => {
         const a2 = van2.state(0);
         assertError("Must pass-in a function to `van.derive`", () => van2.derive(a2.val * 2));
@@ -1369,8 +1357,7 @@
         if (debug && name.endsWith("_excludeDebug"))
           continue;
         ++window.numTests;
-        const result = van2.state("");
-        const msg = van2.state("");
+        const result = van2.state(""), msg = van2.state("");
         van2.add(msgDom2, div2(pre(`Running ${k}.${name}...`), pre(result), pre(" "), pre(button({ onclick: async () => {
           try {
             await func();

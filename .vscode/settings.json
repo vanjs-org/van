@@ -1,11 +1,20 @@
 {
   "deno.enablePaths": [
     "demo/terminal/server.ts",
-    "components/scripts"
+    "components/scripts",
+    "x/scripts"
   ],
   "cSpell.words": [
     "currentcolor",
+    "dragarea",
+    "lightgray",
+    "rightbottom",
     "skiplong",
     "vanui"
-  ]
+  ],
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "editor.indentSize": 2
 }

@@ -1,6 +1,7 @@
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
-📣 [VanJS 1.0.0 is here →](https://github.com/vanjs-org/van/discussions/72)
+📣 [VanJS 1.0.0 is here →](https://github.com/vanjs-org/van/discussions/72) <br>
+📣 [Introducing VanX →](https://github.com/vanjs-org/van/discussions/144)
 
 <div align="center">
   <table>
@@ -89,7 +90,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Easy to Learn
 
-Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `van.derive`, `van.hydrate`) + 4 auxiliary functions (`van.tagsNS`, `van._`, `van.val`, `van.oldVal`). The the entire tutorial plus the API reference is [just one single web page](https://vanjs.org/tutorial), and can be learned within 1 hour for most developers.
+Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `van.derive`, `van.hydrate`) + 4 auxiliary functions (`van.tagsNS`, `van._`, `van.val`, `van.oldVal`). The entire tutorial plus the API reference is [just one single web page](https://vanjs.org/tutorial), and can be learned within 1 hour for most developers.
 
 ### Performance
 
@@ -105,16 +106,25 @@ Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `
 * Learn from the [Tutorial](https://vanjs.org/tutorial)
 * Learn by [Examples](https://vanjs.org/demo) (and also [Community Examples](https://vanjs.org/demo#community-examples))
 * Convert HTML or MD snippet to **VanJS** code with our online [HTML/MD to **VanJS** Converter](https://vanjs.org/convert)
-* Check out [VanUI](https://github.com/vanjs-org/van/tree/main/components) - A collection of grab 'n go reusable UI components for **VanJS**
+* Check out [**VanUI**](https://github.com/vanjs-org/van/tree/main/components) - A collection of grab 'n go reusable UI components for **VanJS**
+* Check out [**VanX**](https://vanjs.org/x) - The 1.0 kB official **VanJS** extension
 * Want server-side rendering? Check out [Mini-Van](https://github.com/vanjs-org/mini-van) and [Hydration](https://vanjs.org/ssr) (the entire [vanjs.org](https://vanjs.org/) site is built on top of Mini-Van)
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page
 * [How did **VanJS** get its name?](https://vanjs.org/about#name)
+
+## IDE Plug-ins
+
+* [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=TaoXin.vanjs-importtag)
+
+## See Also
+
+[A Guide to Reading **VanJS** Codebase](https://vanjs.org/about#source-guide)
 
 ## Support & Feedback
 
 🙏 **VanJS** aims to build a better world by reducing the entry barrier for UI programming, with no intention or plan on commercialization whatsoever. If you find **VanJS** interesting, or could be useful for you some day, please consider starring the project. It takes just a few seconds but your support means the world to us and helps spread **VanJS** to a wider audience.
 
-> In the name of **Van**illa of the House **J**ava**S**cript, [the First of its name](https://vanjs.org/about#name), Smallest Reactive UI Framework, 0.9kB JSX-free Grab 'n Go Library, [Scripting Language](https://vanjs.org/about#story) for GUI, [ChatGPT-Empowered](https://chat.openai.com/share/d92cfaf6-b78e-45ca-a218-069f76fe1b9f) Toolkit, by the word of Tao of the House Xin, Founder and Maintainer of **VanJS**, I do hereby grant you the permission of **VanJS** under [MIT License](https://github.com/vanjs-org/van/blob/main/LICENSE).
+> In the name of **Van**illa of the House **J**ava**S**cript, [the First of its name](https://vanjs.org/about#name), Smallest Reactive UI Framework, 0.9kB JSX-free Grab 'n Go Library, [Scripting Language](https://vanjs.org/about#story) for GUI, [ChatGPT-Empowered](https://chat.openai.com/share/7eb970f9-d395-41b5-9444-8e0d96c844e2) Toolkit, by the word of Tao of the House Xin, Founder and Maintainer of **VanJS**, I do hereby grant you the permission of **VanJS** under [MIT License](https://github.com/vanjs-org/van/blob/main/LICENSE).
 
 Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&screen_name=taoxin) / [tao@vanjs.org](mailto:tao@vanjs.org) / [Tao Xin](https://www.linkedin.com/in/tao-xin-64234920/)
 
@@ -125,9 +135,11 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [van_dml.js](https://github.com/vanjs-org/van/tree/main/addons/van_dml): adds a a new flavour of composition to **VanJS**. Author: [Eckehard](https://github.com/efpage).
 * [van-jsx](https://github.com/vanjs-org/van/tree/main/addons/van_jsx): a JSX wrapper for **VanJS**, for people who like the JSX syntax more. Author: [cqh963852](https://github.com/cqh963852).
 
-## Contributors (25)
+## Contributors (32)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
+
+[Emoji key](https://allcontributors.org/docs/en/emoji-key)
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -167,6 +179,14 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/barrymun"><img src="https://avatars.githubusercontent.com/u/15635312?v=4?s=100" width="100px;" alt="barrymun"/><br /><sub><b>barrymun</b></sub></a><br /><a href="#example-barrymun" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/eevleevs"><img src="https://avatars.githubusercontent.com/u/5012744?v=4?s=100" width="100px;" alt="Giulio Malventi"/><br /><sub><b>Giulio Malventi</b></sub></a><br /><a href="#content-eevleevs" title="Content">🖋</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/yahia-berashish"><img src="https://avatars.githubusercontent.com/u/74679313?v=4?s=100" width="100px;" alt="Yahia Berashish"/><br /><sub><b>Yahia Berashish</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Ayahia-berashish" title="Bug reports">🐛</a> <a href="https://github.com/vanjs-org/van/commits?author=yahia-berashish" title="Code">💻</a> <a href="#plugin-yahia-berashish" title="Plugin/utility libraries">🔌</a> <a href="#ideas-yahia-berashish" title="Ideas, Planning, & Feedback">🤔</a> <a href="#example-yahia-berashish" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://metaleap.net"><img src="https://avatars.githubusercontent.com/u/22109?v=4?s=100" width="100px;" alt="Phil Schumann"/><br /><sub><b>Phil Schumann</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Ametaleap" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://duffscs.github.io/blog/"><img src="https://avatars.githubusercontent.com/u/59032377?v=4?s=100" width="100px;" alt="Raphaël Gauthier"/><br /><sub><b>Raphaël Gauthier</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=Duffscs" title="Code">💻</a> <a href="#plugin-Duffscs" title="Plugin/utility libraries">🔌</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://hunter-gu.github.io/personal-blog/"><img src="https://avatars.githubusercontent.com/u/24472363?v=4?s=100" width="100px;" alt="Nail"/><br /><sub><b>Nail</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=Hunter-Gu" title="Code">💻</a> <a href="#plugin-Hunter-Gu" title="Plugin/utility libraries">🔌</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/btakita"><img src="https://avatars.githubusercontent.com/u/3664?v=4?s=100" width="100px;" alt="Brian Takita"/><br /><sub><b>Brian Takita</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Abtakita" title="Bug reports">🐛</a> <a href="#ideas-btakita" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jfillmore"><img src="https://avatars.githubusercontent.com/u/873867?v=4?s=100" width="100px;" alt="Jonny Fillmore"/><br /><sub><b>Jonny Fillmore</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Ajfillmore" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/limaneto"><img src="https://avatars.githubusercontent.com/u/6009780?v=4?s=100" width="100px;" alt="Lima Neto"/><br /><sub><b>Lima Neto</b></sub></a><br /><a href="#content-limaneto" title="Content">🖋</a></td>
     </tr>
   </tbody>
 </table>

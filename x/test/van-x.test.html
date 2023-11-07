@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="icon" href="/logo.svg">
+    <title>VanX Tests</title>
+    <meta charset="UTF-8">
+    <style>
+      .testMsg > div {
+        display: table-row;
+      }
+
+      .testMsg > div > pre {
+        display: table-cell;
+      }
+
+      .testMsg > div > pre:first-child {
+        width: 500px;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>VanX Tests</h1>
+    <div id="msgPanel"></div>
+    <div id="endMsg" style="display: none">
+      <h2>The End</h2>
+      <p>✅ <span id="numTests">0</span> tests passed</p>
+    </div>
+
+    <script type="text/javascript" src="../../public/van-latest.nomodule.min.js"></script>
+    <script type="text/javascript" src="van-x.test.nomodule.js"></script>
+    <script type="text/javascript" src="../dist/van-x.nomodule.js"></script>
+    <script>
+      vanXDev = vanX
+    </script>
+    <script type="text/javascript" src="../dist/van-x.nomodule.min.js"></script>
+    <script>
+      (async () => {
+        await runTests(van, vanXDev, "van-x.nomodule.js")
+        await runTests(van, vanX, "van-x.nomodule.min.js")
+        document.getElementById("numTests").innerText = window.numTests
+        document.getElementById("endMsg").style.display = ""
+      })()
+    </script>
+  </body>
+</html>

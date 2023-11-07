@@ -1,0 +1,47 @@
+{
+  "name": "vanjs-ext",
+  "version": "0.1.3",
+  "description": "The official extension library for VanJS",
+  "files": [
+    "src/van-x.js",
+    "src/van-x.d.ts",
+    "dist/van-x.nomodule.js",
+    "dist/van-x.nomodule.min.js"
+  ],
+  "main": "src/van-x.js",
+  "browser": "src/van-x.js",
+  "scripts": {
+    "build": "bash scripts/build.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vanjs-org/van.git"
+  },
+  "keywords": [
+    "VanJS",
+    "UI",
+    "UI Framework",
+    "Minimalist",
+    "Grab-n-go",
+    "Lightweight",
+    "Library",
+    "Reactive",
+    "Extension",
+    "DOM",
+    "DOM Manipulation"
+  ],
+  "author": "Tao Xin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vanjs-org/van/issues"
+  },
+  "homepage": "https://vanjs.org/x",
+  "dependencies": {
+    "vanjs-core": "^1.2.6"
+  },
+  "devDependencies": {
+    "node-jq": "^4.0.1",
+    "terser": "^5.21.0",
+    "typescript": "^5.2.2"
+  }
+}

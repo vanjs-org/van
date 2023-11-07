@@ -1,0 +1,19 @@
+{
+  "name": "van-x-example-todo-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "terser": "^5.21.0",
+    "vanjs-core": "^1.2.6",
+    "vanjs-ext": "^0.1.2"
+  }
+}

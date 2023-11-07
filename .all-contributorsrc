@@ -259,6 +259,63 @@
         "ideas",
         "example"
       ]
+    },
+    {
+      "login": "metaleap",
+      "name": "Phil Schumann",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22109?v=4",
+      "profile": "http://metaleap.net",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Duffscs",
+      "name": "Raphaël Gauthier",
+      "avatar_url": "https://avatars.githubusercontent.com/u/59032377?v=4",
+      "profile": "https://duffscs.github.io/blog/",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
+    },
+    {
+      "login": "Hunter-Gu",
+      "name": "Nail",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24472363?v=4",
+      "profile": "https://hunter-gu.github.io/personal-blog/",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
+    },
+    {
+      "login": "btakita",
+      "name": "Brian Takita",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3664?v=4",
+      "profile": "https://github.com/btakita",
+      "contributions": [
+        "bug",
+        "ideas"
+      ]
+    },
+    {
+      "login": "jfillmore",
+      "name": "Jonny Fillmore",
+      "avatar_url": "https://avatars.githubusercontent.com/u/873867?v=4",
+      "profile": "https://github.com/jfillmore",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "limaneto",
+      "name": "Lima Neto",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6009780?v=4",
+      "profile": "https://github.com/limaneto",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "repoType": "github"

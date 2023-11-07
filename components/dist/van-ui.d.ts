@@ -1,5 +1,22 @@
-import { ChildDom, State } from "vanjs-core";
+import { ChildDom, State, TagFunc, ValidChildDomValue } from "vanjs-core";
 export type CSSPropertyBag = Record<string, string | number>;
+export type CSSStyles = Record<string, CSSPropertyBag>;
+interface AwaitProps<Value> {
+    value: Promise<Value>;
+    container?: TagFunc<Element>;
+    Loading?: () => ValidChildDomValue;
+    Error?: (reason: Error) => ValidChildDomValue;
+}
+export type AwaitState<Value> = {
+    status: "pending";
+} | {
+    status: "fulfilled";
+    value: Value;
+} | {
+    status: "rejected";
+    value: Error;
+};
+export declare const Await: <T>({ value, container, Loading, Error }: AwaitProps<T>, children: (data: T) => ValidChildDomValue) => Element;
 export interface ModalProps {
     readonly closed: State<boolean>;
     readonly backgroundColor?: string;
@@ -11,7 +28,7 @@ export interface ModalProps {
 }
 export declare const Modal: ({ closed, backgroundColor, blurBackground, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
 export interface TabsProps {
-    readonly activeTab?: State<string> | undefined;
+    readonly activeTab?: State<string>;
     readonly resultClass?: string;
     readonly style?: string;
     readonly tabButtonRowColor?: string;
@@ -26,7 +43,7 @@ export interface TabsProps {
     readonly tabContentClass?: string;
     readonly tabContentStyleOverrides?: CSSPropertyBag;
 }
-export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: Record<string, ChildDom | readonly ChildDom[]>) => HTMLDivElement;
+export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: Record<string, ChildDom>) => HTMLDivElement;
 export interface ToggleProps {
     readonly on?: boolean | State<boolean>;
     readonly size?: number;
@@ -57,8 +74,8 @@ export interface MessageBoardProps {
     readonly closerStyleOverrides?: CSSPropertyBag;
 }
 export interface MessageProps {
-    readonly message: ChildDom | readonly ChildDom[];
-    readonly closer?: ChildDom | readonly ChildDom[];
+    readonly message: ChildDom;
+    readonly closer?: ChildDom;
     readonly durationSec?: number;
     readonly closed?: State<boolean>;
 }
@@ -108,3 +125,30 @@ export interface BannerProps {
     readonly bannerStyleOverrides?: CSSPropertyBag;
 }
 export declare const Banner: ({ backgroundColor, fontColor, sticky, bannerClass, bannerStyleOverrides, }: BannerProps, ...children: readonly ChildDom[]) => HTMLElement;
+export interface FloatingWindowProps {
+    readonly title?: ChildDom;
+    readonly closed?: State<boolean>;
+    readonly x?: number | State<number>;
+    readonly y?: number | State<number>;
+    readonly width?: number | State<number>;
+    readonly height?: number | State<number>;
+    readonly closeCross?: ChildDom;
+    readonly customStacking?: boolean;
+    readonly zIndex?: number | State<number>;
+    readonly disableMove?: boolean;
+    readonly disableResize?: boolean;
+    readonly headerColor?: string;
+    readonly windowClass?: string;
+    readonly windowStyleOverrides?: CSSPropertyBag;
+    readonly headerClass?: string;
+    readonly headerStyleOverrides?: CSSPropertyBag;
+    readonly childrenContainerClass?: string;
+    readonly childrenContainerStyleOverrides?: CSSPropertyBag;
+    readonly crossClass?: string;
+    readonly crossStyleOverrides?: CSSPropertyBag;
+    readonly crossHoverClass?: string;
+    readonly crossHoverStyleOverrides?: CSSPropertyBag;
+}
+export declare const topMostZIndex: () => number;
+export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, customStacking, zIndex, disableMove, disableResize, headerColor, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, crossHoverClass, crossHoverStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
+export {};

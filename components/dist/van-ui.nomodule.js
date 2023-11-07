@@ -1,7 +1,23 @@
 {
   // Quote all tag names so that they're not mangled by minifier
-  const { "button": button, "div": div, "header": header, "input": input, "label": label, "span": span } = van.tags;
+  const { "button": button, "div": div, "header": header, "input": input, "label": label, "span": span, "style": style } = van.tags;
   const toStyleStr = (style) => Object.entries(style).map(([k, v]) => `${k}: ${v};`).join("");
+  const toStyleSheet = (styles) => {
+      return Object.entries(styles)
+          .map(([selector, props]) => `${selector} { ${toStyleStr(props)} }`)
+          .join("\n");
+  };
+  const stateProto = Object.getPrototypeOf(van.state(null));
+  const stateOf = (v) => (Object.getPrototypeOf(v ?? 0) === stateProto ? v : van.state(v));
+  window.Await = ({ value, container = div, Loading, Error }, children) => {
+      const data = van.state({ status: "pending" });
+      value
+          .then(result => data.val = { status: "fulfilled", value: result })
+          .catch(err => data.val = { status: "rejected", value: err });
+      return container(() => data.val.status === "pending" ? Loading?.() ?? "" :
+          data.val.status === "rejected" ? Error?.(data.val.value) :
+              children(data.val.value));
+  };
   window.Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackground = false, backgroundClass = "", backgroundStyleOverrides = {}, modalClass = "", modalStyleOverrides = {}, }, ...children) => {
       const backgroundStyle = {
           display: "flex",
@@ -63,7 +79,7 @@
       }, v)));
   };
   window.Toggle = ({ on = false, size = 1, cursor = "pointer", offColor = "#ccc", onColor = "#2196F3", circleColor = "white", toggleClass = "", toggleStyleOverrides = {}, sliderClass = "", sliderStyleOverrides = {}, circleClass = "", circleStyleOverrides = {}, circleWhenOnStyleOverrides = {}, }) => {
-      const onState = typeof on === "boolean" ? van.state(on) : on;
+      const onState = stateOf(on);
       const toggleStylesStr = toStyleStr({
           position: "relative",
           display: "inline-block",
@@ -238,5 +254,186 @@
           ...bannerStyleOverrides,
       });
       return header({ class: bannerClass, style: bannerStyleStr }, children);
+  };
+  let curWindowZIndex = 0;
+  window.topMostZIndex = () => ++curWindowZIndex;
+  window.FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 100, width = 300, height = 200, closeCross = "×", customStacking = false, zIndex = 1, disableMove = false, disableResize = false, headerColor = "lightgray", windowClass = "", windowStyleOverrides = {}, headerClass = "", headerStyleOverrides = {}, childrenContainerClass = "", childrenContainerStyleOverrides = {}, crossClass = "", crossStyleOverrides = {}, crossHoverClass = "", crossHoverStyleOverrides = {}, }, ...children) => {
+      const xState = stateOf(x), yState = stateOf(y);
+      const widthState = stateOf(width), heightState = stateOf(height);
+      const zIndexState = stateOf(zIndex);
+      if (!customStacking)
+          zIndexState.val = topMostZIndex();
+      const dragging = van.state(false), resizingDirection = van.state(null);
+      const startX = van.state(0), startY = van.state(0);
+      const startWidth = van.state(0), startHeight = van.state(0);
+      const crossHover = crossHoverClass || Object.keys(crossHoverStyleOverrides) ?
+          van.state(false) : null;
+      const onmousedown = (e) => {
+          if (e.button !== 0)
+              return;
+          dragging.val = true;
+          startX.val = e.clientX;
+          startY.val = e.clientY;
+          document.body.style.userSelect = "none";
+      };
+      const onResizeMouseDown = (direction) => (e) => {
+          resizingDirection.val = direction;
+          startX.val = e.clientX;
+          startY.val = e.clientY;
+          startWidth.val = widthState.val;
+          startHeight.val = heightState.val;
+          document.body.style.userSelect = "none";
+      };
+      const onMouseMove = (e) => {
+          if (dragging.val) {
+              xState.val += e.clientX - startX.val;
+              yState.val += e.clientY - startY.val;
+              startX.val = e.clientX;
+              startY.val = e.clientY;
+          }
+          else if (resizingDirection.val) {
+              const deltaX = e.clientX - startX.val;
+              const deltaY = e.clientY - startY.val;
+              if (resizingDirection.val.includes("right"))
+                  widthState.val = startWidth.val + deltaX;
+              if (resizingDirection.val.includes("bottom"))
+                  heightState.val = startHeight.val + deltaY;
+          }
+      };
+      const onMouseUp = () => {
+          dragging.val = false;
+          resizingDirection.val = null;
+          document.body.style.userSelect = "";
+      };
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+      const grabAreaBgColor = "transparent";
+      if (!document.getElementById("vanui-window-style")) {
+          const staticStyles = style({ type: "text/css", id: "vanui-window-style" }, toStyleSheet({
+              ".vanui-window": {
+                  position: "fixed",
+                  "background-color": "white",
+                  border: "1px solid black",
+                  "border-radius": "0.5rem",
+                  overflow: "hidden",
+              },
+              ".vanui-window-dragarea": {
+                  cursor: "move",
+                  position: "absolute",
+                  left: "0",
+                  top: "0",
+                  width: "100%",
+                  height: "1rem",
+              },
+              ".vanui-window-resize-right": {
+                  cursor: "e-resize",
+                  position: "absolute",
+                  right: "0",
+                  top: "0",
+                  width: "10px",
+                  height: "100%",
+                  "background-color": grabAreaBgColor,
+              },
+              ".vanui-window-resize-bottom": {
+                  cursor: "s-resize",
+                  position: "absolute",
+                  left: "0",
+                  bottom: "0",
+                  width: "100%",
+                  height: "10px",
+                  "background-color": grabAreaBgColor,
+              },
+              ".vanui-window-resize-rightbottom": {
+                  cursor: "se-resize",
+                  position: "absolute",
+                  right: "0",
+                  bottom: "0",
+                  width: "10px",
+                  height: "10px",
+                  "background-color": grabAreaBgColor,
+              },
+              ".vanui-window-header": {
+                  cursor: "move",
+                  "user-select": "none",
+                  display: "flex",
+                  "justify-content": "space-between",
+                  "align-items": "center",
+                  padding: "0.5rem",
+              },
+              ".vanui-window-cross": {
+                  cursor: "pointer",
+                  "font-family": "Arial",
+                  transition: "background-color 0.3s, color 0.3s",
+                  "border-radius": "50%",
+                  width: "24px",
+                  height: "24px",
+                  display: "flex",
+                  "align-items": "center",
+                  "justify-content": "center",
+              },
+              ".vanui-window-cross:hover": {
+                  "background-color": "red",
+                  color: "white",
+              },
+              ".vanui-window-children": {
+                  padding: "0.5rem",
+              }
+          }));
+          document.head.appendChild(staticStyles);
+      }
+      return () => closed.val ? null : div({
+          class: ["vanui-window"].concat(windowClass ? windowClass : []).join(" "),
+          style: () => toStyleStr({
+              left: `${xState.val}px`,
+              top: `${yState.val}px`,
+              width: `${widthState.val}px`,
+              height: `${heightState.val}px`,
+              "z-index": zIndexState.val,
+              ...windowStyleOverrides,
+          }),
+          ...(customStacking ? {} : { onmousedown: () => zIndexState.val = topMostZIndex() }),
+      }, title ? header({
+          class: ["vanui-window-header"].concat(headerClass ? headerClass : []).join(" "),
+          style: toStyleStr({
+              "background-color": headerColor,
+              ...(disableMove ? { cursor: "auto" } : {}),
+              ...headerStyleOverrides,
+          }),
+          ...(disableMove ? {} : { onmousedown }),
+      }, title, closeCross ? span({
+          class: () => ["vanui-window-cross"]
+              .concat(crossClass ? crossClass : [])
+              .concat(crossHoverClass && crossHover.val ? crossHoverClass : [])
+              .join(" "),
+          style: () => toStyleStr({
+              ...crossStyleOverrides,
+              ...(Object.keys(crossHoverStyleOverrides).length && crossHover.val ?
+                  crossHoverStyleOverrides : {}),
+          }),
+          onclick: () => closed.val = true,
+          ...(crossHover ? {
+              onmouseenter: () => crossHover.val = true,
+              onmouseleave: () => crossHover.val = false,
+          } : {})
+      }, closeCross) : null) : disableMove ? null : div({
+          class: "vanui-window-dragarea",
+          onmousedown,
+      }), disableResize ? [] : [
+          div({
+              class: "vanui-window-resize-right",
+              onmousedown: onResizeMouseDown("right"),
+          }),
+          div({
+              class: "vanui-window-resize-bottom",
+              onmousedown: onResizeMouseDown("bottom"),
+          }),
+          div({
+              class: "vanui-window-resize-rightbottom",
+              onmousedown: onResizeMouseDown("rightbottom"),
+          }),
+      ], div({
+          class: ["vanui-window-children"].concat(childrenContainerClass ? childrenContainerClass : []).join(" "),
+          style: toStyleStr(childrenContainerStyleOverrides)
+      }, children));
   };
 }
