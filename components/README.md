@@ -1,4 +1,4 @@
-# **VanUI**: A Collection of Grab 'n Go Reusable UI Components for VanJS
+# **VanUI**: A Collection of Grab 'n Go Reusable Utility and UI Components for VanJS
 
 More on **VanJS**:
 
