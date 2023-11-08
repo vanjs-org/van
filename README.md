@@ -105,6 +105,7 @@ Simplicity at its core. 5 major functions (`van.tags`, `van.add`, `van.state`, `
 * [Get Started](https://vanjs.org/start) (CDN, NPM or local download)
 * Learn from the [Tutorial](https://vanjs.org/tutorial)
 * Learn by [Examples](https://vanjs.org/demo) (and also [Community Examples](https://vanjs.org/demo#community-examples))
+* Get bored? [Play a fun game](https://vanjs.org/demo#game) built with **VanJS** under 60 lines
 * Convert HTML or MD snippet to **VanJS** code with our online [HTML/MD to **VanJS** Converter](https://vanjs.org/convert)
 * Check out [**VanUI**](https://github.com/vanjs-org/van/tree/main/components) - A collection of grab 'n go reusable UI components for **VanJS**
 * Check out [**VanX**](https://vanjs.org/x) - The 1.0 kB official **VanJS** extension
