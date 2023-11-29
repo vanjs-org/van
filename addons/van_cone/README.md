@@ -257,7 +257,7 @@ You can use [`router.formatUrl`](#formaturlroutename-params---query) to generate
 ## `isCurrentPage(pageName)`
 Returns a `van.derive` object with a boolean that is true when `pageName` is the active route
 ```javascript
-if(isCurrentPage("home").val) console.log("we're home!")
+if (isCurrentPage("home").val) console.log("we're home!")
 ```
 
 ## `navLink(props, ...children)`
