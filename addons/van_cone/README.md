@@ -75,7 +75,7 @@ Example HTML:
 
 ```
 
-See the [examples](./examples/) folder for full working examples of a [hello world](./examples/hello-world/README.md), and more complex [application](./examples/spa-app/README.md) with several pages.
+See the [examples](./examples/) folder for full working examples of a [hello world](./examples/hello-world/) ([preview](https://codesandbox.io/p/devbox/van-cone-hello-world-yxpxhy)), and more complex [application](./examples/spa-app/) ([preview](https://codesandbox.io/p/devbox/github/vanjs-org/van/tree/main/addons/van_cone/examples/spa-app)) with several pages.
 
 # API Reference
 
