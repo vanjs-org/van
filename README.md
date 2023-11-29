@@ -133,8 +133,9 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 
 **VanJS** can be extended via add-ons. Add-ons add more features to **VanJS** and/or provide an alternative styled API. Below is a curated list of add-ons built by **VanJS** community:
 
-* [van_dml.js](https://github.com/vanjs-org/van/tree/main/addons/van_dml): adds a a new flavour of composition to **VanJS**. Author: [Eckehard](https://github.com/efpage).
-* [van-jsx](https://github.com/vanjs-org/van/tree/main/addons/van_jsx): a JSX wrapper for **VanJS**, for people who like the JSX syntax more. Author: [cqh963852](https://github.com/cqh963852).
+* [van_dml.js](./addons/van_dml): adds a a new flavour of composition to **VanJS**. Author: [Eckehard](https://github.com/efpage).
+* [van-jsx](./addons/van_jsx): a JSX wrapper for **VanJS**, for people who like the JSX syntax more. Author: [cqh963852](https://github.com/cqh963852).
+* [Van Cone](/addons/van_cone/): An SPA framework add-on for **VanJS**. Author: [b-rad-c](https://github.com/b-rad-c).
 
 ## Contributors (34)
 
