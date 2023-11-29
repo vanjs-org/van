@@ -1,4 +1,4 @@
-import createVanSpa from 'vanjs-spa';
+import createCone from 'van-cone';
 import van from 'vanjs-core';
 const { div, p, span, hr } = van.tags;
 
@@ -14,7 +14,7 @@ const routes = [
 
 // create the spa object
 const routerElement = div({ id: 'layout' })
-const { navLink } = createVanSpa(routerElement, routes)
+const { navLink } = createCone(routerElement, routes)
 
 // main app layout
 const App = () =>

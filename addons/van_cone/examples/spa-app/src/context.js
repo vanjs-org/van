@@ -1,5 +1,5 @@
 import "./index.css";
-import createVanSpa from "vanjs-spa";
+import createCone from "van-cone";
 import van from "vanjs-core";
 const { div } = van.tags;
 
@@ -47,5 +47,5 @@ const routes = [
 const defaultContext = {agreement: false}
 const layoutElement = div({ id: "layout", class: "layout" })
 
-const context = createVanSpa(layoutElement, routes, defaultContext)
+const context = createCone(layoutElement, routes, defaultContext)
 export default context

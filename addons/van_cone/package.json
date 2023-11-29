@@ -1,7 +1,7 @@
 {
   "name": "van-cone",
-  "version": "0.0.1",
-  "description": "a lightweight package providing basic SPA functionality for VanJS applications",
+  "version": "0.0.2",
+  "description": "a lightweight package providing basic SPA such as routing, history and navigation functionality for VanJS applications",
   "main": "src/spa.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

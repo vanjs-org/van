@@ -18,13 +18,13 @@ There is only one exported function which is used to create an application objec
 
 Install:
 ```bash
-npm install vanjs-spa --save
+npm install van-cone
 ```
 A basic hello world app requires javascript and HTML:
 
 Example JS:
 ```javascript
-import createVanSpa from 'vanjs-spa';
+import createCone from 'van-cone';
 import van from 'vanjs-core';
 const { div, p, span, hr } = van.tags;
 
@@ -40,7 +40,7 @@ const routes = [
 
 // create the spa object
 const routerElement = div({ id: 'layout' })
-const { navLink } = createVanSpa(routerElement, routes)
+const { navLink } = createCone(routerElement, routes)
 
 // main app layout
 const App = () =>
@@ -77,7 +77,7 @@ See the [examples](./examples/) folder for full working examples of a [hello wor
 
 # API Reference
 
- ### `createVanSpa(routerElement, routes, defaultNavState)`
+ ### `createCone(routerElement, routes, defaultNavState)`
  The only exported function from the module, used to create an application.
 
 **arguments**

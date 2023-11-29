@@ -106,7 +106,7 @@ class Router {
 };
 
 
-function createVanSpa(routerElement, routes, defaultNavState) {
+function createCone(routerElement, routes, defaultNavState) {
 
     const currentPage = van.state("")
 
@@ -206,4 +206,4 @@ function createVanSpa(routerElement, routes, defaultNavState) {
     }
 }
 
-export default createVanSpa
+export default createCone
