@@ -8,7 +8,7 @@ This lightweight (~200 lines) VanJS addon adds the following features:
     - integrates with browser history
     - state object integrates with browser history
     - url and query param parsing
-- navLink component for generating links based off of named routes
+- `navLink` component for generating links based off of named routes
     - easily add url and query params
     - active class css styling
 
@@ -84,35 +84,35 @@ See the [examples](./examples/) folder for full working examples of a [hello wor
 
 **arguments**
 
-- routerElement - (required) the root DOM element element that holds the app (element defined by active route)
+- `routerElement` - (required) the root DOM element element that holds the app (element defined by active route)
 
-- routes - (required) an array of [routes](#routes)
+- `routes` - (required) an array of [routes](#routes)
 
-- defaultNavState - (optional) the default navigation state, any type allowed by [history.pushState](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)
+- `defaultNavState` - (optional) the default navigation state, any type allowed by [history.pushState](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)
 
 **return**
 
 An object with the following items is returned:
 
-- routerElement - the same element passed to this function
+- `routerElement` - the same element passed to this function
 
-- currentPage - a `van.state` object representing the `name` value of the active route
+- `currentPage` - a `van.state` object representing the `name` value of the active route
 
-- router - the [router](#router) object for the application
+- `router` - the [router](#router) object for the application
 
-- navState - a `van.state` object representing the current [window.history.state](https://developer.mozilla.org/en-US/docs/Web/API/History/state)
+- `navState` - a `van.state` object representing the current [`window.history.state`](https://developer.mozilla.org/en-US/docs/Web/API/History/state)
 
-- getNavState - a function that returns `navState.val`
+- `getNavState` - a function that returns `navState.val`
 
-- setNavState - change [window.history.state](https://developer.mozilla.org/en-US/docs/Web/API/History/state), any type allowed by [history.pushState](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)
+- `setNavState` - change [`window.history.state`](https://developer.mozilla.org/en-US/docs/Web/API/History/state), any type allowed by [`history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)
 
-- [navigate](#navigateurl) - a function for programmatic navigation
+- [`navigate`](#navigateurl) - a function for programmatic navigation
 
-- [handleNav](#handlenavevent) - a wrapper around the [navigate](#navigateurl) function for handling events
+- [`handleNav`](#handlenavevent) - a wrapper around the [`navigate`](#navigateurl) function for handling events
 
-- [isCurrentPage](#iscurrentpagepagename) - a function to determine if a page is currently active
+- [`isCurrentPage`](#iscurrentpagepagename) - a function to determine if a page is currently active
 
-- [navLink](#navlinkprops-children) - a VanJS link component that navigates to named routes and includes active link css styling
+- [`navLink`](#navlinkprops-children) - a VanJS link component that navigates to named routes and includes active link css styling
 
 
 ## `routes`
@@ -243,16 +243,16 @@ router.formatUrl('user', { userId: 123 }, { activeTab: 'profile'})
 
 
 ## `navigate(url)`
-Programatically navigate to `url`.
+Programmatically navigate to `url`.
 
-You can use [router.formatUrl](#formaturlroutename-params---query) to generate urls from named routes with url and query params.
+You can use [`router.formatUrl`](#formaturlroutename-params---query) to generate urls from named routes with url and query params.
 
 ## `handleNav(event)`
-An event wrapper for [navigate](#navigateurl) to be used with an on click action. `handleNav` will call `event.preventDefault` and then call [navigate](#navigateurl) with `event.target.href`.
+An event wrapper for [`navigate`](#navigateurl) to be used with an on click action. `handleNav` will call `event.preventDefault` and then call [`navigate`](#navigateurl) with `event.target.href`.
 
 It is used internally to create the [navLink](#navlinkprops-children) component.
 
-You can use [router.formatUrl](#formaturlroutename-params---query) to generate urls from named routes and formatting url/query params.
+You can use [`router.formatUrl`](#formaturlroutename-params---query) to generate urls from named routes and formatting url/query params.
 
 ## `isCurrentPage(pageName)`
 Returns a `van.derive` object with a boolean that is true when `pageName` is the active route
@@ -263,7 +263,7 @@ if(isCurrentPage("home").val) console.log("we're home!")
 ## `navLink(props, ...children)`
 Returns a link element using `van.tags.a` by passing `props` and `children` to the underling call to `van.tags.a` with a few modifications to the resulting `a` element that adds programmatic navigation and dynamic styling for when it is the active route. URLs are generated using the name of the route, and optional url and query string params.
 
-### examples 
+### examples
 A basic call to the route named `home` with the inner text for the a tag `Home`. This is the bare minimum required for `navLink`.
 
 ```javascript
@@ -310,8 +310,8 @@ When the route for a `navLink` is active, the a tag's `aria-current` property wi
 navLink(props, ...children)
 ```
 
-`navLink` allows almost full control of the creation of the link. It's arguments 
-(`props` and `children`) are passed to the underlying `van.tags.a` unchaged with the following exceptions to the `props` argument:
+`navLink` allows almost full control of the creation of the link. It's arguments
+(`props` and `children`) are passed to the underlying `van.tags.a` unchanged with the following exceptions to the `props` argument:
 
 These props are used for creating the url and **will not** be passed to `van.tags.a`:
 * `props.name` (required)
@@ -323,14 +323,14 @@ The following have default values:
 * `props.class` (default: `router-link`)
 
 The following are hardcoded and cannot be changed:
-* `props.href` is set by a call to [router.formatUrl](#formaturlroutename-params---query) with `props.name`, `props.params` and `props.query`
+* `props.href` is set by a call to [`router.formatUrl`](#formaturlroutename-params---query) with `props.name`, `props.params` and `props.query`
 * `props.role` is set to `link`
-* `props.onClick` is set to [handleNav](#handlenavevent)
+* `props.onClick` is set to [`handleNav`](#handlenavevent)
 
 
 
 ### a tag only
-Currently `navLink` only supports returning an `a` tag, but by using [navigate](#navigateurl) or [handleNav](#handlenavevent) you could make any element a router link, and then use [isCurrentPage](#iscurrentpagepagename) to dynamically change properties such as class or styling when the route is active.
+Currently `navLink` only supports returning an `a` tag, but by using [`navigate`](#navigateurl) or [`handleNav`](#handlenavevent) you could make any element a router link, and then use [`isCurrentPage`](#iscurrentpagepagename) to dynamically change properties such as class or styling when the route is active.
 
 # The Name
 Van Cone is an addon for VanJS which is short for **Van**illa **J**ava**S**cript, and makes a callout to vanilla ice cream in its logo. Van Cone provides the cone that is needed to support the ice cream. VanJS provides reactivity and UI components, Van Cone provides routing, history and navigation components, together they're everything you need for a lightweight SPA experience!
