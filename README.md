@@ -189,6 +189,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/btakita"><img src="https://avatars.githubusercontent.com/u/3664?v=4?s=100" width="100px;" alt="Brian Takita"/><br /><sub><b>Brian Takita</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Abtakita" title="Bug reports">🐛</a> <a href="#ideas-btakita" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jfillmore"><img src="https://avatars.githubusercontent.com/u/873867?v=4?s=100" width="100px;" alt="Jonny Fillmore"/><br /><sub><b>Jonny Fillmore</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Ajfillmore" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/limaneto"><img src="https://avatars.githubusercontent.com/u/6009780?v=4?s=100" width="100px;" alt="Lima Neto"/><br /><sub><b>Lima Neto</b></sub></a><br /><a href="#content-limaneto" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/b-rad-c"><img src="https://avatars.githubusercontent.com/u/25362581?v=4?s=100" width="100px;" alt="b rad c"/><br /><sub><b>b rad c</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=b-rad-c" title="Code">💻</a> <a href="#plugin-b-rad-c" title="Plugin/utility libraries">🔌</a></td>
     </tr>
   </tbody>
 </table>
