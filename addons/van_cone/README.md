@@ -1,6 +1,8 @@
 # Van Cone
 ### An SPA framework add on for VanJS
 
+🔥 **Van Cone plus VanJS can create a fully featured SPA app that minifies and gzips to less than 3.5 kB!** 🔥
+
 This lightweight (~200 lines) VanJS addon adds the following features:
 - Navigation powered by custom router with async loading
     - integrates with browser history

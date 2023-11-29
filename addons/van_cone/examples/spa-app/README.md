@@ -1,6 +1,6 @@
-# Van.js SPA Template
+# Van Cone SPA example
 
-A [VanJS](https://vanjs.org/) powered demo SPA, 3.38kB bundled and gzipped!
+A Van Cone powered demo SPA, 3.43 kB bundled and gzipped!
 
 ## Features
 
