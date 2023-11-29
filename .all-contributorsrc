@@ -325,6 +325,16 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "b-rad-c",
+      "name": "b rad c",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25362581?v=4",
+      "profile": "https://github.com/b-rad-c",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
     }
   ],
   "repoType": "github"
