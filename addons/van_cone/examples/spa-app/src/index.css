@@ -1,0 +1,69 @@
+body {
+  margin: 10px;
+  padding: 0;
+  font-family: sans-serif;
+  scroll-behavior: smooth;
+  color: midnightblue;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+  width:70vw;
+  text-align:center;
+}
+
+#layout {
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.navbar-link {
+  text-decoration: none;
+  background-color: #fff;
+  color: midnightblue;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.navbar-link:hover {
+  background-color: bisque;
+}
+
+.navbar-link:active {
+  font-weight: bold;
+}
+
+.navbar-link[aria-current="page"] {
+  background-color: bisque;
+}
+
+.success {
+  color: green;
+}
+
+.danger {
+  color: red;
+}
+
+
+input {
+  margin: 10px;
+}
+
+.profile-left-col {
+  font-weight: bold;
+  width: 100px;
+}
+
+.centered-container {
+  margin: 0 auto;
+}
+
