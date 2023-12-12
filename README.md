@@ -138,7 +138,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [Van Cone](/addons/van_cone/): an SPA framework add-on for **VanJS**. Author: [b-rad-c](https://github.com/b-rad-c).
 * [vanjs-router](https://github.com/iuroc/vanjs-router): A router solution for **VanJS** (`README.md` in simplified Chinese). Author: [欧阳鹏](https://github.com/iuroc).
 
-## Contributors (34)
+## Contributors (35)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
