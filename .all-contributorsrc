@@ -344,6 +344,15 @@
       "contributions": [
         "plugin"
       ]
+    },
+    {
+      "login": "DanielMazurkiewicz",
+      "name": "Daniel Mazurkiewicz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2885673?v=4",
+      "profile": "https://github.com/DanielMazurkiewicz",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
