@@ -194,6 +194,9 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/b-rad-c"><img src="https://avatars.githubusercontent.com/u/25362581?v=4?s=100" width="100px;" alt="b rad c"/><br /><sub><b>b rad c</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=b-rad-c" title="Code">💻</a> <a href="#plugin-b-rad-c" title="Plugin/utility libraries">🔌</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://apee.top"><img src="https://avatars.githubusercontent.com/u/61752998?v=4?s=100" width="100px;" alt="欧阳鹏"/><br /><sub><b>欧阳鹏</b></sub></a><br /><a href="#plugin-iuroc" title="Plugin/utility libraries">🔌</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/DanielMazurkiewicz"><img src="https://avatars.githubusercontent.com/u/2885673?v=4?s=100" width="100px;" alt="Daniel Mazurkiewicz"/><br /><sub><b>Daniel Mazurkiewicz</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=DanielMazurkiewicz" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 
