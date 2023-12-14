@@ -13,7 +13,7 @@
     "vite-bundle-visualizer": "^0.7.0"
   },
   "dependencies": {
-    "vanjs-core": "^1.2.1",
-    "van-cone": "^0.0.2"
+    "van-cone": "^0.0.2",
+    "vanjs-core": "^1.2.7"
   }
 }

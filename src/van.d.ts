@@ -7,6 +7,8 @@ export interface State<T> {
 // Basically we want StateView<string> to implement StateView<string | number>
 export type StateView<T> = Readonly<State<T>>
 
+export type Val<T> = State<T> | T
+
 export type Primitive = string | number | boolean | bigint
 
 export type PropValue = Primitive | ((e: any) => void) | null
@@ -15,7 +17,7 @@ export type PropValueOrDerived = PropValue | StateView<PropValue> | (() => PropV
 
 export type Props = Record<string, PropValueOrDerived> & { class?: PropValueOrDerived }
 
-type PropsWithKnownKeys<ElementType> = Partial<{[K in keyof ElementType]: PropValueOrDerived}>
+export type PropsWithKnownKeys<ElementType> = Partial<{[K in keyof ElementType]: PropValueOrDerived}>
 
 export type ValidChildDomValue = Primitive | Node | null | undefined
 
@@ -31,8 +33,8 @@ type Tags = Readonly<Record<string, TagFunc<Element>>> & {
 
 export interface Van {
   readonly state: <T>(initVal: T) => State<T>
-  readonly val: <T>(s: T | StateView<T>) => T
-  readonly oldVal: <T>(s: T | StateView<T>) => T
+  readonly val: <T>(s: Val<T>) => T
+  readonly oldVal: <T>(s: Val<T>) => T
   readonly derive: <T>(f: () => T) => State<T>
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
   readonly _: (f: () => PropValue) => () => PropValue

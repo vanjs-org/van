@@ -9,8 +9,8 @@
     "bundle-visualizer": "vite-bundle-visualizer"
   },
   "dependencies": {
-    "vanjs-core": "^1.2.1",
-    "van-cone": "^0.0.2"
+    "van-cone": "^0.0.2",
+    "vanjs-core": "^1.2.7"
   },
   "devDependencies": {
     "vite": "^4.3.9",
