@@ -1,8 +1,6 @@
 import van from "vanjs-core";
 const { a } = van.tags;
 
-console.log('spa.js')
-
 const parametersPattern = /(:[^\/]+)/g;
 
 function getMatchedParams(route, path) {
@@ -28,11 +26,10 @@ function getQueryParams(query) {
 		}, {});
 };
 
-function createRoute(name, path, handler) {
+function createRoute(name, path, backend, handler) {
 	const matcher = new RegExp(path.replace(parametersPattern, '([^\/]+)') + '$');
 	const params = (path.match(parametersPattern) || []).map(x => x.substring(1));
-
-	return {name, path, handler, matcher, params};
+	return {name, path, handler, backend, matcher, params};
 };
 
 const findRouteParams = (routes, path) => {
@@ -46,33 +43,30 @@ const parseUrl = (url) => {
 	return {path, queryString};
 };
 
-const stripPrefix = (url ,prefix) => url.replace(new RegExp('^' + prefix), '');
+const stripPrefix = (url, prefix) => url.replace(new RegExp('^' + prefix), '');
 
 class Router {
-	constructor() {
+
+	constructor(config) {
 		this.routes = [];
-		this.prefix = '';
+		this.prefix = config && config.prefix || '';
+        this.backendPrefix = config && config.backendPrefix || '';
 	}
 
-	add(name, path, handler) {
-		this.routes.push(createRoute(name, path, handler));
+	add(name, path, backend, handler) {
+		this.routes.push(createRoute(name, path, backend, handler));
 		return this;
 	}
 
-	setPrefix(prefix) {
-		this.prefix = prefix;
-		return this;
-	}
-
-	dispatch(url) {
-        console.log('Router.dispatching', url)
+	dispatch(url, context) {
+        console.debug('Router.dispatching', url)
 		const {path, queryString} = parseUrl(stripPrefix(url, this.prefix));
-        console.log(path, queryString)
+        console.debug(path, queryString)
 		const query = getQueryParams(queryString || '');
 		const {route, params} = findRouteParams(this.routes, path);
 
 		if (route) {
-			route.handler({params, query});
+			route.handler({params, query, context});
 			return route;
 		}
 
@@ -85,11 +79,11 @@ class Router {
 		return rp && rp.route;
 	}
 
-	formatUrl(routeName, params = {}, query = {}) {
+	_formatUrl(routeName, isBackend, params = {}, query = {}) {
 		const route = this.routes.find(r => r.name === routeName);
 
 		if (!route) {
-			return '';
+			throw new Error(`Route ${routeName} not found`);
 		}
 
 		const queryString = Object.keys(query)
@@ -97,37 +91,53 @@ class Router {
 				  .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
 				  .join('&');
 
-		const path = this.prefix + route.path.replace(parametersPattern, function(match) {
+
+        const prefix = (isBackend === true) ? this.backendPrefix : this.prefix
+        const routePath = (isBackend && route.backend) ? route.backend : route.path
+
+		const path = prefix + routePath.replace(parametersPattern, function(match) {
 			return params[match.substring(1)];
 		});
 
 		return queryString.length ? path + '?' + queryString : path;
 	}
+
+    navUrl(routeName, params = {}, query = {}) {
+		return this._formatUrl(routeName, false, params, query)
+	}
+
+    backendUrl(routeName, params = {}, query = {}) {
+		return this._formatUrl(routeName, true, params, query)
+	}
 };
 
 
-function createCone(routerElement, routes, defaultNavState) {
+function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
     const currentPage = van.state("")
 
     const isCurrentPage = (pageName) => van.derive(() => currentPage.val === pageName)
 
     // router
-    const router = new Router();
+    const router = new Router(routerConfig);
 
     routes.forEach(route => {
-        router.add(route.name, route.path, function({params, query}) {
-            console.log("VanSpa.router.action to " + route.name)
+        router.add(route.name, route.path, route.backend, function({params, query, context}) {
+            console.debug("VanSpa.router.action to " + route.name)
 
             currentPage.val = route.name
             if (route.title) window.document.title = route.title
 
+            const _params = params || {}
+            const _query = query || {}
+            const _context = context || {} 
+
             route.callable()
                 .then((page) => {
                     if ('default' in page) {
-                        return routerElement.replaceChildren(page.default(params, query)())
+                        return routerElement.replaceChildren(page.default(_params, _query, _context)())
                     }else{
-                        return routerElement.replaceChildren(page(params, query))
+                        return routerElement.replaceChildren(page(_params, _query, _context))
                     }
                 }).catch((error) => console.error('error changing page', error))
         });
@@ -149,43 +159,46 @@ function createCone(routerElement, routes, defaultNavState) {
 
     // window navigation events
     window.onpopstate = (event) => {
-        console.log("VanSpa.popstate:", event.target.location.href)
+        console.debug("VanSpa.popstate:", event.target.location.href)
         router.dispatch(event.target.location.href)
     };
 
     window.onload = (event) => {
-        console.log("window.onload", event.target.location.href, window.history.state)
+        console.debug("window.onload", event.target.location.href, window.history.state)
         setNavState(window.history.state)
         router.dispatch(event.target.location.href)
     }
 
     // navigation functions
-    const navigate = (url) => {
-        console.log("VanSpa.navigate", url)
+    const navigate = (url, context) => {
+        console.debug("VanSpa.navigate", url)
         history.pushState(getNavState(), "", url);
-        router.dispatch(url)
+        router.dispatch(url, context)
+    } 
+
+    const pushHistory = (url) => {
+        console.debug("VanSpa.pushHistory", url)
+        history.pushState(getNavState(), "", url)
     } 
       
-    const handleNav = (event) => {
+    const handleNav = (event, context) => {
         event.preventDefault();
-        console.log("VanSpa.handleNav", event.target.href)
-        navigate(event.target.href)
+        console.debug("VanSpa.handleNav", event.target.href)
+        navigate(event.target.href, context)
     }
 
     // nav link component
     function navLink(props, ...children) {
-        const { target, name, params, query, ...otherProps } = props;
-
-        console.log("VanSpa.navLink", props)
+        const { target, name, params, query, context, ...otherProps } = props;
 
         return a(
             {
                 "aria-current": van.derive(() => (isCurrentPage(name).val ? "page" : "")),
-                href: router.formatUrl(name, params, query),
+                href: router.navUrl(name, params, query),
                 target: target || "_self",
                 role: "link",
                 class: otherProps.class || 'router-link',
-                onclick: handleNav,
+                onclick: (event) => handleNav(event, context),
                 ...otherProps,
             },
             children
@@ -200,6 +213,7 @@ function createCone(routerElement, routes, defaultNavState) {
         getNavState,
         setNavState,
         navigate,
+        pushHistory,
         handleNav,
         isCurrentPage,
         navLink
