@@ -94,7 +94,7 @@ See the [API Reference](./API_REFERENCE.md) for full documentation.
 
 
 # Support, issues, and suggestions
-Open an issue or discussion either on the [offical repo](https://github.com/vanjs-org/van) or [my fork](https://github.com/b-rad-c/van/tree/main). Make sure to tag my username: [@b-rad-c](https://github.com/b-rad-c).
+Open an issue or discussion either on the [official repo](https://github.com/vanjs-org/van) or [my fork](https://github.com/b-rad-c/van/tree/main). Make sure to tag my username: [@b-rad-c](https://github.com/b-rad-c).
 
 # Contributing
 Got some skills? Want to contribute? Send a pull request!
@@ -105,10 +105,10 @@ I, [@b-rad-c](https://github.com/b-rad-c) am the maintainer of this project howe
 Some things I'm interested in.
 * unittests
 * convert to TypeScript
-* stabilze API to come out of beta - comments or suggestions to the API are welcome.
+* stabilize API to come out of beta - comments or suggestions to the API are welcome.
 
 # The Name
 Van Cone is an addon for VanJS which is short for **Van**illa **J**ava**S**cript, and makes a callout to vanilla ice cream in its logo. Van Cone provides the cone that is needed to support the ice cream. VanJS provides reactivity and UI components, Van Cone provides routing, history and navigation components, together they're everything you need for a lightweight SPA experience!
 
 # Credit
-router based on [minimal router](https://github.com/jmhdez/minimal-router) (no longer maintained)
+Router based on [minimal router](https://github.com/jmhdez/minimal-router) (no longer maintained).
