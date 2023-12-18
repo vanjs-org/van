@@ -1,0 +1,9 @@
+node_modules
+
+# ignore lock files so you don't have to use pnpm
+/pnpm-lock.yaml
+/yarn.lock
+/package-lock.json
+
+# publish dist
+!/dist
