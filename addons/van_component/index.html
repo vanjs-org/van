@@ -12,7 +12,7 @@
 
   <script type="module">
     import van from "vanjs-core";
-    import {create} from "./src/van-component";
+    import {createComponent} from "./src/van-component";
 
     const {button, div, slot} = van.tags;
 
@@ -28,8 +28,8 @@
       return dom;
     }
 
-    create("counter-row", Counter);
-    create("counter-add", () => button({onclick: () => van.add(document.body, van.tags["counter-row"]("❤️"))}, "Add"));
+    createComponent("counter-row", Counter);
+    createComponent("counter-add", () => button({onclick: () => van.add(document.body, van.tags["counter-row"]("❤️"))}, "Add"));
   </script>
 </body>
 </html>

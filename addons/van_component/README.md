@@ -8,10 +8,10 @@ Example
 
 ```javascript
 import van from "vanjs-core";
-import { create } from "./src/van-component";
+import { createComponent } from "./src/van-component";
 const { button, div, slot } = van.tags;
 
-create("custom-counter", () => {
+createComponent("custom-counter", () => {
   const counter = van.state(0);
   return div(
     slot(),

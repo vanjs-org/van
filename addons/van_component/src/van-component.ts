@@ -1,6 +1,6 @@
 import van from "vanjs-core";
 
-export function create(
+export function createComponent(
   name: string,
   component: (props: Record<string, string>) => HTMLElement
 ) {

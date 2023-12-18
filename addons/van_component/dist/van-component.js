@@ -1,18 +1,18 @@
-import n from "vanjs-core";
-function d(a, o) {
+import s from "vanjs-core";
+function m(o, a) {
   window.customElements.define(
-    a,
+    o,
     class extends HTMLElement {
       constructor() {
         super();
         const e = {};
         for (let t of this.attributes)
-          e[t.name.replace(/-([a-z])/g, (r, s) => s.toUpperCase())] = t.value;
-        n.add(this.attachShadow({ mode: "open" }), o(e));
+          e[t.name.replace(/-([a-z])/g, (r, n) => n.toUpperCase())] = t.value;
+        s.add(this.attachShadow({ mode: "open" }), a(e));
       }
     }
   );
 }
 export {
-  d as create
+  m as createComponent
 };
