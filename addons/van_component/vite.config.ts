@@ -3,10 +3,10 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/van-component.ts",
+      entry: "src/van-component.js",
       name: "vanC",
       fileName: (format, entryName) =>
-        format == "umd" ? `${entryName}.nomodule.js` : `${entryName}.js`,
+        `${entryName}${format == "umd" ? ".nomodule" : ""}.min.js`,
     },
     rollupOptions: {
       external: ["vanjs-core"],
