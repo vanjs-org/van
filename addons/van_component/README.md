@@ -32,22 +32,42 @@ and usage in HTML
 <custom-counter>👌</custom-counter>
 ```
 
-## Create new elements from VanJS
+## Create custom elements from VanJS
 
-If you have another VanJS component, you can create web components with this syntax:
+You can create web components from VanJS with this syntax:
 
 ```javascript
-const someComponent = (emoji) => van.tags["custom-counter"](emoji);
+const someComponent = van.tags["custom-counter"];
 ```
 
-The web component will then hydrate properly with the counter, and slot the emoji correctly!
+The web component will then hydrate properly. Its attributes will be transformed into State objects, and are reactive to changes.
 
-## Why
+```javascript
+createComponent("custom-counter", ({ count }) => span(slot(), count), [
+  "count", // observed attribute
+]);
+
+createComponent("hello-world", () => {
+  const count = van.state(0);
+  return div(
+    van.tags["custom-counter"]({ count }, "Count: "),
+    button({ onclick: () => ++count.val }, "+")
+  );
+});
+```
+
+For this to work, you need to supply a third argument to the function with a list of observed attributes.
+
+## Why would I use this
 
 Hydration in VanJS is not convenient. This small function makes it trivial to have reusable van components. It also pairs very well with VanUI.
 
 ## How to use
 
-This is very much WIP. The current way to use this is to copy the code in `dist`.
+```bash
+npm install vanjs-component
+```
+
+or copy the file you need from `dist`.
 
 This small example uses Vite. The minifying part can be done better to produce a smaller bundle, but I leave that work to Tao Xin if he is interested. Don't hesitate to incorporate this inside VanJS's monorepo/toolchain in whichever way suits you best.
