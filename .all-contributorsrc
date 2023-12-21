@@ -353,6 +353,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Atmos4",
+      "name": "Atmos4",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32951942?v=4",
+      "profile": "https://github.com/Atmos4",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
     }
   ],
   "repoType": "github"
