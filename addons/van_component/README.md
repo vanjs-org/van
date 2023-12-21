@@ -32,6 +32,8 @@ and usage in HTML
 <custom-counter>👌</custom-counter>
 ```
 
+You can preview the example via [CodeSandbox](https://codesandbox.io/p/devbox/github/vanjs-org/van/tree/main/addons/van_component?file=%2Findex.html).
+
 ## Create custom elements from VanJS
 
 You can create web components from VanJS with this syntax:
@@ -68,6 +70,6 @@ Hydration in VanJS is not convenient. This small function makes it trivial to ha
 npm install vanjs-component
 ```
 
-or copy the file you need from `dist`.
+or copy the file you need from [`dist`](./dist/).
 
 This small example uses Vite. The minifying part can be done better to produce a smaller bundle, but I leave that work to Tao Xin if he is interested. Don't hesitate to incorporate this inside VanJS's monorepo/toolchain in whichever way suits you best.
