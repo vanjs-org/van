@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VanJS + WebComponents</title>
+</head>
+<body>
+  <h1>Webcomponents + VanJS = ❤️</h1>
+
+  <p>Here is a demo component:</p>
+  <demo-component></demo-component>
+  <div>
+    <p>And here is the standalone component it uses:</p>
+    <font-preview size="20" color="orange"></font-preview>
+  </div>
+
+  <script type="module">
+    import van from "vanjs-core"
+    import {createComponent} from "./src/van-component"
+
+    const {input, option, select, span} = van.tags
+
+    createComponent("font-preview", ({size, color}) => span({style: () => `font-size: ${size.val}px; color: ${color.val};`}, " Hello 🍦VanJS")
+      , ["size", "color"]);
+
+    createComponent("demo-component", () => {
+      const size = van.state(16), color = van.state("black")
+      return span(
+        "Size: ",
+        input({
+          type: "range", min: 10, max: 36, value: size,
+          oninput: e => size.val = e.target.value
+        }),
+        " Color: ",
+        select({oninput: e => color.val = e.target.value, value: color},
+          ["black", "blue", "green", "red", "brown"]
+            .map(c => option({value: c}, c)),
+        ),
+        van.tags["font-preview"]({size: size, color: color})
+      )
+    });
+  </script>
+</body>
+</html>

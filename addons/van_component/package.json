@@ -1,0 +1,27 @@
+{
+  "name": "vanjs-component",
+  "version": "0.0.4",
+  "type": "module",
+  "description": "Web components with VanJS",
+  "files": [
+    "src/van-component.js",
+    "src/van-component.d.ts"
+  ],
+  "main": "./src/van-component.js",
+  "browser": "./src/van-component.js",
+  "exports": {
+    ".": "./src/van-component.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vanjs-core": "^1.2.6"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0"
+  }
+}
