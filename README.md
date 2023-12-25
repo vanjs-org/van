@@ -137,6 +137,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [van-jsx](/addons/van_jsx): a JSX wrapper for **VanJS**, for people who like the JSX syntax more. Author: [cqh963852](https://github.com/cqh963852).
 * [Van Cone](/addons/van_cone/): an SPA framework add-on for **VanJS**. Author: [b-rad-c](https://github.com/b-rad-c).
 * [vanjs-router](https://github.com/iuroc/vanjs-router): A router solution for **VanJS** (`README.md` in simplified Chinese). Author: [欧阳鹏](https://github.com/iuroc).
+* [VanJS Routing](https://github.com/kwameopareasiedu/vanjs-routing): Yet another routing solution for **VanJS**. Author: [Kwame Opare Asiedu](https://github.com/kwameopareasiedu).
 * [van_component](/addons/van_component/): An add-on to easily add web components with **VanJS**. Author: [Atmos4](https://github.com/Atmos4).
 
 ## Contributors (37)
