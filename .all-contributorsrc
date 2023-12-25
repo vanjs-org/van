@@ -363,6 +363,15 @@
         "code",
         "plugin"
       ]
+    },
+    {
+      "login": "kwameopareasiedu",
+      "name": "Kwame Opare Asiedu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26204283?v=4",
+      "profile": "https://github.com/kwameopareasiedu",
+      "contributions": [
+        "plugin"
+      ]
     }
   ],
   "repoType": "github"
