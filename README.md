@@ -140,7 +140,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [VanJS Routing](https://github.com/kwameopareasiedu/vanjs-routing): Yet another routing solution for **VanJS**. Author: [Kwame Opare Asiedu](https://github.com/kwameopareasiedu).
 * [van_component](/addons/van_component/): An add-on to easily add web components with **VanJS**. Author: [Atmos4](https://github.com/Atmos4).
 
-## Contributors (38)
+## Contributors (39)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
