@@ -481,6 +481,36 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(items).toString(), "a,c")
     }),
 
+    list_array_keyInBindingFunc: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive([2, 1, 3])
+      van.add(hiddenDom, vanX.list(ul, items, (v, _deleter, k) => li(v.val, " - ", k)))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>2 - 0</li><li>1 - 1</li><li>3 - 2</li></ul>')
+
+      items[1] = 5
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2 - 0</li><li>5 - 1</li><li>3 - 2</li></ul>')
+
+      items[2] = 6
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2 - 0</li><li>5 - 1</li><li>6 - 2</li></ul>')
+    }),
+
+    list_obj_keyInBindingFunc: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive({a: 2, b: 1, c: 3})
+      van.add(hiddenDom, vanX.list(ul, items, (v, _deleter, k) => li(v.val, " - ", k)))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>1 - b</li><li>3 - c</li></ul>')
+
+      items.b = 5
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>5 - b</li><li>3 - c</li></ul>')
+
+      items.c = 6
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>5 - b</li><li>6 - c</li></ul>')
+    }),
+
     replace_filterArray: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive([1, 2, 3])
       van.add(hiddenDom, vanX.list(ul, items,

@@ -54,7 +54,7 @@ let filterBindings = items =>
   items[bindingsSym] = items[bindingsSym].filter(b => b._containerDom.isConnected)
 
 let toBindFunc = (items, k, v, f) => () => {
-  let dom = f(v, () => delete items[k])
+  let dom = f(v, () => delete items[k], k)
   dom[keySym] = k
   return dom
 }
