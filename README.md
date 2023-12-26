@@ -140,7 +140,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [VanJS Routing](https://github.com/kwameopareasiedu/vanjs-routing): Yet another routing solution for **VanJS**. Author: [Kwame Opare Asiedu](https://github.com/kwameopareasiedu).
 * [van_component](/addons/van_component/): An add-on to easily add web components with **VanJS**. Author: [Atmos4](https://github.com/Atmos4).
 
-## Contributors (37)
+## Contributors (39)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
@@ -199,7 +199,8 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/DanielMazurkiewicz"><img src="https://avatars.githubusercontent.com/u/2885673?v=4?s=100" width="100px;" alt="Daniel Mazurkiewicz"/><br /><sub><b>Daniel Mazurkiewicz</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=DanielMazurkiewicz" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Atmos4"><img src="https://avatars.githubusercontent.com/u/32951942?v=4?s=100" width="100px;" alt="Atmos4"/><br /><sub><b>Atmos4</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=Atmos4" title="Code">💻</a> <a href="#plugin-Atmos4" title="Plugin/utility libraries">🔌</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/kwameopareasiedu"><img src="https://avatars.githubusercontent.com/u/26204283?v=4?s=100" width="100px;" alt="Kwame Opare Asiedu"/><br /><sub><b>Kwame Opare Asiedu</b></sub></a><br /><a href="#plugin-kwameopareasiedu" title="Plugin/utility libraries">🔌</a> <a href="#example-kwameopareasiedu" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/kwameopareasiedu"><img src="https://avatars.githubusercontent.com/u/26204283?v=4?s=100" width="100px;" alt="Kwame Opare Asiedu"/><br /><sub><b>Kwame Opare Asiedu</b></sub></a><br /><a href="#plugin-kwameopareasiedu" title="Plugin/utility libraries">🔌</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ali-alnasser570"><img src="https://avatars.githubusercontent.com/u/104535769?v=4?s=100" width="100px;" alt="ali-alnasser570"/><br /><sub><b>ali-alnasser570</b></sub></a><br /><a href="#ideas-ali-alnasser570" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>
