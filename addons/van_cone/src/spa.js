@@ -170,15 +170,30 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     }
 
     // navigation functions
-    const navigate = (url, context) => {
+    const navigate = (routeName, options) => {
+        const { params, query, navState, context } = options
+        const url = router.navUrl(routeName, params, query)
+
+        if (typeof navState !== 'undefined') setNavState(navState)
+
         console.debug("VanSpa.navigate", url)
+
         history.pushState(getNavState(), "", url);
         router.dispatch(url, context)
-    } 
 
-    const pushHistory = (url) => {
+        return url
+    }
+
+    const pushHistory = (routeName, options) => {
+        const { params, query, navState } = options
+        const url = router.navUrl(routeName, params, query)
+
+        if (typeof navState !== 'undefined') setNavState(navState)
+
         console.debug("VanSpa.pushHistory", url)
         history.pushState(getNavState(), "", url)
+
+        return url
     } 
       
     const handleNav = (event, context) => {
@@ -188,13 +203,13 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     }
 
     // nav link component
-    function navLink(props, ...children) {
-        const { target, name, params, query, context, ...otherProps } = props;
+    function link(routeName, props, ...children) {
+        const { target, params, query, context, ...otherProps } = props;
 
         return a(
             {
-                "aria-current": van.derive(() => (isCurrentPage(name).val ? "page" : "")),
-                href: router.navUrl(name, params, query),
+                "aria-current": van.derive(() => (isCurrentPage(routeName).val ? "page" : "")),
+                href: router.navUrl(routeName, params, query),
                 target: target || "_self",
                 role: "link",
                 class: otherProps.class || 'router-link',
@@ -209,6 +224,8 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
         routerElement,
         currentPage,
         router,
+        navUrl: router.navUrl,
+        backendUrl: router.backendUrl,
         navState,
         getNavState,
         setNavState,
@@ -216,7 +233,7 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
         pushHistory,
         handleNav,
         isCurrentPage,
-        navLink
+        link
     }
 }
 

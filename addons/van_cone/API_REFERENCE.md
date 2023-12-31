@@ -2,6 +2,10 @@
 
 See [README.md](./README.md) for installation and overview.
 
+### Examples
+
+See the [examples](./examples/) folder for full working examples of a [hello world](./examples/hello-world/) ([preview](https://codesandbox.io/p/devbox/van-cone-hello-world-yxpxhy)), and more complex [application](./examples/spa-app/) ([preview](https://codesandbox.io/p/devbox/github/vanjs-org/van/tree/main/addons/van_cone/examples/spa-app)) with several pages.
+
 # API Reference
 
 🚨 **Van Cone is in Beta - API changes are possible** 🚨
@@ -17,7 +21,7 @@ See [README.md](./README.md) for installation and overview.
 
 - `defaultNavState` - (optional) the default navigation state, any type allowed by [`history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)
 
-- [`routerConfig`](#constructorrouterconfig) = (optional) - configure `prefix` to prepend to each url, or `backendPrefix` if different than frontend.
+- [routerConfig](#routerconfig) = (optional) - configure `prefix` to prepend to each url, or `backendPrefix` if different than frontend.
 
 **return**
 
@@ -25,15 +29,9 @@ An object with the following items is returned:
 
 - `routerElement` - the same element passed to this function
 
+- [`link`](#linkroutename-props-children) - a VanJS link component that navigates to named routes and includes active link css styling
+
 - `currentPage` - a `van.state` object representing the `name` value of the active route
-
-- `router` - the [`router`](#router) object for the application
-
-- `navState` - a `van.state` object representing the current [`window.history.state`](https://developer.mozilla.org/en-US/docs/Web/API/History/state)
-
-- `getNavState` - a function that returns `navState.val`
-
-- `setNavState` - change [`window.history.state`](https://developer.mozilla.org/en-US/docs/Web/API/History/state), any type allowed by [`history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)
 
 - [`navigate`](#navigateurl-context) - a function for programmatic navigation
 
@@ -41,7 +39,17 @@ An object with the following items is returned:
 
 - [`isCurrentPage`](#iscurrentpagepagename) - a function to determine if a page is currently active
 
-- [`navLink`](#navlinkprops-children) - a VanJS link component that navigates to named routes and includes active link css styling
+- [`navUrl`](#navurlroutename-params---query) - a function to generate a url string given a route name and url and query params.
+
+- [`backendUrl`](#backendurlroutename-params---query) - a function to generate a url string given a route name and url and query params.
+
+- `navState` - a `van.state` object representing the current [`window.history.state`](https://developer.mozilla.org/en-US/docs/Web/API/History/state)
+
+- `getNavState` - a function that returns `navState.val`
+
+- `setNavState` - change [`window.history.state`](https://developer.mozilla.org/en-US/docs/Web/API/History/state), any type allowed by [`history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)
+
+
 
 
 ## `routes`
@@ -200,17 +208,15 @@ const userPage = (params, query, context) => {
 
 ```
 
-## `router`
+## `routerConfig`
+An object used to configure the router, it has two optional keys `prefix` and `backendPrefix`. If `routerConfig` is not provided or either key is not provided they will default to an empty string. 
 
-#### `constructor(routerConfig)`
-The `routerConfig` object is used to construct a new router, it is an object with two optional keys `prefix` and `backendPrefix`. If `routerConfig` is not provided or either key is not provided they will default to an empty string.
-
-`prefix` will be prepended to front end URLs, the ones shown in the browser and matched when navigating to different pages. See [`router.navUrl`](#navurlroutename-params---query) for more.
+`prefix` will be prepended to front end URLs, the ones shown in the browser and matched when navigating to different pages. See [navUrl](#navurlroutename-params---query) for more.
 
 The `backendPrefix` is useful for when the backend is at a different host or has a different prefix than the front end. It is only used as a utility to generate URLs for fetching data, it is ignored for route matching and page navigation. See [`router.backendUrl`](#backendurlroutename-params---query) for more.
 
-#### `navUrl(routeName, params = {}, query = {})`
-Return a string representing a url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. The return can be used with [`navigate`](#navigateurl-context) or any other place a url string is needed. If `prefix` was included with [`routerConfig`](#constructorrouterconfig) it will be prepended to the url.
+## `navUrl(routeName, params = {}, query = {})`
+Return a string representing a url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. The return can be used with [navigate](#navigateurl-context) or any other place a url string is needed. If `prefix` was included with [routerConfig](#constructorrouterconfig) it will be prepended to the url.
 
 **Note: to access this function from the return value of [`createCone`](#createconerouterelement-routes-defaultnavstate) call `router.navUrl`**
 
@@ -226,12 +232,12 @@ The following [`route`](#routes):
 
 will result in the following:
 ```javascript
-router.formatUrl('user', { userId: 123 }, { activeTab: 'profile'})
+router.navUrl('user', { userId: 123 }, { activeTab: 'profile'})
 // "/user/123?activeTab=profile"
 ```
 
-#### `backendUrl(routeName, params = {}, query = {})`
-Return a string backend url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. The return can be used for fetching data. If `backendPrefix` was included with [`routerConfig`](#constructorrouterconfig) it will be prepended to the url.
+## `backendUrl(routeName, params = {}, query = {})`
+Return a string backend url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. The return can be used for fetching data. If `backendPrefix` was included with [routerConfig](#constructorrouterconfig) it will be prepended to the url.
 
 **Note: to access this function from the return value of [`createCone`](#createconerouterelement-routes-defaultnavstate) call `router.backendUrl`**
 
@@ -261,31 +267,41 @@ const routes = [
 Will result in the following:
 
 ```javascript
-router.formatUrl('user', { userId: 123 })
+router.navUrl('user', { userId: 123 })
 // "http://localhost:8000/secure/user/123"
 
-router.formatUrl('item', { itemId: 123 })
+router.navUrl('item', { itemId: 123 })
 // "http://localhost:8000/item/123"
 
 ```
 
 
-## `navigate(url, context)`
-Programmatically navigate to `url`. Optionally pass `context` which can be and data to the resolved router component.
+## `navigate(routeName, options)`
+Programmatically navigate to `routeName` using url generated by [router.navUrl](#navurlroutename-params---query), returns url as a string.
 
-You can use [`router.navUrl`](#navigateurl-context) to generate urls from named routes with url and query params.
+Optionally pass `options` as an object with `params`, `query`, `navState`, and `context`.
 
-## `pushHistory(url)`
-Push `url` to browser history and update address bar only, do not modify DOM.
+If `params` and/or `query` are provided they will be used with `routeName` to generate the url.
 
-You can use [`router.navUrl`](#navigateurl-context) to generate urls from named routes with url and query params.
+If `navState` is provided it will be set as the browser history state using `setNavState` returned by the [createCone](#createconerouterelement-routes-defaultnavstate) function.
+
+If `context` is provided it will be pased to the resolved component for `routeName`. See [example](#full-component-example) for details.
+
+## `pushHistory(routeName, options)`
+Push a url generated for `routeName` by [router.navUrl](#navurlroutename-params---query) to the browser history and update address bar only, do not modify DOM, returns url as a string.
+
+Optionally pass `options` as an object with `params`, `query`, and `navState`.
+
+If `params` and/or `query` are provided they will be used with `routeName` to generate the url.
+
+If `navState` is provided it will be set as the browser history state using `setNavState` returned by the [createCone](#createconerouterelement-routes-defaultnavstate) function.
 
 ## `handleNav(event, context)`
 An event wrapper for [`navigate`](#navigateurl-context) to be used with an on click action. `handleNav` will call `event.preventDefault` and then call [`navigate`](#navigateurl-context) with `event.target.href`.
 
 It is used internally to create the [`navLink`](#navlinkprops-children) component.
 
-Optionally pass `context` which can be and data to the resolved router component.
+Optionally pass `context` which can be and data to the resolved router component. See [example](#full-component-example) for details.
 
 You can use [`router.navUrl`](#navurlroutename-params---query) to generate urls from named routes and formatting url/query params.
 
@@ -295,32 +311,58 @@ Returns a `van.derive` object with a boolean that is true when `pageName` is the
 if (isCurrentPage("home").val) console.log("we're home!")
 ```
 
-## `navLink(props, ...children)`
-Uses [`router.navUrl`](#navurlroutename-params---query) to return a link element using `van.tags.a` by passing `props` and `children` to the underling call to `van.tags.a` with a few modifications to the resulting `a` element that adds programmatic navigation and dynamic styling for when it is the active route. URLs are generated using the name of the route, and optional url and query string params.
+## `link(routeName, props, ...children)`
+A light wrapper around `van.tags.a` that add dynamic url generation for `routeName`, with url and query params to be used when generating the url with [navUrl](#navurlroutename-params---query), see below for more details. It added dynamical styling when `routeName` is the active route. Additional context can be provided to the component resolved by the router. For example, `link` could be used on a search results page to link to each item's and could optionally pass the item's data to the item page enabling the it to use the preloaded data instead of fetching it.
 
-### examples
-A basic call to the route named `home` with the inner text for the a tag `Home`. This is the bare minimum required for `navLink`.
+
+### arguments
 
 ```javascript
-navLink({ name: 'home' }, 'Home')
+link(routeName, props, ...children)
+```
+`routeName` - the name of the route to navigate to
+
+`props` - an object that will be passed to the resulting `van.tags.a` function, unchanged with the following exceptions:
+
+These props are used for creating the url and **will not** be passed to `van.tags.a`:
+* `props.params` (optional)
+* `props.query` (optional)
+* `props.context` (optional)
+
+The following have default values:
+* `props.target` (default: `_self`)
+* `props.class` (default: `router-link`)
+
+The following are set by the function and will be overwritten if provided:
+* `props.href` is set by a call to [router.navUrl](#navurlroutename-params---query) with `props.name`, `props.params` and `props.query`
+* `props.role` is set to `link`
+* `props.onClick` is set to [`handleNav`](#handlenavevent-context)
+
+`children` - is passed unchanged to the resulting `van.tags.a` function.
+
+### examples
+A basic call to the route named `home` with the inner text for the a tag `Home`. This is the bare minimum required for `link`.
+
+```javascript
+link({ name: 'home' }, 'Home')
 ```
 
 A call to the route named `user` with the url param `userId` set to `123`, the inner text for the a tag is `User`.
 
 ```javascript
-navLink({name: 'user', params: {userId: 123}}, 'User')
+link({name: 'user', params: {userId: 123}}, 'User')
 ```
 
 A call to the route named `users` with the query param `sort` set to `asc`, the inner text for the link is `ascending`.
 
 ```javascript
-navLink({name: 'users', query: {sort: 'asc'}}, 'ascending')
+link({name: 'users', query: {sort: 'asc'}}, 'ascending')
 ```
 
-Pass additional context which can be any data type to the component resolved by the route.
+Pass additional context which can be any data type to the component resolved by the route. See [example](#full-component-example) for how to access context from within the component.
 
 ```javascript
-navLink({name: 'users', context: {value: 'hello world'}}, 'User')
+link({name: 'users', context: {value: 'hello world'}}, 'User')
 ```
 
 ### styling
@@ -328,10 +370,10 @@ navLink({name: 'users', context: {value: 'hello world'}}, 'User')
 By default the class name for the a tag will be `router-link` but you can override it with the `class` property:
 
 ```javascript
-navLink({name: "home", class: 'navbar-link'}, "Home")
+link({name: 'home', class: 'navbar-link'}, "Home")
 ```
 
-When the route for a `navLink` is active, the a tag's `aria-current` property will be set to `page`, which means you can set a custom style in your CSS like this:
+When the route for a `link` is active, the a tag's `aria-current` property will be set to `page`, which means you can set a custom style in your CSS like this:
 
 ```css
 /* normal route */
@@ -345,31 +387,5 @@ When the route for a `navLink` is active, the a tag's `aria-current` property wi
 }
 ```
 
-### arguments
-
-```javascript
-navLink(props, ...children)
-```
-
-`navLink` allows almost full control of the creation of the link. It's arguments
-(`props` and `children`) are passed to the underlying `van.tags.a` unchanged with the following exceptions to the `props` argument:
-
-These props are used for creating the url and **will not** be passed to `van.tags.a`:
-* `props.name` (required)
-* `props.params` (optional)
-* `props.query` (optional)
-* `props.context` (optional)
-
-The following have default values:
-* `props.target` (default: `_self`)
-* `props.class` (default: `router-link`)
-
-The following are hardcoded and cannot be changed:
-* `props.href` is set by a call to [`router.navUrl`](#navurlroutename-params---query) with `props.name`, `props.params` and `props.query`
-* `props.role` is set to `link`
-* `props.onClick` is set to [`handleNav`](#handlenavevent-context)
-
-
-
 ### a tag only
-Currently `navLink` only supports returning an `a` tag, but by using [`navigate`](#navigateurl-context) or [`handleNav`](#handlenavevent-context) you could make any element a router link, and then use [`isCurrentPage`](#iscurrentpagepagename) to dynamically change properties such as class or styling when the route is active.
+Currently `link` only supports returning an `a` tag, but by using [`navigate`](#navigateurl-context) or [`handleNav`](#handlenavevent-context) you could make any element a router link, and then use [`isCurrentPage`](#iscurrentpagepagename) to dynamically change properties such as class or styling when the route is active.

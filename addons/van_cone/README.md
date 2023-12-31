@@ -80,15 +80,17 @@ Example HTML:
 
 ```
 
-# Examples
+# Documentation and examples
 
-See the [examples](./examples/) folder for full working examples of a [hello world](./examples/hello-world/) ([preview](https://codesandbox.io/p/devbox/van-cone-hello-world-yxpxhy)), and more complex [application](./examples/spa-app/) ([preview](https://codesandbox.io/p/devbox/github/vanjs-org/van/tree/main/addons/van_cone/examples/spa-app)) with several pages.
-
-# Documentation
-
-See the [API Reference](./API_REFERENCE.md) for full documentation.
+- [relative file link](./API_REFERENCE.md) - if you're viewing on github or local repo
+- [absolute url](https://github.com/vanjs-org/van/blob/main/addons/van_cone/API_REFERENCE.md) - if you're viewing on npmjs.org or other external mirrors
 
 # Changelog
+**0.0.4**
+- change `navigate` and `pushHistory` to use route names instead of url strings, and accept optional nav state, they now return the url string.
+- rename `navLink` to `link` and change signature to `link(routeName, props, ...children)`
+- update `createVanCone` to return `router.navUrl` and `router.backendUrl` as `navUrl` and `backendUrl`
+
 **0.0.3**
 - rename `router.formatUrl` to `router.navUrl`
 - add `router.backendUrl`, update `routes` to support backend urls
