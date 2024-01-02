@@ -1,9 +1,7 @@
-import "./index.css";
-import createCone from "van-cone";
-import van from "vanjs-core";
-const { div } = van.tags;
-
-console.log('context.js')
+import "./index.css"
+import createCone from "van-cone"
+import van from "vanjs-core"
+const { div } = van.tags
 
 const routes = [
   {
@@ -42,7 +40,7 @@ const routes = [
     title: "VanJS Example | Not Found",
     callable: async () => import('./app/pages/notFound')
   },
-];
+]
 
 const defaultContext = {agreement: false}
 const layoutElement = div({ id: "layout", class: "layout" })

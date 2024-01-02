@@ -116,10 +116,11 @@ I, [@b-rad-c](https://github.com/b-rad-c) am the maintainer of this project howe
 ### Roadmap
 Some things I'm interested in.
 * unittests
+* TypeScript support
 * declarative routes, see [./docs/DECLARATIVE_ROUTES.md](./docs/DECLARATIVE_ROUTES.md)
 * type conversion for query parameters, currently query params and passed to the component as strings.
-* TypeScript support
 * stabilze API to come out of beta - comments or suggestions to the API are welcome.
+* refactor Router/createCone function - router was pulled from another open source project, the current separate of logic between the Router object and dependent functions and createCone function should be cleaned up
 
 # The Name
 Van Cone is an addon for VanJS which is short for **Van**illa **J**ava**S**cript, and makes a callout to vanilla ice cream in its logo. Van Cone provides the cone that is needed to support the ice cream. VanJS provides reactivity and UI components, Van Cone provides routing, history and navigation components, together they're everything you need for a lightweight SPA experience!

@@ -134,7 +134,7 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
             route.callable()
                 .then((page) => {
                     if ('default' in page) {
-                        return routerElement.replaceChildren(page.default(_params, _query, _context)())
+                        return routerElement.replaceChildren(page.default(_params, _query, _context))
                     }else{
                         return routerElement.replaceChildren(page(_params, _query, _context))
                     }
