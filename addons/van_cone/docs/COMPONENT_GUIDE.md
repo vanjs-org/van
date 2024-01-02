@@ -37,7 +37,7 @@ const myComponent = (params, query, context) => div(...)
 const homePage = () => div('Home Page')
 ```
 
-You obviously don't need a framework to do this, outside of the Van Cone router, components are generally not needed because they are simply a function that returns a van element. They are many ways to create re-usable components, component functions in Van Cone are only needed to create a concept of a page that integrates with the router.
+You obviously don't need a framework to do this, outside of the Van Cone router, components are generally not needed because they are simply a function that returns a van element. They are many ways to create re-usable components, component functions in Van Cone are only useful to create a concept of a page that integrates with the router.
 
 
 ### hello world with router
@@ -106,7 +106,7 @@ const userPage = (params, query, context) => {
 
 ```
 
-You can use the [`link`](./API_REFERENCE.md#linkroutename-props-children) component to navigate to this page like this:
+You can use the [`link`](./API_REFERENCE.md#linkprops-children) component to navigate to this page like this:
 
 ```javascript
 const data = {'name': 'María'}

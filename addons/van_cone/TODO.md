@@ -20,6 +20,6 @@
     * 🟢 check .default and call it
     * 🟡 update examples
     * 🔴 update medium tech app
-    * 🔴 update documentation
+    * 🔴 update documentation - include example for default and non default imports
     * 🔴 check for broken links in md files
     * 🔴 check bundled size and update readme

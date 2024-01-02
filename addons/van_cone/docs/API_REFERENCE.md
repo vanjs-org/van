@@ -11,7 +11,7 @@ See the [component guide](./COMPONENT_GUIDE.md) for an explanation on components
 
 ## Navigation
 ### component navigation 
-- [link](#linkroutename-props-children)
+- [link](#linkprops-children)
 
 ### programmatic navigation functions
 - [navigate](#navigateroutename-options)
@@ -38,7 +38,7 @@ See the [component guide](./COMPONENT_GUIDE.md) for an explanation on components
 
 An object with the following items is returned:
 
-- [`link`](#linkroutename-props-children) - a VanJS link component that navigates to named routes and includes active link css styling
+- [`link`](#linkprops-children) - a VanJS link component that navigates to named routes and includes active link css styling
 
 - [`navigate`](#navigateroutename-options) - a function for programmatic navigation
 
@@ -104,7 +104,7 @@ An object used to configure the router, it has two optional keys `prefix` and `b
 The `backendPrefix` is useful for when the backend is at a different host or has a different prefix than the front end. It is only used as a utility to generate URLs for fetching data, it is ignored for route matching and page navigation. See [backendUrl](#backendurlroutename-params---query) for more.
 
 ## `navUrl(routeName, params = {}, query = {})`
-Return a string representing a url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. If `prefix` was included with [routerConfig](#routerconfig) it will be prepended to the url. This function is used internally by programmatic navigation in [link](#linkroutename-props-children), [navigate](#navigateroutename-options) and [pushHistory](#pushhistoryroutename-options) and is generally not needed, but it exposed publically in case there is a need for the string. Note that the string is also returned by the programmatic functions.
+Return a string representing a url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. If `prefix` was included with [routerConfig](#routerconfig) it will be prepended to the url. This function is used internally by programmatic navigation in [link](#linkprops-children), [navigate](#navigateroutename-options) and [pushHistory](#pushhistoryroutename-options) and is generally not needed, but it exposed publically in case there is a need for the string. Note that the string is also returned by the programmatic functions.
 
 **Note: to access this function from the return value of [createCone](#createconerouterelement-routes-defaultnavstate) call `navUrl`**
 
