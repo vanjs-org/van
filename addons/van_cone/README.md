@@ -1,6 +1,6 @@
 # Van Cone
 
-_Author: [b-brad-c](https://github.com/b-brad-c)_
+_Author: [b-rad-c](https://github.com/b-rad-c)_
 
 ### An SPA framework add on for VanJS
 
