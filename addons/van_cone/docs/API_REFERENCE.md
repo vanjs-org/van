@@ -11,11 +11,11 @@ See the [component guide](./COMPONENT_GUIDE.md) for an explanation on components
 
 ## Navigation
 ### component navigation 
-- [link](#linkprops-children)
+- [`link`](#linkprops-children)
 
 ### programmatic navigation functions
-- [navigate](#navigateroutename-options)
-- [pushHistory](#pushhistoryroutename-options)
+- [`navigate`](#navigateroutename-options)
+- [`pushHistory`](#pushhistoryroutename-options)
 
 # API Reference
 
@@ -32,7 +32,7 @@ See the [component guide](./COMPONENT_GUIDE.md) for an explanation on components
 
 - `defaultNavState` - (optional) the default navigation state, any type allowed by [`history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)
 
-- [routerConfig](#routerconfig) = (optional) - configure `prefix` to prepend to each url, or `backendPrefix` if different than frontend.
+- [`routerConfig`](#routerconfig) = (optional) - configure `prefix` to prepend to each url, or `backendPrefix` if different than frontend.
 
 **return**
 
@@ -69,7 +69,7 @@ A list of objects defining each route. Each route object has the following prope
 
 **`callable`** (required) a callback that either returns an element to put on the DOM or another callable that returns this element (for more complex apps requiring imports). The callback is passed 2 arguments, an object representing the params parsed from the URL and another representing parsed query string params.
 
-**`backend`** (optional) provide this value when data is fetched from a different endpoint on the backend than on the frontend. See [backendUrl](#backendurlroutename-params---query) for more.
+**`backend`** (optional) provide this value when data is fetched from a different endpoint on the backend than on the frontend. See [`backendUrl`](#backendurlroutename-params---query) for more.
 
 **`title`** (optional) if provided the title of the page will change to this when this route is active.
 
@@ -99,14 +99,14 @@ const routes = [
 ## `routerConfig`
 An object used to configure the router, it has two optional keys `prefix` and `backendPrefix`. If `routerConfig` is not provided or either key is not provided they will default to an empty string. 
 
-`prefix` will be prepended to front end URLs, the ones shown in the browser and matched when navigating to different pages. See [navUrl](#navurlroutename-params---query) for more.
+`prefix` will be prepended to front end URLs, the ones shown in the browser and matched when navigating to different pages. See [`navUrl`](#navurlroutename-params---query) for more.
 
-The `backendPrefix` is useful for when the backend is at a different host or has a different prefix than the front end. It is only used as a utility to generate URLs for fetching data, it is ignored for route matching and page navigation. See [backendUrl](#backendurlroutename-params---query) for more.
+The `backendPrefix` is useful for when the backend is at a different host or has a different prefix than the front end. It is only used as a utility to generate URLs for fetching data, it is ignored for route matching and page navigation. See [`backendUrl`](#backendurlroutename-params---query) for more.
 
 ## `navUrl(routeName, params = {}, query = {})`
-Return a string representing a url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. If `prefix` was included with [routerConfig](#routerconfig) it will be prepended to the url. This function is used internally by programmatic navigation in [link](#linkprops-children), [navigate](#navigateroutename-options) and [pushHistory](#pushhistoryroutename-options) and is generally not needed, but it exposed publically in case there is a need for the string. Note that the string is also returned by the programmatic functions.
+Return a string representing a url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. If `prefix` was included with [`routerConfig`](#routerconfig) it will be prepended to the url. This function is used internally by programmatic navigation in [`link`](#linkprops-children), [`navigate`](#navigateroutename-options) and [`pushHistory`](#pushhistoryroutename-options) and is generally not needed, but it exposed publically in case there is a need for the string. Note that the string is also returned by the programmatic functions.
 
-**Note: to access this function from the return value of [createCone](#createconerouterelement-routes-defaultnavstate) call `navUrl`**
+**Note: to access this function from the return value of [`createCone`](#createconerouterelement-routes-defaultnavstate) call `navUrl`**
 
 The following [`route`](#routes):
 ```javascript
@@ -125,9 +125,9 @@ navUrl('user', { userId: 123 }, { activeTab: 'profile'})
 ```
 
 ## `backendUrl(routeName, params = {}, query = {})`
-Return a string backend url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. The return can be used for fetching data. If `backendPrefix` was included with [routerConfig](#routerconfig) it will be prepended to the url.
+Return a string backend url for the route with name `routeName`, and optionally form url params with the `params` argument or query params with the `query` argument. The return can be used for fetching data. If `backendPrefix` was included with [`routerConfig`](#routerconfig) it will be prepended to the url.
 
-The following [routerConfig](#routerconfig) and [routes](#routes):
+The following [`routerConfig`](#routerconfig) and [`routes`](#routes):
 ```javascript
 const routerConfig = { backendPrefix: 'http://localhost:8000' }
 
@@ -155,45 +155,26 @@ navUrl('user', { itemId: 123 })
 
 
 ## `navigate(routeName, options)`
-Programmatically navigate to `routeName` using url generated by [navUrl](#navurlroutename-params---query), returns url as a string.
+Programmatically navigate to `routeName` using url generated by [`navUrl`](#navurlroutename-params---query), returns url as a string.
 
 Optionally pass `options` as an object with `params`, `query`, `navState`, and `context`.
 
 If `params` and/or `query` are provided they will be used with `routeName` to generate the url.
 
-If `navState` is provided it will be set as the browser history state using `setNavState` returned by the [createCone](#createconerouterelement-routes-defaultnavstate) function.
+If `navState` is provided it will be set as the browser history state using `setNavState` returned by the [`createCone`](#createconerouterelement-routes-defaultnavstate) function.
 
-If `context` is provided it will be pased to the resolved component for `routeName`. See [example](./COMPONENT_GUIDE.md#full-component-example) for details.
+If `context` is provided it will be pased to the resolved component for `routeName`. See [`example`](./COMPONENT_GUIDE.md#full-component-example) for details.
 
 ## `pushHistory(routeName, options)`
-Push a url generated for `routeName` by [navUrl](#navurlroutename-params---query) to the browser history and update address bar only, do not modify DOM, returns url as a string.
+Push a url generated for `routeName` by [`navUrl`](#navurlroutename-params---query) to the browser history and update address bar only, do not modify DOM, returns url as a string.
 
 Optionally pass `options` as an object with `params`, `query`, and `navState`.
 
 If `params` and/or `query` are provided they will be used with `routeName` to generate the url.
 
-If `navState` is provided it will be set as the browser history state using `setNavState` returned by the [createCone](#createconerouterelement-routes-defaultnavstate) function.
+If `navState` is provided it will be set as the browser history state using `setNavState` returned by the [`createCone`](#createconerouterelement-routes-defaultnavstate) function.
 
-<<<<<<< HEAD
-## `handleNav(event, context)`
-An event wrapper for [`navigate`](#navigateroutename-options) to be used with an on click action. `handleNav` will call `event.preventDefault` and then call [`navigate`](#navigateroutename-options) with `event.target.href`.
 
-<<<<<<< HEAD:addons/van_cone/API_REFERENCE.md
-It is used internally to create the [`navLink`](#navlinkprops-children) component.
-=======
-It is used internally to create the [link](#linkroutename-props-children) component.
->>>>>>> de22643 (update van_cone documentation):addons/van_cone/docs/API_REFERENCE.md
-
-Optionally pass `context` which can be and data to the resolved router component. See [example](./COMPONENT_GUIDE.md#full-component-example) for details.
-
-<<<<<<< HEAD:addons/van_cone/API_REFERENCE.md
-You can use [`router.navUrl`](#navurlroutename-params---query) to generate urls from named routes and formatting url/query params.
-=======
-You can use [navUrl](#navurlroutename-params---query) to generate urls from named routes and formatting url/query params.
->>>>>>> de22643 (update van_cone documentation):addons/van_cone/docs/API_REFERENCE.md
-
-=======
->>>>>>> 73e5c32 (update van_cone examples and docs)
 ## `isCurrentPage(pageName)`
 Returns a `van.derive` object with a boolean that is true when `pageName` is the active route
 ```javascript
@@ -201,7 +182,7 @@ if (isCurrentPage("home").val) console.log("we're home!")
 ```
 
 ## `link(props, ...children)`
-A light wrapper around `van.tags.a` that add dynamic url generation for `routeName`, with url and query params to be used when generating the url with [navUrl](#navurlroutename-params---query), see below for more details. It adds dynamic styling when `routeName` is the active route. Additional context can be provided to the component resolved by the router. For example, `link` could be used on a search results page to link to each item's and could optionally pass the item's data to the item page enabling the it to use the preloaded data instead of fetching it.
+A light wrapper around `van.tags.a` that add dynamic url generation for `routeName`, with url and query params to be used when generating the url with [`navUrl`](#navurlroutename-params---query), see below for more details. It adds dynamic styling when `routeName` is the active route. Additional context can be provided to the component resolved by the router. For example, `link` could be used on a search results page to link to each item's and could optionally pass the item's data to the item page enabling the it to use the preloaded data instead of fetching it.
 
 
 ### arguments
@@ -218,14 +199,14 @@ These are Van Cone props which are used for navigation and **will not** be passe
 * `props.params` (optional) - an object of url parameters defined by the route
 * `props.query` (optional) - an object of query string parameters
 * `props.context` (optional) - additional data to be passed to the component, see [component example](./COMPONENT_GUIDE.md#full-component-example) for more info.
-* `props.navState` (optional) - optional data to set on `window.history.state`, see [createCone](#createconerouterelement-routes-defaultnavstate) for more
+* `props.navState` (optional) - optional data to set on `window.history.state`, see [`createCone`](#createconerouterelement-routes-defaultnavstate) for more
 
 The following are standard `a` tag props but have the following default values:
 * `props.target` (default: `_self`)
 * `props.class` (default: `router-link`)
 
 The following are standard `a` tag props but are set by the `link` component and will be overwritten if provided:
-* `props.href` is set by a call to [navUrl](#navurlroutename-params---query) with `props.name`, `props.params` and `props.query`
+* `props.href` is set by a call to [`navUrl`](#navurlroutename-params---query) with `props.name`, `props.params` and `props.query`
 * `props.role` is set to `link`
 * `props.onClick` is set to an internal navigation function
 
