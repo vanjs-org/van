@@ -223,7 +223,6 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     return {
         routerElement,
         currentPage,
-        router,
         navUrl: router.navUrl,
         backendUrl: router.backendUrl,
         navState,

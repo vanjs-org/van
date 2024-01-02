@@ -1,25 +1,6 @@
-```javascript
-const routerConfig = { backendPrefix: 'http://localhost:8000' }
+# what a potential api could look like for declarative routes
 
-const routes = [
-  // with backend path
-  {
-      path: "/user/:userId",
-      backend: "/secure/user/:userId"
-      name: "user",
-      title: "VanJS Example | User",
-      callable: async () => import('./app/pages/user')
-  },
-  // without backend path
-  {
-      path: "/item/:itemId",
-      name: "item",
-      title: "VanJS Example | Item",
-      callable: async () => import('./app/pages/user')
-  }
-]
-```
-
+## basic
 ```javascript
 
 router(
@@ -32,7 +13,7 @@ router(
 
 ```
 
-
+## nested routes
 ```javascript
 
 router(
@@ -48,6 +29,7 @@ router(
 
 ```
 
+component example for nested route
 ```javascript
 const userPage = (params, query, context, outlet) => {
 
@@ -57,7 +39,7 @@ const userPage = (params, query, context, outlet) => {
   return div(
     p("Hi I am: " + userInfo.name),
     p("some query string data: " + query.data),
-    outlet()
+    outlet()  // would be one of userInbox, userFeed or userGallery
   );
 }
 

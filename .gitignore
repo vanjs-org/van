@@ -5,3 +5,4 @@ public/hello-nomodule.html
 public/van-latest.min.pre-*.js
 *.gz
 dist
+.DS_Store

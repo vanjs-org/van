@@ -8,12 +8,15 @@ _Author: [b-rad-c](https://github.com/b-rad-c)_
 
 This lightweight (less than 250 lines) VanJS addon adds the following features:
 - Navigation powered by custom router with async loading
+    - url and query param parsing
     - integrates with browser history
     - state object integrates with browser history
-    - url and query param parsing
-- `navLink` component for generating links based off of named routes
-    - easily add url and query params
-    - active class css styling
+    - determine current active route
+    - define different backend endpoints for fetching data if different than route's front end url
+- `link` component for generating links based off of named routes
+    - easily add url and query params as object
+    - dynamic css styling for active route
+    - pass additional context data such as a prefetched data or other configuration
 
 # Overview
 
@@ -47,14 +50,14 @@ const routes = [
 
 // create the spa object
 const routerElement = div({ id: 'layout' })
-const { navLink } = createCone(routerElement, routes)
+const { link } = createCone(routerElement, routes)
 
 // main app layout
 const App = () =>
   div(
-    navLink({ name: 'home' }, 'Home'),
+    link({ name: 'home' }, 'Home'),
     span(' | '),
-    navLink({name: 'user', params: {userId: 123}}, 'User'),
+    link({name: 'user', params: {userId: 123}}, 'User'),
     hr(),
     routerElement
   );
@@ -82,14 +85,17 @@ Example HTML:
 
 # Documentation and examples
 
-- [relative file link](./API_REFERENCE.md) - if you're viewing on github or local repo
-- [absolute url](https://github.com/vanjs-org/van/blob/main/addons/van_cone/API_REFERENCE.md) - if you're viewing on npmjs.org or other external mirrors
+- [relative file link](./docs/API_REFERENCE.md) - if you're viewing on github or local repo
+- [absolute url](https://github.com/vanjs-org/van/blob/main/addons/van_cone/docs/API_REFERENCE.md) - if you're viewing on npmjs.org or other external mirrors
 
 # Changelog
 **0.0.4**
 - change `navigate` and `pushHistory` to use route names instead of url strings, and accept optional nav state, they now return the url string.
 - rename `navLink` to `link` and change signature to `link(routeName, props, ...children)`
-- update `createVanCone` to return `router.navUrl` and `router.backendUrl` as `navUrl` and `backendUrl`
+- update `createVanCone` return object
+  - rename `router.navUrl` to `navUrl`
+  - rename `router.backendUrl` to `backendUrl`
+  - remove `router`
 
 **0.0.3**
 - rename `router.formatUrl` to `router.navUrl`
@@ -109,8 +115,10 @@ I, [@b-rad-c](https://github.com/b-rad-c) am the maintainer of this project howe
 ### Roadmap
 Some things I'm interested in.
 * unittests
-* convert to TypeScript
-* stabilize API to come out of beta - comments or suggestions to the API are welcome.
+* declarative routes, see [./docs/DECLARATIVE_ROUTES.md](./docs/DECLARATIVE_ROUTES.md)
+* type conversion for query parameters, currently query params and passed to the component as strings.
+* TypeScript support
+* stabilze API to come out of beta - comments or suggestions to the API are welcome.
 
 # The Name
 Van Cone is an addon for VanJS which is short for **Van**illa **J**ava**S**cript, and makes a callout to vanilla ice cream in its logo. Van Cone provides the cone that is needed to support the ice cream. VanJS provides reactivity and UI components, Van Cone provides routing, history and navigation components, together they're everything you need for a lightweight SPA experience!
