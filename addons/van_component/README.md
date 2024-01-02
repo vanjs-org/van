@@ -1,5 +1,7 @@
 # Van Component
 
+_Author: [Atmos4](https://github.com/Atmos4)_
+
 ## WebComponents with VanJS
 
 Simple function to create a standard Web Component from a VanJS component.
