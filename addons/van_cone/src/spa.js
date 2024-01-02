@@ -111,7 +111,6 @@ class Router {
 	}
 };
 
-
 function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
     const currentPage = van.state("")
@@ -150,6 +149,7 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     const getNavState = () => navState.val
 
     const setNavState = (newState) => {
+        console.log('setNavState', newState)
         if(newState === null) {
             navState.val = defaultNavState
         }else{
@@ -165,8 +165,11 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
     window.onload = (event) => {
         console.debug("window.onload", event.target.location.href, window.history.state)
+        console.log('window.onload - nav state 1', getNavState())
         setNavState(window.history.state)
         router.dispatch(event.target.location.href)
+        if (typeof getNavState() === 'undefined') setNavState(null)
+        console.log('window.onload - nav state 2', getNavState())
     }
 
     // navigation functions
@@ -185,8 +188,6 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     const navigate = (routeName, options) => {
         const { params, query, navState, context } = options
         const url = router.navUrl(routeName, params, query)
-
-        if (typeof navState !== 'undefined') setNavState(navState)
 
         console.debug("VanSpa.navigate", url)
 
@@ -208,15 +209,15 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
         return url
     } 
       
-    const handleNav = (event, context) => {
+    const handleNav = (event, navState, context) => {
         event.preventDefault();
         console.debug("VanSpa.handleNav", event.target.href)
-        _navigate(event.target.href, context)
+        _navigate(event.target.href, navState, context)
     }
 
     // nav link component
     function link(props, ...children) {
-        const { name, target, params, query, ...otherProps } = props;
+        const { name, target, params, query, navState, ...otherProps } = props;
 
         const context = otherProps.context || {}
 
@@ -227,7 +228,7 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
                 target: target || "_self",
                 role: "link",
                 class: otherProps.class || 'router-link',
-                onclick: (event) => handleNav(event, context),
+                onclick: (event) => handleNav(event, navState, context),
                 ...otherProps,
             },
             children
@@ -244,7 +245,6 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
         setNavState,
         navigate,
         pushHistory,
-        handleNav,
         isCurrentPage,
         link
     }

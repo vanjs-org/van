@@ -8,7 +8,6 @@ const contextPage = () => {
 
   const className = (navState.val.agreement) ? "success" : "danger"
 
-  console.log("function HomePage");
   return () =>
     section({ style: "text-align:center;" },
       h1("The state of the context object: "),

@@ -96,6 +96,7 @@ Example HTML:
   - rename `router.navUrl` to `navUrl`
   - rename `router.backendUrl` to `backendUrl`
   - remove `router`
+  - remvoe `handleNav`
 
 **0.0.3**
 - rename `router.formatUrl` to `router.navUrl`

@@ -1,7 +1,7 @@
 import van from "vanjs-core";
 import context from "../../context"
 
-const { navLink } = context
+const { link } = context
 
 const { section, div, br, h1, ul, li, p, span } = van.tags
 
@@ -14,7 +14,7 @@ const userDB = [
 
 const userListItem = (user, userId) => 
   li(
-    navLink({name: "user", params: {userId: userId}, class: ""}, `${user.last}, ${user.first}`)
+    link({name: "user", params: {userId: userId}, class: ""}, `${user.last}, ${user.first}`)
   )
 
 const usersPage = (params, query) => {
@@ -32,9 +32,9 @@ const usersPage = (params, query) => {
       br(),
       div({class: "centered-container", style: "width: 42%;"},
         p('sort: ',
-          navLink({name: 'users', class: '', query: {sort: 'asc'}}, 'asc'),
+          link({name: 'users', class: '', query: {sort: 'asc'}}, 'asc'),
           span(' '),
-          navLink({name: 'users', class: '', query: {sort: 'desc'}}, 'desc')
+          link({name: 'users', class: '', query: {sort: 'desc'}}, 'desc')
         ),
         ul(
           users.map((user, userId) => userListItem(user, userId))

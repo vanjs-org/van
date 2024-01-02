@@ -7,7 +7,7 @@ router(
     route("user", "/user/:userId", userPage, {title: "VanJS Example | User", back: "/secure/user/:userId"}),
     route("item", "/items/:itemID", itemPage, {title: "VanJS Example | Item"}),
     route("home", "/", homePage, {title: "VanJS Example"}),
-    route("notFound", ".*", homePage, {title: "VanJS Example | Not Found"})
+    route("notFound", ".*", notFoundPage, {title: "VanJS Example | Not Found"})
 )
 
 
@@ -39,7 +39,7 @@ const userPage = (params, query, context, outlet) => {
   return div(
     p("Hi I am: " + userInfo.name),
     p("some query string data: " + query.data),
-    outlet()  // would be one of userInbox, userFeed or userGallery
+    outlet()  // would wrap one of userInbox, userFeed or userGallery with the params, query, context args passed in
   );
 }
 

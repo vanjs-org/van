@@ -13,6 +13,4 @@ const App = () =>
     routerElement
   );
 
-console.log(router.formatUrl('user', { userId: 123 }, { activeTab: 'profile'}))
-
 document.body.replaceChildren(App());

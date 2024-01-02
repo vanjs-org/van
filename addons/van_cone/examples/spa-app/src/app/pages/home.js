@@ -9,7 +9,7 @@ const homePage = () => {
 
   return () =>
     section(
-      h1("Welcome to this SPA demo using VanJS!"),
+      h1("Welcome to this SPA demo using VanJS and Van Cone!"),
       br(),
       div(
         { style: "text-align:center;" },

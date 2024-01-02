@@ -27,7 +27,7 @@ const myComponent = (params, query, context) => div(...)
 
 `query` - an object of query string parameters, if none exist in the url this will be an empty object.
 
-`context` - additional context (for example prefetched data) can be passed to the component when navigating programmatically. If none is provided this will be an empty object. Typically this would be an object but it could be any data type. See [link](./API_REFERENCE.md#linkroutename-props-children), [navigate](./API_REFERENCE.md#navigateroutename-options), and [handleNav](./API_REFERENCE.md#handlenavevent-context) for information on programmatic navigation.
+`context` - additional context (for example prefetched data) can be passed to the component when navigating using the [link component](./API_REFERENCE.md#linkprops-children) or the programmatic navigation function [navigate](./API_REFERENCE.md#navigateroutename-options). If none is provided this will be an empty object. Typically this would be an object but it could be any data type.
 
 ## examples
 
