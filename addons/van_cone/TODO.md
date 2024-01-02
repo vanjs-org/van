@@ -16,10 +16,9 @@
     * 🟢 check for broken links in md files
     * 🟢 remove handleNav from return and documentation
     * 🟢 add navState to link props documentation
-* 🟡 remove extra callable wrapper for .default imports on component functions
+* 🟢 remove extra callable wrapper for .default imports on component functions
     * 🟢 check .default and call it
-    * 🟡 update examples
-    * 🔴 update medium tech app
-    * 🔴 update documentation - include example for default and non default imports
-    * 🔴 check for broken links in md files
-    * 🔴 check bundled size and update readme
+    * 🟢 update examples
+    * 🟢 update documentation - include example for default and non default imports
+    * 🟢 check for broken links in md files
+    * 🟢 check bundled size and update readme

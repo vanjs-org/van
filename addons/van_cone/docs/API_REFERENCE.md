@@ -1,4 +1,4 @@
-# Van Cone
+# Van Cone | API Reference
 
 See [README.md](../README.md) for installation and overview.
 
@@ -182,15 +182,16 @@ if (isCurrentPage("home").val) console.log("we're home!")
 ```
 
 ## `link(props, ...children)`
-A light wrapper around `van.tags.a` that add dynamic url generation for `routeName`, with url and query params to be used when generating the url with [`navUrl`](#navurlroutename-params---query), see below for more details. It adds dynamic styling when `routeName` is the active route. Additional context can be provided to the component resolved by the router. For example, `link` could be used on a search results page to link to each item's and could optionally pass the item's data to the item page enabling the it to use the preloaded data instead of fetching it.
+A light wrapper around `van.tags.a` that adds dynamic url generation for `routeName`, with url and query params to be used when generating the url with [`navUrl`](#navurlroutename-params---query). It also adds dynamic styling when `routeName` is the active route. Additional context can be provided to the component resolved by the router. For example, `link` could be used on a search results page to navigate to each item's page and could pass the item's data enabling item page to use preloaded data instead of fetching it.
 
 
 ### arguments
+
+The argument signature is the same as `van.tags.a` but additional properties are available to the `props` argument which configure how the link component works.
+
 ```javascript
 link(props, ...children)
 ```
-
-The argument signature is the same as `van.tags.a` but additional properties are available in the `props` argument which configure how the link component works.
 
 `props` - an object that will be passed to the resulting `van.tags.a` function, unchanged with the following exceptions:
 
@@ -199,7 +200,7 @@ These are Van Cone props which are used for navigation and **will not** be passe
 * `props.params` (optional) - an object of url parameters defined by the route
 * `props.query` (optional) - an object of query string parameters
 * `props.context` (optional) - additional data to be passed to the component, see [component example](./COMPONENT_GUIDE.md#full-component-example) for more info.
-* `props.navState` (optional) - optional data to set on `window.history.state`, see [`createCone`](#createconerouterelement-routes-defaultnavstate) for more
+* `props.navState` (optional) - optional data to set on `window.history.state`, see [`createCone`](#createconerouterelement-routes-defaultnavstate) for more.
 
 The following are standard `a` tag props but have the following default values:
 * `props.target` (default: `_self`)

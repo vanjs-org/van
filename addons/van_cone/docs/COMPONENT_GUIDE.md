@@ -7,11 +7,11 @@ In this guide you will find:
 * [component function definition](#function-signature)
 * [a hello world example](#hello-world-with-router)
 * [a url and query param example](#url--query-params-example)
-* [a full component example with nav link component](#full-component-example)
+* [a full component example with nav link component and context](#full-component-example)
 * [an example using a backend endpoint which is different than the frontend](#different-backend-endpoint)
 * [wildcard / 404 not found](#wildcard-not-found-page)
-* [return component directly](#returning-the-routes-element-directly)
-* [return a component via import](#returning-the-routes-element-via-import)
+* [define the route's component via callable](#define-the-routes-component-via-callable)
+* [define the route's component via import](#define-the-routes-component-via-import)
 
 # Component functions
 
@@ -138,8 +138,8 @@ const routes = [{
 ];
 ```
 
-### returning the route's element directly
-Simple return via callable
+### define the route's component via callable
+The simplest way to define a route's component.
 ```javascript
 const homePage = () => div('Home Page')
 
@@ -151,8 +151,8 @@ const routes = [{
 }]
 ```
 
-### returning the route's element via import
-For more complex apps with many pages, the async import method may be more appropriate.
+### define the route's component via import
+A route's component can also be returned via import.
 
 ```javascript
 // Define route
@@ -173,8 +173,7 @@ const { section, div, br, h1, img } = van.tags
 
 const homePage = () => {
 
-  return () =>
-    section(
+  return section(
       h1("Welcome to this SPA demo using VanJS!"),
       br(),
       div(
@@ -186,4 +185,16 @@ const homePage = () => {
 
 export default homePage;
 
+```
+
+Note that you can also use a non-default export like this:
+
+```javascript
+const routes = [{
+    path: ".*",
+    name: "home",
+    title: "VanJS Example | Home",
+    callable: async () => import('./pageComponents').homePage
+  }
+];
 ```
