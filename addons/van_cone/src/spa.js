@@ -14,7 +14,7 @@ function getMatchedParams(route, path) {
 		acc[param] = decodeURIComponent(matches[idx + 1]);
 		return acc;
 	}, {});
-};
+}
 
 function getQueryParams(query) {
 	return query.split('&')
@@ -24,26 +24,20 @@ function getQueryParams(query) {
 			acc[decodeURIComponent(key)] = decodeURIComponent(value);
 			return acc;
 		}, {});
-};
-
-function createRoute(name, path, backend, handler) {
-	const matcher = new RegExp(path.replace(parametersPattern, '([^\/]+)') + '$');
-	const params = (path.match(parametersPattern) || []).map(x => x.substring(1));
-	return {name, path, handler, backend, matcher, params};
-};
+}
 
 const findRouteParams = (routes, path) => {
 	let params;
 	const route = routes.find(r => params = getMatchedParams(r, path));
 	return {route, params};
-};
+}
 
 const parseUrl = (url) => {
 	const [path, queryString] = url.split('?');
 	return {path, queryString};
-};
+}
 
-const stripPrefix = (url, prefix) => url.replace(new RegExp('^' + prefix), '');
+const stripPrefix = (url, prefix) => url.replace(new RegExp('^' + prefix), '')
 
 class Router {
 
@@ -54,14 +48,13 @@ class Router {
 	}
 
 	add(name, path, backend, handler) {
-		this.routes.push(createRoute(name, path, backend, handler));
-		return this;
+        const matcher = new RegExp(path.replace(parametersPattern, '([^\/]+)') + '$');
+        const params = (path.match(parametersPattern) || []).map(x => x.substring(1));
+		this.routes.push({name, path, handler, backend, matcher, params})
 	}
 
 	dispatch(url, context) {
-        console.debug('Router.dispatching', url)
 		const {path, queryString} = parseUrl(stripPrefix(url, this.prefix));
-        console.debug(path, queryString)
 		const query = getQueryParams(queryString || '');
 		const {route, params} = findRouteParams(this.routes, path);
 
@@ -71,12 +64,6 @@ class Router {
 		}
 
 		return false;
-	}
-
-	getRoute(url) {
-		const {path, queryString} = parseUrl(stripPrefix(url, this.prefix));
-		const rp = findRouteParams(this.routes, path);
-		return rp && rp.route;
 	}
 
 	_formatUrl(routeName, isBackend, params = {}, query = {}) {
@@ -122,8 +109,6 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
     routes.forEach(route => {
         router.add(route.name, route.path, route.backend, function({params, query, context}) {
-            console.debug("VanSpa.router.action to " + route.name)
-
             currentPage.val = route.name
             if (route.title) window.document.title = route.title
 
@@ -149,7 +134,6 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     const getNavState = () => navState.val
 
     const setNavState = (newState) => {
-        console.log('setNavState', newState)
         if(newState === null) {
             navState.val = defaultNavState
         }else{
@@ -159,24 +143,18 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
     // window navigation events
     window.onpopstate = (event) => {
-        console.debug("VanSpa.popstate:", event.target.location.href)
         router.dispatch(event.target.location.href)
     };
 
     window.onload = (event) => {
-        console.debug("window.onload", event.target.location.href, window.history.state)
-        console.log('window.onload - nav state 1', getNavState())
         setNavState(window.history.state)
         router.dispatch(event.target.location.href)
         if (typeof getNavState() === 'undefined') setNavState(null)
-        console.log('window.onload - nav state 2', getNavState())
     }
 
     // navigation functions
     const _navigate = (url, navState, context) => {
         if (typeof navState !== 'undefined') setNavState(navState)
-
-        console.debug("VanSpa._navigate", url)
 
         history.pushState(getNavState(), "", url);
         router.dispatch(url, context)
@@ -184,12 +162,9 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
         return url
     }
 
-    // navigation functions
     const navigate = (routeName, options) => {
         const { params, query, navState, context } = options
         const url = router.navUrl(routeName, params, query)
-
-        console.debug("VanSpa.navigate", url)
 
         history.pushState(getNavState(), "", url);
         router.dispatch(url, context)
@@ -203,17 +178,10 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
         if (typeof navState !== 'undefined') setNavState(navState)
 
-        console.debug("VanSpa.pushHistory", url)
         history.pushState(getNavState(), "", url)
 
         return url
     } 
-      
-    const handleNav = (event, navState, context) => {
-        event.preventDefault();
-        console.debug("VanSpa.handleNav", event.target.href)
-        _navigate(event.target.href, navState, context)
-    }
 
     // nav link component
     function link(props, ...children) {
@@ -228,7 +196,7 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
                 target: target || "_self",
                 role: "link",
                 class: otherProps.class || 'router-link',
-                onclick: (event) => handleNav(event, navState, context),
+                onclick: (event) => { event.preventDefault(); _navigate(event.target.href, navState, context) },
                 ...otherProps,
             },
             children
