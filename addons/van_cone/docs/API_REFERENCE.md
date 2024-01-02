@@ -332,23 +332,23 @@ Returns a `van.derive` object with a boolean that is true when `pageName` is the
 if (isCurrentPage("home").val) console.log("we're home!")
 ```
 
-## `link(routeName, props, ...children)`
+## `link(props, ...children)`
 A light wrapper around `van.tags.a` that add dynamic url generation for `routeName`, with url and query params to be used when generating the url with [navUrl](#navurlroutename-params---query), see below for more details. It added dynamical styling when `routeName` is the active route. Additional context can be provided to the component resolved by the router. For example, `link` could be used on a search results page to link to each item's and could optionally pass the item's data to the item page enabling the it to use the preloaded data instead of fetching it.
 
 
 ### arguments
 
 ```javascript
-link(routeName, props, ...children)
+link(props, ...children)
 ```
-`routeName` - the name of the route to navigate to
 
 `props` - an object that will be passed to the resulting `van.tags.a` function, unchanged with the following exceptions:
 
-These props are used for creating the url and **will not** be passed to `van.tags.a`:
-* `props.params` (optional)
-* `props.query` (optional)
-* `props.context` (optional)
+These props are used for navigation and **will not** be passed to `van.tags.a`:
+* `props.name` (required) - the name of the route to navigate to
+* `props.params` (optional) - an object url parameters defined by the route
+* `props.query` (optional) - an objecet of query string parameters
+* `props.context` (optional) - additional data to be passed to the component, see [component example](./COMPONENT_GUIDE.md#full-component-example) for more info.
 
 The following have default values:
 * `props.target` (default: `_self`)
@@ -365,7 +365,7 @@ The following are set by the function and will be overwritten if provided:
 A basic call to the route named `home` with the inner text for the a tag `Home`. This is the bare minimum required for `link`.
 
 ```javascript
-link({ name: 'home' }, 'Home')
+link({name: 'home'}, 'Home')
 ```
 
 A call to the route named `user` with the url param `userId` set to `123`, the inner text for the a tag is `User`.

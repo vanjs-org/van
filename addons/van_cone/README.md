@@ -91,7 +91,7 @@ Example HTML:
 # Changelog
 **0.0.4**
 - change `navigate` and `pushHistory` to use route names instead of url strings, and accept optional nav state, they now return the url string.
-- rename `navLink` to `link` and change signature to `link(routeName, props, ...children)`
+- rename `navLink` to `link`
 - update `createVanCone` return object
   - rename `router.navUrl` to `navUrl`
   - rename `router.backendUrl` to `backendUrl`

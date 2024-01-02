@@ -14,14 +14,14 @@ const routes = [
 
 // create the spa object
 const routerElement = div({ id: 'layout' })
-const { navLink } = createCone(routerElement, routes)
+const { link } = createCone(routerElement, routes)
 
 // main app layout
 const App = () =>
   div(
-    navLink({ name: 'home' }, 'Home'),
+    link({name: 'home'}, 'Home'),
     span(' | '),
-    navLink({name: 'user', params: {userId: 123}}, 'User'),
+    link({name: 'user', params: {userId: 123}}, 'User'),
     hr(),
     routerElement
   );

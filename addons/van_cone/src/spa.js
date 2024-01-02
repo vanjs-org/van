@@ -170,6 +170,18 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     }
 
     // navigation functions
+    const _navigate = (url, navState, context) => {
+        if (typeof navState !== 'undefined') setNavState(navState)
+
+        console.debug("VanSpa._navigate", url)
+
+        history.pushState(getNavState(), "", url);
+        router.dispatch(url, context)
+
+        return url
+    }
+
+    // navigation functions
     const navigate = (routeName, options) => {
         const { params, query, navState, context } = options
         const url = router.navUrl(routeName, params, query)
@@ -181,7 +193,7 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
         history.pushState(getNavState(), "", url);
         router.dispatch(url, context)
 
-        return url
+        return _navigate(url, navState, context)
     }
 
     const pushHistory = (routeName, options) => {
@@ -199,17 +211,19 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     const handleNav = (event, context) => {
         event.preventDefault();
         console.debug("VanSpa.handleNav", event.target.href)
-        navigate(event.target.href, context)
+        _navigate(event.target.href, context)
     }
 
     // nav link component
-    function link(routeName, props, ...children) {
-        const { target, params, query, context, ...otherProps } = props;
+    function link(props, ...children) {
+        const { name, target, params, query, ...otherProps } = props;
+
+        const context = otherProps.context || {}
 
         return a(
             {
-                "aria-current": van.derive(() => (isCurrentPage(routeName).val ? "page" : "")),
-                href: router.navUrl(routeName, params, query),
+                "aria-current": van.derive(() => (isCurrentPage(name).val ? "page" : "")),
+                href: router.navUrl(name, params, query),
                 target: target || "_self",
                 role: "link",
                 class: otherProps.class || 'router-link',
