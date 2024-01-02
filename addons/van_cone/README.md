@@ -4,7 +4,7 @@ _Author: [b-rad-c](https://github.com/b-rad-c)_
 
 ### An SPA framework add on for VanJS
 
-🔥 **Van Cone plus VanJS can create a fully featured SPA app that minifies and gzips to 4.10 kB!** 🔥
+🔥 **Van Cone plus VanJS can create a fully featured SPA app that minifies and gzips to less than 4.10 kB!** 🔥
 
 This lightweight (less than 250 lines) VanJS addon adds the following features:
 - Navigation powered by custom router with async loading

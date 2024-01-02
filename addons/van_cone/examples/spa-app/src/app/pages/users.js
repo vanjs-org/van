@@ -3,7 +3,7 @@ import context from '../../context'
 
 const { link } = context
 
-const { section, div, br, h1, ul, li, p, span } = van.tags
+const { div, br, h1, ul, li, p, span } = van.tags
 
 const userDB = [
   {first: 'Pilar', middle: 'Maria', last: 'Mendoza', age: 42},
@@ -19,14 +19,12 @@ const userListItem = (user, userId) =>
 
 const usersPage = (params, query) => {
 
-  console.log('function userPage', params, query)
-
   let users = userDB
   
   if (query.sort === 'asc') users = userDB.sort((a, b) => (a.last > b.last) ? 1 : -1)
   if (query.sort === 'desc') users = userDB.sort((a, b) => (a.last > b.last) ? -1 : 1)
 
-  return section(
+  return div(
     h1('Users'),
     br(),
     div({class: 'centered-container', style: 'width: 42%'},

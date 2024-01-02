@@ -2,7 +2,7 @@
 
 [Live preview](https://codesandbox.io/p/devbox/github/vanjs-org/van/tree/main/addons/van_cone/examples/spa-app)
 
-A Van Cone powered demo SPA, 4.10 kB bundled and gzipped!
+A Van Cone powered demo SPA, less than 4.1 kB bundled and gzipped!
 
 ## Features
 

@@ -1,7 +1,7 @@
 import van from 'vanjs-core'
 import { userDB } from './users'
 
-const { section, br, h1, p, table, tr, td, div } = van.tags
+const { br, h1, p, table, tr, td, div } = van.tags
 
 const userNotFound = p({ style: 'text-align:center' }, 'user id was not found')
 
@@ -26,7 +26,7 @@ const userPage = (params) => {
   const userId = params.userId
   const userData = userDB[userId]
 
-  return section(
+  return div(
     h1(`User ${userId}`),
     br(),
     div((userData) ? userProfile(userData) : userNotFound)

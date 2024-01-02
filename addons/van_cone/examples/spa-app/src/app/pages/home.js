@@ -1,11 +1,11 @@
 import vanLogo from '/vanjs.svg'
 import van from 'vanjs-core'
 
-const { section, div, br, h1, img } = van.tags
+const { div, br, h1, img } = van.tags
 
 const homePage = () => {
 
-  return section(
+  return div(
     h1('Welcome to this SPA demo using VanJS and Van Cone!'),
     br(),
     div(
