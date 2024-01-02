@@ -10,7 +10,7 @@ type _Reactive<T> = T extends object ?
 export type Reactive<T extends object> = _Reactive<T>
 export type DeReactive<T> = T extends ReactiveObj ? Omit<T, typeof reactiveSym> : T
 
-export declare const calc: <R>(f: () => R) => R
+export declare const calc: <R>(f: () => R) => () => R
 export declare const reactive: <T extends object>(obj: T) => Reactive<T>
 
 export type StateOf<T> = { readonly [K in keyof T]: State<_Reactive<T[K]>> }
