@@ -1,4 +1,7 @@
 # Van Cone
+
+_Author: [b-brad-c](https://github.com/b-brad-c)_
+
 ### An SPA framework add on for VanJS
 
 🔥 **Van Cone plus VanJS can create a fully featured SPA app that minifies and gzips to less than 3.5 kB!** 🔥
