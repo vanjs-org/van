@@ -131,4 +131,6 @@ let updateDoms = () => {
 
 let hydrate = (dom, f) => update(dom, bind(f, dom))
 
-export default {add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive, hydrate}
+let str = (strs, ...vals) => () => strs[0] + vals.reduce((acc, v, i) => acc + val(v) + strs[i + 1], "")
+
+export default {add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive, hydrate, str}
