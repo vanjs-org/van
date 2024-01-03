@@ -1,43 +1,6 @@
-import van from "vanjs-core";
-const { a } = van.tags;
+import van from 'vanjs-core';
 
 const parametersPattern = /(:[^\/]+)/g;
-
-function getMatchedParams(route, path) {
-	const matches = path.match(route.matcher);
-
-	if (!matches) {
-		return false;
-	}
-
-	return route.params.reduce((acc, param, idx) => {
-		acc[param] = decodeURIComponent(matches[idx + 1]);
-		return acc;
-	}, {});
-}
-
-function getQueryParams(query) {
-	return query.split('&')
-		.filter(p => p.length)
-		.reduce((acc, part) => {
-			const [key, value] = part.split('=');
-			acc[decodeURIComponent(key)] = decodeURIComponent(value);
-			return acc;
-		}, {});
-}
-
-const findRouteParams = (routes, path) => {
-	let params;
-	const route = routes.find(r => params = getMatchedParams(r, path));
-	return {route, params};
-}
-
-const parseUrl = (url) => {
-	const [path, queryString] = url.split('?');
-	return {path, queryString};
-}
-
-const stripPrefix = (url, prefix) => url.replace(new RegExp('^' + prefix), '')
 
 class Router {
 
@@ -54,16 +17,36 @@ class Router {
 	}
 
 	dispatch(url, context) {
-		const {path, queryString} = parseUrl(stripPrefix(url, this.prefix));
-		const query = getQueryParams(queryString || '');
-		const {route, params} = findRouteParams(this.routes, path);
+        // strip prefix and split path from query string
+		const urlSplit = url.replace(new RegExp('^' + this.prefix), '').split('?')
+		const queryString = urlSplit[1] || ''
 
+        // parse query string
+        const query = queryString.split('&')
+            .filter(p => p.length)
+            .reduce((acc, part) => {
+                const [key, value] = part.split('=');
+                acc[decodeURIComponent(key)] = decodeURIComponent(value);
+                return acc;
+            }, {});
+
+        // find route
+        let matches;
+        const route = this.routes.find(route => matches = urlSplit[0].match(route.matcher));
+        
+        // parse route params
+        const params = route.params.reduce((acc, param, idx) => {
+            acc[param] = decodeURIComponent(matches[idx + 1]);
+            return acc;
+        }, {});
+
+        // call route handler or throw error
 		if (route) {
 			route.handler({params, query, context});
 			return route;
-		}
-
-		return false;
+		}else{
+            throw new Error(`Route not found for ${url}`)
+        }
 	}
 
 	_formatUrl(routeName, isBackend, params = {}, query = {}) {
@@ -153,34 +136,23 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     }
 
     // navigation functions
-    const _navigate = (url, navState, context) => {
-        if (typeof navState !== 'undefined') setNavState(navState)
-
-        history.pushState(getNavState(), "", url);
-        router.dispatch(url, context)
-
-        return url
-    }
-
     const navigate = (routeName, options) => {
         const { params, query, navState, context } = options
         const url = router.navUrl(routeName, params, query)
+        
+        if (typeof navState !== 'undefined') setNavState(navState)
+        history.pushState(getNavState(), '', url);
 
-        history.pushState(getNavState(), "", url);
-        router.dispatch(url, context)
+        if (typeof options.dispatch === 'undefined' || options.dispatch === true) {
+            router.dispatch(url, context)
+        }
 
-        return _navigate(url, navState, context)
+        return url
     }
 
     const pushHistory = (routeName, options) => {
-        const { params, query, navState } = options
-        const url = router.navUrl(routeName, params, query)
-
-        if (typeof navState !== 'undefined') setNavState(navState)
-
-        history.pushState(getNavState(), "", url)
-
-        return url
+        options.dispatch = false
+        return navigate(routeName, options)
     } 
 
     // nav link component
@@ -189,14 +161,14 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
         const context = otherProps.context || {}
 
-        return a(
+        return van.tags.a(
             {
                 "aria-current": van.derive(() => (isCurrentPage(name).val ? "page" : "")),
                 href: router.navUrl(name, params, query),
                 target: target || "_self",
                 role: "link",
                 class: otherProps.class || 'router-link',
-                onclick: (event) => { event.preventDefault(); _navigate(event.target.href, navState, context) },
+                onclick: (event) => { event.preventDefault(); navigate(name, { params, query, navState, context }) },
                 ...otherProps,
             },
             children
