@@ -74,7 +74,9 @@ A list of objects defining each route. Each route object has the following prope
 **`title`** (optional) if provided the title of the page will change to this when this route is active.
 
 ### example
-Below is a basic example showing routes with url and query params and how to consume them in a component. See the [component guide](./COMPONENT_GUIDE.md) for more examples.
+Below is a basic example showing routes with url and query params and how to consume them in a component.
+
+See the [component guide](./COMPONENT_GUIDE.md) for more examples.
 
 ```javascript
 const userPage = (params) => div('User Page', p('userId: ' + params.userId))

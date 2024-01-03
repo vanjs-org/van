@@ -35,8 +35,8 @@ class Router {
         const route = this.routes.find(route => matches = urlSplit[0].match(route.matcher));
         
         // parse route params
-        const params = route.params.reduce((acc, param, idx) => {
-            acc[param] = decodeURIComponent(matches[idx + 1]);
+        const params = route.params.reduce((acc, param, index) => {
+            acc[param] = decodeURIComponent(matches[index + 1]);
             return acc;
         }, {});
 
@@ -57,9 +57,9 @@ class Router {
 		}
 
 		const queryString = Object.keys(query)
-				  .map(k => [k, query[k]])
-				  .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
-				  .join('&');
+            .map(k => [k, query[k]])
+            .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
+            .join('&');
 
 
         const prefix = (isBackend === true) ? this.backendPrefix : this.prefix

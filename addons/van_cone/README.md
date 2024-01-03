@@ -18,9 +18,11 @@ This lightweight (less than 200 lines) VanJS addon adds the following features:
     - dynamic css styling for active route
     - pass additional context data such as a prefetched data or other configuration to route component
 
-# Overview
+### 🚨 **Van Cone is in Beta** 🚨
 
-🚨 **Van Cone is in Beta - API changes are possible** 🚨
+At this point API changes are not expected but possible, the API is almost frozen for a version 1. I'm waiting to take it out of alpha status until I have unittests written, now that I'm almost settled on the API, those are my next task. Also see contribution instructions below if you can contribute.
+
+# Overview
 
 Van Cone is a minimal framework that provides routing, history and a link component that provides dynamic styling for when it is the active link.
 
