@@ -1,49 +1,6 @@
-import van from "vanjs-core";
-const { a } = van.tags;
+import van from 'vanjs-core';
 
 const parametersPattern = /(:[^\/]+)/g;
-
-function getMatchedParams(route, path) {
-	const matches = path.match(route.matcher);
-
-	if (!matches) {
-		return false;
-	}
-
-	return route.params.reduce((acc, param, idx) => {
-		acc[param] = decodeURIComponent(matches[idx + 1]);
-		return acc;
-	}, {});
-};
-
-function getQueryParams(query) {
-	return query.split('&')
-		.filter(p => p.length)
-		.reduce((acc, part) => {
-			const [key, value] = part.split('=');
-			acc[decodeURIComponent(key)] = decodeURIComponent(value);
-			return acc;
-		}, {});
-};
-
-function createRoute(name, path, backend, handler) {
-	const matcher = new RegExp(path.replace(parametersPattern, '([^\/]+)') + '$');
-	const params = (path.match(parametersPattern) || []).map(x => x.substring(1));
-	return {name, path, handler, backend, matcher, params};
-};
-
-const findRouteParams = (routes, path) => {
-	let params;
-	const route = routes.find(r => params = getMatchedParams(r, path));
-	return {route, params};
-};
-
-const parseUrl = (url) => {
-	const [path, queryString] = url.split('?');
-	return {path, queryString};
-};
-
-const stripPrefix = (url, prefix) => url.replace(new RegExp('^' + prefix), '');
 
 class Router {
 
@@ -54,29 +11,42 @@ class Router {
 	}
 
 	add(name, path, backend, handler) {
-		this.routes.push(createRoute(name, path, backend, handler));
-		return this;
+        const matcher = new RegExp(path.replace(parametersPattern, '([^\/]+)') + '$');
+        const params = (path.match(parametersPattern) || []).map(x => x.substring(1));
+		this.routes.push({name, path, handler, backend, matcher, params})
 	}
 
 	dispatch(url, context) {
-        console.debug('Router.dispatching', url)
-		const {path, queryString} = parseUrl(stripPrefix(url, this.prefix));
-        console.debug(path, queryString)
-		const query = getQueryParams(queryString || '');
-		const {route, params} = findRouteParams(this.routes, path);
+        // strip prefix and split path from query string
+		const urlSplit = url.replace(new RegExp('^' + this.prefix), '').split('?')
+		const queryString = urlSplit[1] || ''
 
+        // parse query string
+        const query = queryString.split('&')
+            .filter(p => p.length)
+            .reduce((acc, part) => {
+                const [key, value] = part.split('=');
+                acc[decodeURIComponent(key)] = decodeURIComponent(value);
+                return acc;
+            }, {});
+
+        // find route
+        let matches;
+        const route = this.routes.find(route => matches = urlSplit[0].match(route.matcher));
+        
+        // parse route params
+        const params = route.params.reduce((acc, param, index) => {
+            acc[param] = decodeURIComponent(matches[index + 1]);
+            return acc;
+        }, {});
+
+        // call route handler or throw error
 		if (route) {
 			route.handler({params, query, context});
 			return route;
-		}
-
-		return false;
-	}
-
-	getRoute(url) {
-		const {path, queryString} = parseUrl(stripPrefix(url, this.prefix));
-		const rp = findRouteParams(this.routes, path);
-		return rp && rp.route;
+		}else{
+            throw new Error(`Route not found for ${url}`)
+        }
 	}
 
 	_formatUrl(routeName, isBackend, params = {}, query = {}) {
@@ -87,9 +57,9 @@ class Router {
 		}
 
 		const queryString = Object.keys(query)
-				  .map(k => [k, query[k]])
-				  .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
-				  .join('&');
+            .map(k => [k, query[k]])
+            .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
+            .join('&');
 
 
         const prefix = (isBackend === true) ? this.backendPrefix : this.prefix
@@ -111,7 +81,6 @@ class Router {
 	}
 };
 
-
 function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
     const currentPage = van.state("")
@@ -123,8 +92,6 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
     routes.forEach(route => {
         router.add(route.name, route.path, route.backend, function({params, query, context}) {
-            console.debug("VanSpa.router.action to " + route.name)
-
             currentPage.val = route.name
             if (route.title) window.document.title = route.title
 
@@ -135,7 +102,7 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
             route.callable()
                 .then((page) => {
                     if ('default' in page) {
-                        return routerElement.replaceChildren(page.default(_params, _query, _context)())
+                        return routerElement.replaceChildren(page.default(_params, _query, _context))
                     }else{
                         return routerElement.replaceChildren(page(_params, _query, _context))
                     }
@@ -159,46 +126,49 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
 
     // window navigation events
     window.onpopstate = (event) => {
-        console.debug("VanSpa.popstate:", event.target.location.href)
         router.dispatch(event.target.location.href)
     };
 
     window.onload = (event) => {
-        console.debug("window.onload", event.target.location.href, window.history.state)
         setNavState(window.history.state)
         router.dispatch(event.target.location.href)
+        if (typeof getNavState() === 'undefined') setNavState(null)
     }
 
     // navigation functions
-    const navigate = (url, context) => {
-        console.debug("VanSpa.navigate", url)
-        history.pushState(getNavState(), "", url);
-        router.dispatch(url, context)
-    } 
+    const navigate = (routeName, options) => {
+        const { params, query, navState, context } = options
+        const url = router.navUrl(routeName, params, query)
+        
+        if (typeof navState !== 'undefined') setNavState(navState)
+        history.pushState(getNavState(), '', url);
 
-    const pushHistory = (url) => {
-        console.debug("VanSpa.pushHistory", url)
-        history.pushState(getNavState(), "", url)
-    } 
-      
-    const handleNav = (event, context) => {
-        event.preventDefault();
-        console.debug("VanSpa.handleNav", event.target.href)
-        navigate(event.target.href, context)
+        if (typeof options.dispatch === 'undefined' || options.dispatch === true) {
+            router.dispatch(url, context)
+        }
+
+        return url
     }
 
-    // nav link component
-    function navLink(props, ...children) {
-        const { target, name, params, query, context, ...otherProps } = props;
+    const pushHistory = (routeName, options) => {
+        options.dispatch = false
+        return navigate(routeName, options)
+    } 
 
-        return a(
+    // nav link component
+    function link(props, ...children) {
+        const { name, target, params, query, navState, ...otherProps } = props;
+
+        const context = otherProps.context || {}
+
+        return van.tags.a(
             {
                 "aria-current": van.derive(() => (isCurrentPage(name).val ? "page" : "")),
                 href: router.navUrl(name, params, query),
                 target: target || "_self",
                 role: "link",
                 class: otherProps.class || 'router-link',
-                onclick: (event) => handleNav(event, context),
+                onclick: (event) => { event.preventDefault(); navigate(name, { params, query, navState, context }) },
                 ...otherProps,
             },
             children
@@ -208,15 +178,15 @@ function createCone(routerElement, routes, defaultNavState, routerConfig) {
     return {
         routerElement,
         currentPage,
-        router,
+        navUrl: router.navUrl,
+        backendUrl: router.backendUrl,
         navState,
         getNavState,
         setNavState,
         navigate,
         pushHistory,
-        handleNav,
         isCurrentPage,
-        navLink
+        link
     }
 }
 

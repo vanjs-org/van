@@ -4,20 +4,25 @@ _Author: [b-rad-c](https://github.com/b-rad-c)_
 
 ### An SPA framework add on for VanJS
 
-🔥 **Van Cone plus VanJS can create a fully featured SPA app that minifies and gzips to less than 3.5 kB!** 🔥
+🔥 **Van Cone plus VanJS can create a fully featured SPA app that minifies and gzips 3.82 kB!** 🔥
 
-This lightweight (less than 250 lines) VanJS addon adds the following features:
+This lightweight (less than 200 lines) VanJS addon adds the following features:
 - Navigation powered by custom router with async loading
-    - integrates with browser history
-    - state object integrates with browser history
     - url and query param parsing
-- `navLink` component for generating links based off of named routes
-    - easily add url and query params
-    - active class css styling
+    - integrates with browser history
+    - state object that integrates with browser history
+    - determine current active route
+    - define different backend endpoints for fetching data if different than route's front end url
+- `link` component for generating links based off of named routes
+    - easily add url and query params as objects
+    - dynamic css styling for active route
+    - pass additional context data such as a prefetched data or other configuration to route component
+
+### 🚨 **Van Cone is in Beta** 🚨
+
+At this point API changes are not expected but possible, the API is almost frozen for a version 1. I'm waiting to take it out of alpha status until I have unittests written, now that I'm almost settled on the API, those are my next task. Also see contribution instructions below if you can contribute.
 
 # Overview
-
-🚨 **Van Cone is in Beta - API changes are possible** 🚨
 
 Van Cone is a minimal framework that provides routing, history and a link component that provides dynamic styling for when it is the active link.
 
@@ -47,14 +52,14 @@ const routes = [
 
 // create the spa object
 const routerElement = div({ id: 'layout' })
-const { navLink } = createCone(routerElement, routes)
+const { link } = createCone(routerElement, routes)
 
 // main app layout
 const App = () =>
   div(
-    navLink({ name: 'home' }, 'Home'),
+    link({ name: 'home' }, 'Home'),
     span(' | '),
-    navLink({name: 'user', params: {userId: 123}}, 'User'),
+    link({name: 'user', params: {userId: 123}}, 'User'),
     hr(),
     routerElement
   );
@@ -80,15 +85,22 @@ Example HTML:
 
 ```
 
-# Examples
+# Documentation and examples
 
-See the [examples](./examples/) folder for full working examples of a [hello world](./examples/hello-world/) ([preview](https://codesandbox.io/p/devbox/van-cone-hello-world-yxpxhy)), and more complex [application](./examples/spa-app/) ([preview](https://codesandbox.io/p/devbox/github/vanjs-org/van/tree/main/addons/van_cone/examples/spa-app)) with several pages.
-
-# Documentation
-
-See the [API Reference](./API_REFERENCE.md) for full documentation.
+- [relative file link](./docs/API_REFERENCE.md) - if you're viewing on github or local repo
+- [absolute url](https://github.com/vanjs-org/van/blob/main/addons/van_cone/docs/API_REFERENCE.md) - if you're viewing on npmjs.org or other external mirrors
 
 # Changelog
+**0.0.4**
+- change `navigate` and `pushHistory` to use route names instead of url strings, and accept optional nav state, they now return the url string.
+- rename `navLink` to `link`
+- update `createVanCone` return object
+  - rename `router.navUrl` to `navUrl`
+  - rename `router.backendUrl` to `backendUrl`
+  - remove `router`
+  - remvoe `handleNav`
+- interal refactoring to reduce size
+
 **0.0.3**
 - rename `router.formatUrl` to `router.navUrl`
 - add `router.backendUrl`, update `routes` to support backend urls
@@ -107,8 +119,10 @@ I, [@b-rad-c](https://github.com/b-rad-c) am the maintainer of this project howe
 ### Roadmap
 Some things I'm interested in.
 * unittests
-* convert to TypeScript
-* stabilize API to come out of beta - comments or suggestions to the API are welcome.
+* TypeScript support
+* declarative routes, see [./docs/DECLARATIVE_ROUTES.md](./docs/DECLARATIVE_ROUTES.md)
+* type conversion for query parameters, currently query params and passed to the component as strings.
+* stabilze API to come out of beta - comments or suggestions to the API are welcome.
 
 # The Name
 Van Cone is an addon for VanJS which is short for **Van**illa **J**ava**S**cript, and makes a callout to vanilla ice cream in its logo. Van Cone provides the cone that is needed to support the ice cream. VanJS provides reactivity and UI components, Van Cone provides routing, history and navigation components, together they're everything you need for a lightweight SPA experience!
