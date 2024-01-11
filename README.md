@@ -140,6 +140,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [VanJS Routing](https://github.com/kwameopareasiedu/vanjs-routing): Yet another routing solution for **VanJS**. Author: [Kwame Opare Asiedu](https://github.com/kwameopareasiedu).
 * [van_element](/addons/van_element/): Web Components with **VanJS**. Author: [Atmos4](https://github.com/Atmos4).
 * [VanJS Form](https://github.com/kwameopareasiedu/vanjs-form): Fully typed form state management library (with validation) for **VanJS**. Author: [Kwame Opare Asiedu](https://github.com/kwameopareasiedu).
+* [vanjs-bootstrap](https://github.com/WilliCommer/vanjs-bootstrap): **VanJS** Bootstrap Components. Author: [Willi Commer](https://github.com/WilliCommer).
 
 ## Contributors (40)
 
