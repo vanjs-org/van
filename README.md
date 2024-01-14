@@ -204,6 +204,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/kwameopareasiedu"><img src="https://avatars.githubusercontent.com/u/26204283?v=4?s=100" width="100px;" alt="Kwame Opare Asiedu"/><br /><sub><b>Kwame Opare Asiedu</b></sub></a><br /><a href="#plugin-kwameopareasiedu" title="Plugin/utility libraries">🔌</a> <a href="#example-kwameopareasiedu" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ali-alnasser570"><img src="https://avatars.githubusercontent.com/u/104535769?v=4?s=100" width="100px;" alt="ali-alnasser570"/><br /><sub><b>ali-alnasser570</b></sub></a><br /><a href="#ideas-ali-alnasser570" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://blog.auryn.dev"><img src="https://avatars.githubusercontent.com/u/24471955?v=4?s=100" width="100px;" alt="Auryn Engel"/><br /><sub><b>Auryn Engel</b></sub></a><br /><a href="#video-auryn31" title="Videos">📹</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/mrwyndham"><img src="https://avatars.githubusercontent.com/u/49445824?v=4?s=100" width="100px;" alt="Samuel Wyndham"/><br /><sub><b>Samuel Wyndham</b></sub></a><br /><a href="#video-mrwyndham" title="Videos">📹</a></td>
     </tr>
   </tbody>
 </table>
