@@ -1,13 +1,14 @@
 {
   "name": "vanjs-jsx",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "types": "./src/index.d.ts",
   "description": "jsx-runtime for vanjs",
+  "types": "./src/index.d.ts",
   "exports": {
     ".": {
       "require": "./src/index.js",
-      "import": "./src/index.js"
+      "import": "./src/index.js",
+      "types": "./src/index.d.ts"
     },
     "./jsx-runtime": {
       "require": "./src/jsx-runtime.js",
