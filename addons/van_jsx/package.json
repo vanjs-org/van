@@ -2,22 +2,23 @@
   "name": "vanjs-jsx",
   "version": "0.1.0",
   "type": "module",
-  "types": "./src/index.d.ts",
   "description": "jsx-runtime for vanjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./src/index.js",
-      "import": "./src/index.js"
+      "require": "./dist/umd/index.js",
+      "import": "./dist/esm/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./jsx-runtime": {
-      "require": "./src/jsx-runtime.js",
-      "import": "./src/jsx-runtime.js",
-      "types": "./src/jsx-runtime.d.ts"
+      "require": "./dist/umd/index.js",
+      "import": "./dist/esm/index.js",
+      "types": "./dist/jsx-runtime.d.ts"
     },
     "./jsx-dev-runtime": {
-      "require": "./src/jsx-dev-runtime.js",
-      "import": "./src/jsx-dev-runtime.js",
-      "types": "./src/jsx-dev-runtime.d.ts"
+      "require": "./dist/umd/index.js",
+      "import": "./dist/esm/index.js",
+      "types": "./dist/jsx-runtime.d.ts"
     }
   },
   "files": [
