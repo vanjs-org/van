@@ -30,8 +30,8 @@ cp ../public/van-$VER.nomodule.js ../public/van-latest.nomodule.js
 cp ../public/van-$VER.nomodule.min.js ../public/van-latest.nomodule.min.js
 cp ../public/van-$VER.nomodule.debug.js ../public/van-latest.nomodule.debug.js
 
-sed -i .bak s/van\\.js/van-$VER\\.js/ ../public/van-$VER.debug.js
-sed -i .bak s/van\\.js/van-latest\\.js/ ../public/van-latest.debug.js
+sed -i='.bak' 's/van\\.js/van-$VER\\.js/' ../public/van-$VER.debug.js
+sed -i='.bak' s/van\\.js/van-latest\\.js/ ../public/van-latest.debug.js
 
 rm ../demo/terminal/van-*.min.js
 cp ../public/van-$VER.min.js ../demo/terminal/
@@ -39,5 +39,5 @@ cp ../public/van-$VER.min.js ../demo/terminal/
 rm ../public/*.bak
 
 # Testing
-npx tsc -m es2020 -t es2017 ../test/van.test.ts
+(cd ../test; tsc)
 npx esbuild ../test/van.test.forbundle.js --bundle --banner:js="'use strict';" --outfile=../test/van.test.nomodule.js

@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   // van.js
   var Obj = Object;

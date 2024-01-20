@@ -16,7 +16,8 @@
   },
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "(cd ./src; ./publish.sh) && npm run test:size",
+    "test:size": "size-limit"
   },
   "keywords": [
     "Van",
@@ -35,9 +36,11 @@
   "author": "Tao Xin",
   "license": "MIT",
   "devDependencies": {
+    "@size-limit/preset-small-lib": "^10.0.1",
     "all-contributors-cli": "^6.26.1",
     "esbuild": "^0.17.12",
     "node-jq": "^2.3.5",
+    "size-limit": "^10.0.1",
     "terser": "^5.22.0",
     "typescript": "^5.1.6"
   },
@@ -49,5 +52,12 @@
     "url": "https://github.com/vanjs-org/van/issues",
     "email": "bugs@vanjs.org"
   },
-  "homepage": "https://vanjs.org"
+  "homepage": "https://vanjs.org",
+  "size-limit": [
+    {
+      "name": "Van",
+      "path": "public/van-latest.min.js",
+      "limit": "962 B"
+    }
+  ]
 }
