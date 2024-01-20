@@ -6,19 +6,18 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/umd/index.js",
-      "import": "./dist/esm/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./src/index.js",
+      "import": "./src/index.js"
     },
     "./jsx-runtime": {
-      "require": "./dist/umd/index.js",
-      "import": "./dist/esm/index.js",
-      "types": "./dist/jsx-runtime.d.ts"
+      "require": "./src/jsx-runtime.js",
+      "import": "./src/jsx-runtime.js",
+      "types": "./src/jsx-runtime.d.ts"
     },
     "./jsx-dev-runtime": {
-      "require": "./dist/umd/index.js",
-      "import": "./dist/esm/index.js",
-      "types": "./dist/jsx-runtime.d.ts"
+      "require": "./src/jsx-dev-runtime.js",
+      "import": "./src/jsx-dev-runtime.js",
+      "types": "./src/jsx-dev-runtime.d.ts"
     }
   },
   "files": [
