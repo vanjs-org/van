@@ -82,7 +82,7 @@ let bind = (f, dom) => {
 let derive = (f, s = state(), dom) => {
   let deps = new Set, listener = {f, s}
   listener._dom = dom ?? curNewDerives?.push(listener) ?? alwaysConnectedDom
-  s.val = runAndCaptureDeps(f, deps)
+  s.val = runAndCaptureDeps(f, deps, s._val)
   for (let d of deps) addStatesToGc(d), d._listeners.push(listener)
   return s
 }
@@ -109,12 +109,17 @@ let tagsNS = ns => new Proxy((name, ...args) => {
     let cacheKey = name + "," + k
     let propSetter = propSetterCache[cacheKey] ??
       (propSetterCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0)
-    let setter = propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k)
+    let setter = k.startsWith("on") ?
+      (v, oldV) => {
+        let event = k.slice(2)
+        dom.removeEventListener(event, oldV)
+        dom.addEventListener(event, v)
+      } :
+      propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k)
     let protoOfV = protoOf(v ?? 0)
-    if (protoOfV === stateProto) bind(() => (setter(v.val), dom))
-    else if (protoOfV === funcProto && (!k.startsWith("on") || v._isBindingFunc))
-      bind(() => (setter(v()), dom))
-    else setter(v)
+    protoOfV === funcProto && (!k.startsWith("on") || v._isBindingFunc) &&
+      (v = derive(v), protoOfV = stateProto)
+    protoOfV === stateProto ? bind(() => (setter(v.val, v._oldVal), dom)) : setter(v)
   }
   return add(dom, ...children)
 }, {get: (tag, name) => tag.bind(_undefined, name)})

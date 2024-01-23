@@ -63,16 +63,9 @@ const runTests = async (van, msgDom, { debug }) => {
             assertEq(dom.outerHTML, '<div><p>👋Hello</p><ul><li>🗺️World</li><li><a href="https://vanjs.org/">🍦VanJS</a></li></ul></div>');
         },
         tags_onclickHandler: () => {
-            {
-                const dom = div(button({ onclick: () => van.add(dom, p("Button clicked!")) }));
-                dom.querySelector("button").click();
-                assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
-            }
-            {
-                // Use `onClick` instead of `onclick` so that attribute instead of property will be set.
-                const dom = div(button({ onClick: 'alert("Hello")' }, "Click me"));
-                assertEq(dom.outerHTML, '<div><button onclick="alert(&quot;Hello&quot;)">Click me</button></div>');
-            }
+            const dom = div(button({ onclick: () => van.add(dom, p("Button clicked!")) }));
+            dom.querySelector("button").click();
+            assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
         },
         tags_escape: () => {
             assertEq(p("<input>").outerHTML, "<p>&lt;input&gt;</p>");
@@ -181,24 +174,6 @@ const runTests = async (van, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             // href won't change as dom is not connected to document
             assertEq(dom.href, "https://example.com/hello");
-        },
-        tags_stateDerivedProp_oldVal_connected: withHiddenDom(async (hiddenDom) => {
-            const text = van.state("Old Text");
-            const dom = input({ type: "text", value: () => `From: "${van.oldVal(text)}" to: "${van.val(text)}"` });
-            van.add(hiddenDom, dom);
-            assertEq(dom.value, 'From: "Old Text" to: "Old Text"');
-            text.val = "New Text";
-            await sleep(waitMsOnDomUpdates);
-            assertEq(dom.value, 'From: "Old Text" to: "New Text"');
-        }),
-        tags_stateDerivedProp_oldVal_disconnected: async () => {
-            const text = van.state("Old Text");
-            const dom = input({ type: "text", value: () => `From: "${van.oldVal(text)}" to: "${van.val(text)}"` });
-            assertEq(dom.value, 'From: "Old Text" to: "Old Text"');
-            text.val = "New Text";
-            await sleep(waitMsOnDomUpdates);
-            // value won't change as dom is not connected to document
-            assertEq(dom.value, 'From: "Old Text" to: "Old Text"');
         },
         tags_stateDerivedProp_errorThrown_connected: withHiddenDom(async (hiddenDom) => {
             const text = van.state("hello");
@@ -332,6 +307,35 @@ const runTests = async (van, msgDom, { debug }) => {
             assertEq(dom.outerHTML, '<button form="form1">Button</button>');
             assertEq(input({ list: "datalist1" }).outerHTML, '<input list="datalist1">');
         },
+        tags_customEventHandler: () => {
+            const dom = div(button({ oncustom: () => van.add(dom, p("Event triggered!")) }));
+            dom.querySelector("button").dispatchEvent(new Event("custom"));
+            assertEq(dom.innerHTML, "<button></button><p>Event triggered!</p>");
+        },
+        tags_stateAsCustomEventHandler: withHiddenDom(async (hiddenDom) => {
+            const oncustom = van.state(() => van.add(hiddenDom, p("Handler 1 triggered!")));
+            van.add(hiddenDom, button({ oncustom }));
+            hiddenDom.querySelector("button").dispatchEvent(new Event("custom"));
+            assertEq(hiddenDom.innerHTML, "<button></button><p>Handler 1 triggered!</p>");
+            oncustom.val = () => van.add(hiddenDom, p("Handler 2 triggered!"));
+            await sleep(waitMsOnDomUpdates);
+            hiddenDom.querySelector("button").dispatchEvent(new Event("custom"));
+            assertEq(hiddenDom.innerHTML, "<button></button><p>Handler 1 triggered!</p><p>Handler 2 triggered!</p>");
+        }),
+        tags_stateDerivedCustomEventHandler: withHiddenDom(async (hiddenDom) => {
+            const handlerType = van.state(1);
+            van.add(hiddenDom, button({
+                oncustom: van._(() => handlerType.val === 1 ?
+                    () => van.add(hiddenDom, p("Handler 1 triggered!")) :
+                    () => van.add(hiddenDom, p("Handler 2 triggered!"))),
+            }));
+            hiddenDom.querySelector("button").dispatchEvent(new Event("custom"));
+            assertEq(hiddenDom.innerHTML, "<button></button><p>Handler 1 triggered!</p>");
+            handlerType.val = 2;
+            await sleep(waitMsOnDomUpdates);
+            hiddenDom.querySelector("button").dispatchEvent(new Event("custom"));
+            assertEq(hiddenDom.innerHTML, "<button></button><p>Handler 1 triggered!</p><p>Handler 2 triggered!</p>");
+        }),
         tags_stateAsChild_connected: withHiddenDom(async (hiddenDom) => {
             const line2 = van.state("Line 2");
             const dom = div(pre("Line 1"), pre(line2), pre("Line 3"));
@@ -545,10 +549,10 @@ const runTests = async (van, msgDom, { debug }) => {
             assertEq(s3.val, 1);
             s0.val = 3;
             // The derivation function for `s2` throws an error.
-            // We want to validate the `val` of `s2` becomes `undefined` because of the error,
+            // We want to validate the `val` of `s2` remains the same because of the error,
             // but other derived states are updated as usual.
             assertEq(s1.val, 6);
-            assertEq(s2.val, undefined);
+            assertEq(s2.val, 1);
             assertEq(s3.val, 9);
         },
         stateDerivedChild_dynamicDom: withHiddenDom(async (hiddenDom) => {
@@ -1347,8 +1351,7 @@ const runTests = async (van, msgDom, { debug }) => {
             assertBetween(counter[bindingsPropKey].length, 1, 3);
         }),
         long_nestedBinding: withHiddenDom(async (hiddenDom) => {
-            const renderPre = van.state(false);
-            const text = van.state("Text");
+            const renderPre = van.state(false), text = van.state("Text");
             const bindingsPropKey = Object.entries(renderPre)
                 .find(([_, v]) => Array.isArray(v))[0];
             const dom = div(() => (renderPre.val ? pre : div)(() => `--${text.val}--`));
@@ -1395,8 +1398,7 @@ const runTests = async (van, msgDom, { debug }) => {
             assertBetween(a[listenersPropKey].length, 1, 3);
         },
         long_deriveInBindingFunc: withHiddenDom(async (hiddenDom) => {
-            const renderPre = van.state(false);
-            const prefix = van.state("Prefix");
+            const renderPre = van.state(false), prefix = van.state("Prefix");
             const bindingsPropKey = Object.entries(renderPre)
                 .find(([_, v]) => Array.isArray(v))[0];
             const listenersPropKey = Object.entries(renderPre)
@@ -1414,6 +1416,44 @@ const runTests = async (van, msgDom, { debug }) => {
             await sleep(1000);
             assertBetween(renderPre[bindingsPropKey].length, 1, 3);
             assertBetween(prefix[listenersPropKey].length, 1, 3);
+        }),
+        long_stateDerivedProp: withHiddenDom(async (hiddenDom) => {
+            const renderPre = van.state(false), class1 = van.state(true);
+            const bindingsPropKey = Object.entries(renderPre)
+                .find(([_, v]) => Array.isArray(v))[0];
+            const listenersPropKey = Object.entries(renderPre)
+                .filter(([_, v]) => Array.isArray(v))[1][0];
+            const dom = div(() => (renderPre.val ? pre : div)({ class: () => class1.val ? "class1" : "class2" }, "Text"));
+            van.add(hiddenDom, dom);
+            for (let i = 0; i < 20; ++i) {
+                renderPre.val = !renderPre.val;
+                await sleep(waitMsOnDomUpdates);
+            }
+            // Wait until GC kicks in
+            await sleep(1000);
+            assertBetween(renderPre[bindingsPropKey].length, 1, 3);
+            assertBetween(class1[listenersPropKey].length, 1, 3);
+        }),
+        long_stateDerivedEventHandler: withHiddenDom(async (hiddenDom) => {
+            const renderPre = van.state(false), handlerType = van.state(1);
+            const bindingsPropKey = Object.entries(renderPre)
+                .find(([_, v]) => Array.isArray(v))[0];
+            const listenersPropKey = Object.entries(renderPre)
+                .filter(([_, v]) => Array.isArray(v))[1][0];
+            const dom = div(() => (renderPre.val ? pre : div)(button({
+                oncustom: van._(() => handlerType.val === 1 ?
+                    () => van.add(hiddenDom, p("Handler 1 triggered!")) :
+                    () => van.add(hiddenDom, p("Handler 2 triggered!"))),
+            })));
+            van.add(hiddenDom, dom);
+            for (let i = 0; i < 20; ++i) {
+                renderPre.val = !renderPre.val;
+                await sleep(waitMsOnDomUpdates);
+            }
+            // Wait until GC kicks in
+            await sleep(1000);
+            assertBetween(renderPre[bindingsPropKey].length, 1, 3);
+            assertBetween(handlerType[listenersPropKey].length, 1, 3);
         }),
         long_conditionalDerivedState: async () => {
             const cond = van.state(true);

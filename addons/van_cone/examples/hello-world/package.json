@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "van-cone": "^0.0.2",
-    "vanjs-core": "^1.2.7"
+    "vanjs-core": "^1.2.8"
   },
   "devDependencies": {
     "vite": "^4.3.9",
