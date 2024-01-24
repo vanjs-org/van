@@ -209,6 +209,9 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/mrwyndham"><img src="https://avatars.githubusercontent.com/u/49445824?v=4?s=100" width="100px;" alt="Samuel Wyndham"/><br /><sub><b>Samuel Wyndham</b></sub></a><br /><a href="#video-mrwyndham" title="Videos">📹</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sekoyo"><img src="https://avatars.githubusercontent.com/u/760314?v=4?s=100" width="100px;" alt="sekoyo"/><br /><sub><b>sekoyo</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Asekoyo" title="Bug reports">🐛</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/OFurnell"><img src="https://avatars.githubusercontent.com/u/19840221?v=4?s=100" width="100px;" alt="Owen Furnell"/><br /><sub><b>Owen Furnell</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3AOFurnell" title="Bug reports">🐛</a></td>
+    </tr>
   </tbody>
 </table>
 

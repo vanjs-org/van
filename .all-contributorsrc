@@ -410,6 +410,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "OFurnell",
+      "name": "Owen Furnell",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19840221?v=4",
+      "profile": "https://github.com/OFurnell",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "repoType": "github"
