@@ -211,6 +211,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/OFurnell"><img src="https://avatars.githubusercontent.com/u/19840221?v=4?s=100" width="100px;" alt="Owen Furnell"/><br /><sub><b>Owen Furnell</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3AOFurnell" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MrVoltz"><img src="https://avatars.githubusercontent.com/u/5212649?v=4?s=100" width="100px;" alt="MrVoltz"/><br /><sub><b>MrVoltz</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3AMrVoltz" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
