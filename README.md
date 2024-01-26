@@ -144,7 +144,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 * [VanJS Form](https://github.com/kwameopareasiedu/vanjs-form): Fully typed form state management library (with validation) for **VanJS**. Author: [Kwame Opare Asiedu](https://github.com/kwameopareasiedu).
 * [vanjs-bootstrap](https://github.com/WilliCommer/vanjs-bootstrap): **VanJS** Bootstrap Components. Author: [Willi Commer](https://github.com/WilliCommer).
 
-## Contributors (45)
+## Contributors (46)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
