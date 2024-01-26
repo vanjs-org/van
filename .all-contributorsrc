@@ -428,6 +428,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "csm-kb",
+      "name": "Kane",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54819806?v=4",
+      "profile": "https://omnith.com",
+      "contributions": [
+        "example"
+      ]
     }
   ],
   "repoType": "github"
