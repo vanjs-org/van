@@ -137,7 +137,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 
 * [van_dml.js](/addons/van_dml): adds a a new flavour of composition to **VanJS**. Author: [Eckehard](https://github.com/efpage).
 * [van-jsx](/addons/van_jsx): a JSX wrapper for **VanJS**, for people who like the JSX syntax more. Author: [cqh963852](https://github.com/cqh963852).
-* [Van Cone](/addons/van_cone/): an SPA framework add-on for **VanJS**. Author: [b-rad-c](https://github.com/b-rad-c).
+* [Van Cone](https://medium-tech.github.io/van-cone-website/getting-started.html): an SPA framework add-on for **VanJS**. Author: [b-rad-c](https://github.com/b-rad-c).
 * [vanjs-router](https://github.com/iuroc/vanjs-router): A router solution for **VanJS** (`README.md` in simplified Chinese). Author: [欧阳鹏](https://github.com/iuroc).
 * [VanJS Routing](https://github.com/kwameopareasiedu/vanjs-routing): Yet another routing solution for **VanJS**. Author: [Kwame Opare Asiedu](https://github.com/kwameopareasiedu).
 * [van_element](/addons/van_element/): Web Components with **VanJS**. Author: [Atmos4](https://github.com/Atmos4).
