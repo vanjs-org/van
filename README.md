@@ -142,7 +142,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [van_dml.js](/addons/van_dml) | A new flavour of composition for **VanJS** | [Eckehard](https://github.com/efpage) |
 | [van-jsx](/addons/van_jsx) | A JSX wrapper for **VanJS**, for people who like the JSX syntax more | [cqh963852](https://github.com/cqh963852) |
 | [vanjs-router](https://github.com/iuroc/vanjs-router) | A router solution for **VanJS** (`README.md` in simplified Chinese) | [欧阳鹏](https://github.com/iuroc) |
-| [VanJS Routing](https://github.com/kwameopareasiedu/vanjs-routing) | Yet another routing solution for **VanJS** | Author: [Kwame Opare Asiedu](https://github.com/kwameopareasiedu) |
+| [VanJS Routing](https://github.com/kwameopareasiedu/vanjs-routing) | Yet another routing solution for **VanJS** | [Kwame Opare Asiedu](https://github.com/kwameopareasiedu) |
 | [VanJS Form](https://github.com/kwameopareasiedu/vanjs-form) | Fully typed form state management library (with validation) for **VanJS** | [Kwame Opare Asiedu](https://github.com/kwameopareasiedu) |
 | [vanjs-bootstrap](https://github.com/WilliCommer/vanjs-bootstrap) | **VanJS** Bootstrap Components | [Willi Commer](https://github.com/WilliCommer) |
 
