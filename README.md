@@ -1,7 +1,5 @@
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
-[![](https://data.jsdelivr.com/v1/package/gh/vanjs-org/van/badge)](https://www.jsdelivr.com/package/gh/vanjs-org/van)
-
 📣 [Introducing VanX →](https://github.com/vanjs-org/van/discussions/144) <br>
 📣 [Introducing VanJS App Builder →](https://github.com/vanjs-org/van/discussions/179)
 
