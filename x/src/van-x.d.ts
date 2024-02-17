@@ -24,5 +24,5 @@ export declare const list: <T extends ReactiveObj, ElementType extends Element>
 
 export type ReplaceFunc<T> =
   T extends (infer V)[] ? (items: V[]) => V[] :
-  (items: [string, T[keyof T]][]) => [string, T[keyof T]][]
+  (items: [string, T[keyof T]][]) => readonly [string, T[keyof T]][]
 export declare const replace: <T extends ReactiveObj>(items: T, f: ReplaceFunc<T>) => void
