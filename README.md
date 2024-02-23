@@ -216,6 +216,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://omnith.com"><img src="https://avatars.githubusercontent.com/u/54819806?v=4?s=100" width="100px;" alt="Kane"/><br /><sub><b>Kane</b></sub></a><br /><a href="#example-csm-kb" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sirenkovladd"><img src="https://avatars.githubusercontent.com/u/28163663?v=4?s=100" width="100px;" alt="Vlad Sirenko"/><br /><sub><b>Vlad Sirenko</b></sub></a><br /><a href="#example-SirenkoVladd" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/CodeByZack"><img src="https://avatars.githubusercontent.com/u/17472882?v=4?s=100" width="100px;" alt="董凯"/><br /><sub><b>董凯</b></sub></a><br /><a href="#example-CodeByZack" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MeddahAbdellah"><img src="https://avatars.githubusercontent.com/u/32915429?v=4?s=100" width="100px;" alt="Meddah Abdallah"/><br /><sub><b>Meddah Abdallah</b></sub></a><br /><a href="#plugin-MeddahAbdellah" title="Plugin/utility libraries">🔌</a></td>
     </tr>
   </tbody>
 </table>
