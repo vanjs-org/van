@@ -455,6 +455,15 @@
       "contributions": [
         "example"
       ]
+    },
+    {
+      "login": "MeddahAbdellah",
+      "name": "Meddah Abdallah",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32915429?v=4",
+      "profile": "https://github.com/MeddahAbdellah",
+      "contributions": [
+        "plugin"
+      ]
     }
   ],
   "repoType": "github"
