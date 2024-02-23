@@ -145,7 +145,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [vanjs-bootstrap](https://github.com/WilliCommer/vanjs-bootstrap) | **VanJS** Bootstrap Components | [Willi Commer](https://github.com/WilliCommer) |
 | [vanrx](https://github.com/MeddahAbdellah/vanrx) | An ultra-lightweight Redux addon for **VanJS** | [Meddah Abdallah](https://github.com/MeddahAbdellah) |
 
-## Contributors (47)
+## Contributors (48)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
