@@ -115,6 +115,7 @@ let replace = (items, f) => {
 
   for (let k in obj) delete obj[k]
   for (let k in newObj) obj[k] = newObj[k]
+  if (Array.isArray(obj)) while (obj.length > 0 && !(obj.length - 1 in obj)) --obj.length
   items[statesSym] = newStates
   ++items[keysGenSym].val
 }

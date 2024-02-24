@@ -219,6 +219,12 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       vanX.replace(data, _ => [1, 2, 3, 4])
       assertEq(json.val, '[1,2,3,4]')
+
+      vanX.replace(data, _ => [1, 2])
+      assertEq(json.val, '[1,2]')
+
+      vanX.replace(data, _ => [])
+      assertEq(json.val, '[]')
     },
 
     reactive_objJson: () => {
