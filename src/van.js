@@ -32,25 +32,24 @@ let addStatesToGc = d => statesToGc = addAndScheduleOnFirst(statesToGc, d, () =>
 
 let stateProto = {
   get val() {
-    curDeps?.add(this)
+    curDeps?._getters?.add(this)
     return this._val
   },
 
   get oldVal() {
-    curDeps?.add(this)
+    curDeps?._getters?.add(this)
     return this._oldVal
   },
 
   set val(v) {
-    // Aliasing `this` to reduce the bundle size.
-    let s = this
-    if (v !== s._val) {
-      s._val = v
-      let listeners = [...s._listeners = keepConnected(s._listeners)]
+    curDeps?._setters?.add(this)
+    if (v !== this._val) {
+      this._val = v
+      let listeners = [...this._listeners = keepConnected(this._listeners)]
       for (let l of listeners) derive(l.f, l.s, l._dom), l._dom = _undefined
-      s._bindings.length ?
-        changedStates = addAndScheduleOnFirst(changedStates, s, updateDoms) :
-        s._oldVal = v
+      this._bindings.length ?
+        changedStates = addAndScheduleOnFirst(changedStates, this, updateDoms) :
+        this._oldVal = v
     }
   },
 }
@@ -69,21 +68,23 @@ let val = s => isState(s) ? s.val : s
 let oldVal = s => isState(s) ? s.oldVal : s
 
 let bind = (f, dom) => {
-  let deps = new Set, binding = {f}, prevNewDerives = curNewDerives
+  let deps = {_getters: new Set, _setters: new Set}, binding = {f}, prevNewDerives = curNewDerives
   curNewDerives = []
   let newDom = runAndCaptureDeps(f, deps, dom)
   newDom = (newDom ?? doc).nodeType ? newDom : new Text(newDom)
-  for (let d of deps) addStatesToGc(d), d._bindings.push(binding)
+  for (let d of deps._getters)
+    deps._setters.has(d) || (addStatesToGc(d), d._bindings.push(binding))
   for (let l of curNewDerives) l._dom = newDom
   curNewDerives = prevNewDerives
   return binding._dom = newDom
 }
 
 let derive = (f, s = state(), dom) => {
-  let deps = new Set, listener = {f, s}
+  let deps = {_getters: new Set, _setters: new Set}, listener = {f, s}
   listener._dom = dom ?? curNewDerives?.push(listener) ?? alwaysConnectedDom
   s.val = runAndCaptureDeps(f, deps, s._val)
-  for (let d of deps) addStatesToGc(d), d._listeners.push(listener)
+  for (let d of deps._getters)
+    deps._setters.has(d) || (addStatesToGc(d), d._listeners.push(listener))
   return s
 }
 
@@ -92,7 +93,7 @@ let add = (dom, ...children) => {
     let protoOfC = protoOf(c ?? 0)
     let child = protoOfC === stateProto ? bind(() => c.val) :
       protoOfC === funcProto ? bind(c) : c
-    if (child != _undefined) dom.append(child)
+    child != _undefined && dom.append(child)
   }
   return dom
 }

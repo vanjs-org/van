@@ -1,6 +1,6 @@
 window.numTests = 0;
 window.runTests = async (van, vanX, file) => {
-    const { a, button, code, div, h2, li, ol, pre, span, sup, ul } = van.tags;
+    const { a, button, code, div, h2, input, li, ol, pre, span, sup, ul } = van.tags;
     const assertEq = (lhs, rhs) => {
         if (lhs !== rhs)
             throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}.`);
@@ -734,6 +734,54 @@ window.runTests = async (van, vanX, file) => {
             items.a.baz.kind = "candy";
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>');
+        }),
+        replaceInSideEffect_array: withHiddenDom(async (hiddenDom) => {
+            const countries = [
+                "Argentina", "Bolivia", "Brazil", "Chile", "Colombia", "Ecuador", "Guyana",
+                "Paraguay", "Peru", "Suriname", "Uruguay", "Venezuela",
+            ];
+            const filter = van.state("");
+            const filteredCountries = vanX.reactive([]);
+            van.derive(() => vanX.replace(filteredCountries, () => countries.filter(c => c.toLowerCase().includes(filter.val.toLowerCase()))));
+            van.add(hiddenDom, div("Countries in South America. Filter: ", input({ type: "text", value: filter, oninput: e => filter.val = e.target.value })), vanX.list(ul, filteredCountries, v => li(v)));
+            assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina</li><li>Bolivia</li><li>Brazil</li><li>Chile</li><li>Colombia</li><li>Ecuador</li><li>Guyana</li><li>Paraguay</li><li>Peru</li><li>Suriname</li><li>Uruguay</li><li>Venezuela</li>");
+            hiddenDom.querySelector("input").value = "i";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina</li><li>Bolivia</li><li>Brazil</li><li>Chile</li><li>Colombia</li><li>Suriname</li>");
+            hiddenDom.querySelector("input").value = "il";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Brazil</li><li>Chile</li>");
+        }),
+        replaceInSideEffect_obj: withHiddenDom(async (hiddenDom) => {
+            const countryToPopulation = {
+                "Argentina": 45195777,
+                "Bolivia": 11673029,
+                "Brazil": 213993437,
+                "Chile": 19116209,
+                "Colombia": 50882884,
+                "Ecuador": 17643060,
+                "Guyana": 786559,
+                "Paraguay": 7132530,
+                "Peru": 32971846,
+                "Suriname": 586634,
+                "Uruguay": 3473727,
+                "Venezuela": 28435943,
+            };
+            const filter = van.state("");
+            const filteredCountryToPopulation = vanX.reactive({});
+            van.derive(() => vanX.replace(filteredCountryToPopulation, () => Object.entries(countryToPopulation).filter(([c, _]) => c.toLowerCase().includes(filter.val.toLowerCase()))));
+            van.add(hiddenDom, div("Population of countries in South America. Filter: ", input({ type: "text", value: filter, oninput: e => filter.val = e.target.value })), vanX.list(ul, filteredCountryToPopulation, (v, _deleter, k) => li(k, ": ", v)));
+            assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina: 45195777</li><li>Bolivia: 11673029</li><li>Brazil: 213993437</li><li>Chile: 19116209</li><li>Colombia: 50882884</li><li>Ecuador: 17643060</li><li>Guyana: 786559</li><li>Paraguay: 7132530</li><li>Peru: 32971846</li><li>Suriname: 586634</li><li>Uruguay: 3473727</li><li>Venezuela: 28435943</li>");
+            hiddenDom.querySelector("input").value = "i";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina: 45195777</li><li>Bolivia: 11673029</li><li>Brazil: 213993437</li><li>Chile: 19116209</li><li>Colombia: 50882884</li><li>Suriname: 586634</li>");
+            hiddenDom.querySelector("input").value = "il";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Brazil: 213993437</li><li>Chile: 19116209</li>");
         }),
     };
     const gcTests = {

@@ -519,6 +519,30 @@
         assertEq(s2.val, 1);
         assertEq(s3.val, 9);
       },
+      derive_selfRef: withHiddenDom(async (hiddenDom) => {
+        const CheckboxCounter = () => {
+          const checked = van2.state(false), numChecked = van2.state(0);
+          van2.derive(() => {
+            if (checked.val)
+              ++numChecked.val;
+          });
+          return div2(input({ type: "checkbox", checked, onclick: (e) => checked.val = e.target.checked }), " Checked ", numChecked, " times. ", button({ onclick: () => numChecked.val = 0 }, "Reset"));
+        };
+        van2.add(hiddenDom, CheckboxCounter());
+        assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 0 times. <button>Reset</button></div>');
+        hiddenDom.querySelector("input").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 1 times. <button>Reset</button></div>');
+        hiddenDom.querySelector("input").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 1 times. <button>Reset</button></div>');
+        hiddenDom.querySelector("input").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 2 times. <button>Reset</button></div>');
+        hiddenDom.querySelector("button").click();
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 0 times. <button>Reset</button></div>');
+      }),
       stateDerivedChild_dynamicDom: withHiddenDom(async (hiddenDom) => {
         const verticalPlacement = van2.state(false);
         const button1Text = van2.state("Button 1"), button2Text = van2.state("Button 2"), button3Text = van2.state("Button 3");

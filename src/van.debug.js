@@ -28,9 +28,15 @@ const checkStateValValid = v => {
   return v
 }
 
-const state = initVal => new Proxy(van.state(checkStateValValid(initVal)), {
-  set: (s, prop, val) => (prop === "val" && checkStateValValid(val), Reflect.set(s, prop, val)),
-})
+const state = initVal => {
+  const proxy = new Proxy(van.state(checkStateValValid(initVal)), {
+    set: (s, prop, val) => {
+      prop === "val" && checkStateValValid(val)
+      return Reflect.set(s, prop, val, proxy)
+    },
+  })
+  return proxy
+}
 
 const derive = f => {
   expect(typeof(f) === "function", "Must pass-in a function to `van.derive`")
