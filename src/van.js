@@ -62,11 +62,6 @@ let state = initVal => ({
   _listeners: [],
 })
 
-let isState = s => protoOf(s ?? 0) === stateProto
-
-let val = s => isState(s) ? s.val : s
-let oldVal = s => isState(s) ? s.oldVal : s
-
 let bind = (f, dom) => {
   let deps = {_getters: new Set, _setters: new Set}, binding = {f}, prevNewDerives = curNewDerives
   curNewDerives = []
@@ -98,9 +93,7 @@ let add = (dom, ...children) => {
   return dom
 }
 
-let _ = f => (f._isBindingFunc = 1, f)
-
-let tagsNS = ns => new Proxy((name, ...args) => {
+let tag = (ns, name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
   let dom = ns ? doc.createElementNS(ns, name) : doc.createElement(name)
   for (let [k, v] of Obj.entries(props)) {
@@ -118,12 +111,15 @@ let tagsNS = ns => new Proxy((name, ...args) => {
       } :
       propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k)
     let protoOfV = protoOf(v ?? 0)
-    protoOfV === funcProto && (!k.startsWith("on") || v._isBindingFunc) &&
-      (v = derive(v), protoOfV = stateProto)
+    k.startsWith("on") || protoOfV === funcProto && (v = derive(v), protoOfV = stateProto)
     protoOfV === stateProto ? bind(() => (setter(v.val, v._oldVal), dom)) : setter(v)
   }
   return add(dom, ...children)
-}, {get: (tag, name) => tag.bind(_undefined, name)})
+}
+
+let handler = ns => ({get: (_, name) => tag.bind(undefined, ns, name)})
+let tagsNS = ns => new Proxy(tag, handler(ns))
+let tags = new Proxy(tagsNS, handler())
 
 let update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove()
 
@@ -137,4 +133,4 @@ let updateDoms = () => {
 
 let hydrate = (dom, f) => update(dom, bind(f, dom))
 
-export default {add, _, tags: tagsNS(), tagsNS, state, val, oldVal, derive, hydrate}
+export default {add, tags, tagsNS, state, derive, hydrate}

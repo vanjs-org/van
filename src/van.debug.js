@@ -79,12 +79,7 @@ const add = (dom, ...children) => {
   return van.add(dom, ...checkChildren(children))
 }
 
-const _ = f => {
-  expect(typeof(f) === "function", "Must pass-in a function to `van._`")
-  return van._(f)
-}
-
-const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
+const debugHandler = {
   get: (vanTags, name) => {
     const vanTag = vanTags[name]
     return (...args) => {
@@ -111,12 +106,16 @@ const _tagsNS = ns => new Proxy(van.tagsNS(ns), {
       return vanTag(debugProps, ...checkChildren(children))
     }
   },
-})
+}
 
+const _tagsNS = ns => new Proxy(van.tags(ns), debugHandler)
 const tagsNS = ns => {
-  expect(typeof ns === "string", "Must provide a string for parameter `ns` in `van.tagsNS`")
+  expect(typeof ns === "string", "Must provide a string for parameter `ns` in `van.tags`")
   return _tagsNS(ns)
 }
+
+const _tags = _tagsNS("")
+const tags = new Proxy(tagsNS, {get: (_, name) => _tags[name]})
 
 const hydrate = (dom, f) => {
   expect(dom instanceof Node, "1st argument of `van.hydrate` function must be a DOM Node object")
@@ -124,4 +123,4 @@ const hydrate = (dom, f) => {
   return van.hydrate(dom, withResultValidation(f))
 }
 
-export default {add, _, tags: _tagsNS(), tagsNS, state, val: van.val, oldVal: van.oldVal, derive, hydrate, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
+export default {add, tags, state, derive, hydrate, startCapturingErrors, stopCapturingErrors, get capturedErrors() { return capturedErrors }}
