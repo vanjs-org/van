@@ -97,9 +97,9 @@ const debugHandler = {
             `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`), v)
 
         if (isState(v))
-          debugProps[k] = van._(() => validatePropValue(v.val))
+          debugProps[k] = van.derive(() => validatePropValue(v.val))
         else if (typeof v === "function" && (!k.startsWith("on") || v._isBindingFunc))
-          debugProps[k] = van._(() => validatePropValue(v()))
+          debugProps[k] = van.derive(() => validatePropValue(v()))
         else
           debugProps[k] = validatePropValue(v)
       }

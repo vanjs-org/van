@@ -31,15 +31,14 @@ type Tags = Readonly<Record<string, TagFunc<Element>>> & {
   [K in keyof HTMLElementTagNameMap]: TagFunc<HTMLElementTagNameMap[K]>
 }
 
+declare function state<T>(initVal: T): State<T>
+declare function state<T>(): State<T | undefined>
+
 export interface Van {
-  readonly state: <T>(initVal: T) => State<T>
-  readonly val: <T>(s: Val<T>) => T
-  readonly oldVal: <T>(s: Val<T>) => T
+  readonly state: typeof state
   readonly derive: <T>(f: () => T) => State<T>
   readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
-  readonly _: (f: () => PropValue) => () => PropValue
-  readonly tags: Tags
-  readonly tagsNS: (namespaceURI: string) => Readonly<Record<string, TagFunc<Element>>>
+  readonly tags: Tags & ((namespaceURI: string) => Readonly<Record<string, TagFunc<Element>>>)
   readonly hydrate: <T extends Node>(dom: T, f: (dom: T) => T | null | undefined) => T
 }
 

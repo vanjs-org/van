@@ -158,7 +158,7 @@ const runTests = async (van, msgDom, { debug }) => {
         tags_stateDerivedProp_nonStateDeps_connected: withHiddenDom(async (hiddenDom) => {
             const host = van.state("example.com");
             const path = "/hello";
-            const dom = a({ href: () => `https://${van.val(host)}${van.val(path)}` }, "Test Link");
+            const dom = a({ href: () => `https://${host.val}${path}` }, "Test Link");
             van.add(hiddenDom, dom);
             assertEq(dom.href, "https://example.com/hello");
             host.val = "vanjs.org";
@@ -168,7 +168,7 @@ const runTests = async (van, msgDom, { debug }) => {
         tags_stateDerivedProp_nonStateDeps_disconnected: async () => {
             const host = van.state("example.com");
             const path = "/hello";
-            const dom = a({ href: () => `https://${van.val(host)}${van.val(path)}` }, "Test Link");
+            const dom = a({ href: () => `https://${host.val}${path}` }, "Test Link");
             assertEq(dom.href, "https://example.com/hello");
             host.val = "vanjs.org";
             await sleep(waitMsOnDomUpdates);
@@ -227,7 +227,7 @@ const runTests = async (van, msgDom, { debug }) => {
         tags_stateDerivedOnclickHandler_connected: withHiddenDom(async (hiddenDom) => {
             const elementName = van.state("p");
             van.add(hiddenDom, button({
-                onclick: van._(() => {
+                onclick: van.derive(() => {
                     const name = elementName.val;
                     return name ? () => van.add(hiddenDom, van.tags[name]("Button clicked!")) : null;
                 }),
@@ -247,7 +247,7 @@ const runTests = async (van, msgDom, { debug }) => {
             const dom = div();
             const elementName = van.state("p");
             van.add(dom, button({
-                onclick: van._(() => {
+                onclick: van.derive(() => {
                     const name = elementName.val;
                     return name ? () => van.add(dom, van.tags[name]("Button clicked!")) : null;
                 }),
@@ -325,7 +325,7 @@ const runTests = async (van, msgDom, { debug }) => {
         tags_stateDerivedCustomEventHandler: withHiddenDom(async (hiddenDom) => {
             const handlerType = van.state(1);
             van.add(hiddenDom, button({
-                oncustom: van._(() => handlerType.val === 1 ?
+                oncustom: van.derive(() => handlerType.val === 1 ?
                     () => van.add(hiddenDom, p("Handler 1 triggered!")) :
                     () => van.add(hiddenDom, p("Handler 2 triggered!"))),
             }));
@@ -379,12 +379,12 @@ const runTests = async (van, msgDom, { debug }) => {
             assertEq(dom.outerHTML, "<p>Text</p>");
         }),
         tagsNS_svg: () => {
-            const { circle, path, svg } = van.tagsNS("http://www.w3.org/2000/svg");
+            const { circle, path, svg } = van.tags("http://www.w3.org/2000/svg");
             const dom = svg({ width: "16px", viewBox: "0 0 50 50" }, circle({ cx: "25", cy: "25", "r": "20", stroke: "black", "stroke-width": "2", fill: "yellow" }), circle({ cx: "16", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), circle({ cx: "34", cy: "20", "r": "2", stroke: "black", "stroke-width": "2", fill: "black" }), path({ "d": "M 15 30 Q 25 40, 35 30", stroke: "black", "stroke-width": "2", fill: "transparent" }));
             assertEq(dom.outerHTML, '<svg width="16px" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" stroke="black" stroke-width="2" fill="yellow"></circle><circle cx="16" cy="20" r="2" stroke="black" stroke-width="2" fill="black"></circle><circle cx="34" cy="20" r="2" stroke="black" stroke-width="2" fill="black"></circle><path d="M 15 30 Q 25 40, 35 30" stroke="black" stroke-width="2" fill="transparent"></path></svg>');
         },
         tagsNS_math: () => {
-            const { math, mi, mn, mo, mrow, msup } = van.tagsNS("http://www.w3.org/1998/Math/MathML");
+            const { math, mi, mn, mo, mrow, msup } = van.tags("http://www.w3.org/1998/Math/MathML");
             const dom = math(msup(mi("e"), mrow(mi("i"), mi("π"))), mo("+"), mn("1"), mo("="), mn("0"));
             assertEq(dom.outerHTML, '<math><msup><mi>e</mi><mrow><mi>i</mi><mi>π</mi></mrow></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>0</mn></math>');
         },
@@ -772,7 +772,7 @@ const runTests = async (van, msgDom, { debug }) => {
         }),
         stateDerivedChild_nonStateDeps: withHiddenDom(async (hiddenDom) => {
             const part1 = "👋Hello ", part2 = van.state("🗺️World");
-            assertEq(van.add(hiddenDom, () => `${van.val(part1)}${van.val(part2)}, from: ${van.oldVal(part1)}${van.oldVal(part2)}`), hiddenDom);
+            assertEq(van.add(hiddenDom, () => `${part1}${part2.val}, from: ${part1}${part2.oldVal}`), hiddenDom);
             const dom = hiddenDom.firstChild;
             assertEq(dom.textContent, "👋Hello 🗺️World, from: 👋Hello 🗺️World");
             assertEq(hiddenDom.innerHTML, "👋Hello 🗺️World, from: 👋Hello 🗺️World");
@@ -784,7 +784,7 @@ const runTests = async (van, msgDom, { debug }) => {
         }),
         stateDerivedChild_oldVal: withHiddenDom(async (hiddenDom) => {
             const text = van.state("Old Text");
-            assertEq(van.add(hiddenDom, () => `From: "${van.oldVal(text)}" to: "${van.val(text)}"`), hiddenDom);
+            assertEq(van.add(hiddenDom, () => `From: "${text.oldVal}" to: "${text.val}"`), hiddenDom);
             const dom = hiddenDom.firstChild;
             assertEq(dom.textContent, 'From: "Old Text" to: "Old Text"');
             assertEq(hiddenDom.innerHTML, 'From: "Old Text" to: "Old Text"');
@@ -867,10 +867,6 @@ const runTests = async (van, msgDom, { debug }) => {
         }),
     };
     const debugTests = {
-        escape_nonFuncArg: () => {
-            const a = van.state(0);
-            assertError("Must pass-in a function to `van._`", () => van._(++a.val));
-        },
         tags_invalidProp_nonFuncOnHandler: async () => {
             const counter = van.state(0);
             assertError("Only functions and null are allowed", () => button({ onclick: ++counter.val }, "Increment"));
@@ -879,7 +875,7 @@ const runTests = async (van, msgDom, { debug }) => {
             // State as property
             await capturingErrors("Only functions and null are allowed", 1, () => button({ onclick: van.state(++counter.val) }, "Increment"));
             // State derived property
-            await capturingErrors("Only functions and null are allowed", 1, () => button({ onclick: van._(() => ++counter.val) }, "Increment"));
+            await capturingErrors("Only functions and null are allowed", 1, () => button({ onclick: van.derive(() => ++counter.val) }, "Increment"));
         },
         tags_invalidProp_nonPrimitiveValue: async () => {
             assertError(/Only.*are valid prop value types/, () => a({ href: {} }));
@@ -911,7 +907,7 @@ const runTests = async (van, msgDom, { debug }) => {
         }),
         tags_invalidFollowupPropValues_stateDerivedProp: withHiddenDom(async (hiddenDom) => {
             const s = van.state("https://vanjs.org/"), t = van.state(() => { });
-            van.add(hiddenDom, a({ href: () => s.val || {} }), a({ href: () => s.val || undefined }), a({ href: () => s.val || ((x) => x * 2) }), button({ onclick: van._(() => t.val || 1) }));
+            van.add(hiddenDom, a({ href: () => s.val || {} }), a({ href: () => s.val || undefined }), a({ href: () => s.val || ((x) => x * 2) }), button({ onclick: van.derive(() => t.val || 1) }));
             await capturingErrors(/Only.*are valid prop value types/, 3, async () => {
                 s.val = "";
                 await sleep(waitMsOnDomUpdates);
@@ -931,12 +927,12 @@ const runTests = async (van, msgDom, { debug }) => {
             van.add(hiddenDom, dom);
             assertError("already connected to document", () => div(p(), dom, p()));
         }),
-        tagsNS_invalidNs: () => {
-            assertError("Must provide a string", () => van.tagsNS(1));
-            assertError("Must provide a string", () => van.tagsNS(null));
-            assertError("Must provide a string", () => van.tagsNS(undefined));
-            assertError("Must provide a string", () => van.tagsNS({}));
-            assertError("Must provide a string", () => van.tagsNS(((x) => x * 2)));
+        tags_invalidNs: () => {
+            assertError("Must provide a string", () => van.tags(1));
+            assertError("Must provide a string", () => van.tags(null));
+            assertError("Must provide a string", () => van.tags(undefined));
+            assertError("Must provide a string", () => van.tags({}));
+            assertError("Must provide a string", () => van.tags(((x) => x * 2)));
         },
         add_1stArgNotDom: () => {
             assertError("1st argument of `van.add` function must be a DOM Element object", () => van.add({}, div()));
@@ -1027,16 +1023,18 @@ const runTests = async (van, msgDom, { debug }) => {
             await capturingErrors("it shouldn't be already connected to document", 1, () => van.hydrate(dom1, () => dom2));
         }),
     };
+    const stateProto = Object.getPrototypeOf(van.state());
+    const getVal = (v) => Object.getPrototypeOf(v !== null && v !== void 0 ? v : 0) === stateProto ? v.val : v;
     const Counter = ({ van, id, init = 0, buttonStyle = "👍👎", }) => {
         const { button, div } = van.tags;
-        const [up, down] = [...van.val(buttonStyle)];
+        const [up, down] = [...getVal(buttonStyle)];
         const counter = van.state(init);
         return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, up), button({ onclick: () => --counter.val }, down));
     };
     const OptimizedCounter = ({ van, id, init = 0, buttonStyle = "👍👎", }) => {
         const { button, div } = van.tags;
         const counter = van.state(init);
-        return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, () => [...van.val(buttonStyle)][0]), button({ onclick: () => --counter.val }, () => [...van.val(buttonStyle)][1]));
+        return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, () => [...getVal(buttonStyle)][0]), button({ onclick: () => --counter.val }, () => [...getVal(buttonStyle)][1]));
     };
     const hydrateExample = (Counter) => withHiddenDom(async (hiddenDom) => {
         const counterInit = 5;
@@ -1232,11 +1230,11 @@ const runTests = async (van, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.querySelector("span.preview").style.cssText, "font-size: 20px; color: blue;");
         }),
-        escapeDerivedProp: withHiddenDom(async (hiddenDom) => {
+        derivedEventHandler: withHiddenDom(async (hiddenDom) => {
             const Counter = () => {
                 const counter = van.state(0);
                 const action = van.state("👍");
-                return span("❤️ ", counter, " ", select({ oninput: e => action.val = e.target.value, value: action }, option({ value: "👍" }, "👍"), option({ value: "👎" }, "👎")), " ", button({ onclick: van._(() => action.val === "👍" ?
+                return span("❤️ ", counter, " ", select({ oninput: e => action.val = e.target.value, value: action }, option({ value: "👍" }, "👍"), option({ value: "👎" }, "👎")), " ", button({ onclick: van.derive(() => action.val === "👍" ?
                         () => ++counter.val : () => --counter.val) }, "Run"));
             };
             van.add(hiddenDom, Counter());
@@ -1313,7 +1311,15 @@ const runTests = async (van, msgDom, { debug }) => {
         }),
         polymorphicBinding: withHiddenDom(async (hiddenDom) => {
             let numYellowButtonClicked = 0;
-            const Button = ({ color, text, onclick }) => button({ style: () => `background-color: ${van.val(color)};`, onclick }, text);
+            const val = (v) => {
+                const protoOfV = Object.getPrototypeOf(v !== null && v !== void 0 ? v : 0);
+                if (protoOfV === stateProto)
+                    return v.val;
+                if (protoOfV === Function.prototype)
+                    return v();
+                return v;
+            };
+            const Button = ({ color, text, onclick }) => button({ style: () => `background-color: ${val(color)};`, onclick }, text);
             const App = () => {
                 const colorState = van.state("green");
                 const textState = van.state("Turn Red");
@@ -1328,21 +1334,32 @@ const runTests = async (van, msgDom, { debug }) => {
                     onclickState.val = turnRed;
                 };
                 const onclickState = van.state(turnRed);
-                return span(Button({ color: "yellow", text: "Click Me", onclick: () => ++numYellowButtonClicked }), " ", Button({ color: colorState, text: textState, onclick: onclickState }));
+                const lightness = van.state(255);
+                return span(Button({ color: "yellow", text: "Click Me", onclick: () => ++numYellowButtonClicked }), " ", Button({ color: colorState, text: textState, onclick: onclickState }), " ", Button({
+                    color: () => `rgb(${lightness.val}, ${lightness.val}, ${lightness.val})`,
+                    text: "Get Darker",
+                    onclick: () => lightness.val = Math.max(lightness.val - 10, 0),
+                }));
             };
             van.add(hiddenDom, App());
-            assertEq(hiddenDom.firstChild.outerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button></span>');
-            const [button1, button2] = hiddenDom.querySelectorAll("button");
+            assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(255, 255, 255);">Get Darker</button></span>');
+            const [button1, button2, button3] = hiddenDom.querySelectorAll("button");
             button1.click();
             assertEq(numYellowButtonClicked, 1);
             button1.click();
             assertEq(numYellowButtonClicked, 2);
             button2.click();
             await sleep(waitMsOnDomUpdates);
-            assertEq(hiddenDom.firstChild.outerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: red;">Turn Green</button></span>');
+            assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: red;">Turn Green</button> <button style="background-color: rgb(255, 255, 255);">Get Darker</button></span>');
             button2.click();
             await sleep(waitMsOnDomUpdates);
-            assertEq(hiddenDom.firstChild.outerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button></span>');
+            assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(255, 255, 255);">Get Darker</button></span>');
+            button3.click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(245, 245, 245);">Get Darker</button></span>');
+            button3.click();
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(235, 235, 235);">Get Darker</button></span>');
         }),
         domValuedState_excludeDebug: withHiddenDom(async (hiddenDom) => {
             const TurnBold = () => {
@@ -1465,7 +1482,7 @@ const runTests = async (van, msgDom, { debug }) => {
             const listenersPropKey = Object.entries(renderPre)
                 .filter(([_, v]) => Array.isArray(v))[1][0];
             const dom = div(() => (renderPre.val ? pre : div)(button({
-                oncustom: van._(() => handlerType.val === 1 ?
+                oncustom: van.derive(() => handlerType.val === 1 ?
                     () => van.add(hiddenDom, p("Handler 1 triggered!")) :
                     () => van.add(hiddenDom, p("Handler 2 triggered!"))),
             })));

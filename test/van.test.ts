@@ -1806,7 +1806,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
 
         return span(
           Button({color: "yellow", text: "Click Me", onclick: () => ++numYellowButtonClicked}), " ",
-          Button({color: colorState, text: textState, onclick: onclickState}),
+          Button({color: colorState, text: textState, onclick: onclickState}), " ",
           Button({
             color: () => `rgb(${lightness.val}, ${lightness.val}, ${lightness.val})`,
             text: "Get Darker",
@@ -1817,7 +1817,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
 
       van.add(hiddenDom, App())
 
-      assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button></span>')
+      assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(255, 255, 255);">Get Darker</button></span>')
       const [button1, button2, button3] = hiddenDom.querySelectorAll("button")
 
       button1.click()
@@ -1827,17 +1827,17 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
 
       button2.click()
       await sleep(waitMsOnDomUpdates)
-      assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: red;">Turn Green</button></span>')
+      assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: red;">Turn Green</button> <button style="background-color: rgb(255, 255, 255);">Get Darker</button></span>')
       button2.click()
       await sleep(waitMsOnDomUpdates)
-      assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button></span>')
+      assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(255, 255, 255);">Get Darker</button></span>')
 
       button3.click()
       await sleep(waitMsOnDomUpdates)
-      assertEq(hiddenDom.innerHTML, '')
+      assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(245, 245, 245);">Get Darker</button></span>')
       button3.click()
       await sleep(waitMsOnDomUpdates)
-      assertEq(hiddenDom.innerHTML, '')
+      assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(235, 235, 235);">Get Darker</button></span>')
     }),
 
     domValuedState_excludeDebug: withHiddenDom(async hiddenDom => {
