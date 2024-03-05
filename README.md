@@ -20,6 +20,9 @@
           <a href="https://vanjs.org/convert">📝 HTML/MD to VanJS Converter</a>
         </td>
         <td>
+          <a href="https://vanjs.org/x">⚔️ VanX</a>
+        </td>
+        <td>
           <a href="https://github.com/vanjs-org/van/discussions">💬 Discuss</a>
         </td>
       </tr>
