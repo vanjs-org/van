@@ -1345,7 +1345,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
 
   const stateProto = Object.getPrototypeOf(van.state())
 
-  const getVal = <T>(v: T | State<T>) =>
+  const val = <T>(v: T | State<T>) =>
     Object.getPrototypeOf(v ?? 0) === stateProto ? (<State<T>>v).val : <T>v
 
   const Counter = ({
@@ -1353,7 +1353,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
   }: CounterProps) => {
     const {button, div} = van.tags
 
-    const [up, down] = [...getVal(buttonStyle)]
+    const [up, down] = [...val(buttonStyle)]
     const counter = van.state(init)
     return div({...(id ? {id} : {}), "data-counter": counter},
       "❤️ ", counter, " ",
@@ -1370,8 +1370,8 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
     const counter = van.state(init)
     return div({...(id ? {id} : {}), "data-counter": counter},
       "❤️ ", counter, " ",
-      button({onclick: () => ++counter.val}, () => [...getVal(buttonStyle)][0]),
-      button({onclick: () => --counter.val}, () => [...getVal(buttonStyle)][1]),
+      button({onclick: () => ++counter.val}, () => [...val(buttonStyle)][0]),
+      button({onclick: () => --counter.val}, () => [...val(buttonStyle)][1]),
     )
   }
 

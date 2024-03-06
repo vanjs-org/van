@@ -1024,17 +1024,17 @@ const runTests = async (van, msgDom, { debug }) => {
         }),
     };
     const stateProto = Object.getPrototypeOf(van.state());
-    const getVal = (v) => Object.getPrototypeOf(v !== null && v !== void 0 ? v : 0) === stateProto ? v.val : v;
+    const val = (v) => Object.getPrototypeOf(v !== null && v !== void 0 ? v : 0) === stateProto ? v.val : v;
     const Counter = ({ van, id, init = 0, buttonStyle = "👍👎", }) => {
         const { button, div } = van.tags;
-        const [up, down] = [...getVal(buttonStyle)];
+        const [up, down] = [...val(buttonStyle)];
         const counter = van.state(init);
         return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, up), button({ onclick: () => --counter.val }, down));
     };
     const OptimizedCounter = ({ van, id, init = 0, buttonStyle = "👍👎", }) => {
         const { button, div } = van.tags;
         const counter = van.state(init);
-        return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, () => [...getVal(buttonStyle)][0]), button({ onclick: () => --counter.val }, () => [...getVal(buttonStyle)][1]));
+        return div(Object.assign(Object.assign({}, (id ? { id } : {})), { "data-counter": counter }), "❤️ ", counter, " ", button({ onclick: () => ++counter.val }, () => [...val(buttonStyle)][0]), button({ onclick: () => --counter.val }, () => [...val(buttonStyle)][1]));
     };
     const hydrateExample = (Counter) => withHiddenDom(async (hiddenDom) => {
         const counterInit = 5;

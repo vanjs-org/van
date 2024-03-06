@@ -958,17 +958,17 @@
       })
     };
     const stateProto = Object.getPrototypeOf(van2.state());
-    const getVal = (v) => Object.getPrototypeOf(v !== null && v !== void 0 ? v : 0) === stateProto ? v.val : v;
+    const val = (v) => Object.getPrototypeOf(v !== null && v !== void 0 ? v : 0) === stateProto ? v.val : v;
     const Counter = ({ van: van3, id, init = 0, buttonStyle = "\u{1F44D}\u{1F44E}" }) => {
       const { button: button2, div: div3 } = van3.tags;
-      const [up, down] = [...getVal(buttonStyle)];
+      const [up, down] = [...val(buttonStyle)];
       const counter = van3.state(init);
       return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, up), button2({ onclick: () => --counter.val }, down));
     };
     const OptimizedCounter = ({ van: van3, id, init = 0, buttonStyle = "\u{1F44D}\u{1F44E}" }) => {
       const { button: button2, div: div3 } = van3.tags;
       const counter = van3.state(init);
-      return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, () => [...getVal(buttonStyle)][0]), button2({ onclick: () => --counter.val }, () => [...getVal(buttonStyle)][1]));
+      return div3(Object.assign(Object.assign({}, id ? { id } : {}), { "data-counter": counter }), "\u2764\uFE0F ", counter, " ", button2({ onclick: () => ++counter.val }, () => [...val(buttonStyle)][0]), button2({ onclick: () => --counter.val }, () => [...val(buttonStyle)][1]));
     };
     const hydrateExample = (Counter2) => withHiddenDom(async (hiddenDom) => {
       const counterInit = 5;
@@ -1236,7 +1236,7 @@
       }),
       polymorphicBinding: withHiddenDom(async (hiddenDom) => {
         let numYellowButtonClicked = 0;
-        const val = (v) => {
+        const val2 = (v) => {
           const protoOfV = Object.getPrototypeOf(v !== null && v !== void 0 ? v : 0);
           if (protoOfV === stateProto)
             return v.val;
@@ -1244,7 +1244,7 @@
             return v();
           return v;
         };
-        const Button = ({ color, text, onclick }) => button({ style: () => `background-color: ${val(color)};`, onclick }, text);
+        const Button = ({ color, text, onclick }) => button({ style: () => `background-color: ${val2(color)};`, onclick }, text);
         const App = () => {
           const colorState = van2.state("green");
           const textState = van2.state("Turn Red");

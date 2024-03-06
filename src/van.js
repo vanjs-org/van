@@ -1,7 +1,7 @@
 // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
 
 // Global variables - aliasing some builtin symbols to reduce the bundle size.
-let Obj = Object, _undefined, protoOf = Obj.getPrototypeOf, doc = document
+let protoOf = Object.getPrototypeOf
 let changedStates, curDeps, curNewDerives, alwaysConnectedDom = {isConnected: 1}, gcCycleInMs = 1000, statesToGc, propSetterCache = {}
 let objProto = protoOf(alwaysConnectedDom), funcProto = protoOf(protoOf)
 
@@ -27,7 +27,7 @@ let addStatesToGc = d => statesToGc = addAndScheduleOnFirst(statesToGc, d, () =>
   for (let s of statesToGc)
     s._bindings = keepConnected(s._bindings),
     s._listeners = keepConnected(s._listeners)
-  statesToGc = _undefined
+  statesToGc = null
 }, gcCycleInMs)
 
 let stateProto = {
@@ -46,7 +46,7 @@ let stateProto = {
     if (v !== this._val) {
       this._val = v
       let listeners = [...this._listeners = keepConnected(this._listeners)]
-      for (let l of listeners) derive(l.f, l.s, l._dom), l._dom = _undefined
+      for (let l of listeners) derive(l.f, l.s, l._dom), l._dom = null
       this._bindings.length ?
         changedStates = addAndScheduleOnFirst(changedStates, this, updateDoms) :
         this._oldVal = v
@@ -66,7 +66,7 @@ let bind = (f, dom) => {
   let deps = {_getters: new Set, _setters: new Set}, binding = {f}, prevNewDerives = curNewDerives
   curNewDerives = []
   let newDom = runAndCaptureDeps(f, deps, dom)
-  newDom = (newDom ?? doc).nodeType ? newDom : new Text(newDom)
+  newDom = (newDom ?? document).nodeType ? newDom : new Text(newDom)
   for (let d of deps._getters)
     deps._setters.has(d) || (addStatesToGc(d), d._bindings.push(binding))
   for (let l of curNewDerives) l._dom = newDom
@@ -88,18 +88,18 @@ let add = (dom, ...children) => {
     let protoOfC = protoOf(c ?? 0)
     let child = protoOfC === stateProto ? bind(() => c.val) :
       protoOfC === funcProto ? bind(c) : c
-    child != _undefined && dom.append(child)
+    child != null && dom.append(child)
   }
   return dom
 }
 
 let tag = (ns, name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
-  let dom = ns ? doc.createElementNS(ns, name) : doc.createElement(name)
-  for (let [k, v] of Obj.entries(props)) {
+  let dom = ns ? document.createElementNS(ns, name) : document.createElement(name)
+  for (let [k, v] of Object.entries(props)) {
     let getPropDescriptor = proto => proto ?
-      Obj.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) :
-      _undefined
+      Object.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) :
+      null
     let cacheKey = name + "," + k
     let propSetter = propSetterCache[cacheKey] ??
       (propSetterCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0)
@@ -117,7 +117,7 @@ let tag = (ns, name, ...args) => {
   return add(dom, ...children)
 }
 
-let handler = ns => ({get: (_, name) => tag.bind(undefined, ns, name)})
+let handler = ns => ({get: (_, name) => tag.bind(null, ns, name)})
 let tagsNS = ns => new Proxy(tag, handler(ns))
 let tags = new Proxy(tagsNS, handler())
 
@@ -125,9 +125,9 @@ let update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom)
 
 let updateDoms = () => {
   let changedStatesArray = [...changedStates].filter(s => s._val !== s._oldVal)
-  changedStates = _undefined
+  changedStates = null
   for (let b of new Set(changedStatesArray.flatMap(s => s._bindings = keepConnected(s._bindings))))
-    update(b._dom, bind(b.f, b._dom)), b._dom = _undefined
+    update(b._dom, bind(b.f, b._dom)), b._dom = null
   for (let s of changedStatesArray) s._oldVal = s._val
 }
 

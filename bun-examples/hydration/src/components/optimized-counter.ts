@@ -12,10 +12,15 @@ export default ({
 }: Props) => {
   const {button, div} = van.tags
 
+  const stateProto = Object.getPrototypeOf(van.state())
+
+  const val = <T>(v: T | State<T>) =>
+    Object.getPrototypeOf(v ?? 0) === stateProto ? (<State<T>>v).val : <T>v
+
   const counter = van.state(init)
   return div({...(id ? {id} : {}), "data-counter": counter},
     "❤️ ", counter, " ",
-    button({onclick: () => ++counter.val}, () => [...van.val(buttonStyle)][0]),
-    button({onclick: () => --counter.val}, () => [...van.val(buttonStyle)][1]),
+    button({onclick: () => ++counter.val}, () => [...val(buttonStyle)][0]),
+    button({onclick: () => --counter.val}, () => [...val(buttonStyle)][1]),
   )
 }
