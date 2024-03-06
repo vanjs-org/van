@@ -3,10 +3,10 @@
   // Global variables - aliasing some builtin symbols to reduce the bundle size.
   let {fromEntries, entries, keys, getPrototypeOf} = Object
   let {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect
-  let Sym = Symbol, {state, derive, add, tags} = van, stateProto = getPrototypeOf(state())
+  let {state, derive, add, tags} = van, stateProto = getPrototypeOf(state())
   let itemsToGc, gcCycleInMs = 1000, _undefined
-  let statesSym = Sym(), objSym = Sym(), isCalcFunc = Sym(), bindingsSym = Sym(), keysGenSym = Sym()
-  let keySym = Sym()
+  let statesSym = Symbol(), objSym = Symbol(), isCalcFunc = Symbol(), bindingsSym = Symbol()
+  let keysGenSym = Symbol(), keySym = Symbol()
   let calc = f => (f[isCalcFunc] = 1, f)
   let toState = v => v?.[isCalcFunc] ? derive(() => reactive(v())) : state(reactive(v))
   let reactive = srcObj => {
@@ -27,10 +27,11 @@
           let states = obj[statesSym]
           if (name in states) return states[name].val = reactive(v), 1
           let existingKey = name in obj
+          let setNewLength = existingKey && name === "length" && v !== obj.length
           if (!refSet(obj, name, v)) return
-          existingKey ||
-            refSet(states, name, toState(v)) &&
-            (++obj[keysGenSym].val, onAdd(proxy, name, states[name]))
+          existingKey ?
+            setNewLength && ++obj[keysGenSym].val :
+            refSet(states, name, toState(v)) && (++obj[keysGenSym].val, onAdd(proxy, name, states[name]))
           return 1
         },
         deleteProperty: (obj, name) => (

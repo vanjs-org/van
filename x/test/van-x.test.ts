@@ -244,6 +244,13 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(json.val, '{"a":3,"c":4}')
 
       vanX.replace(data, _ => [["a", 1], ["b", 2], ["c", 3], ["d", 4]])
+      assertEq(json.val, '{"a":1,"b":2,"c":3,"d":4}')
+
+      vanX.replace(data, _ => [["a", 1], ["b", 2]])
+      assertEq(json.val, '{"a":1,"b":2}')
+
+      vanX.replace(data, _ => [])
+      assertEq(json.val, '{}')
     },
 
     reactive_nullOrUndefinedFields: withHiddenDom(async hiddenDom => {
@@ -268,6 +275,57 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       await sleep(waitMsOnDomUpdates)
       assertEq(hiddenDom.innerHTML, '<div>a: null</div><div>b: undefined</div><div>c: null</div><div>d: undefined</div>')
     }),
+
+    reactive_arrayLength: () => {
+      const data = vanX.reactive<number[]>([])
+      let numLengthDerived = 0
+      const length = van.derive(() => {
+        ++numLengthDerived
+        return data.length
+      })
+
+      assertEq(length.val, 0)
+      assertEq(numLengthDerived, 1)
+      data.push(1)
+      assertEq(length.val, 1)
+      assertEq(numLengthDerived, 2)
+      data.push(2)
+      assertEq(length.val, 2)
+      assertEq(numLengthDerived, 3)
+      data.push(3)
+      assertEq(length.val, 3)
+      assertEq(numLengthDerived, 4)
+      data.push(4)
+      assertEq(length.val, 4)
+      assertEq(numLengthDerived, 5)
+      data.push(5)
+      assertEq(length.val, 5)
+      assertEq(numLengthDerived, 6)
+      data[5] = 6
+      assertEq(length.val, 6)
+      assertEq(numLengthDerived, 7)
+
+      data.pop()
+      assertEq(length.val, 5)
+      // Length will be derived twice for `pop` call.
+      // One for key deletion, the other for resetting length
+      assertEq(numLengthDerived, 9)
+      data.pop()
+      assertEq(length.val, 4)
+      assertEq(numLengthDerived, 11)
+      data.pop()
+      assertEq(length.val, 3)
+      assertEq(numLengthDerived, 13)
+      data.pop()
+      assertEq(length.val, 2)
+      assertEq(numLengthDerived, 15)
+      data.pop()
+      assertEq(length.val, 1)
+      assertEq(numLengthDerived, 17)
+      data.pop()
+      assertEq(length.val, 0)
+      assertEq(numLengthDerived, 19)
+    },
 
     list_arraySetItem: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive([1, 2, 3])
