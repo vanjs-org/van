@@ -185,6 +185,11 @@ window.runTests = async (van, vanX, file) => {
             assertEq(json.val, '{"a":1,"b":2}');
             vanX.replace(data, _ => []);
             assertEq(json.val, '{}');
+            assertEq(json.val, '{"a":1,"b":2,"c":3,"d":4}');
+            vanX.replace(data, _ => [["a", 1], ["b", 2]]);
+            assertEq(json.val, '{"a":1,"b":2}');
+            vanX.replace(data, _ => []);
+            assertEq(json.val, '{}');
         },
         reactive_nullOrUndefinedFields: withHiddenDom(async (hiddenDom) => {
             const data = vanX.reactive({
