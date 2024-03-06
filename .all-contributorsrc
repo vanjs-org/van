@@ -464,6 +464,15 @@
       "contributions": [
         "plugin"
       ]
+    },
+    {
+      "login": "creatormir",
+      "name": "Miroslaw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37747152?v=4",
+      "profile": "https://github.com/creatormir",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "repoType": "github"
