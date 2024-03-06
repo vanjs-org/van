@@ -308,7 +308,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       data.pop()
       assertEq(length.val, 5)
       // Length will be derived twice for `pop` call.
-      // One for key deletion, the other for resetting length
+      // One for key deletion, the other for resetting the length property
       assertEq(numLengthDerived, 9)
       data.pop()
       assertEq(length.val, 4)
