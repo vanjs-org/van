@@ -103,8 +103,7 @@
     return add(dom, ...children);
   };
   var handler = (ns) => ({ get: (_, name) => tag.bind(null, ns, name) });
-  var tagsNS = (ns) => new Proxy(tag, handler(ns));
-  var tags = new Proxy(tagsNS, handler());
+  var tags = new Proxy((ns) => new Proxy(tag, handler(ns)), handler());
   var update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove();
   var updateDoms = () => {
     let changedStatesArray = [...changedStates].filter((s) => s._val !== s._oldVal);
@@ -115,7 +114,7 @@
       s._oldVal = s._val;
   };
   var hydrate = (dom, f) => update(dom, bind(f, dom));
-  var van_default = { add, tags, tagsNS, state, derive, hydrate };
+  var van_default = { add, tags, state, derive, hydrate };
 
   // van.forbundle.js
   window.van = van_default;

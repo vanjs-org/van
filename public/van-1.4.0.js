@@ -118,8 +118,7 @@ let tag = (ns, name, ...args) => {
 }
 
 let handler = ns => ({get: (_, name) => tag.bind(null, ns, name)})
-let tagsNS = ns => new Proxy(tag, handler(ns))
-let tags = new Proxy(tagsNS, handler())
+let tags = new Proxy(ns => new Proxy(tag, handler(ns)), handler())
 
 let update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove()
 
@@ -133,4 +132,4 @@ let updateDoms = () => {
 
 let hydrate = (dom, f) => update(dom, bind(f, dom))
 
-export default {add, tags, tagsNS, state, derive, hydrate}
+export default {add, tags, state, derive, hydrate}
