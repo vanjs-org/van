@@ -15,6 +15,7 @@ const TodoList = () => {
   return div(
     div(inputDom, button(
       {onclick: () => items["k" + ++id] = {text: inputDom.value!, done: false}}, "Add")),
+    div(() => Object.keys(items).length, " item(s) in total"),
     vanX.list(div, items, ({val: v}, deleter) => div(
       input({type: "checkbox", checked: () => v.done,
         onclick: e => v.done = e.target.checked}), " ",
