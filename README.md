@@ -83,7 +83,7 @@ Declarative DOM tree composition, reusable components, reactive state binding - 
 
 ### Ultra-Lightweight
 
-**VanJS** is the smallest reactive UI framework in the world, with just 1.0kB in the gzipped minified bundle. It's **50~100 times** smaller than most popular alternatives. Guess what you can get from this 1.0kB framework? All essential features of reactive UI programming - DOM templating, state, state binding, state derivation, effect, SPA, client-side routing and even hydration!
+**VanJS** is the smallest reactive UI framework in the world, with just 1.0kB in the gzipped minified bundle. It's **50~100 times** smaller than most popular alternatives. Guess what you can get from this 1.0kB framework? All essential features of modern web frameworks - DOM templating, state, state binding, state derivation, effect, SPA, client-side routing and even hydration!
 
 ![Size comparison](doc/size_comp.png)
 
