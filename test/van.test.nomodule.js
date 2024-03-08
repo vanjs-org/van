@@ -1289,7 +1289,7 @@
       domValuedState_excludeDebug: withHiddenDom(async (hiddenDom) => {
         const TurnBold = () => {
           const vanJS = van2.state("VanJS");
-          return span(button({ onclick: () => vanJS.val = b("VanJS") }, "Turn Bold"), "\xA0Welcome to ", vanJS, ". ", vanJS, "\xA0is awesome!");
+          return span(button({ onclick: () => vanJS.val = b("VanJS") }, "Turn Bold"), " Welcome to ", vanJS, ". ", vanJS, " is awesome!");
         };
         van2.add(hiddenDom, TurnBold());
         const dom = hiddenDom.firstChild;

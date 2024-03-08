@@ -21,7 +21,7 @@ van.add(document.body, Tabs(
       pre(code("npm install vanjs-core")),
     ],
     About: p(
-      "The author of ", b("VanJS"), " is ",
+      "The author of ", b("VanJS"), " is ",
       a({href: "https://github.com/Tao-VanJS"}, " Tao Xin"), "."
     ),
   },

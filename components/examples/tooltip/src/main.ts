@@ -22,7 +22,7 @@ van.add(document.body,
     onmouseenter: () => tooltip2Show.val = true,
     onmouseleave: () => tooltip2Show.val = false,
     onclick: () => ++count.val
-  }, "Increment Counter", Tooltip({text: tooltip2Text, show: tooltip2Show})), " ",
+  }, "Increment Counter", Tooltip({text: tooltip2Text, show: tooltip2Show})), " ",
   button({
     style: "position: relative;",
     onmouseenter: () => tooltip3Show.val = true,

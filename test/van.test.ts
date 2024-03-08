@@ -1845,7 +1845,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
         const vanJS = van.state(<any>"VanJS")
         return span(
           button({onclick: () => vanJS.val = b("VanJS")}, "Turn Bold"),
-          " Welcome to ", vanJS, ". ", vanJS, " is awesome!"
+          " Welcome to ", vanJS, ". ", vanJS, " is awesome!"
         )
       }
 

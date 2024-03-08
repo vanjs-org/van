@@ -36,7 +36,7 @@ const TodoList = () => {
       button({onclick: () => vanX.replace(items, l =>
         l.flatMap(([k1, v1]) => [
           [k1, v1],
-          ["k" + ++id, {text: v1.text + " - copy", done: v1.done}],
+          ["k" + ++id, {text: v1.text + " - copy", done: v1.done}],
         ]))},
         "Duplicate List"),
       button({onclick: () => Object.values(items).forEach(v => v.text += "!")}, 'Append "!"'),
