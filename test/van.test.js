@@ -1,6 +1,6 @@
 window.numTests = 0;
 const runTests = async (van, msgDom, { debug }) => {
-    const { a, b, button, div, h2, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van.tags;
+    const { a, b, button, div, h2, i, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van.tags;
     const assert = (cond) => {
         if (!cond)
             throw new Error("Assertion failed");
@@ -1361,6 +1361,8 @@ const runTests = async (van, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(235, 235, 235);">Get Darker</button></span>');
         }),
+        hydrate: hydrateExample(Counter),
+        hydrateOptimized: hydrateExample(OptimizedCounter),
         domValuedState_excludeDebug: withHiddenDom(async (hiddenDom) => {
             const TurnBold = () => {
                 const vanJS = van.state("VanJS");
@@ -1368,13 +1370,62 @@ const runTests = async (van, msgDom, { debug }) => {
             };
             van.add(hiddenDom, TurnBold());
             const dom = (hiddenDom.firstChild);
-            assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to VanJS. VanJS&nbsp;is awesome!</span>");
+            assertEq(dom.outerHTML, "<span><button>Turn Bold</button> Welcome to VanJS. VanJS is awesome!</span>");
             dom.querySelector("button").click();
             await sleep(waitMsOnDomUpdates);
-            assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to . <b>VanJS</b>&nbsp;is awesome!</span>");
+            assertEq(dom.outerHTML, "<span><button>Turn Bold</button> Welcome to . <b>VanJS</b> is awesome!</span>");
         }),
-        hydrate: hydrateExample(Counter),
-        hydrateOptimized: hydrateExample(OptimizedCounter),
+        minimizeDomUpdates: withHiddenDom(async (hiddenDom) => {
+            const name = van.state("");
+            const Name1 = () => {
+                const numRendered = van.state(0);
+                return div(() => {
+                    ++numRendered.val;
+                    return name.val.trim().length === 0 ?
+                        p("Please enter your name") :
+                        p("Hello ", b(name));
+                }, p(i("The <p> element has been rendered ", numRendered, " time(s).")));
+            };
+            const Name2 = () => {
+                const numRendered = van.state(0);
+                const isNameEmpty = van.derive(() => name.val.trim().length === 0);
+                return div(() => {
+                    ++numRendered.val;
+                    return isNameEmpty.val ?
+                        p("Please enter your name") :
+                        p("Hello ", b(name));
+                }, p(i("The <p> element has been rendered ", numRendered, " time(s).")));
+            };
+            van.add(hiddenDom, p("Your name is: ", input({ type: "text", value: name, oninput: e => name.val = e.target.value })), Name1(), Name2());
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 1 time(s).</i></p></div><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 1 time(s).</i></p></div>');
+            hiddenDom.querySelector("input").value = "T";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            hiddenDom.querySelector("input").value = "Ta";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            hiddenDom.querySelector("input").value = "Tao";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Hello <b>Tao</b></p><p><i>The &lt;p&gt; element has been rendered 4 time(s).</i></p></div><div><p>Hello <b>Tao</b></p><p><i>The &lt;p&gt; element has been rendered 2 time(s).</i></p></div>');
+            hiddenDom.querySelector("input").value = "";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates * 2);
+            assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 5 time(s).</i></p></div><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 3 time(s).</i></p></div>');
+            hiddenDom.querySelector("input").value = "X";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            hiddenDom.querySelector("input").value = "Xi";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            hiddenDom.querySelector("input").value = "Xin";
+            hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+            await sleep(waitMsOnDomUpdates);
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Hello <b>Xin</b></p><p><i>The &lt;p&gt; element has been rendered 8 time(s).</i></p></div><div><p>Hello <b>Xin</b></p><p><i>The &lt;p&gt; element has been rendered 4 time(s).</i></p></div>');
+        }),
     };
     // In a VanJS app, there could be many derived DOM nodes, states and side effects created on-the-fly.
     // We want to test the garbage-collection process is in place to ensure obsolete bindings and

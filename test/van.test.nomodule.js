@@ -3,7 +3,7 @@
   // ../test/van.test.js
   window.numTests = 0;
   var runTests = async (van2, msgDom2, { debug }) => {
-    const { a, b, button, div: div2, h2: h22, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van2.tags;
+    const { a, b, button, div: div2, h2: h22, i, input, li, option, p, pre, select, span, sup, table, tbody, td, th, thead, tr, ul } = van2.tags;
     const assert = (cond) => {
       if (!cond)
         throw new Error("Assertion failed");
@@ -447,7 +447,7 @@
       },
       derive_derivedState: () => {
         const numItems = van2.state(0);
-        const items = van2.derive(() => [...Array(numItems.val).keys()].map((i) => `Item ${i + 1}`));
+        const items = van2.derive(() => [...Array(numItems.val).keys()].map((i2) => `Item ${i2 + 1}`));
         const selectedIndex = van2.derive(() => (items.val, 0));
         const selectedItem = van2.derive(() => items.val[selectedIndex.val]);
         numItems.val = 3;
@@ -610,7 +610,7 @@
       }),
       stateDerivedChild_statefulDynamicDom: withHiddenDom(async (hiddenDom) => {
         const numItems = van2.state(0);
-        const items = van2.derive(() => [...Array(numItems.val).keys()].map((i) => `Item ${i + 1}`));
+        const items = van2.derive(() => [...Array(numItems.val).keys()].map((i2) => `Item ${i2 + 1}`));
         const selectedIndex = van2.derive(() => (items.val, 0));
         const domFunc = (dom) => {
           if (dom && items.val === items.oldVal) {
@@ -619,7 +619,7 @@
             itemDoms[selectedIndex.val].classList.add("selected");
             return dom;
           }
-          return ul(items.val.map((item, i) => li({ class: i === selectedIndex.val ? "selected" : "" }, item)));
+          return ul(items.val.map((item, i2) => li({ class: i2 === selectedIndex.val ? "selected" : "" }, item)));
         };
         van2.add(hiddenDom, domFunc);
         numItems.val = 3;
@@ -978,11 +978,11 @@
       hiddenDom.innerHTML = div2(h22("Basic Counter"), Counter2({ van: van2, init: counterInit }), h22("Styled Counter"), p("Select the button style: ", selectDom), Counter2({ van: van2, init: counterInit, buttonStyle })).innerHTML;
       const clickBtns = async (dom, numUp, numDown) => {
         const [upBtn, downBtn] = [...dom.querySelectorAll("button")];
-        for (let i = 0; i < numUp; ++i) {
+        for (let i2 = 0; i2 < numUp; ++i2) {
           upBtn.click();
           await sleep(waitMsOnDomUpdates);
         }
-        for (let i = 0; i < numDown; ++i) {
+        for (let i2 = 0; i2 < numDown; ++i2) {
           downBtn.click();
           await sleep(waitMsOnDomUpdates);
         }
@@ -1186,7 +1186,7 @@
             " ",
             select({ oninput: (e) => sortedBy.val = e.target.value, value: sortedBy }, option({ value: "Ascending" }, "Ascending"), option({ value: "Descending" }, "Descending")),
             // A State-derived child node
-            () => sortedBy.val === "Ascending" ? ul(items.val.split(",").sort().map((i) => li(i))) : ul(items.val.split(",").sort().reverse().map((i) => li(i)))
+            () => sortedBy.val === "Ascending" ? ul(items.val.split(",").sort().map((i2) => li(i2))) : ul(items.val.split(",").sort().reverse().map((i2) => li(i2)))
           );
         };
         van2.add(hiddenDom, SortedList());
@@ -1286,6 +1286,8 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(235, 235, 235);">Get Darker</button></span>');
       }),
+      hydrate: hydrateExample(Counter),
+      hydrateOptimized: hydrateExample(OptimizedCounter),
       domValuedState_excludeDebug: withHiddenDom(async (hiddenDom) => {
         const TurnBold = () => {
           const vanJS = van2.state("VanJS");
@@ -1293,20 +1295,65 @@
         };
         van2.add(hiddenDom, TurnBold());
         const dom = hiddenDom.firstChild;
-        assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to VanJS. VanJS&nbsp;is awesome!</span>");
+        assertEq(dom.outerHTML, "<span><button>Turn Bold</button> Welcome to VanJS. VanJS is awesome!</span>");
         dom.querySelector("button").click();
         await sleep(waitMsOnDomUpdates);
-        assertEq(dom.outerHTML, "<span><button>Turn Bold</button>&nbsp;Welcome to . <b>VanJS</b>&nbsp;is awesome!</span>");
+        assertEq(dom.outerHTML, "<span><button>Turn Bold</button> Welcome to . <b>VanJS</b> is awesome!</span>");
       }),
-      hydrate: hydrateExample(Counter),
-      hydrateOptimized: hydrateExample(OptimizedCounter)
+      minimizeDomUpdates: withHiddenDom(async (hiddenDom) => {
+        const name = van2.state("");
+        const Name1 = () => {
+          const numRendered = van2.state(0);
+          return div2(() => {
+            ++numRendered.val;
+            return name.val.trim().length === 0 ? p("Please enter your name") : p("Hello ", b(name));
+          }, p(i("The <p> element has been rendered ", numRendered, " time(s).")));
+        };
+        const Name2 = () => {
+          const numRendered = van2.state(0);
+          const isNameEmpty = van2.derive(() => name.val.trim().length === 0);
+          return div2(() => {
+            ++numRendered.val;
+            return isNameEmpty.val ? p("Please enter your name") : p("Hello ", b(name));
+          }, p(i("The <p> element has been rendered ", numRendered, " time(s).")));
+        };
+        van2.add(hiddenDom, p("Your name is: ", input({ type: "text", value: name, oninput: (e) => name.val = e.target.value })), Name1(), Name2());
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 1 time(s).</i></p></div><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 1 time(s).</i></p></div>');
+        hiddenDom.querySelector("input").value = "T";
+        hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        hiddenDom.querySelector("input").value = "Ta";
+        hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        hiddenDom.querySelector("input").value = "Tao";
+        hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Hello <b>Tao</b></p><p><i>The &lt;p&gt; element has been rendered 4 time(s).</i></p></div><div><p>Hello <b>Tao</b></p><p><i>The &lt;p&gt; element has been rendered 2 time(s).</i></p></div>');
+        hiddenDom.querySelector("input").value = "";
+        hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates * 2);
+        assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 5 time(s).</i></p></div><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 3 time(s).</i></p></div>');
+        hiddenDom.querySelector("input").value = "X";
+        hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        hiddenDom.querySelector("input").value = "Xi";
+        hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        hiddenDom.querySelector("input").value = "Xin";
+        hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
+        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Hello <b>Xin</b></p><p><i>The &lt;p&gt; element has been rendered 8 time(s).</i></p></div><div><p>Hello <b>Xin</b></p><p><i>The &lt;p&gt; element has been rendered 4 time(s).</i></p></div>');
+      })
     };
     const gcTests = {
       bindingBasic: withHiddenDom(async (hiddenDom) => {
         const counter = van2.state(0);
         const bindingsPropKey = Object.entries(counter).find(([_, v]) => Array.isArray(v))[0];
         van2.add(hiddenDom, () => span(`Counter: ${counter.val}`));
-        for (let i = 0; i < 100; ++i)
+        for (let i2 = 0; i2 < 100; ++i2)
           ++counter.val;
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.innerHTML, "<span>Counter: 100</span>");
@@ -1317,7 +1364,7 @@
         const bindingsPropKey = Object.entries(renderPre).find(([_, v]) => Array.isArray(v))[0];
         const dom = div2(() => (renderPre.val ? pre : div2)(() => `--${text.val}--`));
         van2.add(hiddenDom, dom);
-        for (let i = 0; i < 20; ++i) {
+        for (let i2 = 0; i2 < 20; ++i2) {
           renderPre.val = !renderPre.val;
           await sleep(waitMsOnDomUpdates);
         }
@@ -1332,7 +1379,7 @@
         const dom = div2(() => cond.val ? a2.val + b2.val : c.val + d.val);
         van2.add(hiddenDom, dom);
         const allStates = [cond, a2, b2, c, d];
-        for (let i = 0; i < 100; ++i) {
+        for (let i2 = 0; i2 < 100; ++i2) {
           const randomState = allStates[Math.floor(Math.random() * allStates.length)];
           if (randomState === cond)
             randomState.val = !randomState.val;
@@ -1349,7 +1396,7 @@
         const a2 = van2.state(0);
         const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
         van2.derive(() => history.push(a2.val));
-        for (let i = 0; i < 100; ++i)
+        for (let i2 = 0; i2 < 100; ++i2)
           ++a2.val;
         assertEq(history.length, 101);
         assertBetween(a2[listenersPropKey].length, 1, 3);
@@ -1363,7 +1410,7 @@
           return (renderPre.val ? pre : div2)(() => `--${text.val}--`);
         });
         van2.add(hiddenDom, dom);
-        for (let i = 0; i < 20; ++i) {
+        for (let i2 = 0; i2 < 20; ++i2) {
           renderPre.val = !renderPre.val;
           await sleep(waitMsOnDomUpdates);
         }
@@ -1377,7 +1424,7 @@
         const listenersPropKey = Object.entries(renderPre).filter(([_, v]) => Array.isArray(v))[1][0];
         const dom = div2(() => (renderPre.val ? pre : div2)({ class: () => class1.val ? "class1" : "class2" }, "Text"));
         van2.add(hiddenDom, dom);
-        for (let i = 0; i < 20; ++i) {
+        for (let i2 = 0; i2 < 20; ++i2) {
           renderPre.val = !renderPre.val;
           await sleep(waitMsOnDomUpdates);
         }
@@ -1393,7 +1440,7 @@
           oncustom: van2.derive(() => handlerType.val === 1 ? () => van2.add(hiddenDom, p("Handler 1 triggered!")) : () => van2.add(hiddenDom, p("Handler 2 triggered!")))
         })));
         van2.add(hiddenDom, dom);
-        for (let i = 0; i < 20; ++i) {
+        for (let i2 = 0; i2 < 20; ++i2) {
           renderPre.val = !renderPre.val;
           await sleep(waitMsOnDomUpdates);
         }
@@ -1407,7 +1454,7 @@
         const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
         van2.derive(() => cond.val ? a2.val + b2.val : c.val + d.val);
         const allStates = [cond, a2, b2, c, d];
-        for (let i = 0; i < 100; ++i) {
+        for (let i2 = 0; i2 < 100; ++i2) {
           const randomState = allStates[Math.floor(Math.random() * allStates.length)];
           if (randomState === cond)
             randomState.val = !randomState.val;
