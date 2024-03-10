@@ -601,6 +601,59 @@ const runTests = async (van, msgDom, { debug }) => {
             await sleep(waitMsOnDomUpdates);
             assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 0 times. <button>Reset</button></div>');
         }),
+        derive_minimizeDerivations: async () => {
+            const a = van.state(3), b = van.state(5);
+            let numDerivations = 0;
+            const s = van.derive(() => {
+                ++numDerivations;
+                return a.val + b.val;
+            });
+            assertEq(s.val, 8);
+            assertEq(numDerivations, 1);
+            // Both `a` and `b` will change. `s` will only be re-derived once
+            ++a.val, ++b.val;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(s.val, 10);
+            assertEq(numDerivations, 2);
+            // `a` will change, and then change back. No derivation will happen
+            ++a.val, --a.val;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(s.val, 10);
+            assertEq(numDerivations, 2);
+        },
+        derive_multiLayerDerivations: withHiddenDom(async (hiddenDom) => {
+            const a = van.state(1), b = van.derive(() => a.val * a.val);
+            const c = van.derive(() => b.val * b.val), d = van.derive(() => c.val * c.val);
+            let numSDerived = 0, numSSquaredDerived = 0;
+            const s = van.derive(() => {
+                ++numSDerived;
+                return a.val + b.val + c.val + d.val;
+            });
+            van.add(hiddenDom, "a = ", a, " b = ", b, " c = ", c, " d = ", d, " s = ", s, " s^2 = ", () => {
+                ++numSSquaredDerived;
+                return s.val * s.val;
+            });
+            assertEq(hiddenDom.innerHTML, "a = 1 b = 1 c = 1 d = 1 s = 4 s^2 = 16");
+            assertEq(numSDerived, 1);
+            assertEq(numSSquaredDerived, 1);
+            ++a.val;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(hiddenDom.innerHTML, "a = 2 b = 4 c = 16 d = 256 s = 278 s^2 = 77284");
+            // `s` is derived 4 times, triggered by `a`, `b`, `c`, `d`, respectively.
+            assertEq(numSDerived, 5);
+            // `s^2` (the `s` derived Text node), is only derived once per one DOM update cycle.
+            assertEq(numSSquaredDerived, 2);
+        }),
+        derive_circularDependency: async () => {
+            const a = van.state(1), b = van.derive(() => a.val + 1);
+            van.derive(() => a.val = b.val + 1);
+            // `a` and `b` are circular dependency. But derivations will stop after limited number of
+            // iterations.
+            ++a.val;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(a.val, 104);
+            assertEq(b.val, 103);
+        },
         stateDerivedChild_dynamicDom: withHiddenDom(async (hiddenDom) => {
             const verticalPlacement = van.state(false);
             const button1Text = van.state("Button 1"), button2Text = van.state("Button 2"), button3Text = van.state("Button 3");

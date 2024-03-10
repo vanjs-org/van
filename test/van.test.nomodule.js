@@ -565,6 +565,53 @@
         await sleep(waitMsOnDomUpdates);
         assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 0 times. <button>Reset</button></div>');
       }),
+      derive_minimizeDerivations: async () => {
+        const a2 = van2.state(3), b2 = van2.state(5);
+        let numDerivations = 0;
+        const s = van2.derive(() => {
+          ++numDerivations;
+          return a2.val + b2.val;
+        });
+        assertEq(s.val, 8);
+        assertEq(numDerivations, 1);
+        ++a2.val, ++b2.val;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(s.val, 10);
+        assertEq(numDerivations, 2);
+        ++a2.val, --a2.val;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(s.val, 10);
+        assertEq(numDerivations, 2);
+      },
+      derive_multiLayerDerivations: withHiddenDom(async (hiddenDom) => {
+        const a2 = van2.state(1), b2 = van2.derive(() => a2.val * a2.val);
+        const c = van2.derive(() => b2.val * b2.val), d = van2.derive(() => c.val * c.val);
+        let numSDerived = 0, numSSquaredDerived = 0;
+        const s = van2.derive(() => {
+          ++numSDerived;
+          return a2.val + b2.val + c.val + d.val;
+        });
+        van2.add(hiddenDom, "a = ", a2, " b = ", b2, " c = ", c, " d = ", d, " s = ", s, " s^2 = ", () => {
+          ++numSSquaredDerived;
+          return s.val * s.val;
+        });
+        assertEq(hiddenDom.innerHTML, "a = 1 b = 1 c = 1 d = 1 s = 4 s^2 = 16");
+        assertEq(numSDerived, 1);
+        assertEq(numSSquaredDerived, 1);
+        ++a2.val;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(hiddenDom.innerHTML, "a = 2 b = 4 c = 16 d = 256 s = 278 s^2 = 77284");
+        assertEq(numSDerived, 5);
+        assertEq(numSSquaredDerived, 2);
+      }),
+      derive_circularDependency: async () => {
+        const a2 = van2.state(1), b2 = van2.derive(() => a2.val + 1);
+        van2.derive(() => a2.val = b2.val + 1);
+        ++a2.val;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(a2.val, 104);
+        assertEq(b2.val, 103);
+      },
       stateDerivedChild_dynamicDom: withHiddenDom(async (hiddenDom) => {
         const verticalPlacement = van2.state(false);
         const button1Text = van2.state("Button 1"), button2Text = van2.state("Button 2"), button3Text = van2.state("Button 3");
