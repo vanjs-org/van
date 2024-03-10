@@ -435,39 +435,51 @@
         assertEq(s.val, "State Version 3");
         assertEq(s.oldVal, "State Version 3");
       }),
-      derive_sideEffect: () => {
+      derive_sideEffect: async () => {
         const history = [];
         const s = van2.state("This");
         van2.derive(() => history.push(s.val));
+        assertEq(JSON.stringify(history), '["This"]');
         s.val = "is";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(JSON.stringify(history), '["This","is"]');
         s.val = "a";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(JSON.stringify(history), '["This","is","a"]');
         s.val = "test";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(JSON.stringify(history), '["This","is","a","test"]');
         s.val = "test";
+        await sleep(waitMsOnDomUpdates);
         assertEq(JSON.stringify(history), '["This","is","a","test"]');
       },
-      derive_derivedState: () => {
+      derive_derivedState: async () => {
         const numItems = van2.state(0);
         const items = van2.derive(() => [...Array(numItems.val).keys()].map((i2) => `Item ${i2 + 1}`));
         const selectedIndex = van2.derive(() => (items.val, 0));
         const selectedItem = van2.derive(() => items.val[selectedIndex.val]);
         numItems.val = 3;
+        await sleep(waitMsOnDomUpdates);
         assertEq(numItems.val, 3);
         assertEq(items.val.join(","), "Item 1,Item 2,Item 3");
         assertEq(selectedIndex.val, 0);
         assertEq(selectedItem.val, "Item 1");
         selectedIndex.val = 2;
+        await sleep(waitMsOnDomUpdates);
         assertEq(selectedIndex.val, 2);
         assertEq(selectedItem.val, "Item 3");
         numItems.val = 5;
+        await sleep(waitMsOnDomUpdates);
         assertEq(numItems.val, 5);
         assertEq(items.val.join(","), "Item 1,Item 2,Item 3,Item 4,Item 5");
         assertEq(selectedIndex.val, 0);
         assertEq(selectedItem.val, "Item 1");
         selectedIndex.val = 3;
+        await sleep(waitMsOnDomUpdates);
         assertEq(selectedIndex.val, 3);
         assertEq(selectedItem.val, "Item 4");
       },
-      derive_conditionalDerivedState: () => {
+      derive_conditionalDerivedState: async () => {
         const cond = van2.state(true);
         const a2 = van2.state(1), b2 = van2.state(2), c = van2.state(3), d = van2.state(4);
         let numEffectTriggered = 0;
@@ -475,34 +487,43 @@
         assertEq(sum.val, 3);
         assertEq(numEffectTriggered, 1);
         a2.val = 11;
+        await sleep(waitMsOnDomUpdates);
         assertEq(sum.val, 13);
         assertEq(numEffectTriggered, 2);
         b2.val = 12;
+        await sleep(waitMsOnDomUpdates);
         assertEq(sum.val, 23);
         assertEq(numEffectTriggered, 3);
         c.val = 13;
+        await sleep(waitMsOnDomUpdates);
         assertEq(sum.val, 23);
         assertEq(numEffectTriggered, 3);
         d.val = 14;
+        await sleep(waitMsOnDomUpdates);
         assertEq(sum.val, 23);
         assertEq(numEffectTriggered, 3);
         cond.val = false;
+        await sleep(waitMsOnDomUpdates);
         assertEq(sum.val, 27);
         assertEq(numEffectTriggered, 4);
         c.val = 23;
+        await sleep(waitMsOnDomUpdates);
         assertEq(sum.val, 37);
         assertEq(numEffectTriggered, 5);
         d.val = 24;
+        await sleep(waitMsOnDomUpdates);
         assertEq(sum.val, 47);
         assertEq(numEffectTriggered, 6);
         a2.val = 21;
+        await sleep(waitMsOnDomUpdates);
         assertEq(sum.val, 47);
         assertEq(numEffectTriggered, 6);
         b2.val = 22;
+        await sleep(waitMsOnDomUpdates);
         assertEq(sum.val, 47);
         assertEq(numEffectTriggered, 6);
       },
-      derive_errorThrown: () => {
+      derive_errorThrown: async () => {
         const s0 = van2.state(1);
         const s1 = van2.derive(() => s0.val * 2);
         const s2 = van2.derive(() => {
@@ -515,6 +536,7 @@
         assertEq(s2.val, 1);
         assertEq(s3.val, 1);
         s0.val = 3;
+        await sleep(waitMsOnDomUpdates);
         assertEq(s1.val, 6);
         assertEq(s2.val, 1);
         assertEq(s3.val, 9);
@@ -1391,13 +1413,15 @@
         await sleep(1e3);
         allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 3));
       }),
-      deriveBasic: () => {
+      long_deriveBasic: async () => {
         const history = [];
         const a2 = van2.state(0);
         const listenersPropKey = Object.entries(a2).filter(([_, v]) => Array.isArray(v))[1][0];
         van2.derive(() => history.push(a2.val));
-        for (let i2 = 0; i2 < 100; ++i2)
+        for (let i2 = 0; i2 < 100; ++i2) {
           ++a2.val;
+          await sleep(waitMsOnDomUpdates);
+        }
         assertEq(history.length, 101);
         assertBetween(a2[listenersPropKey].length, 1, 3);
       },

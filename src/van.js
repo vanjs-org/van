@@ -2,7 +2,8 @@
 
 // Global variables - aliasing some builtin symbols to reduce the bundle size.
 let protoOf = Object.getPrototypeOf
-let changedStates, curDeps, curNewDerives, alwaysConnectedDom = {isConnected: 1}, gcCycleInMs = 1000, statesToGc, propSetterCache = {}
+let changedStates, derivedStates, curDeps, curNewDerives, alwaysConnectedDom = {isConnected: 1}
+let gcCycleInMs = 1000, statesToGc, propSetterCache = {}
 let objProto = protoOf(alwaysConnectedDom), funcProto = protoOf(protoOf)
 
 let addAndScheduleOnFirst = (set, s, f, waitMs) =>
@@ -45,10 +46,8 @@ let stateProto = {
     curDeps?._setters?.add(this)
     if (v !== this._val) {
       this._val = v
-      let listeners = [...this._listeners = keepConnected(this._listeners)]
-      for (let l of listeners) derive(l.f, l.s, l._dom), l._dom = null
-      this._bindings.length ?
-        changedStates = addAndScheduleOnFirst(changedStates, this, updateDoms) :
+      this._bindings.length + this._listeners.length ?
+        (derivedStates?.add(this), changedStates = addAndScheduleOnFirst(changedStates, this, updateDoms)) :
         this._oldVal = v
     }
   },
@@ -123,6 +122,12 @@ let tags = new Proxy(ns => new Proxy(tag, handler(ns)), handler())
 let update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove()
 
 let updateDoms = () => {
+  let iter = 0, derivedStatesArray = [...changedStates].filter(s => s._val !== s._oldVal)
+  do {
+    derivedStates = new Set
+    for (let l of new Set(derivedStatesArray.flatMap(s => s._listeners = keepConnected(s._listeners))))
+      derive(l.f, l.s, l._dom), l._dom = null
+  } while (++iter < 100 && (derivedStatesArray = [...derivedStates]).length)
   let changedStatesArray = [...changedStates].filter(s => s._val !== s._oldVal)
   changedStates = null
   for (let b of new Set(changedStatesArray.flatMap(s => s._bindings = keepConnected(s._bindings))))
