@@ -4,7 +4,7 @@
 let protoOf = Object.getPrototypeOf
 let changedStates, derivedStates, curDeps, curNewDerives, alwaysConnectedDom = {isConnected: 1}
 let gcCycleInMs = 1000, statesToGc, propSetterCache = {}
-let objProto = protoOf(alwaysConnectedDom), funcProto = protoOf(protoOf)
+let objProto = protoOf(alwaysConnectedDom), funcProto = protoOf(protoOf), _undefined
 
 let addAndScheduleOnFirst = (set, s, f, waitMs) =>
   (set ?? (setTimeout(f, waitMs), new Set)).add(s)
@@ -28,7 +28,7 @@ let addStatesToGc = d => statesToGc = addAndScheduleOnFirst(statesToGc, d, () =>
   for (let s of statesToGc)
     s._bindings = keepConnected(s._bindings),
     s._listeners = keepConnected(s._listeners)
-  statesToGc = null
+  statesToGc = _undefined
 }, gcCycleInMs)
 
 let stateProto = {
@@ -87,7 +87,7 @@ let add = (dom, ...children) => {
     let protoOfC = protoOf(c ?? 0)
     let child = protoOfC === stateProto ? bind(() => c.val) :
       protoOfC === funcProto ? bind(c) : c
-    child != null && dom.append(child)
+    child != _undefined && dom.append(child)
   }
   return dom
 }
@@ -98,7 +98,7 @@ let tag = (ns, name, ...args) => {
   for (let [k, v] of Object.entries(props)) {
     let getPropDescriptor = proto => proto ?
       Object.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) :
-      null
+      _undefined
     let cacheKey = name + "," + k
     let propSetter = propSetterCache[cacheKey] ??
       (propSetterCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0)
@@ -116,7 +116,7 @@ let tag = (ns, name, ...args) => {
   return add(dom, ...children)
 }
 
-let handler = ns => ({get: (_, name) => tag.bind(null, ns, name)})
+let handler = ns => ({get: (_, name) => tag.bind(_undefined, ns, name)})
 let tags = new Proxy(ns => new Proxy(tag, handler(ns)), handler())
 
 let update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove()
@@ -126,12 +126,12 @@ let updateDoms = () => {
   do {
     derivedStates = new Set
     for (let l of new Set(derivedStatesArray.flatMap(s => s._listeners = keepConnected(s._listeners))))
-      derive(l.f, l.s, l._dom), l._dom = null
+      derive(l.f, l.s, l._dom), l._dom = _undefined
   } while (++iter < 100 && (derivedStatesArray = [...derivedStates]).length)
   let changedStatesArray = [...changedStates].filter(s => s._val !== s._oldVal)
-  changedStates = null
+  changedStates = _undefined
   for (let b of new Set(changedStatesArray.flatMap(s => s._bindings = keepConnected(s._bindings))))
-    update(b._dom, bind(b.f, b._dom)), b._dom = null
+    update(b._dom, bind(b.f, b._dom)), b._dom = _undefined
   for (let s of changedStatesArray) s._oldVal = s._val
 }
 

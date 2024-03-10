@@ -11,6 +11,7 @@
   var propSetterCache = {};
   var objProto = protoOf(alwaysConnectedDom);
   var funcProto = protoOf(protoOf);
+  var _undefined;
   var addAndScheduleOnFirst = (set, s, f, waitMs) => (set ?? (setTimeout(f, waitMs), /* @__PURE__ */ new Set())).add(s);
   var runAndCaptureDeps = (f, deps, arg) => {
     let prevDeps = curDeps;
@@ -28,7 +29,7 @@
   var addStatesToGc = (d) => statesToGc = addAndScheduleOnFirst(statesToGc, d, () => {
     for (let s of statesToGc)
       s._bindings = keepConnected(s._bindings), s._listeners = keepConnected(s._listeners);
-    statesToGc = null;
+    statesToGc = _undefined;
   }, gcCycleInMs);
   var stateProto = {
     get val() {
@@ -78,7 +79,7 @@
     for (let c of children.flat(Infinity)) {
       let protoOfC = protoOf(c ?? 0);
       let child = protoOfC === stateProto ? bind(() => c.val) : protoOfC === funcProto ? bind(c) : c;
-      child != null && dom.append(child);
+      child != _undefined && dom.append(child);
     }
     return dom;
   };
@@ -86,7 +87,7 @@
     let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args];
     let dom = ns ? document.createElementNS(ns, name) : document.createElement(name);
     for (let [k, v] of Object.entries(props)) {
-      let getPropDescriptor = (proto) => proto ? Object.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) : null;
+      let getPropDescriptor = (proto) => proto ? Object.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) : _undefined;
       let cacheKey = name + "," + k;
       let propSetter = propSetterCache[cacheKey] ?? (propSetterCache[cacheKey] = getPropDescriptor(protoOf(dom))?.set ?? 0);
       let setter = k.startsWith("on") ? (v2, oldV) => {
@@ -100,7 +101,7 @@
     }
     return add(dom, ...children);
   };
-  var handler = (ns) => ({ get: (_, name) => tag.bind(null, ns, name) });
+  var handler = (ns) => ({ get: (_, name) => tag.bind(_undefined, ns, name) });
   var tags = new Proxy((ns) => new Proxy(tag, handler(ns)), handler());
   var update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove();
   var updateDoms = () => {
@@ -108,12 +109,12 @@
     do {
       derivedStates = /* @__PURE__ */ new Set();
       for (let l of new Set(derivedStatesArray.flatMap((s) => s._listeners = keepConnected(s._listeners))))
-        derive(l.f, l.s, l._dom), l._dom = null;
+        derive(l.f, l.s, l._dom), l._dom = _undefined;
     } while (++iter < 100 && (derivedStatesArray = [...derivedStates]).length);
     let changedStatesArray = [...changedStates].filter((s) => s._val !== s._oldVal);
-    changedStates = null;
+    changedStates = _undefined;
     for (let b of new Set(changedStatesArray.flatMap((s) => s._bindings = keepConnected(s._bindings))))
-      update(b._dom, bind(b.f, b._dom)), b._dom = null;
+      update(b._dom, bind(b.f, b._dom)), b._dom = _undefined;
     for (let s of changedStatesArray)
       s._oldVal = s._val;
   };
