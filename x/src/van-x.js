@@ -111,7 +111,7 @@ let replace = (items, f) => {
     for (let [k, s] of entries(newStates))
       dom === doms[k] ? dom = dom.nextSibling :
         _containerDom.insertBefore(doms[k] ??
-          tags.div(toBindFunc(items, k, s, f)).firstChild, dom)
+          tags.p(toBindFunc(items, k, s, f)).firstChild, dom)
   }
 
   for (let k in obj) delete obj[k]
