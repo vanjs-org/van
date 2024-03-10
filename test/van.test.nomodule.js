@@ -452,6 +452,10 @@
         s.val = "test";
         await sleep(waitMsOnDomUpdates);
         assertEq(JSON.stringify(history), '["This","is","a","test"]');
+        s.val = "test2";
+        s.val = "test3";
+        await sleep(waitMsOnDomUpdates);
+        assertEq(JSON.stringify(history), '["This","is","a","test","test3"]');
       },
       derive_derivedState: async () => {
         const numItems = van2.state(0);

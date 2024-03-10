@@ -618,6 +618,12 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       s.val = "test"
       await sleep(waitMsOnDomUpdates)
       assertEq(JSON.stringify(history), '["This","is","a","test"]')
+
+      s.val = "test2"
+      // "Test2" won't be added into `history` as `s` will be set to "test3" immediately
+      s.val = "test3"
+      await sleep(waitMsOnDomUpdates)
+      assertEq(JSON.stringify(history), '["This","is","a","test","test3"]')
     },
 
     derive_derivedState: async () => {
