@@ -202,55 +202,89 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(vanX.stateFields(data)).toString(), "")
     },
 
-    reactive_arrayJson: () => {
+    reactive_arrayJson: async () => {
       const data = vanX.reactive([1, 2])
-      const json = van.derive(() => JSON.stringify(data))
+      let numDerivations = 0
+      const json = van.derive(() => {
+        ++numDerivations
+        return JSON.stringify(data)
+      })
 
       assertEq(json.val, '[1,2]')
+      assertEq(numDerivations, 1)
 
       data[0] = 3
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '[3,2]')
+      assertEq(numDerivations, 2)
 
       data.push(4)
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '[3,2,4]')
+      assertEq(numDerivations, 3)
 
       delete data[1]
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '[3,null,4]')
+      assertEq(numDerivations, 4)
 
       vanX.replace(data, _ => [1, 2, 3, 4])
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '[1,2,3,4]')
+      assertEq(numDerivations, 5)
 
       vanX.replace(data, _ => [1, 2])
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '[1,2]')
+      assertEq(numDerivations, 6)
 
       vanX.replace(data, _ => [])
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '[]')
+      assertEq(numDerivations, 7)
     },
 
-    reactive_objJson: () => {
+    reactive_objJson: async () => {
       interface Data { a?: number, b?: number, c?: number }
       const data = vanX.reactive(<Data>{a: 1, b: 2})
-      const json = van.derive(() => JSON.stringify(data))
+      let numDerivations = 0
+      const json = van.derive(() => {
+        ++numDerivations
+        return JSON.stringify(data)
+      })
 
       assertEq(json.val, '{"a":1,"b":2}')
+      assertEq(numDerivations, 1)
 
       data.a = 3
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '{"a":3,"b":2}')
+      assertEq(numDerivations, 2)
 
       data.c = 4
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '{"a":3,"b":2,"c":4}')
+      assertEq(numDerivations, 3)
 
       delete data.b
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '{"a":3,"c":4}')
+      assertEq(numDerivations, 4)
 
       vanX.replace(data, _ => [["a", 1], ["b", 2], ["c", 3], ["d", 4]])
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '{"a":1,"b":2,"c":3,"d":4}')
+      assertEq(numDerivations, 5)
 
       vanX.replace(data, _ => [["a", 1], ["b", 2]])
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '{"a":1,"b":2}')
+      assertEq(numDerivations, 6)
 
       vanX.replace(data, _ => [])
+      await sleep(waitMsOnDomUpdates)
       assertEq(json.val, '{}')
+      assertEq(numDerivations, 7)
     },
 
     reactive_nullOrUndefinedFields: withHiddenDom(async hiddenDom => {
@@ -276,7 +310,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<div>a: null</div><div>b: undefined</div><div>c: null</div><div>d: undefined</div>')
     }),
 
-    reactive_arrayLength: () => {
+    reactive_arrayLength: async () => {
       const data = vanX.reactive<number[]>([])
       let numLengthDerived = 0
       const length = van.derive(() => {
@@ -286,45 +320,66 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       assertEq(length.val, 0)
       assertEq(numLengthDerived, 1)
+
       data.push(1)
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 1)
       assertEq(numLengthDerived, 2)
+
       data.push(2)
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 2)
       assertEq(numLengthDerived, 3)
+
       data.push(3)
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 3)
       assertEq(numLengthDerived, 4)
+
       data.push(4)
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 4)
       assertEq(numLengthDerived, 5)
+
       data.push(5)
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 5)
       assertEq(numLengthDerived, 6)
+
       data[5] = 6
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 6)
       assertEq(numLengthDerived, 7)
 
       data.pop()
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 5)
-      // Length will be derived twice for `pop` call.
-      // One for key deletion, the other for resetting the length property
-      assertEq(numLengthDerived, 9)
+      assertEq(numLengthDerived, 8)
+
       data.pop()
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 4)
-      assertEq(numLengthDerived, 11)
+      assertEq(numLengthDerived, 9)
+
       data.pop()
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 3)
-      assertEq(numLengthDerived, 13)
+      assertEq(numLengthDerived, 10)
+
       data.pop()
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 2)
-      assertEq(numLengthDerived, 15)
+      assertEq(numLengthDerived, 11)
+
       data.pop()
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 1)
-      assertEq(numLengthDerived, 17)
+      assertEq(numLengthDerived, 12)
+
       data.pop()
+      await sleep(waitMsOnDomUpdates)
       assertEq(length.val, 0)
-      assertEq(numLengthDerived, 19)
+      assertEq(numLengthDerived, 13)
     },
 
     list_arraySetItem: withHiddenDom(async hiddenDom => {
