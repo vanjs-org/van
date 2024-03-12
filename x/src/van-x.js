@@ -51,6 +51,8 @@ let reactive = srcObj => {
 
 let stateFields = obj => obj[statesSym]
 
+let raw = obj => new Proxy(obj[statesSym], {get: (obj, name) => obj[name].rawVal})
+
 let filterBindings = items =>
   items[bindingsSym] = items[bindingsSym].filter(b => b._containerDom.isConnected)
 
@@ -121,4 +123,4 @@ let replace = (items, f) => {
   ++items[keysGenSym].val
 }
 
-export {calc, reactive, stateFields, list, replace}
+export {calc, reactive, stateFields, raw, list, replace}

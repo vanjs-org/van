@@ -1,6 +1,7 @@
 export interface State<T> {
   val: T
   readonly oldVal: T
+  readonly rawVal: T
 }
 
 // Defining readonly view of State<T> for covariance.

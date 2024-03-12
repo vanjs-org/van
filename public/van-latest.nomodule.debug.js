@@ -34,7 +34,7 @@
   var stateProto = {
     get val() {
       curDeps?._getters?.add(this);
-      return this._val;
+      return this.rawVal;
     },
     get oldVal() {
       curDeps?._getters?.add(this);
@@ -42,15 +42,15 @@
     },
     set val(v) {
       curDeps?._setters?.add(this);
-      if (v !== this._val) {
-        this._val = v;
+      if (v !== this.rawVal) {
+        this.rawVal = v;
         this._bindings.length + this._listeners.length ? (derivedStates?.add(this), changedStates = addAndScheduleOnFirst(changedStates, this, updateDoms)) : this._oldVal = v;
       }
     }
   };
   var state = (initVal) => ({
     __proto__: stateProto,
-    _val: initVal,
+    rawVal: initVal,
     _oldVal: initVal,
     _bindings: [],
     _listeners: []
@@ -70,7 +70,7 @@
   var derive = (f, s = state(), dom) => {
     let deps = { _getters: /* @__PURE__ */ new Set(), _setters: /* @__PURE__ */ new Set() }, listener = { f, s };
     listener._dom = dom ?? curNewDerives?.push(listener) ?? alwaysConnectedDom;
-    s.val = runAndCaptureDeps(f, deps, s._val);
+    s.val = runAndCaptureDeps(f, deps, s.rawVal);
     for (let d of deps._getters)
       deps._setters.has(d) || (addStatesToGc(d), d._listeners.push(listener));
     return s;
@@ -105,18 +105,18 @@
   var tags = new Proxy((ns) => new Proxy(tag, handler(ns)), handler());
   var update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove();
   var updateDoms = () => {
-    let iter = 0, derivedStatesArray = [...changedStates].filter((s) => s._val !== s._oldVal);
+    let iter = 0, derivedStatesArray = [...changedStates].filter((s) => s.rawVal !== s._oldVal);
     do {
       derivedStates = /* @__PURE__ */ new Set();
       for (let l of new Set(derivedStatesArray.flatMap((s) => s._listeners = keepConnected(s._listeners))))
         derive(l.f, l.s, l._dom), l._dom = _undefined;
     } while (++iter < 100 && (derivedStatesArray = [...derivedStates]).length);
-    let changedStatesArray = [...changedStates].filter((s) => s._val !== s._oldVal);
+    let changedStatesArray = [...changedStates].filter((s) => s.rawVal !== s._oldVal);
     changedStates = _undefined;
     for (let b of new Set(changedStatesArray.flatMap((s) => s._bindings = keepConnected(s._bindings))))
       update(b._dom, bind(b.f, b._dom)), b._dom = _undefined;
     for (let s of changedStatesArray)
-      s._oldVal = s._val;
+      s._oldVal = s.rawVal;
   };
   var hydrate = (dom, f) => update(dom, bind(f, dom));
   var van_default = { add, tags, state, derive, hydrate };

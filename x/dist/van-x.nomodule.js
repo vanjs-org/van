@@ -44,6 +44,7 @@
     return proxy
   }
   let stateFields = obj => obj[statesSym]
+  let raw = obj => new Proxy(obj[statesSym], {get: (obj, name) => obj[name].rawVal})
   let filterBindings = items =>
     items[bindingsSym] = items[bindingsSym].filter(b => b._containerDom.isConnected)
   let toBindFunc = (items, k, v, f) => () => {
@@ -104,5 +105,5 @@
     items[statesSym] = newStates
     ++items[keysGenSym].val
   }
-  window.vanX = {calc, reactive, stateFields, list, replace}
+  window.vanX = {calc, reactive, stateFields, raw, list, replace}
 }

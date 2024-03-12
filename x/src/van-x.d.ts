@@ -15,6 +15,7 @@ export declare const reactive: <T extends object>(obj: T) => Reactive<T>
 
 export type StateOf<T> = { readonly [K in keyof T]: State<_Reactive<T[K]>> }
 export declare const stateFields: <T extends ReactiveObj>(obj: T) => StateOf<DeReactive<T>>
+export declare const raw: <T extends ReactiveObj>(obj: T) => DeReactive<T>
 
 export type ValueType<T> = T extends (infer V)[] ? V : T[keyof T]
 export type KeyType<T> = T extends unknown[] ? number : T[keyof T]

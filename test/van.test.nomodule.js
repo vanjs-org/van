@@ -435,6 +435,29 @@
         assertEq(s.val, "State Version 3");
         assertEq(s.oldVal, "State Version 3");
       }),
+      state_rawVal: withHiddenDom(async (hiddenDom) => {
+        const history = [];
+        const a2 = van2.state(3), b2 = van2.state(5);
+        const s = van2.derive(() => a2.rawVal + b2.val);
+        van2.derive(() => history.push(a2.rawVal + b2.val));
+        van2.add(hiddenDom, input({ type: "text", value: () => a2.rawVal + b2.val }), p(() => a2.rawVal + b2.val));
+        assertEq(s.val, 8);
+        assertEq(JSON.stringify(history), "[8]");
+        assertEq(hiddenDom.querySelector("input").value, "8");
+        assertEq(hiddenDom.querySelector("p").innerText, "8");
+        ++a2.val;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(s.val, 8);
+        assertEq(JSON.stringify(history), "[8]");
+        assertEq(hiddenDom.querySelector("input").value, "8");
+        assertEq(hiddenDom.querySelector("p").innerText, "8");
+        ++b2.val;
+        await sleep(waitMsOnDomUpdates);
+        assertEq(s.val, 10);
+        assertEq(JSON.stringify(history), "[8,10]");
+        assertEq(hiddenDom.querySelector("input").value, "10");
+        assertEq(hiddenDom.querySelector("p").innerText, "10");
+      }),
       derive_sideEffect: async () => {
         const history = [];
         const s = van2.state("This");

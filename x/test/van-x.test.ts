@@ -8,7 +8,7 @@ declare global {
 window.numTests = 0
 
 window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
-  const {a, button, code, div, h2, input, li, ol, pre, span, sup, ul} = van.tags
+  const {a, button, code, div, h2, input, li, ol, p, pre, span, sup, ul} = van.tags
 
   const assertEq = (lhs: string | number | Node | undefined, rhs: string | number | Node | undefined) => {
     if (lhs !== rhs) throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}.`)
@@ -381,6 +381,34 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(length.val, 0)
       assertEq(numLengthDerived, 13)
     },
+
+    reactive_raw: withHiddenDom(async hiddenDom => {
+      const base = vanX.reactive({a: 3, b: 5})
+      const derived = vanX.reactive({s: vanX.calc(() => vanX.raw(base).a + base.b)})
+      van.add(hiddenDom,
+        div(() => derived.s),
+        input({type: "text", value: () => vanX.raw(base).a + base.b}),
+        p(() => vanX.raw(base).a + base.b),
+      )
+      assertEq(hiddenDom.querySelector("div")!.innerText, "8")
+      assertEq(hiddenDom.querySelector("input")!.value, "8")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "8")
+
+      ++base.a
+      // Changing `base.a` won't trigger all the derivations, as `base.a` is accessed via
+      // `vanX.raw(base).a`
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.querySelector("div")!.innerText, "8")
+      assertEq(hiddenDom.querySelector("input")!.value, "8")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "8")
+
+      // Changing `base.b` will trigger all the derivations, as `base.b` is accessed via `base.b`
+      ++base.b
+      await sleep(waitMsOnDomUpdates)
+      assertEq(hiddenDom.querySelector("div")!.innerText, "10")
+      assertEq(hiddenDom.querySelector("input")!.value, "10")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "10")
+    }),
 
     list_arraySetItem: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive([1, 2, 3])

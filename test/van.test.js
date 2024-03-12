@@ -466,6 +466,35 @@ const runTests = async (van, msgDom, { debug }) => {
             assertEq(s.val, "State Version 3");
             assertEq(s.oldVal, "State Version 3");
         }),
+        state_rawVal: withHiddenDom(async (hiddenDom) => {
+            const history = [];
+            const a = van.state(3), b = van.state(5);
+            const s = van.derive(() => a.rawVal + b.val);
+            van.derive(() => history.push(a.rawVal + b.val));
+            van.add(hiddenDom, input({ type: "text", value: () => a.rawVal + b.val }), p(() => a.rawVal + b.val));
+            assertEq(s.val, 8);
+            assertEq(JSON.stringify(history), "[8]");
+            assertEq(hiddenDom.querySelector("input").value, "8");
+            assertEq(hiddenDom.querySelector("p").innerText, "8");
+            // Changing the `val` of `a` won't triggering the derived states, side effects,
+            // state-derived properties and state-derived child nodes, as the value of `a` is accessed
+            // via `a.rawVal`.
+            ++a.val;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(s.val, 8);
+            assertEq(JSON.stringify(history), "[8]");
+            assertEq(hiddenDom.querySelector("input").value, "8");
+            assertEq(hiddenDom.querySelector("p").innerText, "8");
+            // Changing the `val` of `b` will triggering the derived states, side effects,
+            // state-derived properties and state-derived child nodes, as the value of `b` is accessed
+            // via `b.rawVal`.
+            ++b.val;
+            await sleep(waitMsOnDomUpdates);
+            assertEq(s.val, 10);
+            assertEq(JSON.stringify(history), "[8,10]");
+            assertEq(hiddenDom.querySelector("input").value, "10");
+            assertEq(hiddenDom.querySelector("p").innerText, "10");
+        }),
         derive_sideEffect: async () => {
             const history = [];
             const s = van.state("This");
