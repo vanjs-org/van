@@ -15,7 +15,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
   }
 
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-  const waitMsOnDomUpdates = 5
+  const waitMsForDerivations = 5
 
   const withHiddenDom = (func: (dom: Element) => void | Promise<void>) => async () => {
     const dom = div({class: "hidden"})
@@ -75,30 +75,30 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       base.a = 5
       base.b = 10
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Tao Xin</div><div>Full name: Tao Xin</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>')
 
       base.name = {first: "Vanilla", last: "JavaScript"}
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>')
 
       base.name.first = "Van"
       base.name.last = "JS"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>')
 
       base.list = [1, 2, 3, 4, 5]
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3,4,5 is 5.</div><div>The sum of 1,2,3,4,5 is 15.</div></div>')
 
       base.list[2] = 5
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,5,4,5 is 5.</div><div>The sum of 1,2,5,4,5 is 17.</div></div>')
 
       // Validate we can alter the values deeply under `derived` object
       derived.b.double = 21
       derived.b.squared = 101
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 21</code></div><div><code>10<sup>2</sup> = 101</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,5,4,5 is 5.</div><div>The sum of 1,2,5,4,5 is 17.</div></div>')
     }),
 
@@ -126,16 +126,16 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<div>Name: Tao Xin</div><div>Full name: Tao Xin</div>')
 
       base.name.first = "Alexander"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div>Name: Alexander Xin</div><div>Full name: Alexander Xin</div>')
 
       base.name = {first: "Vanilla", last: "JavaScript"}
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div>')
 
       base.name.first = "Van"
       base.name.last = "JS"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
     }),
 
@@ -156,12 +156,12 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       person.firstName = "Vanilla"
       person.lastName = "JavaScript"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div>')
 
       person.firstName = "Van"
       person.lastName = "JS"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
     }),
 
@@ -182,12 +182,12 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       person.firstName = "Vanilla"
       person.lastName = "JavaScript"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div>')
 
       person.firstName = "Van"
       person.lastName = "JS"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
     }),
 
@@ -214,32 +214,32 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(numDerivations, 1)
 
       data[0] = 3
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '[3,2]')
       assertEq(numDerivations, 2)
 
       data.push(4)
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '[3,2,4]')
       assertEq(numDerivations, 3)
 
       delete data[1]
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '[3,null,4]')
       assertEq(numDerivations, 4)
 
       vanX.replace(data, _ => [1, 2, 3, 4])
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '[1,2,3,4]')
       assertEq(numDerivations, 5)
 
       vanX.replace(data, _ => [1, 2])
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '[1,2]')
       assertEq(numDerivations, 6)
 
       vanX.replace(data, _ => [])
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '[]')
       assertEq(numDerivations, 7)
     },
@@ -257,32 +257,32 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(numDerivations, 1)
 
       data.a = 3
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '{"a":3,"b":2}')
       assertEq(numDerivations, 2)
 
       data.c = 4
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '{"a":3,"b":2,"c":4}')
       assertEq(numDerivations, 3)
 
       delete data.b
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '{"a":3,"c":4}')
       assertEq(numDerivations, 4)
 
       vanX.replace(data, _ => [["a", 1], ["b", 2], ["c", 3], ["d", 4]])
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '{"a":1,"b":2,"c":3,"d":4}')
       assertEq(numDerivations, 5)
 
       vanX.replace(data, _ => [["a", 1], ["b", 2]])
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '{"a":1,"b":2}')
       assertEq(numDerivations, 6)
 
       vanX.replace(data, _ => [])
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(json.val, '{}')
       assertEq(numDerivations, 7)
     },
@@ -306,7 +306,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       data.c = null
       data.d = undefined
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div>a: null</div><div>b: undefined</div><div>c: null</div><div>d: undefined</div>')
     }),
 
@@ -322,62 +322,62 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(numLengthDerived, 1)
 
       data.push(1)
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 1)
       assertEq(numLengthDerived, 2)
 
       data.push(2)
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 2)
       assertEq(numLengthDerived, 3)
 
       data.push(3)
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 3)
       assertEq(numLengthDerived, 4)
 
       data.push(4)
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 4)
       assertEq(numLengthDerived, 5)
 
       data.push(5)
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 5)
       assertEq(numLengthDerived, 6)
 
       data[5] = 6
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 6)
       assertEq(numLengthDerived, 7)
 
       data.pop()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 5)
       assertEq(numLengthDerived, 8)
 
       data.pop()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 4)
       assertEq(numLengthDerived, 9)
 
       data.pop()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 3)
       assertEq(numLengthDerived, 10)
 
       data.pop()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 2)
       assertEq(numLengthDerived, 11)
 
       data.pop()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 1)
       assertEq(numLengthDerived, 12)
 
       data.pop()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(length.val, 0)
       assertEq(numLengthDerived, 13)
     },
@@ -397,14 +397,14 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       ++base.a
       // Changing `base.a` won't trigger all the derivations, as `base.a` is accessed via
       // `vanX.raw(base).a`
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.querySelector("div")!.innerText, "8")
       assertEq(hiddenDom.querySelector("input")!.value, "8")
       assertEq(hiddenDom.querySelector("p")!.innerText, "8")
 
       // Changing `base.b` will trigger all the derivations, as `base.b` is accessed via `base.b`
       ++base.b
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.querySelector("div")!.innerText, "10")
       assertEq(hiddenDom.querySelector("input")!.value, "10")
       assertEq(hiddenDom.querySelector("p")!.innerText, "10")
@@ -417,11 +417,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
       items[1] = 5
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>')
 
       items[2] = 6
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>')
     }),
 
@@ -433,11 +433,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
         assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
         items.b = 5
-        await sleep(waitMsOnDomUpdates)
+        await sleep(waitMsForDerivations)
         assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>')
 
         items.c = 6
-        await sleep(waitMsOnDomUpdates)
+        await sleep(waitMsForDerivations)
         assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>')
       }
     }),
@@ -450,11 +450,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>')
 
       items.push(4)
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li></ul>')
 
       items.push(5)
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li><li>5<button>❌</button></li></ul>')
 
       const deleteBtns = hiddenDom.querySelectorAll("button")
@@ -473,11 +473,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>')
 
       items.d = 4
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li></ul>')
 
       items.e = 5
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li><li>5<button>❌</button></li></ul>')
 
       const deleteBtns = hiddenDom.querySelectorAll("button")
@@ -497,17 +497,17 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       const deleteBtns = hiddenDom.querySelectorAll("button")
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>c<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "0,2")
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>c<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "2")
 
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -521,17 +521,17 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       const deleteBtns = hiddenDom.querySelectorAll("button")
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>c<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "a,c")
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>c<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "c")
 
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -545,17 +545,17 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       const deleteBtns = hiddenDom.querySelectorAll("button")
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "0,1,3,4")
 
       items.shift()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>b<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "0,2,3")
 
       items.unshift("f")
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>f<button>❌</button></li><li>b<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "0,1,3,4")
     }),
@@ -569,17 +569,17 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       const deleteBtns = hiddenDom.querySelectorAll("button")
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "0,1,3,4")
 
       assertEq(items.splice(1, 1).toString(), "b")
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "0,2,3")
 
       assertEq(items.splice(1, 2, "f").toString(), ",d")
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>f<button>❌</button></li><li>e<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "0,1,2")
     }),
@@ -597,11 +597,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       const deleteBtns = hiddenDom.querySelectorAll("ul button")
 
       ;(<HTMLButtonElement>incBtns[0]).click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div>2<button>👍</button></div><div>2<button>👍</button></div><div>3<button>👍</button></div></div><ul><li>2<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>')
 
       ;(<HTMLButtonElement>deleteBtns[1]).click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div>2<button>👍</button></div><div>3<button>👍</button></div></div><ul><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "0,2")
     }),
@@ -619,11 +619,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       const deleteBtns = hiddenDom.querySelectorAll("ul button")
 
       ;(<HTMLButtonElement>incBtns[2]).click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div>1<button>👍</button></div><div>2<button>👍</button></div><div>4<button>👍</button></div></div><ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>4<button>❌</button></li></ul>')
 
       ;(<HTMLButtonElement>deleteBtns[1]).click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div><div>1<button>👍</button></div><div>4<button>👍</button></div></div><ul><li>1<button>❌</button></li><li>4<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "a,c")
     }),
@@ -635,11 +635,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<ul><li>2 - 0</li><li>1 - 1</li><li>3 - 2</li></ul>')
 
       items[1] = 5
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2 - 0</li><li>5 - 1</li><li>3 - 2</li></ul>')
 
       items[2] = 6
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2 - 0</li><li>5 - 1</li><li>6 - 2</li></ul>')
     }),
 
@@ -650,11 +650,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>1 - b</li><li>3 - c</li></ul>')
 
       items.b = 5
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>5 - b</li><li>3 - c</li></ul>')
 
       items.c = 6
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>5 - b</li><li>6 - c</li></ul>')
     }),
 
@@ -669,15 +669,15 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       let incBtns = hiddenDom.querySelectorAll("button")
       incBtns[0].click()
       incBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
 
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
 
       vanX.replace(items, l => l.filter(v => v % 2 === 0))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0,1")
 
@@ -685,16 +685,16 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       incBtns = hiddenDom.querySelectorAll("button")
       const deleteBtns = hiddenDom.querySelectorAll("a")
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>5<button>👍</button><a>❌</a></li></ul>')
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>5<button>👍</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "1")
 
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -710,15 +710,15 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       let incBtns = hiddenDom.querySelectorAll("button")
       incBtns[0].click()
       incBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
 
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
 
       vanX.replace(items, l => l.filter(([_, v]) => v % 2 === 0))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a,c")
 
@@ -726,16 +726,16 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       incBtns = hiddenDom.querySelectorAll("button")
       const deleteBtns = hiddenDom.querySelectorAll("a")
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>5<button>👍</button><a>❌</a></li></ul>')
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>5<button>👍</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "c")
 
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -750,11 +750,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       let incBtns = hiddenDom.querySelectorAll("button")
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>')
 
       vanX.replace(items, l => l.map(v => v * 2))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li></ul>')
 
       // Validate increment and delete buttons still work in the new DOM tree
@@ -763,21 +763,21 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       incBtns[0].click()
       incBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>')
 
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0,2")
 
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0")
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -792,11 +792,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       let incBtns = hiddenDom.querySelectorAll("button")
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>')
 
       vanX.replace(items, l => l.map(([k, v]) => [k, v * 2]))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li></ul>')
 
       // Validate increment and delete buttons still work in the new DOM tree
@@ -805,21 +805,21 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       incBtns[0].click()
       incBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>')
 
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a,c")
 
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a")
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -834,11 +834,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       let incBtns = hiddenDom.querySelectorAll("button")
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
 
       vanX.replace(items, l => l.flatMap(v => [v, v + "-2"]))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>a-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0,1,2,3")
 
@@ -850,26 +850,26 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       incBtns[3].click()
       incBtns[2].click()
       incBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>a-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
 
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0,2,3")
 
       deleteBtns[3].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0,2")
 
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0")
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -884,13 +884,13 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       let incBtns = hiddenDom.querySelectorAll("button")
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
 
       vanX.replace(items, l => l.flatMap(
         ([k, v]) => [[k, v], [k + "-2", v + "-2"]]
       ))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>a-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a,a-2,b,b-2")
 
@@ -902,26 +902,26 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       incBtns[3].click()
       incBtns[2].click()
       incBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>a-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
 
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a,b,b-2")
 
       deleteBtns[3].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a,b")
 
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a")
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -936,11 +936,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       let incBtns = hiddenDom.querySelectorAll("button")
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
 
       vanX.replace(items, l => l.flatMap(v => [v + "-2", v]))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2<button>❗</button><a>❌</a></li><li>a<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
 
       // Validate increment and delete buttons still work in the new DOM tree
@@ -951,26 +951,26 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       incBtns[3].click()
       incBtns[2].click()
       incBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>a!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
 
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0,2,3")
 
       deleteBtns[3].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0,2")
 
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "0")
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -985,11 +985,11 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       let incBtns = hiddenDom.querySelectorAll("button")
       incBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
 
       vanX.replace(items, l => l.flatMap(([k, v]) => [[k + "-2", v + "-2"], [k, v]]))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2<button>❗</button><a>❌</a></li><li>a<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>')
 
       // Validate increment and delete buttons still work in the new DOM tree
@@ -1000,26 +1000,26 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       incBtns[3].click()
       incBtns[2].click()
       incBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>a!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
 
       deleteBtns[1].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a-2,b-2,b")
 
       deleteBtns[3].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a-2,b-2")
 
       deleteBtns[2].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li></ul>')
       assertEq(Object.keys(items).toString(), "a-2")
 
       deleteBtns[0].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
     }),
@@ -1045,7 +1045,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       )
 
       vanX.replace(items, l => l.toSorted())
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(
         [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(),
         arr.toString(),
@@ -1057,7 +1057,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       incBtns[2].click()
       incBtns[5].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(
         [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(),
         "0,1,2!,3,4,5!,6,7,8,9",
@@ -1065,7 +1065,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       deleteBtns[6].click()
       deleteBtns[8].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(
         [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(),
         "0,1,2!,3,4,5!,7,9",
@@ -1095,7 +1095,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       )
 
       vanX.replace(items, kvs => kvs.toSorted(([_1, v1], [_2, v2]) => v1.localeCompare(v2)))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(
         [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(),
         arr.toString(),
@@ -1107,7 +1107,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       incBtns[2].click()
       incBtns[5].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(
         [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(),
         "0,1,2!,3,4,5!,6,7,8,9",
@@ -1115,7 +1115,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       deleteBtns[6].click()
       deleteBtns[8].click()
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(
         [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(),
         "0,1,2!,3,4,5!,7,9",
@@ -1132,18 +1132,18 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>')
 
       items[0].baz.kind = "candy"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>')
 
       vanX.replace(items, () => [{
         foo: 'bar',
         baz: {kind: 'dessert', amount: 'lots'}
       }])
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>')
 
       items[0].baz.kind = "candy"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>')
     }),
 
@@ -1159,18 +1159,18 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>')
 
       items.a.baz.kind = "candy"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>')
 
       vanX.replace(items, () => [["a", {
         foo: 'bar',
         baz: {kind: 'dessert', amount: 'lots'}
       }]])
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>')
 
       items.a.baz.kind = "candy"
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>')
     }),
 
@@ -1196,12 +1196,12 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       hiddenDom.querySelector("input")!.value = "i"
       hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Argentina</li><li>Bolivia</li><li>Brazil</li><li>Chile</li><li>Colombia</li><li>Suriname</li>")
 
       hiddenDom.querySelector("input")!.value = "il"
       hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Brazil</li><li>Chile</li>")
     }),
 
@@ -1240,12 +1240,12 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       hiddenDom.querySelector("input")!.value = "i"
       hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Argentina: 45195777</li><li>Bolivia: 11673029</li><li>Brazil: 213993437</li><li>Chile: 19116209</li><li>Colombia: 50882884</li><li>Suriname: 586634</li>")
 
       hiddenDom.querySelector("input")!.value = "il"
       hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Brazil: 213993437</li><li>Chile: 19116209</li>")
     }),
   }
@@ -1263,7 +1263,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       for (let i = 0; i < 10; ++i) {
         ordered.val = !ordered.val
-        await sleep(waitMsOnDomUpdates)
+        await sleep(waitMsForDerivations)
         assertEq(hiddenDom.innerHTML,
           ordered.val ?
             '<ol><li>1</li><li>2</li><li>3</li></ol>' :
@@ -1272,7 +1272,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       // Trigger the GC
       vanX.replace(items, l => l.filter(_ => 1))
-      await sleep(waitMsOnDomUpdates)
+      await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
       assertEq((<any>items[bindingSymbol]).length, 1)
@@ -1290,7 +1290,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       for (let i = 0; i < 10; ++i) {
         ordered.val = !ordered.val
-        await sleep(waitMsOnDomUpdates)
+        await sleep(waitMsForDerivations)
         assertEq(hiddenDom.innerHTML,
           ordered.val ?
             '<ol><li>1</li><li>2</li><li>3</li></ol>' :

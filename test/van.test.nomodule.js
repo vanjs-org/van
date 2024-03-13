@@ -37,7 +37,7 @@
         throw new Error(`Expected error with message "${msg}" being thrown.`);
     };
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    const waitMsOnDomUpdates = 5;
+    const waitMsForDerivations = 5;
     const withHiddenDom = (func) => async () => {
       const dom = div2({ class: "hidden" });
       van2.add(document.body, dom);
@@ -90,7 +90,7 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.href, "http://example.com/");
         href.val = "https://vanjs.org/";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.href, "https://vanjs.org/");
       }),
       tags_stateAsProp_disconnected: async () => {
@@ -98,7 +98,7 @@
         const dom = a({ href }, "Test Link");
         assertEq(dom.href, "http://example.com/");
         href.val = "https://vanjs.org/";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.href, "http://example.com/");
       },
       tags_stateAsOnclickHandler_connected: withHiddenDom(async (hiddenDom) => {
@@ -109,11 +109,11 @@
         dom.querySelector("button").click();
         assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
         handler.val = () => van2.add(dom, div2("Button clicked!"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         dom.querySelector("button").click();
         assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><div>Button clicked!</div></div>");
         handler.val = null;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         dom.querySelector("button").click();
         assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><div>Button clicked!</div></div>");
       }),
@@ -124,7 +124,7 @@
         dom.querySelector("button").click();
         assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p></div>");
         handler.val = () => van2.add(dom, div2("Button clicked!"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         dom.querySelector("button").click();
         assertEq(dom.outerHTML, "<div><button></button><p>Button clicked!</p><p>Button clicked!</p></div>");
       },
@@ -136,7 +136,7 @@
         assertEq(dom.href, "https://example.com/hello");
         host.val = "vanjs.org";
         path2.val = "/start";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.href, "https://vanjs.org/start");
       }),
       tags_stateDerivedProp_disconnected: async () => {
@@ -146,7 +146,7 @@
         assertEq(dom.href, "https://example.com/hello");
         host.val = "vanjs.org";
         path2.val = "/start";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.href, "https://example.com/hello");
       },
       tags_stateDerivedProp_nonStateDeps_connected: withHiddenDom(async (hiddenDom) => {
@@ -156,7 +156,7 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.href, "https://example.com/hello");
         host.val = "vanjs.org";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.href, "https://vanjs.org/hello");
       }),
       tags_stateDerivedProp_nonStateDeps_disconnected: async () => {
@@ -165,7 +165,7 @@
         const dom = a({ href: () => `https://${host.val}${path2}` }, "Test Link");
         assertEq(dom.href, "https://example.com/hello");
         host.val = "vanjs.org";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.href, "https://example.com/hello");
       },
       tags_stateDerivedProp_errorThrown_connected: withHiddenDom(async (hiddenDom) => {
@@ -188,7 +188,7 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.outerHTML, '<div><div class="hello" data-name="hello">hello</div><div class="hello" data-name="hello">hello</div></div>');
         text.val = "fail";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, '<div><div class="hello" data-name="fail">fail</div><div class="hello" data-name="fail">fail</div></div>');
       }),
       tags_stateDerivedProp_errorThrown_disconnected: async () => {
@@ -210,7 +210,7 @@
         }, text));
         assertEq(dom.outerHTML, '<div><div class="hello" data-name="hello">hello</div><div class="hello" data-name="hello">hello</div></div>');
         text.val = "fail";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, '<div><div class="hello" data-name="hello">hello</div><div class="hello" data-name="hello">hello</div></div>');
       },
       tags_stateDerivedOnclickHandler_connected: withHiddenDom(async (hiddenDom) => {
@@ -224,11 +224,11 @@
         hiddenDom.querySelector("button").click();
         assertEq(hiddenDom.innerHTML, "<button></button><p>Button clicked!</p>");
         elementName.val = "div";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         hiddenDom.querySelector("button").click();
         assertEq(hiddenDom.innerHTML, "<button></button><p>Button clicked!</p><div>Button clicked!</div>");
         elementName.val = "";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         hiddenDom.querySelector("button").click();
         assertEq(hiddenDom.innerHTML, "<button></button><p>Button clicked!</p><div>Button clicked!</div>");
       }),
@@ -244,7 +244,7 @@
         dom.querySelector("button").click();
         assertEq(dom.innerHTML, "<button></button><p>Button clicked!</p>");
         elementName.val = "div";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         dom.querySelector("button").click();
         assertEq(dom.innerHTML, "<button></button><p>Button clicked!</p><p>Button clicked!</p>");
       },
@@ -258,7 +258,7 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.outerHTML, '<div data-type="line" data-id="1" data-line="line=1">This is a test line</div>');
         lineNum.val = 3;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, '<div data-type="line" data-id="3" data-line="line=3">This is a test line</div>');
       }),
       tags_dataAttributes_disconnected: async () => {
@@ -270,7 +270,7 @@
         }, "This is a test line");
         assertEq(dom.outerHTML, '<div data-type="line" data-id="1" data-line="line=1">This is a test line</div>');
         lineNum.val = 3;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, '<div data-type="line" data-id="1" data-line="line=1">This is a test line</div>');
       },
       tags_readonlyProps_connected: withHiddenDom(async (hiddenDom) => {
@@ -279,7 +279,7 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.outerHTML, '<button form="form1">Button</button>');
         form.val = "form2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, '<button form="form2">Button</button>');
         assertEq(input({ list: "datalist1" }).outerHTML, '<input list="datalist1">');
       }),
@@ -288,7 +288,7 @@
         const dom = button({ form }, "Button");
         assertEq(dom.outerHTML, '<button form="form1">Button</button>');
         form.val = "form2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, '<button form="form1">Button</button>');
         assertEq(input({ list: "datalist1" }).outerHTML, '<input list="datalist1">');
       },
@@ -303,7 +303,7 @@
         hiddenDom.querySelector("button").dispatchEvent(new Event("custom"));
         assertEq(hiddenDom.innerHTML, "<button></button><p>Handler 1 triggered!</p>");
         oncustom.val = () => van2.add(hiddenDom, p("Handler 2 triggered!"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         hiddenDom.querySelector("button").dispatchEvent(new Event("custom"));
         assertEq(hiddenDom.innerHTML, "<button></button><p>Handler 1 triggered!</p><p>Handler 2 triggered!</p>");
       }),
@@ -315,7 +315,7 @@
         hiddenDom.querySelector("button").dispatchEvent(new Event("custom"));
         assertEq(hiddenDom.innerHTML, "<button></button><p>Handler 1 triggered!</p>");
         handlerType.val = 2;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         hiddenDom.querySelector("button").dispatchEvent(new Event("custom"));
         assertEq(hiddenDom.innerHTML, "<button></button><p>Handler 1 triggered!</p><p>Handler 2 triggered!</p>");
       }),
@@ -325,13 +325,13 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
         line2.val = "Line 2: Extra Stuff";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2: Extra Stuff</pre><pre>Line 3</pre></div>");
         line2.val = null;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre></pre><pre>Line 3</pre></div>");
         line2.val = "Line 2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre></pre><pre>Line 3</pre></div>");
       }),
       tags_stateAsChild_disconnected: async () => {
@@ -339,10 +339,10 @@
         const dom = div2(pre("Line 1"), pre(line2), pre("Line 3"));
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
         line2.val = "Line 2: Extra Stuff";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
         line2.val = null;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
       },
       tags_stateAsChild_emptyStrWontDeleteDom: withHiddenDom(async (hiddenDom) => {
@@ -351,10 +351,10 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.outerHTML, "<p>Text</p>");
         text.val = "";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<p></p>");
         text.val = "Text";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<p>Text</p>");
       }),
       tags_svg: () => {
@@ -399,13 +399,13 @@
         assertEq(van2.add(hiddenDom, pre("Line 1"), pre(line2), pre("Line 3")), hiddenDom);
         assertEq(hiddenDom.outerHTML, '<div class="hidden"><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>');
         line2.val = "Line 2: Extra Stuff";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.outerHTML, '<div class="hidden"><pre>Line 1</pre><pre>Line 2: Extra Stuff</pre><pre>Line 3</pre></div>');
         line2.val = null;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.outerHTML, '<div class="hidden"><pre>Line 1</pre><pre></pre><pre>Line 3</pre></div>');
         line2.val = "Line 2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.outerHTML, '<div class="hidden"><pre>Line 1</pre><pre></pre><pre>Line 3</pre></div>');
       }),
       add_addState_disconnected: async () => {
@@ -414,10 +414,10 @@
         assertEq(van2.add(dom, pre("Line 1"), pre(line2), pre("Line 3")), dom);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
         line2.val = "Line 2: Extra Stuff";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
         line2.val = null;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
       },
       state_valAndOldVal: withHiddenDom(async (hiddenDom) => {
@@ -431,7 +431,7 @@
         s.val = "State Version 3";
         assertEq(s.val, "State Version 3");
         assertEq(s.oldVal, "State Version 2");
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(s.val, "State Version 3");
         assertEq(s.oldVal, "State Version 3");
       }),
@@ -446,13 +446,13 @@
         assertEq(hiddenDom.querySelector("input").value, "8");
         assertEq(hiddenDom.querySelector("p").innerText, "8");
         ++a2.val;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(s.val, 8);
         assertEq(JSON.stringify(history), "[8]");
         assertEq(hiddenDom.querySelector("input").value, "8");
         assertEq(hiddenDom.querySelector("p").innerText, "8");
         ++b2.val;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(s.val, 10);
         assertEq(JSON.stringify(history), "[8,10]");
         assertEq(hiddenDom.querySelector("input").value, "10");
@@ -464,20 +464,20 @@
         van2.derive(() => history.push(s.val));
         assertEq(JSON.stringify(history), '["This"]');
         s.val = "is";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(JSON.stringify(history), '["This","is"]');
         s.val = "a";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(JSON.stringify(history), '["This","is","a"]');
         s.val = "test";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(JSON.stringify(history), '["This","is","a","test"]');
         s.val = "test";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(JSON.stringify(history), '["This","is","a","test"]');
         s.val = "test2";
         s.val = "test3";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(JSON.stringify(history), '["This","is","a","test","test3"]');
       },
       derive_derivedState: async () => {
@@ -486,23 +486,23 @@
         const selectedIndex = van2.derive(() => (items.val, 0));
         const selectedItem = van2.derive(() => items.val[selectedIndex.val]);
         numItems.val = 3;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(numItems.val, 3);
         assertEq(items.val.join(","), "Item 1,Item 2,Item 3");
         assertEq(selectedIndex.val, 0);
         assertEq(selectedItem.val, "Item 1");
         selectedIndex.val = 2;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(selectedIndex.val, 2);
         assertEq(selectedItem.val, "Item 3");
         numItems.val = 5;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(numItems.val, 5);
         assertEq(items.val.join(","), "Item 1,Item 2,Item 3,Item 4,Item 5");
         assertEq(selectedIndex.val, 0);
         assertEq(selectedItem.val, "Item 1");
         selectedIndex.val = 3;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(selectedIndex.val, 3);
         assertEq(selectedItem.val, "Item 4");
       },
@@ -514,39 +514,39 @@
         assertEq(sum.val, 3);
         assertEq(numEffectTriggered, 1);
         a2.val = 11;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(sum.val, 13);
         assertEq(numEffectTriggered, 2);
         b2.val = 12;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(sum.val, 23);
         assertEq(numEffectTriggered, 3);
         c.val = 13;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(sum.val, 23);
         assertEq(numEffectTriggered, 3);
         d.val = 14;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(sum.val, 23);
         assertEq(numEffectTriggered, 3);
         cond.val = false;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(sum.val, 27);
         assertEq(numEffectTriggered, 4);
         c.val = 23;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(sum.val, 37);
         assertEq(numEffectTriggered, 5);
         d.val = 24;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(sum.val, 47);
         assertEq(numEffectTriggered, 6);
         a2.val = 21;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(sum.val, 47);
         assertEq(numEffectTriggered, 6);
         b2.val = 22;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(sum.val, 47);
         assertEq(numEffectTriggered, 6);
       },
@@ -563,7 +563,7 @@
         assertEq(s2.val, 1);
         assertEq(s3.val, 1);
         s0.val = 3;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(s1.val, 6);
         assertEq(s2.val, 1);
         assertEq(s3.val, 9);
@@ -580,16 +580,16 @@
         van2.add(hiddenDom, CheckboxCounter());
         assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 0 times. <button>Reset</button></div>');
         hiddenDom.querySelector("input").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 1 times. <button>Reset</button></div>');
         hiddenDom.querySelector("input").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 1 times. <button>Reset</button></div>');
         hiddenDom.querySelector("input").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 2 times. <button>Reset</button></div>');
         hiddenDom.querySelector("button").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<div><input type="checkbox"> Checked 0 times. <button>Reset</button></div>');
       }),
       derive_minimizeDerivations: async () => {
@@ -602,11 +602,11 @@
         assertEq(s.val, 8);
         assertEq(numDerivations, 1);
         ++a2.val, ++b2.val;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(s.val, 10);
         assertEq(numDerivations, 2);
         ++a2.val, --a2.val;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(s.val, 10);
         assertEq(numDerivations, 2);
       },
@@ -626,7 +626,7 @@
         assertEq(numSDerived, 1);
         assertEq(numSSquaredDerived, 1);
         ++a2.val;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, "a = 2 b = 4 c = 16 d = 256 s = 278 s^2 = 77284");
         assertEq(numSDerived, 5);
         assertEq(numSSquaredDerived, 2);
@@ -635,7 +635,7 @@
         const a2 = van2.state(1), b2 = van2.derive(() => a2.val + 1);
         van2.derive(() => a2.val = b2.val + 1);
         ++a2.val;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(a2.val, 104);
         assertEq(b2.val, 103);
       },
@@ -647,14 +647,14 @@
         const dom = hiddenDom.firstChild;
         assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2</button><button>Button 3</button></div>");
         button2Text.val = "Button 2: Extra";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2: Extra</button><button>Button 3</button></div>");
         verticalPlacement.val = true;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2: Extra</button><button>Button 3</button></div>");
         assertEq(hiddenDom.firstChild.outerHTML, "<div><div><button>Button 1</button></div><div><button>Button 2: Extra</button></div><div><button>Button 3</button></div></div>");
         button2Text.val = "Button 2: Extra Extra";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><button>Button 1</button><button>Button 2: Extra</button><button>Button 3</button></div>");
         assertEq(hiddenDom.firstChild.outerHTML, "<div><div><button>Button 1</button></div><div><button>Button 2: Extra Extra</button></div><div><button>Button 3</button></div></div>");
       }),
@@ -668,39 +668,39 @@
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1</button><button>Button 2</button></div>");
         assertEq(numFuncCalled, 1);
         button1.val = "Button 1-1";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1-1</button><button>Button 2</button></div>");
         assertEq(numFuncCalled, 2);
         button2.val = "Button 2-1";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1-1</button><button>Button 2-1</button></div>");
         assertEq(numFuncCalled, 3);
         button3.val = "Button 3-1";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1-1</button><button>Button 2-1</button></div>");
         assertEq(numFuncCalled, 3);
         button4.val = "Button 4-1";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 1-1</button><button>Button 2-1</button></div>");
         assertEq(numFuncCalled, 3);
         cond.val = false;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-1</button><button>Button 4-1</button></div>");
         assertEq(numFuncCalled, 4);
         button3.val = "Button 3-2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-2</button><button>Button 4-1</button></div>");
         assertEq(numFuncCalled, 5);
         button4.val = "Button 4-2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-2</button><button>Button 4-2</button></div>");
         assertEq(numFuncCalled, 6);
         button1.val = "Button 1-2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-2</button><button>Button 4-2</button></div>");
         assertEq(numFuncCalled, 6);
         button1.val = "Button 2-2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, "<div><button>Button 3-2</button><button>Button 4-2</button></div>");
         assertEq(numFuncCalled, 6);
       }),
@@ -719,21 +719,21 @@
         };
         van2.add(hiddenDom, domFunc);
         numItems.val = 3;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, '<ul><li class="selected">Item 1</li><li class="">Item 2</li><li class="">Item 3</li></ul>');
         const rootDom1stIteration = hiddenDom.firstChild;
         selectedIndex.val = 1;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, '<ul><li class="">Item 1</li><li class="selected">Item 2</li><li class="">Item 3</li></ul>');
         assertEq(hiddenDom.firstChild, rootDom1stIteration);
         numItems.val = 5;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, '<ul><li class="selected">Item 1</li><li class="">Item 2</li><li class="">Item 3</li><li class="">Item 4</li><li class="">Item 5</li></ul>');
         assert(hiddenDom.firstChild !== rootDom1stIteration);
         assertEq(rootDom1stIteration.outerHTML, '<ul><li class="">Item 1</li><li class="selected">Item 2</li><li class="">Item 3</li></ul>');
         const rootDom2ndIteration = hiddenDom.firstChild;
         selectedIndex.val = 2;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.outerHTML, '<ul><li class="">Item 1</li><li class="">Item 2</li><li class="selected">Item 3</li><li class="">Item 4</li><li class="">Item 5</li></ul>');
         assertEq(hiddenDom.firstChild, rootDom2ndIteration);
         assertEq(rootDom1stIteration.outerHTML, '<ul><li class="">Item 1</li><li class="selected">Item 2</li><li class="">Item 3</li></ul>');
@@ -752,16 +752,16 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 2</p><p>Line 3</p><p></p></div>");
         line2.val = "";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p><p></p></div>");
         line2.val = "Line 2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p><p></p></div>");
         line3.val = null;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
         line3.val = "Line 3";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
       }),
       stateDerivedChild_undefinedToRemoveDom: withHiddenDom(async (hiddenDom) => {
@@ -778,16 +778,16 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 2</p><p>Line 3</p><p></p></div>");
         line2.val = "";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p><p></p></div>");
         line2.val = "Line 2";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p>Line 3</p><p></p></div>");
         line3.val = void 0;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
         line3.val = "Line 3";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><p>Line 1</p><p></p><p></p></div>");
       }),
       stateDerivedChild_0ToNotRemoveDom: withHiddenDom(async (hiddenDom) => {
@@ -796,7 +796,7 @@
         van2.add(hiddenDom, dom);
         assertEq(dom.outerHTML, "<div>0110</div>");
         state1.val = 1, state2.val = 0;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div>1001</div>");
       }),
       stateDerivedChild_dynamicPrimitive: withHiddenDom(async (hiddenDom) => {
@@ -805,16 +805,16 @@
         assertEq(dom.outerHTML, "<div>3</div>");
         van2.add(hiddenDom, dom);
         a2.val = 6;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div>8</div>");
         b2.val = 5;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div>11</div>");
         deleted.val = true;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div></div>");
         deleted.val = false;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div></div>");
       }),
       stateDerivedChild_nonStateDeps: withHiddenDom(async (hiddenDom) => {
@@ -824,7 +824,7 @@
         assertEq(dom.textContent, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld, from: \u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
         assertEq(hiddenDom.innerHTML, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld, from: \u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
         part2.val = "\u{1F366}VanJS";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.textContent, "\u{1F44B}Hello \u{1F5FA}\uFE0FWorld, from: \u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
         assertEq(hiddenDom.innerHTML, "\u{1F44B}Hello \u{1F366}VanJS, from: \u{1F44B}Hello \u{1F5FA}\uFE0FWorld");
       }),
@@ -835,7 +835,7 @@
         assertEq(dom.textContent, 'From: "Old Text" to: "Old Text"');
         assertEq(hiddenDom.innerHTML, 'From: "Old Text" to: "Old Text"');
         text.val = "New Text";
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.textContent, 'From: "Old Text" to: "Old Text"');
         assertEq(hiddenDom.innerHTML, 'From: "Old Text" to: "New Text"');
       }),
@@ -848,7 +848,7 @@
         }, num), hiddenDom);
         assertEq(hiddenDom.innerHTML, "0<span>ok</span>0");
         num.val = 1;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, "1<span>ok</span>1");
       }),
       hydrate_normal: withHiddenDom(async (hiddenDom) => {
@@ -858,11 +858,11 @@
         };
         hiddenDom.innerHTML = Counter2(5).outerHTML;
         hiddenDom.querySelector("button").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<button data-counter="5">Count: 5</button>');
         van2.hydrate(hiddenDom.querySelector("button"), (dom) => Counter2(Number(dom.getAttribute("data-counter"))));
         hiddenDom.querySelector("button").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<button data-counter="6">Count: 6</button>');
       }),
       hydrate_nullToRemoveDom: withHiddenDom(async (hiddenDom) => {
@@ -874,7 +874,7 @@
         van2.hydrate(hiddenDom.querySelector("div"), () => s.val === 1 ? pre() : null);
         assertEq(hiddenDom.innerHTML, "<pre></pre>");
         s.val = 2;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, "");
       }),
       hydrate_undefinedToRemoveDom: withHiddenDom(async (hiddenDom) => {
@@ -886,7 +886,7 @@
         van2.hydrate(hiddenDom.querySelector("div"), () => s.val === 1 ? pre() : void 0);
         assertEq(hiddenDom.innerHTML, "<pre></pre>");
         s.val = 2;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, "");
       }),
       hydrate_0NotToRemoveDom: withHiddenDom(async (hiddenDom) => {
@@ -897,7 +897,7 @@
         van2.hydrate(dom2, () => 1 - s.val);
         assertEq(hiddenDom.innerHTML, "01");
         s.val = 1;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, "10");
       })
     };
@@ -931,7 +931,7 @@
           href1.val = {};
           href2.val = void 0;
           href3.val = (x) => x * 2;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
           assert(van2.capturedErrors.length === 3 && van2.capturedErrors.every((e) => /Only.*are valid prop value types/.test(e)));
         });
       }),
@@ -941,11 +941,11 @@
         van2.add(hiddenDom, a({ href: () => s.val || {} }), a({ href: () => s.val || void 0 }), a({ href: () => s.val || ((x) => x * 2) }), button({ onclick: van2.derive(() => t2.val || 1) }));
         await capturingErrors(/Only.*are valid prop value types/, 3, async () => {
           s.val = "";
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         });
         await capturingErrors("Only functions and null are allowed", 1, async () => {
           t2.val = 0;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         });
       }),
       tags_invalidChild: async () => {
@@ -1001,7 +1001,7 @@
         van2.add(hiddenDom, () => s.val || {}, () => s.val || ((x) => x * 2), () => s.val || [div2(), div2()]);
         await capturingErrors(/Only.*are valid child of a DOM Element/, 3, async () => {
           s.val = 0;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         });
       }),
       stateDerivedChild_derivedDom_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
@@ -1017,11 +1017,11 @@
             return dom;
         });
         num.val = 2;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, "<div></div><div></div>");
         await capturingErrors("it shouldn't be already connected to document", 1, async () => {
           num.val = 3;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         });
       }),
       hydrate_1stArgNotDom: () => {
@@ -1044,7 +1044,7 @@
         van2.hydrate(dom3, () => cond.val ? div2() : [div2(), div2()]);
         await capturingErrors(/Only.*are valid child of a DOM Element/, 3, async () => {
           cond.val = false;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         });
       }),
       hydrate_domResultAlreadyConnected: withHiddenDom(async (hiddenDom) => {
@@ -1076,11 +1076,11 @@
         const [upBtn, downBtn] = [...dom.querySelectorAll("button")];
         for (let i2 = 0; i2 < numUp; ++i2) {
           upBtn.click();
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         }
         for (let i2 = 0; i2 < numDown; ++i2) {
           downBtn.click();
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         }
       };
       const counterHTML = (counter, buttonStyle2) => {
@@ -1095,7 +1095,7 @@
       assertEq(styledCounter.innerHTML, counterHTML(5, "\u{1F446}\u{1F447}"));
       selectDom.value = "\u{1F53C}\u{1F53D}";
       selectDom.dispatchEvent(new Event("input"));
-      await sleep(waitMsOnDomUpdates);
+      await sleep(waitMsForDerivations);
       [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
       assertEq(styledCounter.innerHTML, counterHTML(5, "\u{1F446}\u{1F447}"));
       selectDom.value = "\u{1F446}\u{1F447}";
@@ -1120,7 +1120,7 @@
       const prevStyledCounter = styledCounter;
       selectDom.value = "\u{1F53C}\u{1F53D}";
       selectDom.dispatchEvent(new Event("input"));
-      await sleep(waitMsOnDomUpdates);
+      await sleep(waitMsForDerivations);
       [basicCounter, styledCounter] = hiddenDom.querySelectorAll("div");
       assertEq(styledCounter.innerHTML, counterHTML(2, "\u{1F53C}\u{1F53D}"));
       Counter2 === OptimizedCounter ? assertEq(styledCounter, prevStyledCounter) : assert(styledCounter !== prevStyledCounter);
@@ -1135,13 +1135,13 @@
         assertEq(hiddenDom.firstChild.querySelector("div").innerText, "\u2764\uFE0F: 0");
         const [incrementBtn, decrementBtn] = hiddenDom.getElementsByTagName("button");
         incrementBtn.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.querySelector("div").innerText, "\u2764\uFE0F: 1");
         incrementBtn.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.querySelector("div").innerText, "\u2764\uFE0F: 2");
         decrementBtn.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.firstChild.querySelector("div").innerText, "\u2764\uFE0F: 1");
       }),
       bulletList: () => {
@@ -1179,15 +1179,15 @@
         assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>1</div><input type="number" disabled=""><div style="font-size: 1em;">Text</div><div>1<sup>2</sup> = 1</div>');
         assertEq(dom2.value, "1");
         incrementBtn.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>2</div><input type="number" disabled=""><div style="font-size: 2em;">Text</div><div>2<sup>2</sup> = 4</div>');
         assertEq(dom2.value, "2");
         incrementBtn.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>3</div><input type="number" disabled=""><div style="font-size: 3em;">Text</div><div>3<sup>2</sup> = 9</div>');
         assertEq(dom2.value, "3");
         resetBtn.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<button>Increment</button><button>Reset</button><div>1</div><input type="number" disabled=""><div style="font-size: 1em;">Text</div><div>1<sup>2</sup> = 1</div>');
         assertEq(dom2.value, "1");
       }),
@@ -1203,7 +1203,7 @@
         const inputDom = dom.querySelector("input");
         inputDom.value = "Mini-Van";
         inputDom.dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, '<span>The length of <input type="text"> is 8.</span>');
       }),
       connectedProps: withHiddenDom(async (hiddenDom) => {
@@ -1215,12 +1215,12 @@
         const [input1, input2] = hiddenDom.querySelectorAll("input");
         input1.value += "123";
         input1.dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(input1.value, "123");
         assertEq(input2.value, "123");
         input2.value += "abc";
         input2.dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(input1.value, "123abc");
         assertEq(input2.value, "123abc");
       }),
@@ -1242,11 +1242,11 @@
         assertEq(hiddenDom.querySelector("span.preview").style.cssText, "font-size: 16px; color: black;");
         hiddenDom.querySelector("input").value = "20";
         hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.querySelector("span.preview").style.cssText, "font-size: 20px; color: black;");
         hiddenDom.querySelector("select").value = "blue";
         hiddenDom.querySelector("select").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.querySelector("span.preview").style.cssText, "font-size: 20px; color: blue;");
       }),
       derivedEventHandler: withHiddenDom(async (hiddenDom) => {
@@ -1260,13 +1260,13 @@
         assertEq(dom.outerHTML, '<span>\u2764\uFE0F 0 <select><option value="\u{1F44D}">\u{1F44D}</option><option value="\u{1F44E}">\u{1F44E}</option></select> <button>Run</button></span>');
         dom.querySelector("button").click();
         dom.querySelector("button").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, '<span>\u2764\uFE0F 2 <select><option value="\u{1F44D}">\u{1F44D}</option><option value="\u{1F44E}">\u{1F44E}</option></select> <button>Run</button></span>');
         dom.querySelector("select").value = "\u{1F44E}";
         dom.querySelector("select").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         dom.querySelector("button").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, '<span>\u2764\uFE0F 1 <select><option value="\u{1F44D}">\u{1F44D}</option><option value="\u{1F44E}">\u{1F44E}</option></select> <button>Run</button></span>');
       }),
       sortedList: withHiddenDom(async (hiddenDom) => {
@@ -1288,11 +1288,11 @@
         van2.add(hiddenDom, SortedList());
         hiddenDom.querySelector("input").value = "a,b,c,d";
         hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.querySelector("ul").outerHTML, "<ul><li>a</li><li>b</li><li>c</li><li>d</li></ul>");
         hiddenDom.querySelector("select").value = "Descending";
         hiddenDom.querySelector("select").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.querySelector("ul").outerHTML, "<ul><li>d</li><li>c</li><li>b</li><li>a</li></ul>");
       }),
       editableList: withHiddenDom(async (hiddenDom) => {
@@ -1312,21 +1312,21 @@
         hiddenDom.querySelector("button").click();
         hiddenDom.querySelector("input").value = "def";
         hiddenDom.querySelector("button").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.querySelector("ul").outerHTML, "<ul><li>abc<a>\u274C</a></li><li>123<a>\u274C</a></li><li>def<a>\u274C</a></li></ul>");
         {
           [...hiddenDom.querySelectorAll("li")].find((e) => e.innerText.startsWith("123")).querySelector("a").click();
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
           assertEq(hiddenDom.querySelector("ul").outerHTML, "<ul><li>abc<a>\u274C</a></li><li>def<a>\u274C</a></li></ul>");
         }
         {
           [...hiddenDom.querySelectorAll("li")].find((e) => e.innerText.startsWith("abc")).querySelector("a").click();
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
           assertEq(hiddenDom.querySelector("ul").outerHTML, "<ul><li>def<a>\u274C</a></li></ul>");
         }
         {
           [...hiddenDom.querySelectorAll("li")].find((e) => e.innerText.startsWith("def")).querySelector("a").click();
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
           assertEq(hiddenDom.querySelector("ul").outerHTML, "<ul></ul>");
         }
       }),
@@ -1370,16 +1370,16 @@
         button1.click();
         assertEq(numYellowButtonClicked, 2);
         button2.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: red;">Turn Green</button> <button style="background-color: rgb(255, 255, 255);">Get Darker</button></span>');
         button2.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(255, 255, 255);">Get Darker</button></span>');
         button3.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(245, 245, 245);">Get Darker</button></span>');
         button3.click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<span><button style="background-color: yellow;">Click Me</button> <button style="background-color: green;">Turn Red</button> <button style="background-color: rgb(235, 235, 235);">Get Darker</button></span>');
       }),
       hydrate: hydrateExample(Counter),
@@ -1393,7 +1393,7 @@
         const dom = hiddenDom.firstChild;
         assertEq(dom.outerHTML, "<span><button>Turn Bold</button> Welcome to VanJS. VanJS is awesome!</span>");
         dom.querySelector("button").click();
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<span><button>Turn Bold</button> Welcome to . <b>VanJS</b> is awesome!</span>");
       }),
       minimizeDomUpdates: withHiddenDom(async (hiddenDom) => {
@@ -1414,33 +1414,33 @@
           }, p(i("The <p> element has been rendered ", numRendered, " time(s).")));
         };
         van2.add(hiddenDom, p("Your name is: ", input({ type: "text", value: name, oninput: (e) => name.val = e.target.value })), Name1(), Name2());
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 1 time(s).</i></p></div><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 1 time(s).</i></p></div>');
         hiddenDom.querySelector("input").value = "T";
         hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         hiddenDom.querySelector("input").value = "Ta";
         hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         hiddenDom.querySelector("input").value = "Tao";
         hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Hello <b>Tao</b></p><p><i>The &lt;p&gt; element has been rendered 4 time(s).</i></p></div><div><p>Hello <b>Tao</b></p><p><i>The &lt;p&gt; element has been rendered 2 time(s).</i></p></div>');
         hiddenDom.querySelector("input").value = "";
         hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates * 2);
+        await sleep(waitMsForDerivations * 2);
         assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 5 time(s).</i></p></div><div><p>Please enter your name</p><p><i>The &lt;p&gt; element has been rendered 3 time(s).</i></p></div>');
         hiddenDom.querySelector("input").value = "X";
         hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         hiddenDom.querySelector("input").value = "Xi";
         hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         hiddenDom.querySelector("input").value = "Xin";
         hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-        await sleep(waitMsOnDomUpdates);
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, '<p>Your name is: <input type="text"></p><div><p>Hello <b>Xin</b></p><p><i>The &lt;p&gt; element has been rendered 8 time(s).</i></p></div><div><p>Hello <b>Xin</b></p><p><i>The &lt;p&gt; element has been rendered 4 time(s).</i></p></div>');
       })
     };
@@ -1451,7 +1451,7 @@
         van2.add(hiddenDom, () => span(`Counter: ${counter.val}`));
         for (let i2 = 0; i2 < 100; ++i2)
           ++counter.val;
-        await sleep(waitMsOnDomUpdates);
+        await sleep(waitMsForDerivations);
         assertEq(hiddenDom.innerHTML, "<span>Counter: 100</span>");
         assertBetween(counter[bindingsPropKey].length, 1, 3);
       }),
@@ -1462,7 +1462,7 @@
         van2.add(hiddenDom, dom);
         for (let i2 = 0; i2 < 20; ++i2) {
           renderPre.val = !renderPre.val;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         }
         await sleep(1e3);
         assertBetween(renderPre[bindingsPropKey].length, 1, 3);
@@ -1481,7 +1481,7 @@
             randomState.val = !randomState.val;
           else
             ++randomState.val;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         }
         allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 15));
         await sleep(1e3);
@@ -1494,7 +1494,7 @@
         van2.derive(() => history.push(a2.val));
         for (let i2 = 0; i2 < 100; ++i2) {
           ++a2.val;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         }
         assertEq(history.length, 101);
         assertBetween(a2[listenersPropKey].length, 1, 3);
@@ -1510,7 +1510,7 @@
         van2.add(hiddenDom, dom);
         for (let i2 = 0; i2 < 20; ++i2) {
           renderPre.val = !renderPre.val;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         }
         await sleep(1e3);
         assertBetween(renderPre[bindingsPropKey].length, 1, 3);
@@ -1524,7 +1524,7 @@
         van2.add(hiddenDom, dom);
         for (let i2 = 0; i2 < 20; ++i2) {
           renderPre.val = !renderPre.val;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         }
         await sleep(1e3);
         assertBetween(renderPre[bindingsPropKey].length, 1, 3);
@@ -1540,7 +1540,7 @@
         van2.add(hiddenDom, dom);
         for (let i2 = 0; i2 < 20; ++i2) {
           renderPre.val = !renderPre.val;
-          await sleep(waitMsOnDomUpdates);
+          await sleep(waitMsForDerivations);
         }
         await sleep(1e3);
         assertBetween(renderPre[bindingsPropKey].length, 1, 3);
