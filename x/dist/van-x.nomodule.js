@@ -105,5 +105,19 @@
     items[statesSym] = newStates
     ++items[keysGenSym].val
   }
-  window.vanX = {calc, reactive, stateFields, raw, list, replace}
+  let sameOrder = (keys1, keys2) => keys1.every((k, i) => k === keys2[i])
+  let assign = (target, source) => {
+    for (let [k, v] of entries(source)) {
+      let existingV = target[k]
+      existingV instanceof Object && v instanceof Object ? assign(v, existingV) : target[k] = v
+    }
+    for (let k in target) k in source || delete target[k]
+    sameOrder(keys(target), keys(source)) || replace(target, () => source)
+    return target
+  }
+  let deholes = obj => Array.isArray(obj) ? obj.filter(() => 1).map(deholes) :
+    obj instanceof Object ? fromEntries(entries(obj).map(([k, v]) => [k, deholes(v)])) : obj
+  let stringify = obj => JSON.stringify(deholes(obj))
+  let parse = (target, str) => assign(target, JSON.parse(str))
+  window.vanX = {calc, reactive, stateFields, raw, list, replace, stringify, parse, assign}
 }

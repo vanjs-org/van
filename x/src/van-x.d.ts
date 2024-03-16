@@ -19,11 +19,15 @@ export declare const raw: <T extends ReactiveObj>(obj: T) => DeReactive<T>
 
 export type ValueType<T> = T extends (infer V)[] ? V : T[keyof T]
 export type KeyType<T> = T extends unknown[] ? number : T[keyof T]
-export declare const list: <T extends ReactiveObj, ElementType extends Element>
+export declare const list: <T extends object, ElementType extends Element>
   (containerFunc: () => ElementType, items: T,
   itemFunc: (v: State<ValueType<T>>, deleter: () => void, k: KeyType<T>) => Node) => ElementType
 
 export type ReplaceFunc<T> =
   T extends (infer V)[] ? (items: V[]) => readonly V[] :
   (items: [string, T[keyof T]][]) => readonly [string, T[keyof T]][]
-export declare const replace: <T extends ReactiveObj>(items: T, f: ReplaceFunc<T>) => void
+export declare const replace: <T extends object>(items: T, f: ReplaceFunc<T>) => void
+
+export declare const stringify: (obj: ReactiveObj) => string
+export declare const parse: <T extends ReactiveObj>(obj: T, str: string) => T
+export declare const assign: <T extends ReactiveObj>(target: T, source: T) => T
