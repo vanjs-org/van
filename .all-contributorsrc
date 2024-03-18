@@ -474,6 +474,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "jon49",
+      "name": "Jon Nyman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3173098?v=4",
+      "profile": "https://jnyman.com/",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "repoType": "github"
