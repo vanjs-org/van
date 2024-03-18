@@ -397,7 +397,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(numLengthDerived, 13)
     },
 
-    reactive_raw: withHiddenDom(async hiddenDom => {
+    raw_basic: withHiddenDom(async hiddenDom => {
       const base = vanX.reactive({a: 3, b: 5})
       const derived = vanX.reactive({s: vanX.calc(() => vanX.raw(base).a + base.b)})
       van.add(hiddenDom,
@@ -425,7 +425,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.querySelector("p")!.innerText, "10")
     }),
 
-    reactive_raw_nestedObj: withHiddenDom(async hiddenDom => {
+    raw_nestedObj: withHiddenDom(async hiddenDom => {
       const base = vanX.reactive({a: {a: 1, b: 2}, b: {a: 3, b: 4}})
       const derived = vanX.reactive({s: vanX.calc(
         () => vanX.raw(base).a.a + vanX.raw(base).a.b + base.b.a + base.b.b)})

@@ -304,7 +304,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq(length.val, 0);
             assertEq(numLengthDerived, 13);
         },
-        reactive_raw: withHiddenDom(async (hiddenDom) => {
+        raw_basic: withHiddenDom(async (hiddenDom) => {
             const base = vanX.reactive({ a: 3, b: 5 });
             const derived = vanX.reactive({ s: vanX.calc(() => vanX.raw(base).a + base.b) });
             van.add(hiddenDom, div(() => derived.s), input({ type: "text", value: () => vanX.raw(base).a + base.b }), p(() => vanX.raw(base).a + base.b));
@@ -325,7 +325,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.querySelector("input").value, "10");
             assertEq(hiddenDom.querySelector("p").innerText, "10");
         }),
-        reactive_raw_nestedObj: withHiddenDom(async (hiddenDom) => {
+        raw_nestedObj: withHiddenDom(async (hiddenDom) => {
             const base = vanX.reactive({ a: { a: 1, b: 2 }, b: { a: 3, b: 4 } });
             const derived = vanX.reactive({ s: vanX.calc(() => vanX.raw(base).a.a + vanX.raw(base).a.b + base.b.a + base.b.b) });
             van.add(hiddenDom, div(() => derived.s), input({ type: "text", value: () => vanX.raw(base).a.a + base.b.a }), p(() => vanX.raw(base).a.b + base.b.b));
