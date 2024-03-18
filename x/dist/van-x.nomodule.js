@@ -1,9 +1,9 @@
 {
   // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
   // Global variables - aliasing some builtin symbols to reduce the bundle size.
-  let {fromEntries, entries, keys, getPrototypeOf} = Object
+  let {fromEntries, entries, keys} = Object
   let {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect
-  let {state, derive, add} = van, stateProto = getPrototypeOf(state())
+  let {state, derive, add} = van
   let itemsToGc, gcCycleInMs = 1000, _undefined, replacing
   let objSym = Symbol(), statesSym = Symbol(), isCalcFunc = Symbol(), bindingsSym = Symbol()
   let keysGenSym = Symbol(), keyToChildSym = Symbol()
@@ -27,14 +27,13 @@
       srcObj[keysGenSym] = state(1),
       srcObj),
       {
-        get: (obj, name, proxy) =>
-          getPrototypeOf(obj[statesSym][name] ?? 0) === stateProto ? obj[statesSym][name].val : (
-            name === "length" && obj[keysGenSym].val,
-            refGet(obj, name, proxy)
-          ),
+        get: (obj, name, proxy) => obj[statesSym].hasOwnProperty(name) ? obj[statesSym][name].val : (
+          name === "length" && obj[keysGenSym].val,
+          refGet(obj, name, proxy)
+        ),
         set(obj, name, v, proxy) {
           let states = obj[statesSym]
-          if (name in states) return states[name].val = reactive(v), 1
+          if (states.hasOwnProperty(name)) return states[name].val = reactive(v), 1
           let existingKey = name in obj
           let setNewLength = existingKey && name === "length" && v !== obj.length
           if (!refSet(obj, name, v)) return
@@ -91,7 +90,7 @@
       let existingV = target[k]
       existingV instanceof Object && v instanceof Object ? replaceInternal(existingV, v) : target[k] = v
     }
-    for (let k in target) k in source || delete target[k]
+    for (let k in target) source.hasOwnProperty(k) || delete target[k]
     let sourceKeys = keys(source), isArray = Array.isArray(target)
     if (isArray || keys(target).some((k, i) => k !== sourceKeys[i])) {
       if (isArray) target.length = source.length; else {
