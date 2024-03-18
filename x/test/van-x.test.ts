@@ -409,20 +409,82 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.querySelector("input")!.value, "8")
       assertEq(hiddenDom.querySelector("p")!.innerText, "8")
 
+      // Changing `base.a` won't trigger any derivations, as `base.a` is accessed via
+      // `vanX.raw(base).a`.
       ++base.a
-      // Changing `base.a` won't trigger all the derivations, as `base.a` is accessed via
-      // `vanX.raw(base).a`
       await sleep(waitMsForDerivations)
       assertEq(hiddenDom.querySelector("div")!.innerText, "8")
       assertEq(hiddenDom.querySelector("input")!.value, "8")
       assertEq(hiddenDom.querySelector("p")!.innerText, "8")
 
-      // Changing `base.b` will trigger all the derivations, as `base.b` is accessed via `base.b`
+      // Changing `base.b` will trigger all the derivations, as `base.b` is accessed via `base.b`.
       ++base.b
       await sleep(waitMsForDerivations)
       assertEq(hiddenDom.querySelector("div")!.innerText, "10")
       assertEq(hiddenDom.querySelector("input")!.value, "10")
       assertEq(hiddenDom.querySelector("p")!.innerText, "10")
+    }),
+
+    reactive_raw_nestedObj: withHiddenDom(async hiddenDom => {
+      const base = vanX.reactive({a: {a: 1, b: 2}, b: {a: 3, b: 4}})
+      const derived = vanX.reactive({s: vanX.calc(
+        () => vanX.raw(base).a.a + vanX.raw(base).a.b + base.b.a + base.b.b)})
+      van.add(hiddenDom,
+        div(() => derived.s),
+        input({type: "text", value: () => vanX.raw(base).a.a + base.b.a}),
+        p(() => vanX.raw(base).a.b + base.b.b),
+      )
+      assertEq(hiddenDom.querySelector("div")!.innerText, "10")
+      assertEq(hiddenDom.querySelector("input")!.value, "4")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "6")
+
+      // Changing `base.a.a` won't trigger any derivations, as `base.a.a` is accessed via
+      // `vanX.raw(base).a.a`.
+      ++base.a.a
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("div")!.innerText, "10")
+      assertEq(hiddenDom.querySelector("input")!.value, "4")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "6")
+
+      // Changing `base.b.a` will trigger all the relevant derivations, as `base.b.a` is accessed
+      // via `base.b.a`.
+      ++base.b.a
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("div")!.innerText, "12")
+      assertEq(hiddenDom.querySelector("input")!.value, "6")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "6")
+
+      // Changing `base.a.b` won't trigger any derivations, as `base.a.b` is accessed via
+      // `vanX.raw(base).a.b`.
+      ++base.a.b
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("div")!.innerText, "12")
+      assertEq(hiddenDom.querySelector("input")!.value, "6")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "6")
+
+      // Changing `base.b.b` will trigger all the relevant derivations, as `base.b.b` is accessed
+      // via `base.b.b`.
+      ++base.b.b
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("div")!.innerText, "14")
+      assertEq(hiddenDom.querySelector("input")!.value, "6")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "8")
+
+      // Changing the entire object of `base.a` won't trigger any derivations, as `base.a` is
+      // accessed via `vanX.raw(base).a`.
+      base.a = {a: 11, b: 12}
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("div")!.innerText, "14")
+      assertEq(hiddenDom.querySelector("input")!.value, "6")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "8")
+
+      // Changing the entire object of `base.b` will trigger all the derivations, as `base.b` is
+      // accessed via `vanX.raw(base).b`.
+      base.b = {a: 13, b: 14}
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("div")!.innerText, "50")
+      assertEq(hiddenDom.querySelector("input")!.value, "24")
+      assertEq(hiddenDom.querySelector("p")!.innerText, "26")
     }),
 
     list_arraySetItem: withHiddenDom(async hiddenDom => {
@@ -702,6 +764,84 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       items.c = 6
       await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>5 - b</li><li>6 - c</li></ul>')
+    }),
+
+    list_forCalcField_array: withHiddenDom(async hiddenDom => {
+      const countries = [
+        "Argentina", "Bolivia", "Brazil", "Chile", "Colombia", "Ecuador", "Guyana",
+        "Paraguay", "Peru", "Suriname", "Uruguay", "Venezuela",
+      ]
+
+      const base = vanX.reactive({filter: ""})
+      const derived = vanX.reactive({
+        filteredCountries: vanX.calc(() => countries.filter(
+          c => c.toLowerCase().includes(base.filter.toLowerCase())
+        )),
+      })
+
+      van.add(hiddenDom,
+        div(
+          "Countries in South America. Filter: ",
+          input({type: "text", value: () => base.filter, oninput: e => base.filter = e.target.value}),
+        ),
+        vanX.list(ul, derived.filteredCountries, v => li(v)),
+      )
+      assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Argentina</li><li>Bolivia</li><li>Brazil</li><li>Chile</li><li>Colombia</li><li>Ecuador</li><li>Guyana</li><li>Paraguay</li><li>Peru</li><li>Suriname</li><li>Uruguay</li><li>Venezuela</li>")
+
+      hiddenDom.querySelector("input")!.value = "i"
+      hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Argentina</li><li>Bolivia</li><li>Brazil</li><li>Chile</li><li>Colombia</li><li>Suriname</li>")
+
+      hiddenDom.querySelector("input")!.value = "il"
+      hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Brazil</li><li>Chile</li>")
+    }),
+
+    list_forCalcField_obj: withHiddenDom(async hiddenDom => {
+      const countryToPopulation = {
+        "Argentina": 45195777,
+        "Bolivia": 11673029,
+        "Brazil": 213993437,
+        "Chile": 19116209,
+        "Colombia": 50882884,
+        "Ecuador": 17643060,
+        "Guyana": 786559,
+        "Paraguay": 7132530,
+        "Peru": 32971846,
+        "Suriname": 586634,
+        "Uruguay": 3473727,
+        "Venezuela": 28435943,
+      }
+
+      const base = vanX.reactive({filter: ""})
+      const derived = vanX.reactive({
+        filteredCountryToPopulation: vanX.calc(() =>
+          Object.fromEntries(Object.entries(countryToPopulation).filter(
+            ([c, _]) => c.toLowerCase().includes(base.filter.toLowerCase())
+          ))
+        ),
+      })
+
+      van.add(hiddenDom,
+        div(
+          "Population of countries in South America. Filter: ",
+          input({type: "text", value: () => base.filter, oninput: e => base.filter = e.target.value}),
+        ),
+        vanX.list(ul, derived.filteredCountryToPopulation, (v, _deleter, k) => li(k, ": ", v)),
+      )
+      assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Argentina: 45195777</li><li>Bolivia: 11673029</li><li>Brazil: 213993437</li><li>Chile: 19116209</li><li>Colombia: 50882884</li><li>Ecuador: 17643060</li><li>Guyana: 786559</li><li>Paraguay: 7132530</li><li>Peru: 32971846</li><li>Suriname: 586634</li><li>Uruguay: 3473727</li><li>Venezuela: 28435943</li>")
+
+      hiddenDom.querySelector("input")!.value = "i"
+      hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Argentina: 45195777</li><li>Bolivia: 11673029</li><li>Brazil: 213993437</li><li>Chile: 19116209</li><li>Colombia: 50882884</li><li>Suriname: 586634</li>")
+
+      hiddenDom.querySelector("input")!.value = "il"
+      hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Brazil: 213993437</li><li>Chile: 19116209</li>")
     }),
 
     replace_filterArray: withHiddenDom(async hiddenDom => {
@@ -1234,7 +1374,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       van.add(hiddenDom,
         div(
           "Countries in South America. Filter: ",
-          input({type: "text", value: filter, oninput: e => filter.val = e.target.value})
+          input({type: "text", value: filter, oninput: e => filter.val = e.target.value}),
         ),
         vanX.list(ul, filteredCountries, v => li(v)),
       )
@@ -1265,7 +1405,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
         "Suriname": 586634,
         "Uruguay": 3473727,
         "Venezuela": 28435943,
-      };
+      }
 
       const filter = van.state("")
       const filteredCountryToPopulation = vanX.reactive<Record<string, number>>({})
@@ -1278,7 +1418,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       van.add(hiddenDom,
         div(
           "Population of countries in South America. Filter: ",
-          input({type: "text", value: filter, oninput: e => filter.val = e.target.value})
+          input({type: "text", value: filter, oninput: e => filter.val = e.target.value}),
         ),
         vanX.list(ul, filteredCountryToPopulation, (v, _deleter, k) => li(k, ": ", v)),
       )
