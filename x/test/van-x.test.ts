@@ -8,13 +8,30 @@ declare global {
 window.numTests = 0
 
 window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
-  const {a, button, code, div, h2, input, li, ol, p, pre, span, sup, ul} = van.tags
+  const {a, button, code, del, div, h2, input, li, ol, p, pre, span, sup, ul} = van.tags
 
-  const assertEq = (lhs: string | number | Node | undefined, rhs: string | number | Node | undefined) => {
+  const assert = (cond: boolean) => {
+    if (!cond) throw new Error("Assertion failed")
+  }
+
+  const assertEq = (
+    lhs: string | number | Node | boolean | null | undefined,
+    rhs: string | number | Node | boolean | null | undefined,
+  ) => {
     if (lhs !== rhs) throw new Error(`Assertion failed. Expected equal. Actual lhs: ${lhs}, rhs: ${rhs}.`)
   }
 
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+  const shuffle = <T>(input: T[]) => {
+    const output = [...input]
+    for (let i = output.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[output[i], output[j]] = [output[j], output[i]]
+    }
+    return output
+  }
+
   const waitMsForDerivations = 5
 
   const withHiddenDom = (func: (dom: Element) => void | Promise<void>) => async () => {
@@ -104,7 +121,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
     reactive_insertNewField: withHiddenDom(async hiddenDom => {
       interface ObjWithName {
-        name: {first: string, last: string}
+        name: { first: string, last: string }
       }
       const base = vanX.reactive(<ObjWithName>{})
       assertEq(Object.keys(base).toString(), "")
@@ -503,20 +520,18 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
     }),
 
     list_objSetItem: withHiddenDom(async hiddenDom => {
-      {
-        const items = vanX.reactive({a: 1, b: 2, c: 3})
-        van.add(hiddenDom, vanX.list(ul, items, v => li(v)))
+      const items = vanX.reactive({a: 1, b: 2, c: 3})
+      van.add(hiddenDom, vanX.list(ul, items, v => li(v)))
 
-        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
-        items.b = 5
-        await sleep(waitMsForDerivations)
-        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>')
+      items.b = 5
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>')
 
-        items.c = 6
-        await sleep(waitMsForDerivations)
-        assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>')
-      }
+      items.c = 6
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>')
     }),
 
     list_arrayAdd: withHiddenDom(async hiddenDom => {
@@ -690,6 +705,36 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>f<button>❌</button></li><li>e<button>❌</button></li></ul>')
       assertEq(Object.keys(items).toString(), "0,1,2")
+    }),
+
+    list_elementAs1stArgument_array: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive([1, 2, 3])
+      van.add(hiddenDom, vanX.list(ul({class: "number-list"}), items, v => li(v)))
+
+      assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>2</li><li>3</li></ul>')
+
+      items[1] = 5
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>5</li><li>3</li></ul>')
+
+      items[2] = 6
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>5</li><li>6</li></ul>')
+    }),
+
+    list_elementAs1stArgument_object: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive({a: 1, b: 2, c: 3})
+      van.add(hiddenDom, vanX.list(ul({class: "number-list"}), items, v => li(v)))
+
+      assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>2</li><li>3</li></ul>')
+
+      items.b = 5
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>5</li><li>3</li></ul>')
+
+      items.c = 6
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>5</li><li>6</li></ul>')
     }),
 
     list_array_multipleBindings: withHiddenDom(async hiddenDom => {
@@ -1212,7 +1257,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
     replace_sortArray: withHiddenDom(async hiddenDom => {
       const arr = Array.from({length: 10}).map((_, i) => i)
-      const shuffled = arr.toSorted(() => Math.random() - 0.5)
+      const shuffled = shuffle(arr)
       const items = vanX.reactive([10, ...shuffled].map(v => v.toString()))
 
       van.add(hiddenDom, vanX.list(ul, items,
@@ -1260,7 +1305,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
     replace_sortObj: withHiddenDom(async hiddenDom => {
       const arr = Array.from({length: 10}).map((_, i) => i)
-      const shuffled = arr.toSorted(() => Math.random() - 0.5)
+      const shuffled = shuffle(arr)
       const items = vanX.reactive(<Record<string, string>>Object.fromEntries(
         [["k", "10"], ...shuffled.map(v => ["k" + v, v.toString()])]
       ))
@@ -1434,6 +1479,313 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       await sleep(waitMsForDerivations)
       assertEq(hiddenDom.querySelector("ul")!.innerHTML, "<li>Brazil: 213993437</li><li>Chile: 19116209</li>")
     }),
+
+    replace_smartUpdate: withHiddenDom(async hiddenDom => {
+      interface Name { first: string, last: string }
+      const data = vanX.reactive({name: <Name | undefined>undefined})
+      let numDivRendered = 0
+      van.add(hiddenDom, () => {
+        ++numDivRendered
+        if (!data.name) return div("Enter your name...")
+        return div(() => data.name?.first, " ", () => data.name?.last)
+      })
+
+      assertEq(hiddenDom.innerHTML, '<div>Enter your name...</div>')
+      assertEq(numDivRendered, 1)
+
+      vanX.replace(data, {name: {first: "Tao", last: "Xin"}})
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div>Tao Xin</div>')
+      // <div> will be re-rendered as the entire `base.name` was assigned to some value from
+      // `undefined`.
+      assertEq(numDivRendered, 2)
+
+      vanX.replace(data, {name: {first: "Oliver", last: "Xin"}})
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div>Oliver Xin</div>')
+      // <div> won't be re-rendered as `vanX.replace` only replaces leaf-level fields
+      assertEq(numDivRendered, 2)
+
+      vanX.replace(data, {name: {first: "Oliver", last: "Smith"}})
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div>Oliver Smith</div>')
+      // <div> won't be re-rendered as `vanX.replace` only replaces leaf-level fields
+      assertEq(numDivRendered, 2)
+
+      vanX.replace(data, {name: undefined})
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div>Enter your name...</div>')
+      // <div> will be re-rendered as the entire `base.name` became `undefined`
+      assertEq(numDivRendered, 3)
+
+      vanX.replace(data, {name: {first: "Tao", last: "Xin"}})
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div>Tao Xin</div>')
+      // <div> will be re-rendered as the entire `base.name` was assigned to some value from
+      // `undefined`.
+      assertEq(numDivRendered, 4)
+    }),
+
+    replace_smartUpdate_listForArray: withHiddenDom(async hiddenDom => {
+      const sampleItems = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]
+
+      const data = vanX.reactive({
+        newItem: "",
+        items: sampleItems.map(t => ({text: t, done: false})),
+      })
+      van.add(hiddenDom, div(
+        input({type: "text", value: () => data.newItem, oninput: e => data.newItem = e.target.value}),
+        button({onclick: () => data.items.push({text: data.newItem, done: false})}, "Add"),
+        vanX.list(div, data.items, ({val: v}, deleter) => div(
+          input({type: "checkbox", checked: () => v.done, onclick: e => v.done = e.target.checked}),
+          () => (v.done ? del : span)(v.text),
+          a({onclick: deleter}, "❌"),
+        )),
+      ))
+
+      assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>Item 1</span><a>❌</a></div><div><input type="checkbox"><span>Item 2</span><a>❌</a></div><div><input type="checkbox"><span>Item 3</span><a>❌</a></div><div><input type="checkbox"><span>Item 4</span><a>❌</a></div><div><input type="checkbox"><span>Item 5</span><a>❌</a></div></div></div>')
+      assertEq(hiddenDom.querySelector("input")!.value, "")
+
+      hiddenDom.querySelector("input")!.value = "Item 6"
+      hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
+      assertEq(data.newItem, "Item 6")
+
+      vanX.replace(data, {...data, newItem: "Item 7"})
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>Item 1</span><a>❌</a></div><div><input type="checkbox"><span>Item 2</span><a>❌</a></div><div><input type="checkbox"><span>Item 3</span><a>❌</a></div><div><input type="checkbox"><span>Item 4</span><a>❌</a></div><div><input type="checkbox"><span>Item 5</span><a>❌</a></div></div></div>')
+      assertEq(hiddenDom.querySelector("input")!.value, "Item 7")
+
+      hiddenDom.querySelector("button")!.click()
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>Item 1</span><a>❌</a></div><div><input type="checkbox"><span>Item 2</span><a>❌</a></div><div><input type="checkbox"><span>Item 3</span><a>❌</a></div><div><input type="checkbox"><span>Item 4</span><a>❌</a></div><div><input type="checkbox"><span>Item 5</span><a>❌</a></div><div><input type="checkbox"><span>Item 7</span><a>❌</a></div></div></div>')
+      assertEq(hiddenDom.querySelector("input")!.value, "Item 7")
+
+      // Delete 2 items randomly
+      {
+        const deleteBtns = [...hiddenDom.querySelectorAll("a")]
+        deleteBtns[Math.floor(Math.random() * deleteBtns.length)].click()
+      }
+      {
+        const deleteBtns = [...hiddenDom.querySelectorAll("a")]
+        deleteBtns[Math.floor(Math.random() * deleteBtns.length)].click()
+      }
+      await sleep(waitMsForDerivations)
+      assertEq(Object.keys(data.items).length, 4)
+      assertEq(
+        [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).join(","),
+        data.items.map(i => i.text).filter(_ => 1).join(","),
+      )
+      assertEq(hiddenDom.querySelector("input")!.value, "Item 7")
+
+      // Replace the items back
+      vanX.replace(data, {
+        newItem: "",
+        items: sampleItems.map(t => ({text: t, done: false})),
+      })
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>Item 1</span><a>❌</a></div><div><input type="checkbox"><span>Item 2</span><a>❌</a></div><div><input type="checkbox"><span>Item 3</span><a>❌</a></div><div><input type="checkbox"><span>Item 4</span><a>❌</a></div><div><input type="checkbox"><span>Item 5</span><a>❌</a></div></div></div>')
+      assertEq(hiddenDom.querySelector("input")!.value, "")
+
+      const rowDoms = [...hiddenDom.querySelectorAll("div div div div")]
+      // Randomly flip the `done`-status of items
+      for (let iter = 0; iter < 5; ++iter) {
+        vanX.replace(data, {
+          newItem: "",
+          items: sampleItems.map(t => ({text: t, done: Math.random() >= 0.5})),
+        })
+        await sleep(waitMsForDerivations)
+        // Validate the DOM elements for rows aren't changed
+        const newRowDoms = [...hiddenDom.querySelectorAll("div div div div")]
+        assertEq(newRowDoms.length, rowDoms.length)
+        for (let i = 0; i < newRowDoms.length; ++i) assertEq(newRowDoms[i], rowDoms[i])
+        // Validate the `done`-status in each row
+        for (let i = 0; i < newRowDoms.length; ++i) {
+          assertEq(newRowDoms[i].querySelector("input")!.checked, data.items[i].done)
+          if (data.items[i].done) {
+            assertEq(newRowDoms[i].querySelector("span"), null)
+            assertEq(newRowDoms[i].querySelector("del")!.innerText, data.items[i].text)
+          } else {
+            assertEq(newRowDoms[i].querySelector("del"), null)
+            assertEq(newRowDoms[i].querySelector("span")!.innerText, data.items[i].text)
+          }
+        }
+      }
+    }),
+
+    replace_smartUpdate_listForObj: withHiddenDom(async hiddenDom => {
+      const sampleItems = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]
+
+      const data = vanX.reactive({
+        newItem: "",
+        items: Object.fromEntries(sampleItems.map((t, i) => ["k" + i, {text: t, done: false}])),
+      })
+      let id = 10
+      van.add(hiddenDom, div(
+        input({type: "text", value: () => data.newItem, oninput: e => data.newItem = e.target.value}),
+        button({onclick: () => data.items["k" + ++id] = {text: data.newItem, done: false}}, "Add"),
+        vanX.list(div, data.items, ({val: v}, deleter, key) => div(
+          input({type: "checkbox", checked: () => v.done, onclick: e => v.done = e.target.checked}),
+          () => (v.done ? del : span)(key, " - ", v.text),
+          a({onclick: deleter}, "❌"),
+        )),
+      ))
+
+      assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>k0 - Item 1</span><a>❌</a></div><div><input type="checkbox"><span>k1 - Item 2</span><a>❌</a></div><div><input type="checkbox"><span>k2 - Item 3</span><a>❌</a></div><div><input type="checkbox"><span>k3 - Item 4</span><a>❌</a></div><div><input type="checkbox"><span>k4 - Item 5</span><a>❌</a></div></div></div>')
+      assertEq(hiddenDom.querySelector("input")!.value, "")
+
+      hiddenDom.querySelector("input")!.value = "Item 6"
+      hiddenDom.querySelector("input")!.dispatchEvent(new Event("input"))
+      assertEq(data.newItem, "Item 6")
+
+      vanX.replace(data, {...data, newItem: "Item 7"})
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>k0 - Item 1</span><a>❌</a></div><div><input type="checkbox"><span>k1 - Item 2</span><a>❌</a></div><div><input type="checkbox"><span>k2 - Item 3</span><a>❌</a></div><div><input type="checkbox"><span>k3 - Item 4</span><a>❌</a></div><div><input type="checkbox"><span>k4 - Item 5</span><a>❌</a></div></div></div>')
+      assertEq(hiddenDom.querySelector("input")!.value, "Item 7")
+
+      hiddenDom.querySelector("button")!.click()
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>k0 - Item 1</span><a>❌</a></div><div><input type="checkbox"><span>k1 - Item 2</span><a>❌</a></div><div><input type="checkbox"><span>k2 - Item 3</span><a>❌</a></div><div><input type="checkbox"><span>k3 - Item 4</span><a>❌</a></div><div><input type="checkbox"><span>k4 - Item 5</span><a>❌</a></div><div><input type="checkbox"><span>k11 - Item 7</span><a>❌</a></div></div></div>')
+      assertEq(hiddenDom.querySelector("input")!.value, "Item 7")
+
+      // Delete 2 items randomly
+      {
+        const deleteBtns = [...hiddenDom.querySelectorAll("a")]
+        deleteBtns[Math.floor(Math.random() * deleteBtns.length)].click()
+      }
+      {
+        const deleteBtns = [...hiddenDom.querySelectorAll("a")]
+        deleteBtns[Math.floor(Math.random() * deleteBtns.length)].click()
+      }
+      await sleep(waitMsForDerivations)
+      assertEq(Object.keys(data.items).length, 4)
+      assertEq(
+        [...hiddenDom.querySelectorAll("span")].map(e => e.innerText).join(","),
+        Object.entries(data.items).map(([k, {text}]) => `${k} - ${text}`).join(","),
+      )
+      assertEq(hiddenDom.querySelector("input")!.value, "Item 7")
+
+      // Replace the items back
+      vanX.replace(data, {
+        newItem: "",
+        items: Object.fromEntries(sampleItems.map((t, i) => ["k" + i, {text: t, done: false}])),
+      })
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>k0 - Item 1</span><a>❌</a></div><div><input type="checkbox"><span>k1 - Item 2</span><a>❌</a></div><div><input type="checkbox"><span>k2 - Item 3</span><a>❌</a></div><div><input type="checkbox"><span>k3 - Item 4</span><a>❌</a></div><div><input type="checkbox"><span>k4 - Item 5</span><a>❌</a></div></div></div>')
+      assertEq(hiddenDom.querySelector("input")!.value, "")
+
+      const rowDoms = [...hiddenDom.querySelectorAll("div div div div")]
+      // Randomly flip the `done`-status of items
+      for (let iter = 0; iter < 5; ++iter) {
+        vanX.replace(data, {
+          newItem: "",
+          items: Object.fromEntries(
+            sampleItems.map((t, i) => ["k" + i, {text: t, done: Math.random() >= 0.5}])),
+        })
+        await sleep(waitMsForDerivations)
+        // Validate the DOM elements for rows aren't changed
+        const newRowDoms = [...hiddenDom.querySelectorAll("div div div div")]
+        assertEq(newRowDoms.length, rowDoms.length)
+        for (let i = 0; i < newRowDoms.length; ++i) assertEq(newRowDoms[i], rowDoms[i])
+        for (let i = 0; i < newRowDoms.length; ++i) {
+          // Validate the text and `done`-status in each row
+          const key = "k" + i
+          assertEq(newRowDoms[i].querySelector("input")!.checked, data.items[key].done)
+          if (data.items[key].done) {
+            assertEq(newRowDoms[i].querySelector("span"), null)
+            assertEq(newRowDoms[i].querySelector("del")!.innerText, key + " - " + data.items[key].text)
+          } else {
+            assertEq(newRowDoms[i].querySelector("del"), null)
+            assertEq(newRowDoms[i].querySelector("span")!.innerText, key + " - " + data.items[key].text)
+          }
+        }
+      }
+
+      // Randomly flip the `done`-status of items + reordering
+      for (let iter = 0; iter < 5; ++iter) {
+        vanX.replace(data, {
+          newItem: "",
+          items: Object.fromEntries(
+            shuffle(sampleItems.map((t, i) => ["k" + i, {text: t, done: Math.random() >= 0.5}]))),
+        })
+        await sleep(waitMsForDerivations)
+        const newRowDoms = [...hiddenDom.querySelectorAll("div div div div")]
+        assertEq(newRowDoms.length, rowDoms.length)
+        for (let i = 0; i < newRowDoms.length; ++i) {
+          // Validate the text and `done`-status in each row
+          const key = Object.keys(data.items)[i]
+          assertEq(newRowDoms[i].querySelector("input")!.checked, data.items[key].done)
+          if (data.items[key].done) {
+            assertEq(newRowDoms[i].querySelector("span"), null)
+            assertEq(newRowDoms[i].querySelector("del")!.innerText, key + " - " + data.items[key].text)
+          } else {
+            assertEq(newRowDoms[i].querySelector("del"), null)
+            assertEq(newRowDoms[i].querySelector("span")!.innerText, key + " - " + data.items[key].text)
+          }
+          // Validate the DOM element isn't changed (just moved from a different location)
+          assertEq(newRowDoms[i], rowDoms[Number(key.substring(1))])
+        }
+      }
+    }),
+
+    compact_basic: () => {
+      const data = vanX.reactive([1, 2, 3, 4, 5])
+      assertEq(JSON.stringify(vanX.compact(data)), "[1,2,3,4,5]")
+      delete data[2]
+      assertEq(JSON.stringify(vanX.compact(data)), "[1,2,4,5]")
+      delete data[1]
+      assertEq(JSON.stringify(vanX.compact(data)), "[1,4,5]")
+      delete data[3]
+      assertEq(JSON.stringify(vanX.compact(data)), "[1,5]")
+    },
+
+    compact_nested: () => {
+      const data = vanX.reactive({
+        list: [1, 2, 3, 4, 5],
+        group: {
+          list1: [11, 12, 13],
+          list2: [14, 15],
+        },
+        listOfLists: [
+          [1],
+          [1, 2],
+          [1, 2, 3],
+        ],
+        listOfObjs: [
+          {first: "Tao", last: "Xin"},
+          {first: "Vanilla", last: "JavaScript"},
+          {first: "Van", last: "JS"},
+        ],
+        others: {
+          line1: "This is irrelevant",
+          line2: 56789,
+        },
+      })
+      assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,4,5],"group":{"list1":[11,12,13],"list2":[14,15]},"listOfLists":[[1],[1,2],[1,2,3]],"listOfObjs":[{"first":"Tao","last":"Xin"},{"first":"Vanilla","last":"JavaScript"},{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
+
+      delete data.list[3]
+      assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12,13],"list2":[14,15]},"listOfLists":[[1],[1,2],[1,2,3]],"listOfObjs":[{"first":"Tao","last":"Xin"},{"first":"Vanilla","last":"JavaScript"},{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
+
+      delete data.group.list1[2]
+      assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[14,15]},"listOfLists":[[1],[1,2],[1,2,3]],"listOfObjs":[{"first":"Tao","last":"Xin"},{"first":"Vanilla","last":"JavaScript"},{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
+
+      delete data.group.list2[0]
+      assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[15]},"listOfLists":[[1],[1,2],[1,2,3]],"listOfObjs":[{"first":"Tao","last":"Xin"},{"first":"Vanilla","last":"JavaScript"},{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
+
+      delete data.listOfLists[0][0]
+      assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[15]},"listOfLists":[[],[1,2],[1,2,3]],"listOfObjs":[{"first":"Tao","last":"Xin"},{"first":"Vanilla","last":"JavaScript"},{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
+
+      delete data.listOfLists[1]
+      assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[15]},"listOfLists":[[],[1,2,3]],"listOfObjs":[{"first":"Tao","last":"Xin"},{"first":"Vanilla","last":"JavaScript"},{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
+
+      delete data.listOfLists[2][2]
+      assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[15]},"listOfLists":[[],[1,2]],"listOfObjs":[{"first":"Tao","last":"Xin"},{"first":"Vanilla","last":"JavaScript"},{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
+
+      delete data.listOfObjs[0]
+      assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[15]},"listOfLists":[[],[1,2]],"listOfObjs":[{"first":"Vanilla","last":"JavaScript"},{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
+
+      delete data.listOfObjs[1]
+      assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[15]},"listOfLists":[[],[1,2]],"listOfObjs":[{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
+    }
   }
 
   const gcTests = {
@@ -1462,6 +1814,68 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
       assertEq((<any>items[bindingSymbol]).length, 1)
+    }),
+
+    list_keyToChild_Array: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive([1, 2, 3, 4, 5])
+
+      const dom = hiddenDom.appendChild(vanX.list(ul, items, ({val: v}) => li(v)))
+      const [keyToChildSym] = Object.getOwnPropertySymbols(dom)
+      assertEq(dom.innerHTML, '<li>1</li><li>2</li><li>3</li><li>4</li><li>5</li>')
+
+      const childDom = [...dom.childNodes][1]
+      items[1] = 6
+      await sleep(waitMsForDerivations)
+      assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>3</li><li>4</li><li>5</li>')
+      assert([...dom.childNodes][1] !== childDom)
+      assertEq((<any>dom)[keyToChildSym][1], [...dom.childNodes][1])
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "0,1,2,3,4")
+
+      delete items[2]
+      await sleep(waitMsForDerivations)
+      assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>4</li><li>5</li>')
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "0,1,3,4")
+
+      delete items[3]
+      await sleep(waitMsForDerivations)
+      assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>5</li>')
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "0,1,4")
+
+      items.push(7)
+      await sleep(waitMsForDerivations)
+      assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>5</li><li>7</li>')
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "0,1,4,5")
+    }),
+
+    list_keyToChild_Obj: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive(<Record<string, number | undefined>>{a: 1, b: 2, c: 3, d: 4, e: 5})
+
+      const dom = hiddenDom.appendChild(vanX.list(ul, items, ({val: v}) => li(v)))
+      const [keyToChildSym] = Object.getOwnPropertySymbols(dom)
+      assertEq(dom.innerHTML, '<li>1</li><li>2</li><li>3</li><li>4</li><li>5</li>')
+
+      const childDom = [...dom.childNodes][1]
+      items.b = 6
+      await sleep(waitMsForDerivations)
+      assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>3</li><li>4</li><li>5</li>')
+      assert([...dom.childNodes][1] !== childDom)
+      assertEq((<any>dom)[keyToChildSym]["b"], [...dom.childNodes][1])
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "a,b,c,d,e")
+
+      delete items.c
+      await sleep(waitMsForDerivations)
+      assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>4</li><li>5</li>')
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "a,b,d,e")
+
+      delete items.d
+      await sleep(waitMsForDerivations)
+      assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>5</li>')
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "a,b,e")
+
+      items.f = 7
+      await sleep(waitMsForDerivations)
+      assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>5</li><li>7</li>')
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "a,b,e,f")
     }),
 
     list_passiveGc: withHiddenDom(async hiddenDom => {

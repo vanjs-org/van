@@ -10,7 +10,7 @@ export declare const raw: <T extends object>(obj: T) => T
 export type ValueType<T> = T extends (infer V)[] ? V : T[keyof T]
 export type KeyType<T> = T extends unknown[] ? number : string
 export declare const list: <T extends object, ElementType extends Element>
-  (container: () => ElementType | ElementType, items: T,
+  (container: (() => ElementType) | ElementType, items: T,
   itemFunc: (v: State<ValueType<T>>, deleter: () => void, k: KeyType<T>) => Node) => ElementType
 
 export type ReplaceFunc<T> =

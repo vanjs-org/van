@@ -89,7 +89,7 @@
   let replaceInternal = (target, source) => {
     for (let [k, v] of entries(source)) {
       let existingV = target[k]
-      existingV instanceof Object && v instanceof Object ? replaceInternal(v, existingV) : target[k] = v
+      existingV instanceof Object && v instanceof Object ? replaceInternal(existingV, v) : target[k] = v
     }
     for (let k in target) k in source || delete target[k]
     let sourceKeys = keys(source), isArray = Array.isArray(target)
