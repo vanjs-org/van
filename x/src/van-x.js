@@ -7,7 +7,7 @@ let {fromEntries, entries, keys, getPrototypeOf} = Object
 let {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect
 let {state, derive, add} = van, stateProto = getPrototypeOf(state())
 let itemsToGc, gcCycleInMs = 1000, _undefined, replacing
-let statesSym = Symbol(), isCalcFunc = Symbol(), bindingsSym = Symbol()
+let objSym = Symbol(), statesSym = Symbol(), isCalcFunc = Symbol(), bindingsSym = Symbol()
 let keysGenSym = Symbol(), keyToChildSym = Symbol()
 
 let calc = f => (f[isCalcFunc] = 1, f)
@@ -16,9 +16,9 @@ let toState = v => {
   if (v?.[isCalcFunc]) {
     let s = state()
     derive(() => {
-      newV = v()
+      let newV = v()
       s.rawVal instanceof Object && newV instanceof Object ?
-        replaceInternal(s.rawVal, newV) : s.val = newV
+        replace(s.rawVal, newV) : s.val = reactive(newV)
     })
     return s
   } else return state(reactive(v))
@@ -26,7 +26,8 @@ let toState = v => {
 
 let reactive = srcObj => !(srcObj instanceof Object) || srcObj[statesSym] ? srcObj :
   new Proxy(
-    (srcObj[statesSym] = fromEntries(entries(srcObj).map(([k, v]) => [k, toState(v)])),
+    (srcObj[objSym] = srcObj,
+    srcObj[statesSym] = fromEntries(entries(srcObj).map(([k, v]) => [k, toState(v)])),
     srcObj[bindingsSym] = [],
     srcObj[keysGenSym] = state(1),
     srcObj),
@@ -92,6 +93,7 @@ let addItemsToGc = items => (itemsToGc ?? (itemsToGc = (
 
 let list = (container, items, itemFunc) => {
   let binding = {_containerDom: container instanceof Function ? container() : container, f: itemFunc}
+  binding._containerDom[keyToChildSym] = {}
   items[bindingsSym].push(binding)
   addItemsToGc(items)
   for (let [k, v] of entries(items[statesSym])) addToContainer(items, k, v, 1, binding)
@@ -104,21 +106,26 @@ let replaceInternal = (target, source) => {
     existingV instanceof Object && v instanceof Object ? replaceInternal(v, existingV) : target[k] = v
   }
   for (let k in target) k in source || delete target[k]
-  let targetKeys = keys(target)
-  if (Array.isArray(target) || keys(source).some((k, i) => k !== targetKeys[i])) {
+  let sourceKeys = keys(source), isArray = Array.isArray(target)
+  if (isArray || keys(target).some((k, i) => k !== sourceKeys[i])) {
+    if (isArray) target.length = source.length; else {
+      ++target[keysGenSym].val
+      let obj = target[objSym], objCopy = {...obj}
+      for (let k of sourceKeys) delete obj[k]
+      for (let k of sourceKeys) obj[k] = objCopy[k]
+    }
     for (let {_containerDom} of filterBindings(target)) {
       let {firstChild: dom, [keyToChildSym]: keyToChild} = _containerDom
-      for (let k of targetKeys) dom === keyToChild[k] ?
+      for (let k of sourceKeys) dom === keyToChild[k] ?
         dom = dom.nextSibling : _containerDom.insertBefore(keyToChild[k], dom)
     }
-    ++target[keysGenSym]
   }
   return target
 }
 
 let replace = (target, source) => {
   if (source instanceof Function)
-    source = Array.isArray(items) ? f(items.filter(_ => 1)) : fromEntries(f(entries(items)))
+    source = Array.isArray(target) ? source(target.filter(_ => 1)) : fromEntries(source(entries(target)))
   replacing = 1
   try {
     return replaceInternal(target, source)

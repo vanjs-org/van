@@ -242,6 +242,21 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       await sleep(waitMsForDerivations)
       assertEq(json.val, '[]')
       assertEq(numDerivations, 7)
+
+      vanX.replace(data, [1, 2, 3, 4])
+      await sleep(waitMsForDerivations)
+      assertEq(json.val, '[1,2,3,4]')
+      assertEq(numDerivations, 8)
+
+      vanX.replace(data, [1, 2])
+      await sleep(waitMsForDerivations)
+      assertEq(json.val, '[1,2]')
+      assertEq(numDerivations, 9)
+
+      vanX.replace(data, [])
+      await sleep(waitMsForDerivations)
+      assertEq(json.val, '[]')
+      assertEq(numDerivations, 10)
     },
 
     reactive_objJson: async () => {
