@@ -536,6 +536,37 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys(items).toString(), "")
     }),
 
+    list_arrayRefillHoles: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive([1, 2, 3, 4, 5])
+      van.add(hiddenDom, vanX.list(ul, items, v => li(v)))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li></ul>')
+
+      delete items[2]
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>4</li><li>5</li></ul>')
+
+      delete items[3]
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>5</li></ul>')
+
+      delete items[1]
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li></ul>')
+
+      items[2] = 6
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>6</li><li>5</li></ul>')
+
+      items[3] = 7
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>6</li><li>7</li><li>5</li></ul>')
+
+      items[1] = 8
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>8</li><li>6</li><li>7</li><li>5</li></ul>')
+    }),
+
     list_arrayShiftUnshift: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive(["a", "b", "c", "d", "e"])
       van.add(hiddenDom, vanX.list(ul, items,
