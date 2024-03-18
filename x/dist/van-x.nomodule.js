@@ -26,7 +26,7 @@
       srcObj[keysGenSym] = state(1),
       srcObj),
       {
-        get: (obj, name) =>
+        get: (obj, name, proxy) =>
           getPrototypeOf(obj[statesSym][name] ?? 0) === stateProto ? obj[statesSym][name].val : (
             name === "length" && obj[keysGenSym].val,
             refGet(obj, name, proxy)
