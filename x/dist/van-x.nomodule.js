@@ -4,7 +4,7 @@
   let {fromEntries, entries, keys, getPrototypeOf} = Object
   let {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect
   let {state, derive, add} = van, stateProto = getPrototypeOf(state())
-  let itemsToGc, gcCycleInMs = 1000, _undefined, updating
+  let itemsToGc, gcCycleInMs = 1000, _undefined, replacing
   let statesSym = Symbol(), isCalcFunc = Symbol(), bindingsSym = Symbol()
   let keysGenSym = Symbol(), keyToChildSym = Symbol()
   let calc = f => (f[isCalcFunc] = 1, f)
@@ -14,7 +14,7 @@
       derive(() => {
         newV = v()
         s.rawVal instanceof Object && newV instanceof Object ?
-          updateInternal(s.rawVal, newV) : s.val = newV
+          replaceInternal(s.rawVal, newV) : s.val = newV
       })
       return s
     } else return state(reactive(v))
@@ -65,7 +65,7 @@
     }
   }
   let onAdd = (items, k, v) => filterBindings(items).forEach(
-    addToContainer.bind(_undefined, items, k, v, updating))
+    addToContainer.bind(_undefined, items, k, v, replacing))
   let onDelete = (items, k) => {
     for (let b of filterBindings(items)) {
       let keyToChild = b._containerDom[keyToChildSym]
@@ -77,17 +77,17 @@
     setTimeout(
       () => (itemsToGc.forEach(filterBindings), itemsToGc = _undefined), gcCycleInMs),
     new Set))).add(items)
-  let list = (containerFunc, items, itemFunc) => {
-    let binding = {_containerDom: containerFunc(), f: itemFunc}
+  let list = (container, items, itemFunc) => {
+    let binding = {_containerDom: container instanceof Function ? container() : container, f: itemFunc}
     items[bindingsSym].push(binding)
     addItemsToGc(items)
     for (let [k, v] of entries(items[statesSym])) addToContainer(items, k, v, 1, binding)
     return binding._containerDom
   }
-  let updateInternal = (target, source) => {
+  let replaceInternal = (target, source) => {
     for (let [k, v] of entries(source)) {
       let existingV = target[k]
-      existingV instanceof Object && v instanceof Object ? updateInternal(v, existingV) : target[k] = v
+      existingV instanceof Object && v instanceof Object ? replaceInternal(v, existingV) : target[k] = v
     }
     for (let k in target) k in source || delete target[k]
     let targetKeys = keys(target)
@@ -101,17 +101,17 @@
     }
     return target
   }
-  let replace = (items, f) => updateInternal(items,
-    Array.isArray(items) ? f(items.filter(_ => 1)) : fromEntries(f(entries(items))))
-  let compact = obj => Array.isArray(obj) ? obj.filter(_ => 1).map(compact) :
-    obj instanceof Object ? fromEntries(entries(obj).map(([k, v]) => [k, compact(v)])) : obj
-  let update = (target, source) => {
-    updating = 1
+  let replace = (target, source) => {
+    if (source instanceof Function)
+      source = Array.isArray(items) ? f(items.filter(_ => 1)) : fromEntries(f(entries(items)))
+    replacing = 1
     try {
-      updateInternal(target, source)
+      return replaceInternal(target, source)
     } finally {
-      updating = _undefined
+      replacing = _undefined
     }
   }
-  window.vanX = {calc, reactive, stateFields, raw, list, replace, compact, update}
+  let compact = obj => Array.isArray(obj) ? obj.filter(_ => 1).map(compact) :
+    obj instanceof Object ? fromEntries(entries(obj).map(([k, v]) => [k, compact(v)])) : obj
+  window.vanX = {calc, reactive, stateFields, raw, list, replace, compact}
 }
