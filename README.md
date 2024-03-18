@@ -222,6 +222,9 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/MeddahAbdellah"><img src="https://avatars.githubusercontent.com/u/32915429?v=4?s=100" width="100px;" alt="Meddah Abdallah"/><br /><sub><b>Meddah Abdallah</b></sub></a><br /><a href="#plugin-MeddahAbdellah" title="Plugin/utility libraries">🔌</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/creatormir"><img src="https://avatars.githubusercontent.com/u/37747152?v=4?s=100" width="100px;" alt="Miroslaw"/><br /><sub><b>Miroslaw</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Acreatormir" title="Bug reports">🐛</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://jnyman.com/"><img src="https://avatars.githubusercontent.com/u/3173098?v=4?s=100" width="100px;" alt="Jon Nyman"/><br /><sub><b>Jon Nyman</b></sub></a><br /><a href="#ideas-jon49" title="Ideas, Planning, & Feedback">🤔</a></td>
+    </tr>
   </tbody>
 </table>
 
