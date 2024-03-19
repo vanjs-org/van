@@ -7,7 +7,7 @@ const TodoList = () => {
   interface TodoItem {text: string, done: boolean}
   const items = vanX.reactive(
     (<TodoItem[]>JSON.parse(localStorage.getItem("appState") ?? "[]")))
-  van.derive(() => localStorage.setItem("appState", JSON.stringify(items.filter(_ => 1))))
+  van.derive(() => localStorage.setItem("appState", JSON.stringify(vanX.compact(items))))
   const inputDom = input({type: "text"})
   return div(
     inputDom, button({onclick: () => items.push({text: inputDom.value, done: false})}, "Add"),
