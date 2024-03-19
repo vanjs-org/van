@@ -1,7 +1,7 @@
 import van from "vanjs-core"
 import * as vanX from "vanjs-ext"
 
-const {a, button, div, input, span, strike} = van.tags
+const {a, button, del, div, input, span} = van.tags
 
 const TodoList = () => {
   interface TodoItem {text: string, done: boolean}
@@ -13,7 +13,7 @@ const TodoList = () => {
     inputDom, button({onclick: () => items.push({text: inputDom.value, done: false})}, "Add"),
     vanX.list(div, items, ({val: v}, deleter) => div(
       input({type: "checkbox", checked: () => v.done, onclick: e => v.done = e.target.checked}),
-      () => (v.done ? strike : span)(v.text),
+      () => (v.done ? del : span)(v.text),
       a({onclick: deleter}, "❌"),
     )),
   )
