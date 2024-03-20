@@ -85,34 +85,35 @@
     for (let [k, v] of entries(items[statesSym])) addToContainer(items, k, v, 1, binding)
     return binding._containerDom
   }
-  let replaceInternal = (target, source) => {
-    for (let [k, v] of entries(source)) {
-      let existingV = target[k]
-      existingV instanceof Object && v instanceof Object ? replaceInternal(existingV, v) : target[k] = v
+  let replaceInternal = (obj, replacement) => {
+    for (let [k, v] of entries(replacement)) {
+      let existingV = obj[k]
+      existingV instanceof Object && v instanceof Object ? replaceInternal(existingV, v) : obj[k] = v
     }
-    for (let k in target) source.hasOwnProperty(k) || delete target[k]
-    let sourceKeys = keys(source), isArray = Array.isArray(target)
-    if (isArray || keys(target).some((k, i) => k !== sourceKeys[i])) {
-      if (isArray) target.length = source.length; else {
-        ++target[keysGenSym].val
-        let obj = target[objSym], objCopy = {...obj}
-        for (let k of sourceKeys) delete obj[k]
-        for (let k of sourceKeys) obj[k] = objCopy[k]
+    for (let k in obj) replacement.hasOwnProperty(k) || delete obj[k]
+    let newKeys = keys(replacement), isArray = Array.isArray(obj)
+    if (isArray || keys(obj).some((k, i) => k !== newKeys[i])) {
+      if (isArray) obj.length = replacement.length; else {
+        ++obj[keysGenSym].val
+        let rawObj = obj[objSym], objCopy = {...rawObj}
+        for (let k of newKeys) delete rawObj[k]
+        for (let k of newKeys) rawObj[k] = objCopy[k]
       }
-      for (let {_containerDom} of filterBindings(target)) {
+      for (let {_containerDom} of filterBindings(obj)) {
         let {firstChild: dom, [keyToChildSym]: keyToChild} = _containerDom
-        for (let k of sourceKeys) dom === keyToChild[k] ?
+        for (let k of newKeys) dom === keyToChild[k] ?
           dom = dom.nextSibling : _containerDom.insertBefore(keyToChild[k], dom)
       }
     }
-    return target
+    return obj
   }
-  let replace = (target, source) => {
-    if (source instanceof Function)
-      source = Array.isArray(target) ? source(target.filter(_ => 1)) : fromEntries(source(entries(target)))
+  let replace = (obj, replacement) => {
     replacing = 1
     try {
-      return replaceInternal(target, source)
+      return replaceInternal(obj, replacement instanceof Function ?
+        Array.isArray(obj) ? replacement(obj.filter(_ => 1)) : fromEntries(replacement(entries(obj))) :
+        replacement
+      )
     } finally {
       replacing = _undefined
     }

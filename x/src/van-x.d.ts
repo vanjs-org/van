@@ -16,6 +16,6 @@ export declare const list: <T extends object, ElementType extends Element>
 export type ReplaceFunc<T> =
   T extends (infer V)[] ? (items: V[]) => readonly V[] :
   (items: [string, T[keyof T]][]) => readonly [string, T[keyof T]][]
-export declare const replace: <T extends object>(target: T, source: ReplaceFunc<T> | T) => T
+export declare const replace: <T extends object>(obj: T, replacement: ReplaceFunc<T> | T) => T
 
 export declare const compact: <T extends object>(obj: T) => T
