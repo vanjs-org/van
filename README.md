@@ -111,7 +111,7 @@ Simplicity at its core. Only 5 functions (`van.tags`, `van.add`, `van.state`, `v
 * Get bored? [Play a fun game](https://vanjs.org/demo#game) built with **VanJS** under 60 lines
 * Convert HTML or MD snippet to **VanJS** code with our online [HTML/MD to **VanJS** Converter](https://vanjs.org/convert)
 * Check out [**VanUI**](https://github.com/vanjs-org/van/tree/main/components) - A collection of grab 'n go reusable utility and UI components for **VanJS**
-* Check out [**VanX**](https://vanjs.org/x) - The 1.0 kB official **VanJS** extension
+* Want reactive list, global app state, server-driven UI, serialization and more? Check out [**VanX**](https://vanjs.org/x) - The 1.1 kB official **VanJS** extension
 * Want server-side rendering? Check out [**Mini-Van**](https://github.com/vanjs-org/mini-van) and [Hydration](https://vanjs.org/ssr) (the entire [vanjs.org](https://vanjs.org/) site is built on top of **Mini-Van**)
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page
 * [How did **VanJS** get its name?](https://vanjs.org/about#name)
