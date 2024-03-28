@@ -1,5 +1,3 @@
-_https://vanjs.org/ is down due to issues of GitHub pages. I am reaching out to GitHub support team to get the issues resolved ASAP. Meanwhile, I am trying to figure out an alternative way of getting the website hosted. Thank you for your patience! 🙏🙏🙏_
-
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
 📣 [Introducing VanX →](https://github.com/vanjs-org/van/discussions/144) <br>
