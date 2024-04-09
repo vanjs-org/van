@@ -1,3 +1,4 @@
+push.sh
 node_modules/
 src/test.ts
 src/test.js
