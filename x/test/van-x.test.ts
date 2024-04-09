@@ -208,6 +208,33 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>')
     }),
 
+    reactive_existingClassWithCustomSet: withHiddenDom(async hiddenDom => {
+      class Data {
+        constructor(public x: number) {}
+
+        get y() { return this.x * 2 }
+
+        set y(value: number) { this.x = value / 2 }
+      }
+
+      const data = vanX.reactive(new Data(5))
+
+      van.add(hiddenDom,
+        div("x: ", () => data.x),
+        div("y: ", () => data.y),
+      )
+
+      assertEq(hiddenDom.innerHTML, "<div>x: 5</div><div>y: 10</div>")
+
+      data.x = 10
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, "<div>x: 10</div><div>y: 20</div>")
+
+      data.y = 6
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, "<div>x: 3</div><div>y: 6</div>")
+    }),
+
     reactive_deleteProperty: () => {
       interface Data { a?: number, b?: number }
       const data = vanX.reactive(<Data>{a: 1, b: 2})
@@ -340,6 +367,23 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       data.d = undefined
       await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<div>a: null</div><div>b: undefined</div><div>c: null</div><div>d: undefined</div>')
+    }),
+
+    reactive_deletedFields: withHiddenDom(async hiddenDom => {
+      interface Data { a?: number }
+      const data = vanX.reactive(<Data>{a: 1})
+      assertEq(data.a, 1)
+      delete data.a
+      assertEq(data.a, undefined)
+
+      // Add the deleted field back to validate the field can still be used to bind with DOM elements
+      data.a = 2
+      van.add(hiddenDom, () => data.a)
+      assertEq(hiddenDom.innerHTML, "2")
+
+      data.a = 3
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, "3")
     }),
 
     reactive_arrayLength: async () => {
@@ -1789,10 +1833,10 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
   }
 
   const gcTests = {
-    list_activeGc: withHiddenDom(async hiddenDom => {
-      const items = vanX.reactive([1, 2, 3])
-      const bindingSymbol = <any>Object.getOwnPropertySymbols(items).find(
-        k => Array.isArray(items[<any>k]) && (<any>items[<any>k]).length === 0)
+    list_activeGc_array: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive([1, 2, 3]), states = vanX.stateFields(items)
+      const bindingSymbol = <any>Object.getOwnPropertySymbols(states).find(
+        k => Array.isArray(states[<any>k]))
       const ordered = van.state(false)
 
       van.add(hiddenDom, () => vanX.list(ordered.val ? ol : ul, items, v => li(v)))
@@ -1809,14 +1853,41 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       }
 
       // Trigger the GC
-      vanX.replace(items, l => l.filter(_ => 1))
+      vanX.replace(items, [...items])
       await sleep(waitMsForDerivations)
       assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
-      assertEq((<any>items[bindingSymbol]).length, 1)
+      assertEq((<any>states[bindingSymbol]).length, 1)
     }),
 
-    list_keyToChild_Array: withHiddenDom(async hiddenDom => {
+    list_activeGc_obj: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive({a: 1, b: 2, c: 3}), states = vanX.stateFields(items)
+      const bindingSymbol = <any>Object.getOwnPropertySymbols(states).find(
+        k => Array.isArray(states[<keyof typeof states><unknown>k]))
+      const ordered = van.state(false)
+
+      van.add(hiddenDom, () => vanX.list(ordered.val ? ol : ul, items, v => li(v)))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
+
+      for (let i = 0; i < 10; ++i) {
+        ordered.val = !ordered.val
+        await sleep(waitMsForDerivations)
+        assertEq(hiddenDom.innerHTML,
+          ordered.val ?
+            '<ol><li>1</li><li>2</li><li>3</li></ol>' :
+            '<ul><li>1</li><li>2</li><li>3</li></ul>')
+      }
+
+      // Trigger the GC
+      vanX.replace(items, {b: 2, a: 1, c: 3})
+      await sleep(waitMsForDerivations)
+      assertEq(hiddenDom.innerHTML, '<ul><li>2</li><li>1</li><li>3</li></ul>')
+
+      assertEq((<any>states[<keyof typeof states>bindingSymbol]).length, 1)
+    }),
+
+    list_keyToChild_array: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive([1, 2, 3, 4, 5])
 
       const dom = hiddenDom.appendChild(vanX.list(ul, items, ({val: v}) => li(v)))
@@ -1847,7 +1918,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "0,1,4,5")
     }),
 
-    list_keyToChild_Obj: withHiddenDom(async hiddenDom => {
+    list_keyToChild_obj: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive(<Record<string, number | undefined>>{a: 1, b: 2, c: 3, d: 4, e: 5})
 
       const dom = hiddenDom.appendChild(vanX.list(ul, items, ({val: v}) => li(v)))
@@ -1878,10 +1949,10 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "a,b,e,f")
     }),
 
-    list_passiveGc: withHiddenDom(async hiddenDom => {
-      const items = vanX.reactive([1, 2, 3])
-      const bindingSymbol = <any>Object.getOwnPropertySymbols(items).find(
-        k => Array.isArray(items[<any>k]) && (<any>items[<any>k]).length === 0)
+    list_passiveGc_array: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive([1, 2, 3]), states = vanX.stateFields(items)
+      const bindingSymbol = <any>Object.getOwnPropertySymbols(states).find(
+        k => Array.isArray(states[<any>k]))
       const ordered = van.state(false)
 
       van.add(hiddenDom, () => vanX.list(ordered.val ? ol : ul, items, v => li(v)))
@@ -1901,7 +1972,33 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       await sleep(1000)
       assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
 
-      assertEq((<any>items[bindingSymbol]).length, 1)
+      assertEq((<any>states[bindingSymbol]).length, 1)
+    }),
+
+    list_passiveGc_obj: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive({a: 1, b: 2, c: 3}), states = vanX.stateFields(items)
+      const bindingSymbol = <any>Object.getOwnPropertySymbols(states).find(
+        k => Array.isArray(states[<keyof typeof states><unknown>k]))
+      const ordered = van.state(false)
+
+      van.add(hiddenDom, () => vanX.list(ordered.val ? ol : ul, items, v => li(v)))
+
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
+
+      for (let i = 0; i < 10; ++i) {
+        ordered.val = !ordered.val
+        await sleep(waitMsForDerivations)
+        assertEq(hiddenDom.innerHTML,
+          ordered.val ?
+            '<ol><li>1</li><li>2</li><li>3</li></ol>' :
+            '<ul><li>1</li><li>2</li><li>3</li></ul>')
+      }
+
+      // Wait for the GC to be triggered
+      await sleep(1000)
+      assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>')
+
+      assertEq((<any>states[<keyof typeof states>bindingSymbol]).length, 1)
     }),
   }
 
