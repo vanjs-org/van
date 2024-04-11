@@ -224,6 +224,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://jnyman.com/"><img src="https://avatars.githubusercontent.com/u/3173098?v=4?s=100" width="100px;" alt="Jon Nyman"/><br /><sub><b>Jon Nyman</b></sub></a><br /><a href="#ideas-jon49" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ericraider33"><img src="https://avatars.githubusercontent.com/u/9611418?v=4?s=100" width="100px;" alt="ericraider33"/><br /><sub><b>ericraider33</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Aericraider33" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
