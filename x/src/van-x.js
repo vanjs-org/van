@@ -11,12 +11,14 @@ let statesSym = Symbol(), isCalcFunc = Symbol(), bindingsSym = Symbol(), keysGen
 
 let calc = f => (f[isCalcFunc] = 1, f)
 
+let isNonFuncObject = x => x instanceof Object && !(x instanceof Function)
+
 let toState = v => {
   if (v?.[isCalcFunc]) {
     let s = state()
     derive(() => {
       let newV = v()
-      s.rawVal instanceof Object && newV instanceof Object ?
+      isNonFuncObject(s.rawVal) && isNonFuncObject(newV) ?
         replace(s.rawVal, newV) : s.val = reactive(newV)
     })
     return s
@@ -31,7 +33,7 @@ let buildStates = srcObj => {
   return states
 }
 
-let reactive = srcObj => !(srcObj instanceof Object) || srcObj[statesSym] ? srcObj :
+let reactive = srcObj => !(isNonFuncObject(srcObj)) || srcObj[statesSym] ? srcObj :
   new Proxy(buildStates(srcObj), {
     get: (states, name, proxy) =>
       name === statesSym ? states :
@@ -100,7 +102,7 @@ let list = (container, items, itemFunc) => {
 let replaceInternal = (obj, replacement) => {
   for (let [k, v] of entries(replacement)) {
     let existingV = obj[k]
-    existingV instanceof Object && v instanceof Object ? replaceInternal(existingV, v) : obj[k] = v
+    isNonFuncObject(existingV) && isNonFuncObject(v) ? replaceInternal(existingV, v) : obj[k] = v
   }
   for (let k in obj) hasOwn(replacement, k) || delete obj[k]
   let newKeys = keys(replacement), isArray = Array.isArray(obj)
@@ -134,6 +136,6 @@ let replace = (obj, replacement) => {
 }
 
 let compact = obj => Array.isArray(obj) ? obj.filter(_ => 1).map(compact) :
-  obj instanceof Object ? fromEntries(entries(obj).map(([k, v]) => [k, compact(v)])) : obj
+  isNonFuncObject(obj) ? fromEntries(entries(obj).map(([k, v]) => [k, compact(v)])) : obj
 
 export {calc, reactive, stateFields, raw, list, replace, compact}

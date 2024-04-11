@@ -348,6 +348,17 @@ window.runTests = async (van, vanX, file) => {
             assertEq(length.val, 0);
             assertEq(numLengthDerived, 13);
         },
+        reactive_functionField: withHiddenDom(async (hiddenDom) => {
+            const data = vanX.reactive({ func: () => "abc" });
+            van.add(hiddenDom, () => data.func());
+            assertEq(hiddenDom.innerHTML, "abc");
+            data.func = () => "def";
+            await sleep(waitMsForDerivations);
+            assertEq(hiddenDom.innerHTML, "def");
+            vanX.replace(data, { func: () => "ghi" });
+            await sleep(waitMsForDerivations);
+            assertEq(hiddenDom.innerHTML, "ghi");
+        }),
         raw_basic: withHiddenDom(async (hiddenDom) => {
             const base = vanX.reactive({ a: 3, b: 5 });
             const derived = vanX.reactive({ s: vanX.calc(() => vanX.raw(base).a + base.b) });
