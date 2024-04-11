@@ -37,8 +37,8 @@
           refGet(states, name, proxy),
       set: (states, name, v, proxy) =>
         hasOwn(states, name) ?
-          Array.isArray(states) && name === "length" && v !== states.length ?
-            (states.length = v, ++states[keysGenSym].val) :
+          Array.isArray(states) && name === "length" ?
+            (v !== states.length && ++states[keysGenSym].val, states.length = v, 1) :
             (states[name].val = reactive(v), 1) :
         name in states ? refSet(states, name, v, proxy) :
           refSet(states, name, toState(v)) && (
