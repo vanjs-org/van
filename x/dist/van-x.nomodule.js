@@ -5,16 +5,15 @@
   let {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect
   let {state, derive, add} = van
   let statesToGc, gcCycleInMs = 1000, _undefined, replacing
-  let statesSym = Symbol(), isCalcFunc = Symbol(), bindingsSym = Symbol(), keysGenSym = Symbol(), keyToChildSym = Symbol()
+  let statesSym = Symbol(), isCalcFunc = Symbol(), bindingsSym = Symbol(), keysGenSym = Symbol(), keyToChildSym = Symbol(), noreactiveSym = Symbol()
   let calc = f => (f[isCalcFunc] = 1, f)
-  let isNonFuncObject = x => x instanceof Object && !(x instanceof Function)
+  let isObject = x => x instanceof Object && !(x instanceof Function) && !x[noreactiveSym]
   let toState = v => {
     if (v?.[isCalcFunc]) {
       let s = state()
       derive(() => {
         let newV = v()
-        isNonFuncObject(s.rawVal) && isNonFuncObject(newV) ?
-          replace(s.rawVal, newV) : s.val = reactive(newV)
+        isObject(s.rawVal) && isObject(newV) ? replace(s.rawVal, newV) : s.val = reactive(newV)
       })
       return s
     } else return state(reactive(v))
@@ -26,7 +25,7 @@
     states[keysGenSym] = state(1)
     return states
   }
-  let reactive = srcObj => !(isNonFuncObject(srcObj)) || srcObj[statesSym] ? srcObj :
+  let reactive = srcObj => !(isObject(srcObj)) || srcObj[statesSym] ? srcObj :
     new Proxy(buildStates(srcObj), {
       get: (states, name, proxy) =>
         name === statesSym ? states :
@@ -51,6 +50,7 @@
         (refDelete(states, name) && onDelete(states, name), ++states[keysGenSym].val),
       ownKeys: states => (states[keysGenSym].val, refOwnKeys(states)),
     })
+  let noreactive = x => (x[noreactiveSym] = 1, x)
   let stateFields = obj => obj[statesSym]
   let raw = obj => obj[statesSym] ?
     new Proxy(obj[statesSym], {get: (obj, name) => raw(obj[name].rawVal)}) : obj
@@ -87,7 +87,7 @@
   let replaceInternal = (obj, replacement) => {
     for (let [k, v] of entries(replacement)) {
       let existingV = obj[k]
-      isNonFuncObject(existingV) && isNonFuncObject(v) ? replaceInternal(existingV, v) : obj[k] = v
+      isObject(existingV) && isObject(v) ? replaceInternal(existingV, v) : obj[k] = v
     }
     for (let k in obj) hasOwn(replacement, k) || delete obj[k]
     let newKeys = keys(replacement), isArray = Array.isArray(obj)
@@ -119,6 +119,6 @@
     }
   }
   let compact = obj => Array.isArray(obj) ? obj.filter(_ => 1).map(compact) :
-    isNonFuncObject(obj) ? fromEntries(entries(obj).map(([k, v]) => [k, compact(v)])) : obj
-  window.vanX = {calc, reactive, stateFields, raw, list, replace, compact}
+    isObject(obj) ? fromEntries(entries(obj).map(([k, v]) => [k, compact(v)])) : obj
+  window.vanX = {calc, reactive, noreactive, stateFields, raw, list, replace, compact}
 }

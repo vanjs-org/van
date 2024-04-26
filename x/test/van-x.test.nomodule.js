@@ -359,6 +359,34 @@ window.runTests = async (van, vanX, file) => {
             await sleep(waitMsForDerivations);
             assertEq(hiddenDom.innerHTML, "ghi");
         }),
+        noreactive_array: withHiddenDom(async (hiddenDom) => {
+            const data = vanX.reactive([
+                vanX.noreactive(new ArrayBuffer(8)),
+                vanX.noreactive(new ArrayBuffer(16)),
+            ]);
+            van.add(hiddenDom, vanX.list(div, data, v => div(v.val.byteLength)));
+            assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>16</div></div>");
+            data.push(vanX.noreactive(new ArrayBuffer(24)));
+            await sleep(waitMsForDerivations);
+            assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>16</div><div>24</div></div>");
+            delete data[1];
+            await sleep(waitMsForDerivations);
+            assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>24</div></div>");
+        }),
+        noreactive_obj: withHiddenDom(async (hiddenDom) => {
+            const data = vanX.reactive({
+                a: vanX.noreactive(new ArrayBuffer(8)),
+                b: vanX.noreactive(new ArrayBuffer(16)),
+            });
+            van.add(hiddenDom, vanX.list(div, data, v => div(v.val.byteLength)));
+            assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>16</div></div>");
+            data.c = vanX.noreactive(new ArrayBuffer(24));
+            await sleep(waitMsForDerivations);
+            assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>16</div><div>24</div></div>");
+            delete data.b;
+            await sleep(waitMsForDerivations);
+            assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>24</div></div>");
+        }),
         raw_basic: withHiddenDom(async (hiddenDom) => {
             const base = vanX.reactive({ a: 3, b: 5 });
             const derived = vanX.reactive({ s: vanX.calc(() => vanX.raw(base).a + base.b) });
