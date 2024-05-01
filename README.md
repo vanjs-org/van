@@ -147,6 +147,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [VanJS Form](https://github.com/kwameopareasiedu/vanjs-form) | Fully typed form state management library (with validation) for **VanJS** | [Kwame Opare Asiedu](https://github.com/kwameopareasiedu) |
 | [vanjs-bootstrap](https://github.com/WilliCommer/vanjs-bootstrap) | **VanJS** Bootstrap Components | [Willi Commer](https://github.com/WilliCommer) |
 | [vanrx](https://github.com/MeddahAbdellah/vanrx) | An ultra-lightweight Redux addon for **VanJS** | [Meddah Abdallah](https://github.com/MeddahAbdellah) |
+| [VanFS](https://github.com/ken-okabe/vanfs) | 1:1 bindings from F# to **VanJS** | [Ken Okabe](https://github.com/ken-okabe) |
 
 ## Contributors (51)
 
