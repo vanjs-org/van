@@ -501,6 +501,15 @@
       "contributions": [
         "plugin"
       ]
+    },
+    {
+      "login": "ArcaneEngineer",
+      "name": "Nick",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7487822?v=4",
+      "profile": "https://gamedev.stackexchange.com/users/5473/arcane-engineer",
+      "contributions": [
+        "example"
+      ]
     }
   ],
   "repoType": "github"
