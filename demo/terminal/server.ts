@@ -47,8 +47,8 @@ const readFileOrError = async (path: string) => {
   }
 }
 
-const serveHttp = async (conn: Deno.Conn, req: Request) => {
-  if (!flags.allowRemote && (<Deno.NetAddr>conn.remoteAddr).hostname !== "127.0.0.1")
+Deno.serve({port: Number(flags.port)}, async (req: Request, {remoteAddr}) => {
+  if (!flags.allowRemote && remoteAddr.hostname !== "127.0.0.1")
     return new Response(
       "Only local requests are allowed for security purposes", {status: 403})
   const url = new URL(req.url)
@@ -110,12 +110,7 @@ const serveHttp = async (conn: Deno.Conn, req: Request) => {
     }
   }
   return new Response("Unsupported HTTP method", {status: 404})
-}
-
-const serveConn = async (conn: Deno.Conn) => {
-  for await (const reqEvent of Deno.serveHttp(conn))
-    (async () => reqEvent.respondWith(await serveHttp(conn, reqEvent.request)))()
-}
+})
 
 console.log(`Visit http://localhost:${flags.port}/ in your browser`)
 if (!flags.skipLogin) {
@@ -124,4 +119,3 @@ if (!flags.skipLogin) {
   console.log("%cFor security purposes, DO NOT share the key with anyone else",
     "color: red; font-weight: bold")
 }
-for await (const conn of Deno.listen({port: Number(flags.port)})) serveConn(conn)
