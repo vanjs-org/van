@@ -1,7 +1,8 @@
 import van from "vanjs-core";
 import { setAttribute } from "./hyper";
-const createElement = (jsxTag, { children, ref, ...props }) => {
+const createElement = (jsxTag, allProps) => {
     if (typeof jsxTag === "string") {
+        const { children, ref, ...props } = allProps
         // TODO VanNode to VanElement
         const ele = van.tags[jsxTag](children);
         for (const [key, value] of Object.entries(props ?? {})) {
@@ -27,7 +28,7 @@ const createElement = (jsxTag, { children, ref, ...props }) => {
         return ele;
     }
     if (typeof jsxTag === "function") {
-        return jsxTag({ ...props, ref, children });
+        return jsxTag(allProps);
     }
 };
 export default createElement;
