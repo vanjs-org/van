@@ -140,6 +140,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | ------ | ----------- | ------ |
 | [Van Cone](https://medium-tech.github.io/van-cone-website/) | An SPA framework add-on for **VanJS** | [b-rad-c](https://github.com/b-rad-c) |
 | [van_element](/addons/van_element/) | Web Components with **VanJS** | [Atmos4](https://github.com/Atmos4) |
+| [VanJS Feather](https://thednp.github.io/vanjs-feather/) | Feather Icons for **VanJS** | [thednp](https://github.com/thednp) |
 | [van_dml.js](/addons/van_dml) | A new flavour of composition for **VanJS** | [Eckehard](https://github.com/efpage) |
 | [van-jsx](/addons/van_jsx) | A JSX wrapper for **VanJS**, for people who like the JSX syntax more | [cqh963852](https://github.com/cqh963852) |
 | [vanjs-router](https://github.com/iuroc/vanjs-router) | A router solution for **VanJS** (`README.md` in simplified Chinese) | [欧阳鹏](https://github.com/iuroc) |
