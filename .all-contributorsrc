@@ -511,6 +511,15 @@
       "contributions": [
         "example"
       ]
+    },
+    {
+      "login": "thednp",
+      "name": "thednp",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6761246?v=4",
+      "profile": "https://github.com/thednp",
+      "contributions": [
+        "plugin"
+      ]
     }
   ],
   "repoType": "github"
