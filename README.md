@@ -229,6 +229,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ericraider33"><img src="https://avatars.githubusercontent.com/u/9611418?v=4?s=100" width="100px;" alt="ericraider33"/><br /><sub><b>ericraider33</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Aericraider33" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ken-okabe/vanfs"><img src="https://avatars.githubusercontent.com/u/1316994?v=4?s=100" width="100px;" alt="Ken Okabe"/><br /><sub><b>Ken Okabe</b></sub></a><br /><a href="#plugin-ken-okabe" title="Plugin/utility libraries">🔌</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://gamedev.stackexchange.com/users/5473/arcane-engineer"><img src="https://avatars.githubusercontent.com/u/7487822?v=4?s=100" width="100px;" alt="Nick"/><br /><sub><b>Nick</b></sub></a><br /><a href="#example-ArcaneEngineer" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/thednp"><img src="https://avatars.githubusercontent.com/u/6761246?v=4?s=100" width="100px;" alt="thednp"/><br /><sub><b>thednp</b></sub></a><br /><a href="#plugin-thednp" title="Plugin/utility libraries">🔌</a></td>
     </tr>
   </tbody>
 </table>
