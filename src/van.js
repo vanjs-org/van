@@ -113,11 +113,10 @@ let tag = (ns, name, ...args) => {
     k.startsWith("on") || protoOfV === funcProto && (v = derive(v), protoOfV = stateProto)
     protoOfV === stateProto ? bind(() => (setter(v.val, v._oldVal), dom)) : setter(v)
   }
-  return add(dom, ...children)
+  return add(dom, children)
 }
 
 let handler = ns => ({get: (_, name) => tag.bind(_undefined, ns, name)})
-let tags = new Proxy(ns => new Proxy(tag, handler(ns)), handler())
 
 let update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove()
 
@@ -135,6 +134,8 @@ let updateDoms = () => {
   for (let s of changedStatesArray) s._oldVal = s.rawVal
 }
 
-let hydrate = (dom, f) => update(dom, bind(f, dom))
-
-export default {add, tags, state, derive, hydrate}
+export default {
+  tags: new Proxy(ns => new Proxy(tag, handler(ns)), handler()),
+  hydrate: (dom, f) => update(dom, bind(f, dom)),
+  add, state, derive,
+}

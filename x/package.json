@@ -37,7 +37,7 @@
   },
   "homepage": "https://vanjs.org/x",
   "dependencies": {
-    "vanjs-core": "^1.5.0"
+    "vanjs-core": "^1.5.1"
   },
   "devDependencies": {
     "node-jq": "^4.0.1",
