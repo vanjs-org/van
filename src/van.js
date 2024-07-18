@@ -1,13 +1,13 @@
 // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
 
 // Global variables - aliasing some builtin symbols to reduce the bundle size.
-let protoOf = Object.getPrototypeOf
+let Objct = Object, SetConstructor = Set, protoOf = Objct.getPrototypeOf
 let changedStates, derivedStates, curDeps, curNewDerives, alwaysConnectedDom = {isConnected: 1}
 let gcCycleInMs = 1000, statesToGc, propSetterCache = {}
 let objProto = protoOf(alwaysConnectedDom), funcProto = protoOf(protoOf), _undefined
 
 let addAndScheduleOnFirst = (set, s, f, waitMs) =>
-  (set ?? (setTimeout(f, waitMs), new Set)).add(s)
+  (set ?? (setTimeout(f, waitMs), new SetConstructor)).add(s);
 
 let runAndCaptureDeps = (f, deps, arg) => {
   let prevDeps = curDeps
@@ -24,10 +24,12 @@ let runAndCaptureDeps = (f, deps, arg) => {
 
 let keepConnected = l => l.filter(b => b._dom?.isConnected)
 
+let connectedB = (s) => s._bindings = keepConnected(s._bindings)
+let connectedL = (s) => s._listeners = keepConnected(s._listeners)
+
 let addStatesToGc = d => statesToGc = addAndScheduleOnFirst(statesToGc, d, () => {
   for (let s of statesToGc)
-    s._bindings = keepConnected(s._bindings),
-    s._listeners = keepConnected(s._listeners)
+    connectedB(s), connectedL(s);
   statesToGc = _undefined
 }, gcCycleInMs)
 
@@ -43,12 +45,13 @@ let stateProto = {
   },
 
   set val(v) {
-    curDeps?._setters?.add(this)
-    if (v !== this.rawVal) {
-      this.rawVal = v
-      this._bindings.length + this._listeners.length ?
-        (derivedStates?.add(this), changedStates = addAndScheduleOnFirst(changedStates, this, updateDoms)) :
-        this._oldVal = v
+    let t = this
+    curDeps?._setters?.add(t)
+    if (v !== t.rawVal) {
+      t.rawVal = v
+      t._bindings.length + t._listeners.length ?
+        (derivedStates?.add(t), changedStates = addAndScheduleOnFirst(changedStates, t, updateDoms)) :
+        t._oldVal = v
     }
   },
 }
@@ -62,7 +65,7 @@ let state = initVal => ({
 })
 
 let bind = (f, dom) => {
-  let deps = {_getters: new Set, _setters: new Set}, binding = {f}, prevNewDerives = curNewDerives
+  let deps = {_getters: new SetConstructor(), _setters: new SetConstructor()}, binding = {f}, prevNewDerives = curNewDerives
   curNewDerives = []
   let newDom = runAndCaptureDeps(f, deps, dom)
   newDom = (newDom ?? document).nodeType ? newDom : new Text(newDom)
@@ -74,7 +77,7 @@ let bind = (f, dom) => {
 }
 
 let derive = (f, s = state(), dom) => {
-  let deps = {_getters: new Set, _setters: new Set}, listener = {f, s}
+  let deps = {_getters: new SetConstructor(), _setters: new SetConstructor()}, listener = {f, s}
   listener._dom = dom ?? curNewDerives?.push(listener) ?? alwaysConnectedDom
   s.val = runAndCaptureDeps(f, deps, s.rawVal)
   for (let d of deps._getters)
@@ -95,9 +98,9 @@ let add = (dom, ...children) => {
 let tag = (ns, name, ...args) => {
   let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
   let dom = ns ? document.createElementNS(ns, name) : document.createElement(name)
-  for (let [k, v] of Object.entries(props)) {
-    let getPropDescriptor = proto => proto ?
-      Object.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) :
+  for (let [k, v] of Objct.entries(props)) {
+    let getPropDescriptor = (proto) => proto ?
+      Objct.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) :
       _undefined
     let cacheKey = name + "," + k
     let propSetter = propSetterCache[cacheKey] ??
@@ -113,28 +116,35 @@ let tag = (ns, name, ...args) => {
     k.startsWith("on") || protoOfV === funcProto && (v = derive(v), protoOfV = stateProto)
     protoOfV === stateProto ? bind(() => (setter(v.val, v._oldVal), dom)) : setter(v)
   }
-  return add(dom, ...children)
+  return add(dom, children)
 }
 
 let handler = ns => ({get: (_, name) => tag.bind(_undefined, ns, name)})
-let tags = new Proxy(ns => new Proxy(tag, handler(ns)), handler())
 
 let update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove()
 
+let filtered = () => [...changedStates].filter(
+  (s) => s.rawVal !== s._oldVal,
+)
+
 let updateDoms = () => {
-  let iter = 0, derivedStatesArray = [...changedStates].filter(s => s.rawVal !== s._oldVal)
+  let iter = 0, derivedStatesArray = filtered()
   do {
-    derivedStates = new Set
-    for (let l of new Set(derivedStatesArray.flatMap(s => s._listeners = keepConnected(s._listeners))))
+    derivedStates = new SetConstructor()
+    for (let l of new SetConstructor(derivedStatesArray.flatMap(connectedL)))
       derive(l.f, l.s, l._dom), l._dom = _undefined
   } while (++iter < 100 && (derivedStatesArray = [...derivedStates]).length)
-  let changedStatesArray = [...changedStates].filter(s => s.rawVal !== s._oldVal)
+  let changedStatesArray = filtered()
   changedStates = _undefined
-  for (let b of new Set(changedStatesArray.flatMap(s => s._bindings = keepConnected(s._bindings))))
+  for (let b of new SetConstructor(changedStatesArray.flatMap(connectedB)))
     update(b._dom, bind(b.f, b._dom)), b._dom = _undefined
   for (let s of changedStatesArray) s._oldVal = s.rawVal
 }
 
-let hydrate = (dom, f) => update(dom, bind(f, dom))
-
-export default {add, tags, state, derive, hydrate}
+export default {
+  add,
+  tags: new Proxy((ns) => new Proxy(tag, handler(ns)), handler()),
+  state,
+  derive,
+  hydrate: (dom, f) => update(dom, bind(f, dom)),
+};
