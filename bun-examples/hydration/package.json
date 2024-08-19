@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "mini-van-plate": "^0.6.0",
-    "vanjs-core": "^1.5.1"
+    "vanjs-core": "^1.5.2"
   },
   "devDependencies": {
     "@types/bun": "^1.1.6",

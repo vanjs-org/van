@@ -8,6 +8,6 @@
   },
   "devDependencies": {
     "deno-bin": "^1.43.1",
-    "vanjs-core": "^1.5.1"
+    "vanjs-core": "^1.5.2"
   }
 }

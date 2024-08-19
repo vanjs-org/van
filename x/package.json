@@ -37,10 +37,10 @@
   },
   "homepage": "https://vanjs.org/x",
   "dependencies": {
-    "vanjs-core": "^1.5.1"
+    "vanjs-core": "^1.5.2"
   },
   "devDependencies": {
-    "node-jq": "^4.0.1",
+    "node-jq": "^6.0.1",
     "terser": "^5.21.0",
     "typescript": "^5.2.2"
   }
