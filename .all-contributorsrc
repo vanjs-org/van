@@ -520,6 +520,15 @@
       "contributions": [
         "plugin"
       ]
+    },
+    {
+      "login": "pearmini",
+      "name": "Bairui Su",
+      "avatar_url": "https://avatars.githubusercontent.com/u/49330279?v=4",
+      "profile": "https://github.com/pearmini",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
