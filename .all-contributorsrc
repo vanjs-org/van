@@ -529,6 +529,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jroush-ipg",
+      "name": "jroush-ipg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/144253148?v=4",
+      "profile": "https://github.com/jroush-ipg",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "repoType": "github"
