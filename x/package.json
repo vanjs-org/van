@@ -1,6 +1,6 @@
 {
   "name": "vanjs-ext",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "The official extension library for VanJS",
   "files": [
     "src/van-x.js",

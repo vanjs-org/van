@@ -32,38 +32,46 @@ let buildStates = srcObj => {
   return states
 }
 
-let reactive = srcObj => !(isObject(srcObj)) || srcObj[statesSym] ? srcObj :
-  new Proxy(buildStates(srcObj), {
-    get: (states, name, proxy) =>
-      name === statesSym ? states :
-      hasOwn(states, name) ?
-        Array.isArray(states) && name === "length" ?
-          (states[keysGenSym].val, states.length) :
-          states[name].val :
-        refGet(states, name, proxy),
-    set: (states, name, v, proxy) =>
-      hasOwn(states, name) ?
-        Array.isArray(states) && name === "length" ?
-          (v !== states.length && ++states[keysGenSym].val, states.length = v, 1) :
-          (states[name].val = reactive(v), 1) :
-      name in states ? refSet(states, name, v, proxy) :
-        refSet(states, name, toState(v)) && (
-          ++states[keysGenSym].val,
-          filterBindings(states).forEach(
-            addToContainer.bind(_undefined, proxy, name, states[name], replacing)),
-          1
-        ),
-    deleteProperty: (states, name) =>
-      (refDelete(states, name) && onDelete(states, name), ++states[keysGenSym].val),
-    ownKeys: states => (states[keysGenSym].val, refOwnKeys(states)),
-  })
+let reactiveHandler = {
+  get: (states, name, proxy) =>
+    name === statesSym ? states :
+    hasOwn(states, name) ?
+      Array.isArray(states) && name === "length" ?
+        (states[keysGenSym].val, states.length) :
+        states[name].val :
+      refGet(states, name, proxy),
+  set: (states, name, v, proxy) =>
+    hasOwn(states, name) ?
+      Array.isArray(states) && name === "length" ?
+        (v !== states.length && ++states[keysGenSym].val, states.length = v, 1) :
+        (states[name].val = reactive(v), 1) :
+    name in states ? refSet(states, name, v, proxy) :
+      refSet(states, name, toState(v)) && (
+        ++states[keysGenSym].val,
+        filterBindings(states).forEach(
+          addToContainer.bind(_undefined, proxy, name, states[name], replacing)),
+        1
+      ),
+  deleteProperty: (states, name) =>
+    (refDelete(states, name) && onDelete(states, name), ++states[keysGenSym].val),
+  ownKeys: states => (states[keysGenSym].val, refOwnKeys(states)),
+}
+
+let reactive = srcObj => !isObject(srcObj) || srcObj[statesSym] ? srcObj :
+  new Proxy(buildStates(srcObj), reactiveHandler)
 
 let noreactive = x => (x[noreactiveSym] = 1, x)
 
 let stateFields = obj => obj[statesSym]
 
-let raw = obj => obj[statesSym] ?
-  new Proxy(obj[statesSym], {get: (obj, name) => raw(obj[name].rawVal)}) : obj
+let stateProto = getPrototypeOf(state())
+
+let rawStates = states => new Proxy(states, {
+  get: (states, name, proxy) => getPrototypeOf(states[name] ?? 0) === stateProto ?
+    {val: raw(states[name].rawVal)} : refGet(states, name, proxy),
+})
+
+let raw = obj => obj?.[statesSym] ? new Proxy(rawStates(obj[statesSym]), reactiveHandler) : obj
 
 let filterBindings = states =>
   states[bindingsSym] = states[bindingsSym].filter(b => b._containerDom.isConnected)
