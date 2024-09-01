@@ -35,5 +35,8 @@
     "url": "https://github.com/vanjs-org/van/issues"
   },
   "homepage": "https://vanjs.org/graph",
-
+  "dependencies": {
+    "@viz-js/viz": "^3.8.0",
+    "vanjs-core": "^1.5.2"
+  }
 }
