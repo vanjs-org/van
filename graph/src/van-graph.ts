@@ -36,7 +36,7 @@ const getLabel = (node: GraphNode) => [node._name].concat(
   node._dom ? node._dom.nodeName : [],
 ).join(" | ")
 
-const anonymousPrefix = "<anonymous>_", stateProto = Object.getPrototypeOf(van.state())
+const unnamedPrefix = "<unnamed>_", stateProto = Object.getPrototypeOf(van.state())
 
 const keepConnected = (l: any) => l.filter((b: any) => b[domPropKey]?.isConnected)
 
@@ -44,7 +44,7 @@ const show = async (states: Record<string, any> | any[], {
   rankdir = "TB",
 }: Options = {}) => {
   let id = 0
-  const newName = () => anonymousPrefix + ++id
+  const newName = () => unnamedPrefix + ++id
   const stateOrDomToNode = new Map<any, GraphNode>(), edges = Array<[GraphNode, GraphNode]>()
 
   if (Array.isArray(states))

@@ -15,11 +15,11 @@ const init = () => {
 const { promise: viz, resolve: resolveViz } = Promise.withResolvers();
 init().then(viz => resolveViz(viz));
 const getLabel = (node) => [node._name].concat(node._f?.toString() ?? [], node._state ? `State {val: ${node._state.rawVal}}` : [], node._dom ? node._dom.nodeName : []).join(" | ");
-const anonymousPrefix = "<anonymous>_", stateProto = Object.getPrototypeOf(van.state());
+const unnamedPrefix = "<unnamed>_", stateProto = Object.getPrototypeOf(van.state());
 const keepConnected = (l) => l.filter((b) => b[domPropKey]?.isConnected);
 const show = async (states, { rankdir = "TB", } = {}) => {
     let id = 0;
-    const newName = () => anonymousPrefix + ++id;
+    const newName = () => unnamedPrefix + ++id;
     const stateOrDomToNode = new Map(), edges = Array();
     if (Array.isArray(states))
         for (const s of states)
