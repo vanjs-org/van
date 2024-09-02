@@ -1,4 +1,4 @@
-# **VanGraph**: Helper Library to Visualize Dependency Graph Among States and DOM Nodes
+# **VanGraph**: Visualize Dependencies in Your App
 
 **VanGraph** is a library that helps you visualize dependency graph among states and DOM nodes with the help of [Graphviz](https://graphviz.org/). Here is the sample usage:
 
