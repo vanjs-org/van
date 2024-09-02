@@ -48,7 +48,7 @@ Note that: you need to import **VanJS** and `@viz-js/viz` before **VanGraph** fo
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@viz-js/viz@3.8.0/lib/viz-standalone.js"></script>
 ```
 
-[Try on jsfiddle](https://jsfiddle.net/6mgsy3ud/)
+[Try on jsfiddle](https://jsfiddle.net/zo49cqys/1/)
 
 ## Documentation
 
