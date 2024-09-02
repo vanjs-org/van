@@ -13,6 +13,8 @@ const fullName = van.derive(() => `${firstName.val} ${lastName.val}`)
 vanGraph.show({firstName, lastName, fullName})
 ```
 
+Checkout a demo in [CodeSandbox](https://codesandbox.io/p/devbox/github/vanjs-org/van/tree/main/graph/examples/basic?file=%2Fsrc%2Fmain.ts).
+
 ## Installation
 
 ### Via NPM
@@ -46,12 +48,17 @@ Note that: you need to import **VanJS** and `@viz-js/viz` before **VanGraph** fo
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@viz-js/viz@3.8.0/lib/viz-standalone.js"></script>
 ```
 
-[Try on jsfiddle](https://jsfiddle.net/1u69nbek/2/)
+[Try on jsfiddle](https://jsfiddle.net/6mgsy3ud/)
 
 ## Documentation
 
 ```js
-vanGraph.show(states, options) => Promise<SVGSVGElement>
+vanGraph.show(states[, options]) => Promise<SVGSVGElement>
 ```
 
-The parameter `states` represents a collection of `State` objects whose dependency graph we want to visualize. All the `State` objects and their dependents will be rendered in the dependency graph. `states` can either be specified as a plain object, e.g.: `{firstName, lastName, fullName}`, or as an array, e.g.: `[firstName, lastName, fullName]`.
+The parameter `states` represents a collection of `State` objects whose dependency graph we want to visualize. All the `State` objects and their dependents will be rendered in the dependency graph. `states` can either be specified as a plain object, e.g.: `{firstName, lastName, fullName}`, or as an array, e.g.: `[firstName, lastName, fullName]`. If `states` is specified as an array, the variable names won't be shown in the rendered graph.
+
+`options` is a plain object with the following properties:
+* `rankdir`: Type `string`. Default `"LR"`. Optional. Corresponding to the graph attribute `rankdir` in Graphviz.
+
+The function returns a `Promise<SVGSVGElement>` so that you can await the result and then attach `SVGSVGElement` to the main DOM tree.

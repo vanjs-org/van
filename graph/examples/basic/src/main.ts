@@ -2,27 +2,20 @@ import van from "vanjs-core"
 import * as vanGraph from "vanjs-graph"
 
 const {button, div, input, option, pre, select} = van.tags
+const {svg} = van.tags("http://www.w3.org/2000/svg")
 
 const App = () => {
   const firstName = van.state("Tao"), lastName = van.state("Xin")
   const fullName = van.derive(() => `${firstName.val} ${lastName.val}`)
   const renderPre = van.state(false)
   const rankdirDom = select({value: "LR"}, option("LR"), option("TB"))
-  const graphContainerDom = div()
+  let svgDom = svg()
 
-  const showNamed = async () => {
-    const svgDom = await vanGraph.show(
-      {firstName, lastName, fullName, renderPre}, {rankdir: rankdirDom.value})
-    graphContainerDom.firstChild ?
-      graphContainerDom.firstChild.replaceWith(svgDom) : graphContainerDom.appendChild(svgDom)
-  }
+  const showNamed = async () => svgDom.replaceWith(svgDom = await vanGraph.show(
+    {firstName, lastName, fullName, renderPre}, {rankdir: rankdirDom.value}))
 
-  const showUnnamed = async () => {
-    const svgDom = await vanGraph.show(
-      [firstName, lastName, fullName, renderPre], {rankdir: rankdirDom.value})
-    graphContainerDom.firstChild ?
-      graphContainerDom.firstChild.replaceWith(svgDom) : graphContainerDom.appendChild(svgDom)
-  }
+  const showUnnamed = async () => svgDom.replaceWith(svgDom = await vanGraph.show(
+    [firstName, lastName, fullName, renderPre], {rankdir: rankdirDom.value}))
 
   return div(
     div(
@@ -43,7 +36,7 @@ const App = () => {
       button({onclick: showUnnamed}, "Show state graph (unnamed)"),
       " rankdir: ", rankdirDom,
     ),
-    graphContainerDom,
+    div(svgDom),
   )
 }
 
