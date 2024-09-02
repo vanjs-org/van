@@ -1,23 +1,50 @@
 import van from "vanjs-core"
-import * as vanX from "vanjs-ext"
+import * as vanGraph from "../../../src/van-graph"
 
-const {a, button, div, input, li, ul} = van.tags
+const {button, div, input, option, pre, select} = van.tags
 
-const List = () => {
-  const items = vanX.reactive(<string[]>[])
-  const inputDom = input({type: "text"})
+const App = () => {
+  const firstName = van.state("Tao"), lastName = van.state("Xin")
+  const fullName = van.derive(() => `${firstName.val} ${lastName.val}`)
+  const renderPre = van.state(false)
+  const rankdirDom = select({value: "TB"}, option("TB"), option("LR"))
+  const graphContainerDom = div()
+
+  const showNamed = async () => {
+    const svgDom = await vanGraph.show(
+      {firstName, lastName, fullName, renderPre}, {rankdir: rankdirDom.value})
+    graphContainerDom.firstChild ?
+      graphContainerDom.firstChild.replaceWith(svgDom) : graphContainerDom.appendChild(svgDom)
+  }
+
+  const showUnnamed = async () => {
+    const svgDom = await vanGraph.show(
+      [firstName, lastName, fullName, renderPre], {rankdir: rankdirDom.value})
+    graphContainerDom.firstChild ?
+      graphContainerDom.firstChild.replaceWith(svgDom) : graphContainerDom.appendChild(svgDom)
+  }
 
   return div(
-    div(inputDom, button({onclick: () => items.push(inputDom.value)}, "Add")),
-    div(() => Object.keys(items).length, " item(s) in total"),
-    vanX.list(ul, items, (v, deleter) => li(v, " ", a({onclick: deleter}, "❌"))),
     div(
-      button({onclick: () => vanX.replace(items, l => l.toSorted())}, "A -> Z"),
-      button({onclick: () => vanX.replace(items,
-        l => l.toSorted((a, b) => b.localeCompare(a)))}, "Z -> A"),
-      button({onclick: () => vanX.replace(items, l => l.map(v => v + "!"))}, 'Append "!"'),
+      "firstName: ",
+      input({type: "text", value: firstName, oninput: e => firstName.val = e.target.value}),
+      " lastName: ",
+      input({type: "text", value: lastName, oninput: e => lastName.val = e.target.value}),
+      " renderPre: ",
+      input({type: "checkbox", value: renderPre, onclick: e => renderPre.val = e.target.checked}),
     ),
+    () => (renderPre.val ? pre : div)(
+      div("My first name is: ", firstName),
+      div("My last name is: ", lastName),
+      div("My full name is: ", fullName),
+    ),
+    div(
+      button({onclick: showNamed}, "Show state graph (named)"), " ",
+      button({onclick: showUnnamed}, "Show state graph (unnamed)"),
+      " rankdir: ", rankdirDom,
+    ),
+    graphContainerDom,
   )
 }
 
-van.add(document.body, List())
+van.add(document.body, App())
