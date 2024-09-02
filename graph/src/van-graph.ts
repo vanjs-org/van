@@ -44,7 +44,7 @@ const unnamedPrefix = "<unnamed>_", stateProto = Object.getPrototypeOf(van.state
 const keepConnected = (l: any) => l.filter((b: any) => b[domPropKey]?.isConnected)
 
 const show = async (states: Record<string, any> | any[], {
-  rankdir = "TB",
+  rankdir = "LR",
 }: Options = {}) => {
   let id = 0
   const newName = () => unnamedPrefix + ++id

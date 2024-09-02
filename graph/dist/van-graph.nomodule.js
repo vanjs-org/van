@@ -17,7 +17,7 @@
   const getLabelHtml = (node) => table({ border: 0, cellborder: 1, cellspacing: 0 }, !node._name.startsWith(unnamedPrefix) ? tr(td(b(node._name))) : undefined, node._dom ? tr(td(node._dom.nodeName)) : undefined, node._state ? tr(td(`State {val: ${JSON.stringify(node._state.rawVal)}}`)) : undefined, node._f ? tr(td(node._f.toString() + "\n")) : undefined).outerHTML.replaceAll("\n", '<br align="left"/>');
   const unnamedPrefix = "<unnamed>_", stateProto = Object.getPrototypeOf(van.state());
   const keepConnected = (l) => l.filter((b) => b[domPropKey]?.isConnected);
-  const show = async (states, { rankdir = "TB", } = {}) => {
+  const show = async (states, { rankdir = "LR", } = {}) => {
       let id = 0;
       const newName = () => unnamedPrefix + ++id;
       const stateOrDomToNode = new Map(), edges = Array();

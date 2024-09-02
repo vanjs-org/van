@@ -1,6 +1,6 @@
 {
   "name": "vanjs-graph",
-  "version": "0.1.0-rc.3",
+  "version": "0.1.0-rc.4",
   "description": "Helper library to draw dependency graphs for VanJS State objects",
   "files": [
     "dist/van-graph.js",
