@@ -51,3 +51,13 @@ for d in $(ls examples); do(
   npm prune
   npm audit fix --force
 )done
+
+cd ../graph
+
+for d in $(ls examples); do(
+  cd examples/$d
+  deno run --allow-read --allow-write ../../../components/scripts/upgrade-dep-version.ts package.json vanjs-core $VER
+  npm update vanjs-core -S
+  npm prune
+  npm audit fix --force
+)done

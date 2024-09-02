@@ -1,5 +1,6 @@
 import * as Viz from "@viz-js/viz";
 import van from "vanjs-core";
+const { b, table, td, tr } = van.tags;
 let bindingsPropKey, listenersPropKey, domPropKey;
 const init = () => {
     const viz = Viz.instance();
@@ -9,12 +10,12 @@ const init = () => {
     listenersPropKey = Object.entries(s)
         .filter(([_, v]) => Array.isArray(v))[1][0];
     van.tags.span(s);
-    domPropKey = Object.keys(s[bindingsPropKey]).find(k => k !== "f");
+    domPropKey = Object.keys(s[bindingsPropKey][0]).find(k => k !== "f");
     return viz;
 };
 const { promise: viz, resolve: resolveViz } = Promise.withResolvers();
 init().then(viz => resolveViz(viz));
-const getLabel = (node) => [node._name].concat(node._f?.toString() ?? [], node._state ? `State {val: ${node._state.rawVal}}` : [], node._dom ? node._dom.nodeName : []).join(" | ");
+const getLabelHtml = (node) => table({ border: 0, cellborder: 1, cellspacing: 0 }, !node._name.startsWith(unnamedPrefix) ? tr(td(b(node._name))) : undefined, node._dom ? tr(td(node._dom.nodeName)) : undefined, node._state ? tr(td(`State {val: ${JSON.stringify(node._state.rawVal)}}`)) : undefined, node._f ? tr(td(node._f.toString() + "\n")) : undefined).outerHTML.replaceAll("\n", '<br align="left"/>');
 const unnamedPrefix = "<unnamed>_", stateProto = Object.getPrototypeOf(van.state());
 const keepConnected = (l) => l.filter((b) => b[domPropKey]?.isConnected);
 const show = async (states, { rankdir = "TB", } = {}) => {
@@ -43,16 +44,17 @@ const show = async (states, { rankdir = "TB", } = {}) => {
         for (const l of s[listenersPropKey]) {
             const newS = l.s;
             let newNode = stateOrDomToNode.get(newS);
-            newNode || stateOrDomToNode.set(newS, newNode = { _name: newName(), _f: l.f, _state: newS });
+            newNode || stateOrDomToNode.set(newS, newNode = { _name: newName(), _state: newS });
+            newNode._f = l.f;
             edges.push([node, newNode]);
         }
     }
     return (await viz).renderSVGElement({
         graphAttributes: { rankdir },
-        nodeAttributes: { shape: "record" },
+        nodeAttributes: { shape: "plain", fontname: "Courier", fontsize: 10 },
         nodes: [...stateOrDomToNode.values()].map(node => ({
             name: node._name,
-            attributes: { label: getLabel(node) },
+            attributes: { label: { html: getLabelHtml(node) } },
         })),
         edges: edges.map(([a, b]) => ({ tail: a._name, head: b._name }))
     });

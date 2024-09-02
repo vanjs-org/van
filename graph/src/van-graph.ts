@@ -1,7 +1,7 @@
 import * as Viz from "@viz-js/viz"
 import van from "vanjs-core"
 
-const {table, td, tr} = van.tags
+const {b, table, td, tr} = van.tags
 
 let bindingsPropKey: string, listenersPropKey: string, domPropKey: string
 
@@ -33,7 +33,7 @@ type GraphNode = {
 }
 
 const getLabelHtml = (node: GraphNode) => table({border: 0, cellborder: 1, cellspacing: 0},
-  !node._name.startsWith(unnamedPrefix) ? tr(td(node._name)) : undefined,
+  !node._name.startsWith(unnamedPrefix) ? tr(td(b(node._name))) : undefined,
   node._dom ? tr(td(node._dom.nodeName)) : undefined,
   node._state ? tr(td(`State {val: ${JSON.stringify(node._state.rawVal)}}`)) : undefined,
   node._f ? tr(td(node._f.toString() + "\n")) : undefined,

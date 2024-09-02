@@ -1,5 +1,5 @@
 import van from "vanjs-core"
-import * as vanGraph from "../../../src/van-graph"
+import * as vanGraph from "vanjs-graph"
 
 const {button, div, input, option, pre, select} = van.tags
 
