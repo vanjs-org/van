@@ -8,7 +8,7 @@ const App = () => {
   const firstName = van.state("Tao"), lastName = van.state("Xin")
   const fullName = van.derive(() => `${firstName.val} ${lastName.val}`)
   const renderPre = van.state(false)
-  const rankdirDom = select({value: "LR"}, option("LR"), option("TB"))
+  const rankdirDom = select({value: "LR"}, option("LR"), option("TB"), option("RL"), option("BT"))
   let svgDom = svg()
 
   const showNamed = async () => svgDom.replaceWith(svgDom = await vanGraph.show(
