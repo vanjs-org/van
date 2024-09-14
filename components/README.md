@@ -448,6 +448,7 @@ Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van
 
 ```ts
 van.add(document.body, Toggle({
+  on: true,
   size: 2,
   onColor: "#4CAF50"
 }))
