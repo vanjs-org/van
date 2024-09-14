@@ -234,6 +234,9 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/pearmini"><img src="https://avatars.githubusercontent.com/u/49330279?v=4?s=100" width="100px;" alt="Bairui Su"/><br /><sub><b>Bairui Su</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=pearmini" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jroush-ipg"><img src="https://avatars.githubusercontent.com/u/144253148?v=4?s=100" width="100px;" alt="jroush-ipg"/><br /><sub><b>jroush-ipg</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Ajroush-ipg" title="Bug reports">🐛</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/kangaroolab"><img src="https://avatars.githubusercontent.com/u/163623573?v=4?s=100" width="100px;" alt="kangaroolab"/><br /><sub><b>kangaroolab</b></sub></a><br /><a href="#example-kangaroolab" title="Examples">💡</a></td>
+    </tr>
   </tbody>
 </table>
 
