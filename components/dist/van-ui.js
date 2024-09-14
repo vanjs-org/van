@@ -120,7 +120,7 @@ export const Toggle = ({ on = false, size = 1, cursor = "pointer", offColor = "#
         transform: `translateX(${0.76 * size}rem)`,
         ...circleWhenOnStyleOverrides,
     });
-    return label({ class: toggleClass, style: toggleStylesStr }, input({ type: "checkbox", style: inputStylesStr, oninput: e => onState.val = e.target.checked }), span({
+    return label({ class: toggleClass, style: toggleStylesStr }, input({ type: "checkbox", style: inputStylesStr, checked: onState, oninput: e => onState.val = e.target.checked }), span({
         class: sliderClass,
         style: () => `${sliderStylesStr}; background-color: ${onState.val ? onColor : offColor};`,
     }, span({

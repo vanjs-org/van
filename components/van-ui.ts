@@ -263,7 +263,7 @@ export const Toggle = ({
     ...circleWhenOnStyleOverrides,
   })
   return label({class: toggleClass, style: toggleStylesStr},
-    input({type: "checkbox", style: inputStylesStr, oninput: e => onState.val = e.target.checked}),
+    input({type: "checkbox", style: inputStylesStr, checked: onState, oninput: e => onState.val = e.target.checked}),
     span(
       {
         class: sliderClass,
