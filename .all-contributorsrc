@@ -547,6 +547,15 @@
       "contributions": [
         "example"
       ]
+    },
+    {
+      "login": "gramie",
+      "name": "Graham Stratford",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1507443?v=4",
+      "profile": "https://github.com/gramie",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "repoType": "github"
