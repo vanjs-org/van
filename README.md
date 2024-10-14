@@ -236,6 +236,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/kangaroolab"><img src="https://avatars.githubusercontent.com/u/163623573?v=4?s=100" width="100px;" alt="kangaroolab"/><br /><sub><b>kangaroolab</b></sub></a><br /><a href="#example-kangaroolab" title="Examples">💡</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gramie"><img src="https://avatars.githubusercontent.com/u/1507443?v=4?s=100" width="100px;" alt="Graham Stratford"/><br /><sub><b>Graham Stratford</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Agramie" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
