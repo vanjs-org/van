@@ -245,3 +245,5 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20VanJS%20Guru-006BFF)](https://gurubase.io/g/vanjs)
