@@ -116,6 +116,7 @@ Simplicity at its core. Only 5 functions (`van.tags`, `van.add`, `van.state`, `v
 * Debugging complex dependencies in your app? checkout [**VanGraph**](https://github.com/vanjs-org/van/tree/main/graph)
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page
 * [How did **VanJS** get its name?](https://vanjs.org/about#name)
+* You can [Ask VanJS Guru](https://gurubase.io/g/vanjs), it is a VanJS-focused AI to answer your questions.
 
 ## IDE Plug-ins
 
@@ -245,5 +246,3 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20VanJS%20Guru-006BFF)](https://gurubase.io/g/vanjs)
