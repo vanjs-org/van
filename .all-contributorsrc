@@ -566,6 +566,15 @@
         "code",
         "plugin"
       ]
+    },
+    {
+      "login": "bleistivt",
+      "name": "bleistivt",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5205806?v=4",
+      "profile": "http://bleistivt.net",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "repoType": "github"
