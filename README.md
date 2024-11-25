@@ -1,3 +1,5 @@
+[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20VanJS%20Guru-006BFF)](https://gurubase.io/g/vanjs)
+
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
 📣 [Introducing VanX →](https://github.com/vanjs-org/van/discussions/144) <br>
