@@ -770,7 +770,7 @@ You can override the default stacking behavior by specifying `{customStacking: t
 
 ### choose
 
-Creates a modal that lets the user choose among given options, returns a `Promise` that resolves when user makes (or cancels) the choice.
+Creates a modal that lets the user choose among given options, returns a `Promise` that resolves when user makes the choice (resolves to the selected string), or cancels (resolves to `undefined`).
 
 #### Signature
 
