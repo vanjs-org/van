@@ -59,7 +59,7 @@ Alternatively, you can import **VanUI** from CDN via a `<script type="text/javas
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
-Try on jsfiddle: [Modal](https://jsfiddle.net/k61m70vz/), [MessageBoard](https://jsfiddle.net/2kp3mu6b/1/).
+Try on jsfiddle: [Modal](https://jsfiddle.net/1brxdjh9/), [MessageBoard](https://jsfiddle.net/cb9rs5yu/).
 
 ### TypeScript Support for Script Tag Integration
 
