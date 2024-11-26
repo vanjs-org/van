@@ -52,10 +52,10 @@ import { <components you want to import> } from "vanjs-ui"
 Alternatively, you can import **VanUI** from CDN via a `<script type="text/javascript">` tag:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.10.1/dist/van-ui.nomodule.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.0/dist/van-ui.nomodule.min.js"></script>
 ```
 
-`https://cdn.jsdelivr.net/npm/vanjs-ui@0.10.1/dist/van-ui.nomodule.js` can be used for the non-minified version.
+`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.0/dist/van-ui.nomodule.js` can be used for the non-minified version.
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
@@ -85,7 +85,8 @@ The following components have been implemented so far:
   * [Toggle](#toggle) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/toggle?file=%2Fsrc%2Fmain.ts%3A1%2C1))
   * [OptionGroup](#optiongroup) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/option-group?file=%2Fsrc%2Fmain.ts%3A1%2C1))
   * [Banner](#banner) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/banner?file=/src/main.ts:1,1))
-  * <span style="color:red; padding-right: 0.3rem;">**New!**</span> [FloatingWindow](#floatingwindow) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/window?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+  * [FloatingWindow](#floatingwindow) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/window?file=%2Fsrc%2Fmain.ts%3A1%2C1))
+  * <span style="color:red; padding-right: 0.3rem;">**New!**</span> [choose](#choose) ([preview](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/choose?file=%2Fsrc%2Fmain.ts%3A1%2C1))
 
 ### Await
 
@@ -766,6 +767,64 @@ You can override the default stacking behavior by specifying `{customStacking: t
 * `crossStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the close button.
 * `crossHoverClass`: Type `string`. Default `""`. Optional. The `class` attribute of the close button when it's hovered over. You can specify multiple CSS classes separated by `" "`.
 * `crossStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the close button when it's hovered over.
+
+### choose
+
+Creates a modal that lets the user choose among given options, returns a `Promise` that resolves when user makes (or cancels) the choice.
+
+#### Signature
+
+```js
+choose({...props}) => Promise<string | undefined>
+```
+
+#### Examples
+
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/choose?file=%2Fsrc%2Fmain.ts%3A1%2C1)
+
+Example 1:
+
+```ts
+const selected = await choose({
+  label: "Choose a color:",
+  options: ["Red", "Green", "Blue"],
+})
+selected && van.add(document.body, div("You chose: ", b(selected)))
+```
+
+Example 2:
+
+```ts
+const selected = await choose({
+  label: "Choose a South American country:",
+  options: [
+    "🇦🇷 Argentina", "🇧🇴 Bolivia", "🇧🇷 Brazil", "🇨🇱 Chile", "🇨🇴 Colombia", "🇪🇨 Ecuador",
+    "🇬🇾 Guyana", "🇵🇾 Paraguay", "🇵🇪 Peru", "🇸🇷 Suriname", "🇺🇾 Uruguay", "🇻🇪 Venezuela",
+  ],
+  customModalProps: {
+    blurBackground: true,
+    modalStyleOverrides: {height: "300px"},
+  },
+  selectedColor: "blue",
+  selectedStyleOverrides: {color: "white"},
+})
+selected && van.add(document.body, div("You chose: ", b(selected)))
+```
+
+#### Property Reference
+
+* `label`: Type `string`. Required. The label you want to show.
+* `options`: Type `string[]`. Required. The option of the choice.
+* `selectedColor`: Type `string`. Default `#f5f5f5`. Optional. The background color of the currently selected option.
+* `customModalProps`: Type property bags for the [Modal](#modal) component (except the `closed` field). Default `{}`. Optional. The custom properties for the `Modal` component you want to specify.
+* `textFilterClass`: Type `string`. Default `""`. Optional. The `class` attribute of the text filter. You can specify multiple CSS classes separated by `" "`.
+* `textFilterStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the text filter.
+* `optionsContainerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the container of all options. You can specify multiple CSS classes separated by `" "`.
+* `optionsContainerStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the container of all options.
+* `optionClass`: Type `string`. Default `""`. Optional. The `class` attribute of an individual option. You can specify multiple CSS classes separated by `" "`.
+* `optionStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for an individual option
+* `selectedClass`: Type `string`. Default `""`. Optional. The `class` attribute of the selected option. You can specify multiple CSS classes separated by `" "`.
+* `selectedStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the selected option.
 
 ### Property Bag for Style Overrides
 

@@ -436,4 +436,68 @@
           style: toStyleStr(childrenContainerStyleOverrides)
       }, children));
   };
+  window.choose = ({ label, options, selectedColor = "#f5f5f5", customModalProps = {}, textFilterClass = "", textFilterStyleOverrides = {}, optionsContainerClass = "", optionsContainerStyleOverrides = {}, optionClass = "", optionStyleOverrides = {}, selectedClass = "", selectedStyleOverrides = {}, }) => {
+      const closed = van.state(false);
+      const { modalStyleOverrides, ...otherModalProps } = customModalProps;
+      const modalProps = {
+          closed,
+          modalStyleOverrides: {
+              display: "flex",
+              "flex-direction": "column",
+              ...modalStyleOverrides,
+          },
+          ...otherModalProps,
+      };
+      const query = van.state("");
+      const filtered = van.derive(() => options.filter(o => o.toLocaleLowerCase().includes(query.val.toLocaleLowerCase())));
+      const index = van.derive(() => (query.val, 0));
+      let resolve;
+      const res = new Promise(r => resolve = r);
+      const textFilterStyle = {
+          width: "100%",
+          ...textFilterStyleOverrides,
+      };
+      const optionsContainerStyle = {
+          "overflow-y": "auto",
+          "flex-grow": 1,
+          ...optionsContainerStyleOverrides,
+      };
+      const textFilterDom = input({
+          type: "text",
+          class: textFilterClass,
+          style: toStyleStr(textFilterStyle),
+          oninput: e => query.val = e.target.value
+      });
+      const modalDom = div(Modal(modalProps, div(textFilterDom), () => div({ class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, div(label), filtered.val.map((o, i) => div({
+          class: () => [].concat(optionClass ? optionClass : [], i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
+          style: () => toStyleStr({
+              padding: "0.5rem",
+              "background-color": i === index.val ? selectedColor : "",
+              ...optionStyleOverrides,
+              ...i === index.val ? selectedStyleOverrides : {},
+          }),
+          onclick: () => (resolve(o), closed.val = true),
+      }, o)))));
+      van.add(document.body, modalDom);
+      van.derive(() => {
+          index.val;
+          setTimeout(() => modalDom.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10);
+      });
+      modalDom.addEventListener("keydown", e => {
+          if (e.key === "Enter" && index.val < filtered.val.length) {
+              resolve(filtered.val[index.val]);
+              closed.val = true;
+          }
+          else if (e.key === "Escape") {
+              resolve(undefined);
+              closed.val = true;
+          }
+          else if (e.key === "ArrowDown")
+              index.val = index.val + 1 < filtered.val.length ? index.val + 1 : 0;
+          else if (e.key === "ArrowUp")
+              index.val = index.val > 0 ? index.val - 1 : filtered.val.length - 1;
+      });
+      textFilterDom.focus();
+      return res;
+  };
 }
