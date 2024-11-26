@@ -780,7 +780,7 @@ choose({...props}) => Promise<string | undefined>
 
 #### Examples
 
-Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/choose?file=%2Fsrc%2Fmain.ts%3A1%2C1)
+Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van/tree/main/components/examples/choose?file=%2Fsrc%2Fmain.ts%3A1%2C1).
 
 Example 1:
 
@@ -814,15 +814,15 @@ selected && van.add(document.body, div("You chose: ", b(selected)))
 #### Property Reference
 
 * `label`: Type `string`. Required. The label you want to show.
-* `options`: Type `string[]`. Required. The option of the choice.
+* `options`: Type `string[]`. Required. The options of the choice.
 * `selectedColor`: Type `string`. Default `#f5f5f5`. Optional. The background color of the currently selected option.
-* `customModalProps`: Type property bags for the [Modal](#modal) component (except the `closed` field). Default `{}`. Optional. The custom properties for the `Modal` component you want to specify.
+* `customModalProps`: Type: property bags for the [Modal](#modal) component (except the `closed` field). Default `{}`. Optional. The custom properties for the `Modal` component you want to specify.
 * `textFilterClass`: Type `string`. Default `""`. Optional. The `class` attribute of the text filter. You can specify multiple CSS classes separated by `" "`.
 * `textFilterStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the text filter.
 * `optionsContainerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the container of all options. You can specify multiple CSS classes separated by `" "`.
 * `optionsContainerStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the container of all options.
 * `optionClass`: Type `string`. Default `""`. Optional. The `class` attribute of an individual option. You can specify multiple CSS classes separated by `" "`.
-* `optionStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for an individual option
+* `optionStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for an individual option.
 * `selectedClass`: Type `string`. Default `""`. Optional. The `class` attribute of the selected option. You can specify multiple CSS classes separated by `" "`.
 * `selectedStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the selected option.
 
