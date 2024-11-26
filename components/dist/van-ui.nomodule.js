@@ -454,7 +454,9 @@
       let resolve;
       const res = new Promise(r => resolve = r);
       const textFilterStyle = {
-          width: "100%",
+          width: "98%",
+          "margin-top": "0.5rem",
+          "margin-bottom": "0.5rem",
           ...textFilterStyleOverrides,
       };
       const optionsContainerStyle = {
@@ -468,7 +470,7 @@
           style: toStyleStr(textFilterStyle),
           oninput: e => query.val = e.target.value
       });
-      const modalDom = div(Modal(modalProps, div(textFilterDom), () => div({ class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, div(label), filtered.val.map((o, i) => div({
+      const modalDom = div(Modal(modalProps, div(label), div(textFilterDom), () => div({ class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, filtered.val.map((o, i) => div({
           class: () => [].concat(optionClass ? optionClass : [], i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
           style: () => toStyleStr({
               padding: "0.5rem",

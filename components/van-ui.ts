@@ -844,7 +844,9 @@ export const choose = (
   const res = new Promise<string | undefined>(r => resolve = r)
 
   const textFilterStyle = {
-    width: "100%",
+    width: "98%",
+    "margin-top": "0.5rem",
+    "margin-bottom": "0.5rem",
     ...textFilterStyleOverrides,
   }
   const optionsContainerStyle = {
@@ -861,9 +863,9 @@ export const choose = (
   })
 
   const modalDom = div(Modal(modalProps,
+    div(label),
     div(textFilterDom),
     () => div({class: optionsContainerClass, style: toStyleStr(optionsContainerStyle)},
-      div(label),
       filtered.val.map((o, i) => div({
         class: () => (<string[]>[]).concat(
           optionClass ? optionClass : [],

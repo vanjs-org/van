@@ -52,10 +52,10 @@ import { <components you want to import> } from "vanjs-ui"
 Alternatively, you can import **VanUI** from CDN via a `<script type="text/javascript">` tag:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.0/dist/van-ui.nomodule.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.2/dist/van-ui.nomodule.min.js"></script>
 ```
 
-`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.0/dist/van-ui.nomodule.js` can be used for the non-minified version.
+`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.2/dist/van-ui.nomodule.js` can be used for the non-minified version.
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
