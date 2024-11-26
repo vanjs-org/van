@@ -1,6 +1,5 @@
 import van from "vanjs-core"
-// import { choose } from "vanjs-ui"
-import { choose } from "../../../dist/van-ui"
+import { choose } from "vanjs-ui"
 
 const {b, button, code, div, h1, p} = van.tags
 
