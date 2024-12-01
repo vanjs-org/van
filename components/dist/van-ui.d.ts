@@ -154,6 +154,7 @@ export declare const FloatingWindow: ({ title, closed, x, y, width, height, clos
 export interface ChooseProps {
     readonly label: string;
     readonly options: readonly string[];
+    readonly showTextFilter?: boolean;
     readonly selectedColor?: string;
     readonly customModalProps?: Omit<ModalProps, "closed">;
     readonly textFilterClass?: string;
@@ -165,5 +166,5 @@ export interface ChooseProps {
     readonly selectedClass?: string;
     readonly selectedStyleOverrides?: CSSPropertyBag;
 }
-export declare const choose: ({ label, options, selectedColor, customModalProps, textFilterClass, textFilterStyleOverrides, optionsContainerClass, optionsContainerStyleOverrides, optionClass, optionStyleOverrides, selectedClass, selectedStyleOverrides, }: ChooseProps) => Promise<string | undefined>;
+export declare const choose: ({ label, options, showTextFilter, selectedColor, customModalProps, textFilterClass, textFilterStyleOverrides, optionsContainerClass, optionsContainerStyleOverrides, optionClass, optionStyleOverrides, selectedClass, selectedStyleOverrides, }: ChooseProps) => Promise<string | undefined>;
 export {};

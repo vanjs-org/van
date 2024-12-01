@@ -18,6 +18,7 @@ const example2 = async () => {
       "🇦🇷 Argentina", "🇧🇴 Bolivia", "🇧🇷 Brazil", "🇨🇱 Chile", "🇨🇴 Colombia", "🇪🇨 Ecuador",
       "🇬🇾 Guyana", "🇵🇾 Paraguay", "🇵🇪 Peru", "🇸🇷 Suriname", "🇺🇾 Uruguay", "🇻🇪 Venezuela",
     ],
+    showTextFilter: true,
     customModalProps: {
       blurBackground: true,
       modalStyleOverrides: {height: "300px"},

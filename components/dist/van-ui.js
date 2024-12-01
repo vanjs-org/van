@@ -40,6 +40,7 @@ export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackgrou
         "background-color": "white",
         ...modalStyleOverrides,
     };
+    document.activeElement instanceof HTMLElement && document.activeElement.blur();
     return () => closed.val ? null : div({ class: backgroundClass, style: toStyleStr(backgroundStyle) }, div({ class: modalClass, style: toStyleStr(modalStyle) }, children));
 };
 let tabsId = 0;
@@ -436,7 +437,8 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
         style: toStyleStr(childrenContainerStyleOverrides)
     }, children));
 };
-export const choose = ({ label, options, selectedColor = "#f5f5f5", customModalProps = {}, textFilterClass = "", textFilterStyleOverrides = {}, optionsContainerClass = "", optionsContainerStyleOverrides = {}, optionClass = "", optionStyleOverrides = {}, selectedClass = "", selectedStyleOverrides = {}, }) => {
+let chooseId = 0;
+export const choose = ({ label, options, showTextFilter = false, selectedColor = "#f5f5f5", customModalProps = {}, textFilterClass = "", textFilterStyleOverrides = {}, optionsContainerClass = "", optionsContainerStyleOverrides = {}, optionClass = "", optionStyleOverrides = {}, selectedClass = "", selectedStyleOverrides = {}, }) => {
     const closed = van.state(false);
     const { modalStyleOverrides, ...otherModalProps } = customModalProps;
     const modalProps = {
@@ -464,28 +466,33 @@ export const choose = ({ label, options, selectedColor = "#f5f5f5", customModalP
         "flex-grow": 1,
         ...optionsContainerStyleOverrides,
     };
-    const textFilterDom = input({
+    const textFilterDom = showTextFilter ? input({
         type: "text",
         class: textFilterClass,
         style: toStyleStr(textFilterStyle),
         oninput: e => query.val = e.target.value
-    });
-    const modalDom = div(Modal(modalProps, div(label), div(textFilterDom), () => div({ class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, filtered.val.map((o, i) => div({
-        class: () => [].concat(optionClass ? optionClass : [], i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
-        style: () => toStyleStr({
-            padding: "0.5rem",
-            "background-color": i === index.val ? selectedColor : "",
-            ...optionStyleOverrides,
-            ...i === index.val ? selectedStyleOverrides : {},
-        }),
+    }) : undefined;
+    const optionStyle = {
+        padding: "0.5rem",
+        ...optionStyleOverrides,
+    };
+    const selectedStyle = {
+        "background-color": selectedColor,
+        ...selectedStyleOverrides,
+    };
+    const id = "vanui-choose-" + (++chooseId);
+    document.head.appendChild(van.tags["style"](`#${id} .vanui-choose-selected, #${id} .vanui-choose-option:hover { ${toStyleStr(selectedStyle)} }`));
+    van.add(document.body, Modal(modalProps, div(label), showTextFilter ? div(textFilterDom) : undefined, () => div({ id, class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, filtered.val.map((o, i) => div({
+        class: () => ["vanui-choose-option"].concat(optionClass ? optionClass : [], i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
+        style: toStyleStr(optionStyle),
         onclick: () => (resolve(o), closed.val = true),
     }, o)))));
-    van.add(document.body, modalDom);
+    textFilterDom?.focus();
     van.derive(() => {
         index.val;
-        setTimeout(() => modalDom.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10);
+        setTimeout(() => document.querySelector(`#${id} .vanui-choose-selected`)?.scrollIntoView(false), 10);
     });
-    modalDom.addEventListener("keydown", e => {
+    const navByKey = (e) => {
         if (e.key === "Enter" && index.val < filtered.val.length) {
             resolve(filtered.val[index.val]);
             closed.val = true;
@@ -498,7 +505,8 @@ export const choose = ({ label, options, selectedColor = "#f5f5f5", customModalP
             index.val = index.val + 1 < filtered.val.length ? index.val + 1 : 0;
         else if (e.key === "ArrowUp")
             index.val = index.val > 0 ? index.val - 1 : filtered.val.length - 1;
-    });
-    textFilterDom.focus();
+    };
+    document.addEventListener("keydown", navByKey);
+    van.derive(() => closed.val && document.removeEventListener("keydown", navByKey));
     return res;
 };
