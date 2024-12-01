@@ -770,7 +770,7 @@ You can override the default stacking behavior by specifying `{customStacking: t
 
 ### choose
 
-Creates a modal that lets the user choose among given options, returns a `Promise` that resolves when user makes the choice (resolves to the selected string), or cancels (resolves to `undefined`).
+Creates a [`Modal`](#modal) component that lets the user choose among given options, returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves when user makes the choice (resolves to the selected string), or cancels (resolves to `undefined`).
 
 #### Signature
 
@@ -816,7 +816,7 @@ selected && van.add(document.body, div("You chose: ", b(selected)))
 * `label`: Type `string`. Required. The label you want to show.
 * `options`: Type `string[]`. Required. The options of the choice.
 * `selectedColor`: Type `string`. Default `#f5f5f5`. Optional. The background color of the currently selected option.
-* `customModalProps`: Type: property bags for the [Modal](#modal) component (except the `closed` field). Default `{}`. Optional. The custom properties for the `Modal` component you want to specify.
+* `customModalProps`: Type: property bags for the [`Modal`](#modal) component (except the `closed` field). Default `{}`. Optional. The custom properties for the `Modal` component you want to specify.
 * `textFilterClass`: Type `string`. Default `""`. Optional. The `class` attribute of the text filter. You can specify multiple CSS classes separated by `" "`.
 * `textFilterStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the text filter.
 * `optionsContainerClass`: Type `string`. Default `""`. Optional. The `class` attribute of the container of all options. You can specify multiple CSS classes separated by `" "`.
