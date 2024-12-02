@@ -12,7 +12,7 @@ export type Val<T> = State<T> | T
 
 export type Primitive = string | number | boolean | bigint
 
-export type PropValue = Primitive | ((e: any) => void) | null
+export type PropValue = Primitive | ((e: any) => void) | null | Object
 
 export type PropValueOrDerived = PropValue | StateView<PropValue> | (() => PropValue)
 
