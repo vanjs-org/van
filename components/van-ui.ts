@@ -809,8 +809,6 @@ export interface ChooseProps {
   readonly selectedStyleOverrides?: CSSPropertyBag
 }
 
-let chooseId = 0
-
 export const choose = (
   {
     label,
@@ -827,7 +825,7 @@ export const choose = (
     selectedClass = "",
     selectedStyleOverrides = {},
   }: ChooseProps
-): Promise<string | undefined> => {
+): Promise<string | null> => {
   const closed = van.state(false)
   const {modalStyleOverrides, ...otherModalProps} = customModalProps
   const modalProps: ModalProps = {
@@ -845,8 +843,8 @@ export const choose = (
     options.filter(o => o.toLocaleLowerCase().includes(query.val.toLocaleLowerCase())))
   const index = van.derive(() => (query.val, 0));
 
-  let resolve: (selected: string | undefined) => void
-  const res = new Promise<string | undefined>(r => resolve = r)
+  let resolve: (selected: string | null) => void
+  const res = new Promise<string | null>(r => resolve = r)
 
   const textFilterStyle = {
     width: "98%",
@@ -865,7 +863,7 @@ export const choose = (
     class: textFilterClass,
     style: toStyleStr(textFilterStyle),
     oninput: e => query.val = e.target.value
-  }) : undefined
+  }) : null
 
   const optionStyle = {
     padding: "0.5rem",
@@ -877,16 +875,15 @@ export const choose = (
     ...selectedStyleOverrides,
   }
 
-  const id = "vanui-choose-" + (++chooseId)
-  document.head.appendChild(
+  van.add(document.head, () => closed.val ? null :
     van.tags["style"](
-      `#${id} .vanui-choose-selected, #${id} .vanui-choose-option:hover { ${toStyleStr(selectedStyle)} }`)
+      `.vanui-choose-selected, .vanui-choose-option:hover { ${toStyleStr(selectedStyle)} }`)
   )
 
   van.add(document.body, Modal(modalProps,
     div(label),
-    showTextFilter ? div(textFilterDom) : undefined,
-    () => div({id, class: optionsContainerClass, style: toStyleStr(optionsContainerStyle)},
+    showTextFilter ? div(textFilterDom) : null,
+    () => div({class: optionsContainerClass, style: toStyleStr(optionsContainerStyle)},
       filtered.val.map((o, i) => div({
         class: () => ["vanui-choose-option"].concat(
           optionClass ? optionClass : [],
@@ -902,7 +899,7 @@ export const choose = (
 
   van.derive(() => {
     index.val
-    setTimeout(() => document.querySelector(`#${id} .vanui-choose-selected`)?.scrollIntoView(false), 10)
+    setTimeout(() => document.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10)
   })
 
   const navByKey = (e: KeyboardEvent) => {
@@ -910,7 +907,7 @@ export const choose = (
       resolve(filtered.val[index.val])
       closed.val = true
     } else if (e.key === "Escape") {
-      resolve(undefined)
+      resolve(null)
       closed.val = true
     } else if (e.key === "ArrowDown")
       index.val = index.val + 1 < filtered.val.length ? index.val + 1 : 0;

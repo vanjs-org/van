@@ -4,15 +4,15 @@ import { choose } from "vanjs-ui"
 const {b, button, code, div, h1, p} = van.tags
 
 const example1 = async () => {
-  const selected = await choose({
+  const choice = await choose({
     label: "Choose a color:",
     options: ["Red", "Green", "Blue"],
   })
-  selected && van.add(document.body, div("You chose: ", b(selected)))
+  choice && van.add(document.body, div("You chose: ", b(choice)))
 }
 
 const example2 = async () => {
-  const selected = await choose({
+  const choice = await choose({
     label: "Choose a South American country:",
     options: [
       "🇦🇷 Argentina", "🇧🇴 Bolivia", "🇧🇷 Brazil", "🇨🇱 Chile", "🇨🇴 Colombia", "🇪🇨 Ecuador",
@@ -26,7 +26,7 @@ const example2 = async () => {
     selectedColor: "blue",
     selectedStyleOverrides: {color: "white"},
   })
-  selected && van.add(document.body, div("You chose: ", b(selected)))
+  choice && van.add(document.body, div("You chose: ", b(choice)))
 }
 
 const ModalDemo = () => {

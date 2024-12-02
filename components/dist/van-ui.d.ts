@@ -166,5 +166,5 @@ export interface ChooseProps {
     readonly selectedClass?: string;
     readonly selectedStyleOverrides?: CSSPropertyBag;
 }
-export declare const choose: ({ label, options, showTextFilter, selectedColor, customModalProps, textFilterClass, textFilterStyleOverrides, optionsContainerClass, optionsContainerStyleOverrides, optionClass, optionStyleOverrides, selectedClass, selectedStyleOverrides, }: ChooseProps) => Promise<string | undefined>;
+export declare const choose: ({ label, options, showTextFilter, selectedColor, customModalProps, textFilterClass, textFilterStyleOverrides, optionsContainerClass, optionsContainerStyleOverrides, optionClass, optionStyleOverrides, selectedClass, selectedStyleOverrides, }: ChooseProps) => Promise<string | null>;
 export {};

@@ -52,10 +52,10 @@ import { <components you want to import> } from "vanjs-ui"
 Alternatively, you can import **VanUI** from CDN via a `<script type="text/javascript">` tag:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.3/dist/van-ui.nomodule.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.4/dist/van-ui.nomodule.min.js"></script>
 ```
 
-`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.3/dist/van-ui.nomodule.js` can be used for the non-minified version.
+`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.4/dist/van-ui.nomodule.js` can be used for the non-minified version.
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
@@ -770,12 +770,12 @@ You can override the default stacking behavior by specifying `{customStacking: t
 
 ### choose
 
-Creates a [`Modal`](#modal) component that lets the user choose among given options, returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves when user makes the choice (resolves to the selected string), or cancels (resolves to `undefined`).
+Creates a [`Modal`](#modal) component that lets the user choose among given options, returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves when user makes the choice (resolves to the chosen string), or cancels (resolves to `null`).
 
 #### Signature
 
 ```js
-choose({...props}) => Promise<string | undefined>
+choose({...props}) => Promise<string | null>
 ```
 
 #### Examples
@@ -785,17 +785,17 @@ Preview with [CodeSandbox](https://codesandbox.io/p/sandbox/github/vanjs-org/van
 Example 1:
 
 ```ts
-const selected = await choose({
+const choice = await choose({
   label: "Choose a color:",
   options: ["Red", "Green", "Blue"],
 })
-selected && van.add(document.body, div("You chose: ", b(selected)))
+choice && van.add(document.body, div("You chose: ", b(choice)))
 ```
 
 Example 2:
 
 ```ts
-const selected = await choose({
+const choice = await choose({
   label: "Choose a South American country:",
   options: [
     "🇦🇷 Argentina", "🇧🇴 Bolivia", "🇧🇷 Brazil", "🇨🇱 Chile", "🇨🇴 Colombia", "🇪🇨 Ecuador",
@@ -809,7 +809,7 @@ const selected = await choose({
   selectedColor: "blue",
   selectedStyleOverrides: {color: "white"},
 })
-selected && van.add(document.body, div("You chose: ", b(selected)))
+choice && van.add(document.body, div("You chose: ", b(choice)))
 ```
 
 #### Property Reference
@@ -825,8 +825,8 @@ selected && van.add(document.body, div("You chose: ", b(selected)))
 * `optionsContainerStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the container of all options.
 * `optionClass`: Type `string`. Default `""`. Optional. The `class` attribute of an individual option. You can specify multiple CSS classes separated by `" "`.
 * `optionStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for an individual option.
-* `selectedClass`: Type `string`. Default `""`. Optional. The `class` attribute of the selected option. You can specify multiple CSS classes separated by `" "`.
-* `selectedStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the selected option.
+* `selectedClass`: Type `string`. Default `""`. Optional. The `class` attribute of the currently selected option. You can specify multiple CSS classes separated by `" "`.
+* `selectedStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the currently selected option.
 
 ### Property Bag for Style Overrides
 

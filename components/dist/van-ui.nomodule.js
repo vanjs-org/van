@@ -437,7 +437,6 @@
           style: toStyleStr(childrenContainerStyleOverrides)
       }, children));
   };
-  let chooseId = 0;
   window.choose = ({ label, options, showTextFilter = false, selectedColor = "#f5f5f5", customModalProps = {}, textFilterClass = "", textFilterStyleOverrides = {}, optionsContainerClass = "", optionsContainerStyleOverrides = {}, optionClass = "", optionStyleOverrides = {}, selectedClass = "", selectedStyleOverrides = {}, }) => {
       const closed = van.state(false);
       const { modalStyleOverrides, ...otherModalProps } = customModalProps;
@@ -471,7 +470,7 @@
           class: textFilterClass,
           style: toStyleStr(textFilterStyle),
           oninput: e => query.val = e.target.value
-      }) : undefined;
+      }) : null;
       const optionStyle = {
           padding: "0.5rem",
           ...optionStyleOverrides,
@@ -480,9 +479,9 @@
           "background-color": selectedColor,
           ...selectedStyleOverrides,
       };
-      const id = "vanui-choose-" + (++chooseId);
-      document.head.appendChild(van.tags["style"](`#${id} .vanui-choose-selected, #${id} .vanui-choose-option:hover { ${toStyleStr(selectedStyle)} }`));
-      van.add(document.body, Modal(modalProps, div(label), showTextFilter ? div(textFilterDom) : undefined, () => div({ id, class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, filtered.val.map((o, i) => div({
+      van.add(document.head, () => closed.val ? null :
+          van.tags["style"](`.vanui-choose-selected, .vanui-choose-option:hover { ${toStyleStr(selectedStyle)} }`));
+      van.add(document.body, Modal(modalProps, div(label), showTextFilter ? div(textFilterDom) : null, () => div({ class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, filtered.val.map((o, i) => div({
           class: () => ["vanui-choose-option"].concat(optionClass ? optionClass : [], i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
           style: toStyleStr(optionStyle),
           onclick: () => (resolve(o), closed.val = true),
@@ -490,7 +489,7 @@
       textFilterDom?.focus();
       van.derive(() => {
           index.val;
-          setTimeout(() => document.querySelector(`#${id} .vanui-choose-selected`)?.scrollIntoView(false), 10);
+          setTimeout(() => document.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10);
       });
       const navByKey = (e) => {
           if (e.key === "Enter" && index.val < filtered.val.length) {
@@ -498,7 +497,7 @@
               closed.val = true;
           }
           else if (e.key === "Escape") {
-              resolve(undefined);
+              resolve(null);
               closed.val = true;
           }
           else if (e.key === "ArrowDown")
