@@ -797,6 +797,7 @@ export interface ChooseProps {
   readonly options: readonly string[]
   readonly showTextFilter?: boolean
   readonly selectedColor?: string
+  readonly cyclicalNav?: boolean
 
   readonly customModalProps?: Omit<ModalProps, "closed">
   readonly textFilterClass?: string
@@ -815,6 +816,7 @@ export const choose = (
     options,
     showTextFilter = false,
     selectedColor = "#f5f5f5",
+    cyclicalNav = false,
     customModalProps = {},
     textFilterClass = "",
     textFilterStyleOverrides = {},
@@ -910,9 +912,9 @@ export const choose = (
       resolve(null)
       closed.val = true
     } else if (e.key === "ArrowDown")
-      index.val = index.val + 1 < filtered.val.length ? index.val + 1 : 0;
+      index.val = index.val + 1 < filtered.val.length ? index.val + 1 : (cyclicalNav ? 0 : index.val)
     else if (e.key === "ArrowUp")
-      index.val = index.val > 0 ? index.val - 1 : filtered.val.length - 1;
+      index.val = index.val > 0 ? index.val - 1 : (cyclicalNav ? filtered.val.length - 1 : index.val)
   }
   document.addEventListener("keydown", navByKey)
   van.derive(() => closed.val && document.removeEventListener("keydown", navByKey))

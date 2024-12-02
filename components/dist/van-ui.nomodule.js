@@ -437,7 +437,7 @@
           style: toStyleStr(childrenContainerStyleOverrides)
       }, children));
   };
-  window.choose = ({ label, options, showTextFilter = false, selectedColor = "#f5f5f5", customModalProps = {}, textFilterClass = "", textFilterStyleOverrides = {}, optionsContainerClass = "", optionsContainerStyleOverrides = {}, optionClass = "", optionStyleOverrides = {}, selectedClass = "", selectedStyleOverrides = {}, }) => {
+  window.choose = ({ label, options, showTextFilter = false, selectedColor = "#f5f5f5", cyclicalNav = false, customModalProps = {}, textFilterClass = "", textFilterStyleOverrides = {}, optionsContainerClass = "", optionsContainerStyleOverrides = {}, optionClass = "", optionStyleOverrides = {}, selectedClass = "", selectedStyleOverrides = {}, }) => {
       const closed = van.state(false);
       const { modalStyleOverrides, ...otherModalProps } = customModalProps;
       const modalProps = {
@@ -501,9 +501,9 @@
               closed.val = true;
           }
           else if (e.key === "ArrowDown")
-              index.val = index.val + 1 < filtered.val.length ? index.val + 1 : 0;
+              index.val = index.val + 1 < filtered.val.length ? index.val + 1 : (cyclicalNav ? 0 : index.val);
           else if (e.key === "ArrowUp")
-              index.val = index.val > 0 ? index.val - 1 : filtered.val.length - 1;
+              index.val = index.val > 0 ? index.val - 1 : (cyclicalNav ? filtered.val.length - 1 : index.val);
       };
       document.addEventListener("keydown", navByKey);
       van.derive(() => closed.val && document.removeEventListener("keydown", navByKey));

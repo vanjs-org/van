@@ -156,6 +156,7 @@ export interface ChooseProps {
     readonly options: readonly string[];
     readonly showTextFilter?: boolean;
     readonly selectedColor?: string;
+    readonly cyclicalNav?: boolean;
     readonly customModalProps?: Omit<ModalProps, "closed">;
     readonly textFilterClass?: string;
     readonly textFilterStyleOverrides?: CSSPropertyBag;
@@ -166,5 +167,5 @@ export interface ChooseProps {
     readonly selectedClass?: string;
     readonly selectedStyleOverrides?: CSSPropertyBag;
 }
-export declare const choose: ({ label, options, showTextFilter, selectedColor, customModalProps, textFilterClass, textFilterStyleOverrides, optionsContainerClass, optionsContainerStyleOverrides, optionClass, optionStyleOverrides, selectedClass, selectedStyleOverrides, }: ChooseProps) => Promise<string | null>;
+export declare const choose: ({ label, options, showTextFilter, selectedColor, cyclicalNav, customModalProps, textFilterClass, textFilterStyleOverrides, optionsContainerClass, optionsContainerStyleOverrides, optionClass, optionStyleOverrides, selectedClass, selectedStyleOverrides, }: ChooseProps) => Promise<string | null>;
 export {};

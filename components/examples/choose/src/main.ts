@@ -19,11 +19,12 @@ const example2 = async () => {
       "🇬🇾 Guyana", "🇵🇾 Paraguay", "🇵🇪 Peru", "🇸🇷 Suriname", "🇺🇾 Uruguay", "🇻🇪 Venezuela",
     ],
     showTextFilter: true,
+    selectedColor: "blue",
+    cyclicalNav: true,
     customModalProps: {
       blurBackground: true,
       modalStyleOverrides: {height: "300px"},
     },
-    selectedColor: "blue",
     selectedStyleOverrides: {color: "white"},
   })
   choice && van.add(document.body, div("You chose: ", b(choice)))
