@@ -40,5 +40,6 @@ export const setAttribute = (element, key, value) => {
           element.setAttribute(key, "");
           return;
         }
+        element.removeAttribute(key);
     }
 };
