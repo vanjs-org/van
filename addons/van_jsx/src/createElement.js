@@ -18,6 +18,15 @@ const createElement = (jsxTag, { children, style, ref, ...props }) => {
                 ele.addEventListener(key.replace("on", "").toLowerCase(), value);
                 continue;
             }
+
+            // Handle reactive attributes
+            if (typeof value === "object" && "val" in value) {
+                van.derive(() => {
+                  setAttribute(ele, key, value.val);
+                });
+                continue;
+            }
+            
             setAttribute(ele, key, value);
             continue;
         }
