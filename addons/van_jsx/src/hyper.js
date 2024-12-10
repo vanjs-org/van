@@ -34,4 +34,11 @@ export const setAttribute = (element, key, value) => {
         element.setAttribute(key, value);
         return;
     }
+    // Set Boolean Attribute
+    if (typeof value === "boolean") {
+        if (value) {
+          element.setAttribute(key, "");
+          return;
+        }
+    }
 };
