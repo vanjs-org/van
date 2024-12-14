@@ -583,7 +583,8 @@
       "profile": "https://github.com/dbismut",
       "contributions": [
         "code",
-        "plugin"
+        "plugin",
+        "bug"
       ]
     }
   ],
