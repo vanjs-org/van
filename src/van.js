@@ -111,6 +111,7 @@ let tag = (ns, name, ...args) => {
     let protoOfV = protoOf(v ?? 0)
     k.startsWith("on") || protoOfV === funcProto && (v = derive(v), protoOfV = stateProto)
     protoOfV === stateProto ? bind(() => (setter(v.val, v._oldVal), dom)) : setter(v)
+    if(k === "style" && typeof(v) === "object") Object.assign(dom.style, v)    
   }
   return add(dom, children)
 }
