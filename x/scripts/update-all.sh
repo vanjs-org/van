@@ -1,6 +1,7 @@
 set -e
 
 npm prune
+npm audit fix --force
 
 VER=$(node_modules/node-jq/bin/jq -r '.version' package.json)
 
