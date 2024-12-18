@@ -521,6 +521,72 @@
         "plugin",
         "code"
       ]
+    },
+    {
+      "login": "pearmini",
+      "name": "Bairui Su",
+      "avatar_url": "https://avatars.githubusercontent.com/u/49330279?v=4",
+      "profile": "https://github.com/pearmini",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jroush-ipg",
+      "name": "jroush-ipg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/144253148?v=4",
+      "profile": "https://github.com/jroush-ipg",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "kangaroolab",
+      "name": "kangaroolab",
+      "avatar_url": "https://avatars.githubusercontent.com/u/163623573?v=4",
+      "profile": "https://github.com/kangaroolab",
+      "contributions": [
+        "example"
+      ]
+    },
+    {
+      "login": "gramie",
+      "name": "Graham Stratford",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1507443?v=4",
+      "profile": "https://github.com/gramie",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "kursataktas",
+      "name": "Kursat Aktas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17837825?v=4",
+      "profile": "https://github.com/kursataktas",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
+    },
+    {
+      "login": "bleistivt",
+      "name": "bleistivt",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5205806?v=4",
+      "profile": "http://bleistivt.net",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "dbismut",
+      "name": "David Bismut",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5003380?v=4",
+      "profile": "https://github.com/dbismut",
+      "contributions": [
+        "code",
+        "plugin",
+        "bug"
+      ]
     }
   ],
   "repoType": "github"

@@ -2118,11 +2118,11 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
         await sleep(waitMsForDerivations)
       }
 
-      allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 15))
+      allStates.forEach(s => assertBetween(s[bindingsPropKey].length, 0, 10))
 
       // Wait until GC kicks in
       await sleep(1000)
-      allStates.every(s => assertBetween(s[bindingsPropKey].length, 1, 3))
+      allStates.forEach(s => assertBetween(s[bindingsPropKey].length, 0, 3))
     }),
 
     long_deriveBasic: async () => {
@@ -2231,11 +2231,11 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
         else ++(<State<number>>randomState).val
       }
 
-      allStates.every(s => assertBetween(s[listenersPropKey].length, 1, 10))
+      allStates.forEach(s => assertBetween(s[listenersPropKey].length, 0, 10))
 
       // Wait until GC kicks in
       await sleep(1000)
-      allStates.every(s => assertBetween(s[listenersPropKey].length, 1, 3))
+      allStates.forEach(s => assertBetween(s[listenersPropKey].length, 0, 3))
     },
   }
 

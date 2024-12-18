@@ -1,6 +1,6 @@
 {
   "name": "vanjs-ext",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "description": "The official extension library for VanJS",
   "files": [
     "src/van-x.js",
@@ -8,6 +8,7 @@
     "dist/van-x.nomodule.js",
     "dist/van-x.nomodule.min.js"
   ],
+  "type": "module",
   "main": "src/van-x.js",
   "browser": "src/van-x.js",
   "scripts": {
@@ -37,10 +38,10 @@
   },
   "homepage": "https://vanjs.org/x",
   "dependencies": {
-    "vanjs-core": "^1.5.0"
+    "vanjs-core": "^1.5.2"
   },
   "devDependencies": {
-    "node-jq": "^4.0.1",
+    "node-jq": "^6.0.1",
     "terser": "^5.21.0",
     "typescript": "^5.2.2"
   }

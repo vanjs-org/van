@@ -1,11 +1,7 @@
-import { VanObj } from "mini-van-plate/shared"
+import { env } from "mini-van-plate/shared"
 
-interface Props {
-  van: VanObj
-}
-
-export default ({van} : Props) => {
-  const {a, div, li, p, ul} = van.tags
+export default () => {
+  const {a, div, li, p, ul} = env.van.tags
 
   const fromServer = typeof window === "undefined"
   return div(

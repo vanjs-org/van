@@ -458,6 +458,64 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.querySelector("input").value, "24");
             assertEq(hiddenDom.querySelector("p").innerText, "26");
         }),
+        raw_array: withHiddenDom(async (hiddenDom) => {
+            const printToStr = (arr) => {
+                let result = "";
+                for (let i = 0; i < arr.length; ++i)
+                    result += `${i ? ", " : ""}${i}: ${arr[i]}`;
+                return result;
+            };
+            const render = (arr) => div(div("Length is: ", () => arr.length), div("Elements are: ", () => printToStr(arr)), div("Mapped elements are: ", () => printToStr(arr.map(t => t * 2))));
+            const arr = vanX.reactive([1, 2, 3]);
+            van.add(hiddenDom, render(arr), render(vanX.raw(arr)));
+            assertEq(hiddenDom.innerHTML, '<div><div>Length is: 3</div><div>Elements are: 0: 1, 1: 2, 2: 3</div><div>Mapped elements are: 0: 2, 1: 4, 2: 6</div></div><div><div>Length is: 3</div><div>Elements are: 0: 1, 1: 2, 2: 3</div><div>Mapped elements are: 0: 2, 1: 4, 2: 6</div></div>');
+            // Changing the reactive array. The nodes in the 1st <div> tree will be updated.
+            // But the nodes in the 2nd <div> tree won't be updated, as the reactive array is accessed
+            // via `vanX.raw`.
+            arr.push(4, 5);
+            await sleep(waitMsForDerivations);
+            assertEq(hiddenDom.innerHTML, '<div><div>Length is: 5</div><div>Elements are: 0: 1, 1: 2, 2: 3, 3: 4, 4: 5</div><div>Mapped elements are: 0: 2, 1: 4, 2: 6, 3: 8, 4: 10</div></div><div><div>Length is: 3</div><div>Elements are: 0: 1, 1: 2, 2: 3</div><div>Mapped elements are: 0: 2, 1: 4, 2: 6</div></div>');
+        }),
+        raw_existingClassWithMethod: withHiddenDom(async (hiddenDom) => {
+            class Person {
+                firstName;
+                lastName;
+                constructor(firstName, lastName) {
+                    this.firstName = firstName;
+                    this.lastName = lastName;
+                }
+                fullName() { return `${this.firstName} ${this.lastName}`; }
+            }
+            const person = vanX.reactive(new Person("Tao", "Xin"));
+            van.add(hiddenDom, div(() => person.fullName()), div(() => vanX.raw(person).fullName()));
+            assertEq(hiddenDom.innerHTML, '<div>Tao Xin</div><div>Tao Xin</div>');
+            // Changing the reactive object. The 1st <div> node will be updated, but the 2nd <div> node
+            // won't be updated, as the object array is accessed via `vanX.raw`.
+            person.firstName = "Van";
+            person.lastName = "JS";
+            await sleep(waitMsForDerivations);
+            assertEq(hiddenDom.innerHTML, '<div>Van JS</div><div>Tao Xin</div>');
+        }),
+        raw_existingClassWithCustomGet: withHiddenDom(async (hiddenDom) => {
+            class Person {
+                firstName;
+                lastName;
+                constructor(firstName, lastName) {
+                    this.firstName = firstName;
+                    this.lastName = lastName;
+                }
+                get fullName() { return `${this.firstName} ${this.lastName}`; }
+            }
+            const person = vanX.reactive(new Person("Tao", "Xin"));
+            van.add(hiddenDom, div(() => person.fullName), div(() => vanX.raw(person).fullName));
+            assertEq(hiddenDom.innerHTML, '<div>Tao Xin</div><div>Tao Xin</div>');
+            // Changing the reactive object. The 1st <div> node will be updated, but the 2nd <div> node
+            // won't be updated, as the object array is accessed via `vanX.raw`.
+            person.firstName = "Van";
+            person.lastName = "JS";
+            await sleep(waitMsForDerivations);
+            assertEq(hiddenDom.innerHTML, '<div>Van JS</div><div>Tao Xin</div>');
+        }),
         list_arraySetItem: withHiddenDom(async (hiddenDom) => {
             const items = vanX.reactive([1, 2, 3]);
             van.add(hiddenDom, vanX.list(ul, items, v => li(v)));

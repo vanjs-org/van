@@ -1,8 +1,11 @@
 import van from "mini-van-plate/van-plate"
+import { registerEnv } from "mini-van-plate/shared"
 import Hello from "./components/hello.js"
 import Counter from "./components/counter.js"
 
 const {body, div, h1, h2, head, link, meta, option, p, script, select, title} = van.tags
+
+registerEnv({van})
 
 const server = Bun.serve({
   port: Bun.argv[2] ?? 8080,
@@ -19,13 +22,11 @@ const server = Bun.serve({
       body(
         script({type: "text/javascript", src: `dist/client.js`, defer: true}),
         h1("Hello Components"),
-        div({id: "hello-container"},
-          Hello({van}),
-        ),
+        div({id: "hello-container"}, Hello()),
         h1("Counter Components"),
         div({id: "counter-container"},
           h2("Basic Counter"),
-          Counter({van, id: "basic-counter", init: counterInit}),
+          Counter({id: "basic-counter", init: counterInit}),
           h2("Styled Counter"),
           p("Select the button style: ",
             select({id: "button-style", value: "👆👇"},
@@ -36,7 +37,7 @@ const server = Bun.serve({
               option("📈📉"),
             ),
           ),
-          Counter({van, id: "styled-counter", init: counterInit, buttonStyle: "👆👇"}),
+          Counter({id: "styled-counter", init: counterInit, buttonStyle: "👆👇"}),
         ),
       )
     ), {headers: {"Content-Type": "text/html; charset=UTF-8"}})
