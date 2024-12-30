@@ -40,6 +40,7 @@ export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackgrou
         "background-color": "white",
         ...modalStyleOverrides,
     };
+    document.activeElement instanceof HTMLElement && document.activeElement.blur();
     return () => closed.val ? null : div({ class: backgroundClass, style: toStyleStr(backgroundStyle) }, div({ class: modalClass, style: toStyleStr(modalStyle) }, children));
 };
 let tabsId = 0;
@@ -435,4 +436,76 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
         class: ["vanui-window-children"].concat(childrenContainerClass ? childrenContainerClass : []).join(" "),
         style: toStyleStr(childrenContainerStyleOverrides)
     }, children));
+};
+export const choose = ({ label, options, showTextFilter = false, selectedColor = "#f5f5f5", cyclicalNav = false, customModalProps = {}, textFilterClass = "", textFilterStyleOverrides = {}, optionsContainerClass = "", optionsContainerStyleOverrides = {}, optionClass = "", optionStyleOverrides = {}, selectedClass = "", selectedStyleOverrides = {}, }) => {
+    const closed = van.state(false);
+    const { modalStyleOverrides, ...otherModalProps } = customModalProps;
+    const modalProps = {
+        closed,
+        modalStyleOverrides: {
+            display: "flex",
+            "flex-direction": "column",
+            ...modalStyleOverrides,
+        },
+        ...otherModalProps,
+    };
+    const query = van.state("");
+    const filtered = van.derive(() => options.filter(o => o.toLocaleLowerCase().includes(query.val.toLocaleLowerCase())));
+    const index = van.derive(() => (query.val, 0));
+    let resolve;
+    const res = new Promise(r => resolve = r);
+    const textFilterStyle = {
+        width: "98%",
+        "margin-top": "0.5rem",
+        "margin-bottom": "0.5rem",
+        ...textFilterStyleOverrides,
+    };
+    const optionsContainerStyle = {
+        "overflow-y": "auto",
+        "flex-grow": 1,
+        ...optionsContainerStyleOverrides,
+    };
+    const textFilterDom = showTextFilter ? input({
+        type: "text",
+        class: textFilterClass,
+        style: toStyleStr(textFilterStyle),
+        oninput: e => query.val = e.target.value
+    }) : null;
+    const optionStyle = {
+        padding: "0.5rem",
+        ...optionStyleOverrides,
+    };
+    const selectedStyle = {
+        "background-color": selectedColor,
+        ...selectedStyleOverrides,
+    };
+    van.add(document.head, () => closed.val ? null :
+        van.tags["style"](`.vanui-choose-selected, .vanui-choose-option:hover { ${toStyleStr(selectedStyle)} }`));
+    van.add(document.body, Modal(modalProps, div(label), showTextFilter ? div(textFilterDom) : null, () => div({ class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, filtered.val.map((o, i) => div({
+        class: () => ["vanui-choose-option"].concat(optionClass ? optionClass : [], i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
+        style: toStyleStr(optionStyle),
+        onclick: () => (resolve(o), closed.val = true),
+    }, o)))));
+    textFilterDom?.focus();
+    van.derive(() => {
+        index.val;
+        setTimeout(() => document.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10);
+    });
+    const navByKey = (e) => {
+        if (e.key === "Enter" && index.val < filtered.val.length) {
+            resolve(filtered.val[index.val]);
+            closed.val = true;
+        }
+        else if (e.key === "Escape") {
+            resolve(null);
+            closed.val = true;
+        }
+        else if (e.key === "ArrowDown")
+            index.val = index.val + 1 < filtered.val.length ? index.val + 1 : (cyclicalNav ? 0 : index.val);
+        else if (e.key === "ArrowUp")
+            index.val = index.val > 0 ? index.val - 1 : (cyclicalNav ? filtered.val.length - 1 : index.val);
+    };
+    document.addEventListener("keydown", navByKey);
+    van.derive(() => closed.val && document.removeEventListener("keydown", navByKey));
+    return res;
 };

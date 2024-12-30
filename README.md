@@ -1,7 +1,8 @@
+[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20VanJS%20Guru-006BFF)](https://gurubase.io/g/vanjs)
+
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
 📣 [Introducing VanX →](https://github.com/vanjs-org/van/discussions/144) <br>
-📣 [Introducing VanJS App Builder →](https://github.com/vanjs-org/van/discussions/179)
 
 <div align="center">
   <table>
@@ -116,6 +117,7 @@ Simplicity at its core. Only 5 functions (`van.tags`, `van.add`, `van.state`, `v
 * Debugging complex dependencies in your app? checkout [**VanGraph**](https://github.com/vanjs-org/van/tree/main/graph)
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page
 * [How did **VanJS** get its name?](https://vanjs.org/about#name)
+* ✨ [Ask **VanJS** Guru](https://gurubase.io/g/vanjs) - a **VanJS**-focused AI to answer your questions
 
 ## IDE Plug-ins
 
@@ -151,7 +153,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [vanrx](https://github.com/MeddahAbdellah/vanrx) | An ultra-lightweight Redux addon for **VanJS** | [Meddah Abdallah](https://github.com/MeddahAbdellah) |
 | [VanFS](https://github.com/ken-okabe/vanfs) | 1:1 bindings from F# to **VanJS** | [Ken Okabe](https://github.com/ken-okabe) |
 
-## Contributors (58)
+## Contributors (61)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
@@ -230,13 +232,16 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ericraider33"><img src="https://avatars.githubusercontent.com/u/9611418?v=4?s=100" width="100px;" alt="ericraider33"/><br /><sub><b>ericraider33</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Aericraider33" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ken-okabe/vanfs"><img src="https://avatars.githubusercontent.com/u/1316994?v=4?s=100" width="100px;" alt="Ken Okabe"/><br /><sub><b>Ken Okabe</b></sub></a><br /><a href="#plugin-ken-okabe" title="Plugin/utility libraries">🔌</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://gamedev.stackexchange.com/users/5473/arcane-engineer"><img src="https://avatars.githubusercontent.com/u/7487822?v=4?s=100" width="100px;" alt="Nick"/><br /><sub><b>Nick</b></sub></a><br /><a href="#example-ArcaneEngineer" title="Examples">💡</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/thednp"><img src="https://avatars.githubusercontent.com/u/6761246?v=4?s=100" width="100px;" alt="thednp"/><br /><sub><b>thednp</b></sub></a><br /><a href="#plugin-thednp" title="Plugin/utility libraries">🔌</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/thednp"><img src="https://avatars.githubusercontent.com/u/6761246?v=4?s=100" width="100px;" alt="thednp"/><br /><sub><b>thednp</b></sub></a><br /><a href="#plugin-thednp" title="Plugin/utility libraries">🔌</a> <a href="https://github.com/vanjs-org/van/commits?author=thednp" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/pearmini"><img src="https://avatars.githubusercontent.com/u/49330279?v=4?s=100" width="100px;" alt="Bairui Su"/><br /><sub><b>Bairui Su</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=pearmini" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jroush-ipg"><img src="https://avatars.githubusercontent.com/u/144253148?v=4?s=100" width="100px;" alt="jroush-ipg"/><br /><sub><b>jroush-ipg</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Ajroush-ipg" title="Bug reports">🐛</a></td>
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/kangaroolab"><img src="https://avatars.githubusercontent.com/u/163623573?v=4?s=100" width="100px;" alt="kangaroolab"/><br /><sub><b>kangaroolab</b></sub></a><br /><a href="#example-kangaroolab" title="Examples">💡</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gramie"><img src="https://avatars.githubusercontent.com/u/1507443?v=4?s=100" width="100px;" alt="Graham Stratford"/><br /><sub><b>Graham Stratford</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Agramie" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/kursataktas"><img src="https://avatars.githubusercontent.com/u/17837825?v=4?s=100" width="100px;" alt="Kursat Aktas"/><br /><sub><b>Kursat Aktas</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=kursataktas" title="Code">💻</a> <a href="#plugin-kursataktas" title="Plugin/utility libraries">🔌</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://bleistivt.net"><img src="https://avatars.githubusercontent.com/u/5205806?v=4?s=100" width="100px;" alt="bleistivt"/><br /><sub><b>bleistivt</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Ableistivt" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dbismut"><img src="https://avatars.githubusercontent.com/u/5003380?v=4?s=100" width="100px;" alt="David Bismut"/><br /><sub><b>David Bismut</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=dbismut" title="Code">💻</a> <a href="#plugin-dbismut" title="Plugin/utility libraries">🔌</a> <a href="https://github.com/vanjs-org/van/issues?q=author%3Adbismut" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>

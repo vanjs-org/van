@@ -518,7 +518,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/6761246?v=4",
       "profile": "https://github.com/thednp",
       "contributions": [
-        "plugin"
+        "plugin",
+        "code"
       ]
     },
     {
@@ -554,6 +555,36 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1507443?v=4",
       "profile": "https://github.com/gramie",
       "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "kursataktas",
+      "name": "Kursat Aktas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17837825?v=4",
+      "profile": "https://github.com/kursataktas",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
+    },
+    {
+      "login": "bleistivt",
+      "name": "bleistivt",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5205806?v=4",
+      "profile": "http://bleistivt.net",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "dbismut",
+      "name": "David Bismut",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5003380?v=4",
+      "profile": "https://github.com/dbismut",
+      "contributions": [
+        "code",
+        "plugin",
         "bug"
       ]
     }

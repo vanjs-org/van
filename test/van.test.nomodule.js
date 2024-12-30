@@ -1483,9 +1483,9 @@
             ++randomState.val;
           await sleep(waitMsForDerivations);
         }
-        allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 15));
+        allStates.forEach((s) => assertBetween(s[bindingsPropKey].length, 0, 10));
         await sleep(1e3);
-        allStates.every((s) => assertBetween(s[bindingsPropKey].length, 1, 3));
+        allStates.forEach((s) => assertBetween(s[bindingsPropKey].length, 0, 3));
       }),
       long_deriveBasic: async () => {
         const history = [];
@@ -1559,9 +1559,9 @@
           else
             ++randomState.val;
         }
-        allStates.every((s) => assertBetween(s[listenersPropKey].length, 1, 10));
+        allStates.forEach((s) => assertBetween(s[listenersPropKey].length, 0, 10));
         await sleep(1e3);
-        allStates.every((s) => assertBetween(s[listenersPropKey].length, 1, 3));
+        allStates.forEach((s) => assertBetween(s[listenersPropKey].length, 0, 3));
       }
     };
     const suites = { tests, examples, gcTests };
