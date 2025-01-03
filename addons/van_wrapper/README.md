@@ -16,7 +16,6 @@ https://github.com/zakarialaoui10/van-wrapper
 ### *Component Declaration :*
 ```js
 // HelloFromVan.js
-import { VanWrapper } from "van-wrapper/vue";
 const {a, p, div} = van.tags
 const HelloFromVan = ({environement}) => div(
   p(message, a({href: "https://vanjs.org/"}, "VanJS")),
