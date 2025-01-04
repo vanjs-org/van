@@ -154,7 +154,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [VanFS](https://github.com/ken-okabe/vanfs) | 1:1 bindings from F# to **VanJS** | [Ken Okabe](https://github.com/ken-okabe) |
 | [Van-wrapper](https://github.com/zakarialaoui10/van-wrapper) | A tool that facilitates the rendering of **VanJS** elements within other popular frameworks | [Zakaria Elalaoui](https://github.com/zakarialaoui10) |
 
-## Contributors (61)
+## Contributors (62)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
