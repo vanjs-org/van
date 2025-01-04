@@ -152,6 +152,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [vanjs-bootstrap](https://github.com/WilliCommer/vanjs-bootstrap) | **VanJS** Bootstrap Components | [Willi Commer](https://github.com/WilliCommer) |
 | [vanrx](https://github.com/MeddahAbdellah/vanrx) | An ultra-lightweight Redux addon for **VanJS** | [Meddah Abdallah](https://github.com/MeddahAbdellah) |
 | [VanFS](https://github.com/ken-okabe/vanfs) | 1:1 bindings from F# to **VanJS** | [Ken Okabe](https://github.com/ken-okabe) |
+| [Van-wrapper](https://github.com/zakarialaoui10/van-wrapper) | A tool that facilitates the rendering of **VanJS** elements within other popular frameworks | [Zakaria Elalaoui](https://github.com/zakarialaoui10) |
 
 ## Contributors (61)
 
