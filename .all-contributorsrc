@@ -596,6 +596,15 @@
       "contributions": [
         "plugin"
       ]
+    },
+    {
+      "login": "maburdi94",
+      "name": "Michael Burdi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7775641?v=4",
+      "profile": "https://github.com/maburdi94",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
