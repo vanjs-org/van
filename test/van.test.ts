@@ -518,7 +518,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       await sleep(waitMsForDerivations)
       assertEq(buttonDom.textContent!, "MyButton clicked!")
       // Validate other props are passed in as well.
-      assert(buttonDom.classList.contains("myButton"))
+      assert(buttonDom.className === "myButton")
     }),
 
     tags_isOption_ns: withHiddenDom(async hiddenDom => {
@@ -538,7 +538,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       await sleep(waitMsForDerivations)
       assertEq(buttonDom.textContent!, "MyButton clicked!")
       // Validate other props are passed in as well.
-      assert(buttonDom.classList.contains("myButton"))
+      assert(buttonDom.className === "myButton")
     }),
 
     add_basic: () => {

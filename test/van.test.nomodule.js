@@ -380,7 +380,7 @@
         buttonDom.click();
         await sleep(waitMsForDerivations);
         assertEq(buttonDom.textContent, "MyButton clicked!");
-        assert(buttonDom.classList.contains("myButton"));
+        assert(buttonDom.className === "myButton");
       }),
       tags_isOption_ns: withHiddenDom(async (hiddenDom) => {
         class MyButton extends HTMLButtonElement {
@@ -396,7 +396,7 @@
         buttonDom.click();
         await sleep(waitMsForDerivations);
         assertEq(buttonDom.textContent, "MyButton clicked!");
-        assert(buttonDom.classList.contains("myButton"));
+        assert(buttonDom.className === "myButton");
       }),
       add_basic: () => {
         const dom = ul();
