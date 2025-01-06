@@ -1,6 +1,12 @@
 import type {Van, State} from "../src/van.d.ts"
 
-(<any>window).numTests = 0
+declare global {
+  interface Window {
+    numTests: number
+  }
+}
+
+window.numTests = 0
 
 interface BundleOptions {
   readonly debug: boolean
@@ -495,6 +501,45 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       const dom = math(msup(mi("e"), mrow(mi("i"), mi("π"))), mo("+"), mn("1"), mo("="), mn("0"))
       assertEq(dom.outerHTML, '<math><msup><mi>e</mi><mrow><mi>i</mi><mi>π</mi></mrow></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>0</mn></math>')
     },
+
+    tags_isOption: withHiddenDom(async hiddenDom => {
+      class MyButton extends HTMLButtonElement {
+        connectedCallback() {
+          this.addEventListener("click", () => this.textContent = "MyButton clicked!")
+        }
+      }
+      const tagName = "my-button-" + window.numTests
+      customElements.define(tagName, MyButton, {extends: "button"})
+
+      van.add(hiddenDom, button({class: "myButton", is: tagName}, "Test Button"))
+
+      const buttonDom = hiddenDom.querySelector("button")!
+      buttonDom.click()
+      await sleep(waitMsForDerivations)
+      assertEq(buttonDom.textContent!, "MyButton clicked!")
+      // Validate other props are passed in as well.
+      assert(buttonDom.classList.contains("myButton"))
+    }),
+
+    tags_isOption_ns: withHiddenDom(async hiddenDom => {
+      class MyButton extends HTMLButtonElement {
+        connectedCallback() {
+          this.addEventListener("click", () => this.textContent = "MyButton clicked!")
+        }
+      }
+      const tagName = "my-button-" + window.numTests
+      customElements.define(tagName, MyButton, {extends: "button"})
+
+      const {button} = van.tags("http://www.w3.org/1999/xhtml")
+      van.add(hiddenDom, button({class: "myButton", is: tagName}, "Test Button"))
+
+      const buttonDom = hiddenDom.querySelector("button")!
+      buttonDom.click()
+      await sleep(waitMsForDerivations)
+      assertEq(buttonDom.textContent!, "MyButton clicked!")
+      // Validate other props are passed in as well.
+      assert(buttonDom.classList.contains("myButton"))
+    }),
 
     add_basic: () => {
       const dom = ul()
@@ -2248,7 +2293,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
     for (const [name, func] of Object.entries(v)) {
       if (skipLong && name.startsWith("long_")) continue
       if (debug && name.endsWith("_excludeDebug")) continue
-      ++(<any>window).numTests
+      ++window.numTests
       const result = van.state(""), msg = van.state("")
       van.add(msgDom, div(
         pre(`Running ${k}.${name}...`),

@@ -16,7 +16,7 @@ export type PropValue = Primitive | ((e: any) => void) | null
 
 export type PropValueOrDerived = PropValue | StateView<PropValue> | (() => PropValue)
 
-export type Props = Record<string, PropValueOrDerived> & { class?: PropValueOrDerived }
+export type Props = Record<string, PropValueOrDerived> & { class?: PropValueOrDerived; is?: string }
 
 export type PropsWithKnownKeys<ElementType> = Partial<{[K in keyof ElementType]: PropValueOrDerived}>
 

@@ -367,6 +367,37 @@
         const dom = math(msup(mi("e"), mrow(mi("i"), mi("\u03C0"))), mo("+"), mn("1"), mo("="), mn("0"));
         assertEq(dom.outerHTML, "<math><msup><mi>e</mi><mrow><mi>i</mi><mi>\u03C0</mi></mrow></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>0</mn></math>");
       },
+      tags_isOption: withHiddenDom(async (hiddenDom) => {
+        class MyButton extends HTMLButtonElement {
+          connectedCallback() {
+            this.addEventListener("click", () => this.textContent = "MyButton clicked!");
+          }
+        }
+        const tagName = "my-button-" + window.numTests;
+        customElements.define(tagName, MyButton, { extends: "button" });
+        van2.add(hiddenDom, button({ class: "myButton", is: tagName }, "Test Button"));
+        const buttonDom = hiddenDom.querySelector("button");
+        buttonDom.click();
+        await sleep(waitMsForDerivations);
+        assertEq(buttonDom.textContent, "MyButton clicked!");
+        assert(buttonDom.classList.contains("myButton"));
+      }),
+      tags_isOption_ns: withHiddenDom(async (hiddenDom) => {
+        class MyButton extends HTMLButtonElement {
+          connectedCallback() {
+            this.addEventListener("click", () => this.textContent = "MyButton clicked!");
+          }
+        }
+        const tagName = "my-button-" + window.numTests;
+        customElements.define(tagName, MyButton, { extends: "button" });
+        const { button: button2 } = van2.tags("http://www.w3.org/1999/xhtml");
+        van2.add(hiddenDom, button2({ class: "myButton", is: tagName }, "Test Button"));
+        const buttonDom = hiddenDom.querySelector("button");
+        buttonDom.click();
+        await sleep(waitMsForDerivations);
+        assertEq(buttonDom.textContent, "MyButton clicked!");
+        assert(buttonDom.classList.contains("myButton"));
+      }),
       add_basic: () => {
         const dom = ul();
         assertEq(van2.add(dom, li("Item 1"), li("Item 2")), dom);
