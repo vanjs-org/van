@@ -118,8 +118,19 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
     },
 
     tags_nullPropValue: () => {
-      const dom = button({onclick: null})
-      assert(dom.onclick === null)
+      {
+        const dom = button({onclick: null})
+        assert(dom.onclick === null)
+      }
+      {
+        const dom = div({id: null})
+        assertEq(dom.outerHTML, '<div id="null"></div>')
+      }
+    },
+
+    tags_undefinedPropValue_excludeDebug: () => {
+      const dom = div({id: <any>undefined})
+      assertEq(dom.outerHTML, '<div id="undefined"></div>')
     },
 
     tags_stateAsProp_connected: withHiddenDom(async hiddenDom => {

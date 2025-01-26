@@ -81,8 +81,18 @@
         assertEq(ul([[void 0, li("Item 1"), null, [li("Item 2")]], null, li("Item 3"), void 0]).outerHTML, "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>");
       },
       tags_nullPropValue: () => {
-        const dom = button({ onclick: null });
-        assert(dom.onclick === null);
+        {
+          const dom = button({ onclick: null });
+          assert(dom.onclick === null);
+        }
+        {
+          const dom = div2({ id: null });
+          assertEq(dom.outerHTML, '<div id="null"></div>');
+        }
+      },
+      tags_undefinedPropValue_excludeDebug: () => {
+        const dom = div2({ id: void 0 });
+        assertEq(dom.outerHTML, '<div id="undefined"></div>');
       },
       tags_stateAsProp_connected: withHiddenDom(async (hiddenDom) => {
         const href = van2.state("http://example.com/");
