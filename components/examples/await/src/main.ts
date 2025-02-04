@@ -42,9 +42,9 @@ const Example2 = () => {
   return [
     h2("Parallel Await"),
     () => {
-      const sum = van.derive(() => Promise.all([a.val, b.val]).then(([a, b]) => a + b))
+      const sum = Promise.all([a.val, b.val]).then(([a, b]) => a + b)
       return Await({
-        value: sum.val,
+        value: sum,
         Loading: () => div(
           Await({value: a.val, Loading: () => "🌀 Loading a..."}, () => "Done"),
           Await({value: b.val, Loading: () => "🌀 Loading b..."}, () => "Done"),
