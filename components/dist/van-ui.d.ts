@@ -21,12 +21,13 @@ export interface ModalProps {
     readonly closed: State<boolean>;
     readonly backgroundColor?: string;
     readonly blurBackground?: boolean;
+    readonly clickBackgroundToClose?: boolean;
     readonly backgroundClass?: string;
     readonly backgroundStyleOverrides?: CSSPropertyBag;
     readonly modalClass?: string;
     readonly modalStyleOverrides?: CSSPropertyBag;
 }
-export declare const Modal: ({ closed, backgroundColor, blurBackground, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
+export declare const Modal: ({ closed, backgroundColor, blurBackground, clickBackgroundToClose, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
 export interface TabsProps {
     readonly activeTab?: State<string>;
     readonly resultClass?: string;

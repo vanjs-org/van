@@ -52,10 +52,10 @@ import { <components you want to import> } from "vanjs-ui"
 Alternatively, you can import **VanUI** from CDN via a `<script type="text/javascript">` tag:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.5/dist/van-ui.nomodule.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.6/dist/van-ui.nomodule.min.js"></script>
 ```
 
-`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.5/dist/van-ui.nomodule.js` can be used for the non-minified version.
+`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.6/dist/van-ui.nomodule.js` can be used for the non-minified version.
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
@@ -222,7 +222,7 @@ const onOk = () => {
   closed.val = true
 }
 
-van.add(document.body, Modal({closed, blurBackground: true},
+van.add(document.body, Modal({closed, blurBackground: true, clickBackgroundToClose: true},
   p("What's your favorite programming language?"),
   formDom,
   p({style: "display: flex; justify-content: space-evenly;"},
@@ -807,6 +807,7 @@ Example 2:
     customModalProps: {
       blurBackground: true,
       modalStyleOverrides: {height: "300px"},
+      clickBackgroundToClose: true,
     },
     selectedStyleOverrides: {color: "white"},
   })

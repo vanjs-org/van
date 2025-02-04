@@ -29,7 +29,7 @@ const example2 = () => {
     closed.val = true
   }
 
-  van.add(document.body, Modal({closed, blurBackground: true},
+  van.add(document.body, Modal({closed, blurBackground: true, clickBackgroundToClose: true},
     p("What's your favorite programming language?"),
     formDom,
     p({style: "display: flex; justify-content: space-evenly;"},

@@ -18,7 +18,7 @@ export const Await = ({ value, container = div, Loading, Error }, children) => {
         data.val.status === "rejected" ? Error?.(data.val.value) :
             children(data.val.value));
 };
-export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackground = false, backgroundClass = "", backgroundStyleOverrides = {}, modalClass = "", modalStyleOverrides = {}, }, ...children) => {
+export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackground = false, clickBackgroundToClose = false, backgroundClass = "", backgroundStyleOverrides = {}, modalClass = "", modalStyleOverrides = {}, }, ...children) => {
     const backgroundStyle = {
         display: "flex",
         "align-items": "center",
@@ -41,7 +41,13 @@ export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackgrou
         ...modalStyleOverrides,
     };
     document.activeElement instanceof HTMLElement && document.activeElement.blur();
-    return () => closed.val ? null : div({ class: backgroundClass, style: toStyleStr(backgroundStyle) }, div({ class: modalClass, style: toStyleStr(modalStyle) }, children));
+    return () => {
+        if (closed.val)
+            return null;
+        const bgDom = div({ class: backgroundClass, style: toStyleStr(backgroundStyle) }, div({ class: modalClass, style: toStyleStr(modalStyle) }, children));
+        clickBackgroundToClose && bgDom.addEventListener("click", e => closed.val = e.target === bgDom);
+        return bgDom;
+    };
 };
 let tabsId = 0;
 export const Tabs = ({ activeTab, resultClass = "", style = "", tabButtonRowColor = "#f1f1f1", tabButtonBorderStyle = "1px solid #000", tabButtonHoverColor = "#ddd", tabButtonActiveColor = "#ccc", transitionSec = 0.3, tabButtonRowClass = "", tabButtonRowStyleOverrides = {}, tabButtonClass = "", tabButtonStyleOverrides = {}, tabContentClass = "", tabContentStyleOverrides = {}, }, contents) => {
@@ -476,21 +482,18 @@ export const choose = ({ label, options, showTextFilter = false, selectedColor =
         ...optionStyleOverrides,
     };
     const selectedStyle = {
+        ...optionStyle,
         "background-color": selectedColor,
         ...selectedStyleOverrides,
     };
-    van.add(document.head, () => closed.val ? null :
-        van.tags["style"](`.vanui-choose-selected, .vanui-choose-option:hover { ${toStyleStr(selectedStyle)} }`));
     van.add(document.body, Modal(modalProps, div(label), showTextFilter ? div(textFilterDom) : null, () => div({ class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, filtered.val.map((o, i) => div({
-        class: () => ["vanui-choose-option"].concat(optionClass ? optionClass : [], i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
-        style: toStyleStr(optionStyle),
+        class: () => (optionClass ? [optionClass] : []).concat(i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
+        style: i === index.val ? toStyleStr(selectedStyle) : toStyleStr(optionStyle),
         onclick: () => (resolve(o), closed.val = true),
+        onmousemove: () => index.val = i,
     }, o)))));
     textFilterDom?.focus();
-    van.derive(() => {
-        index.val;
-        setTimeout(() => document.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10);
-    });
+    const scrollIntoView = () => setTimeout(() => document.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10);
     const navByKey = (e) => {
         if (e.key === "Enter" && index.val < filtered.val.length) {
             resolve(filtered.val[index.val]);
@@ -500,10 +503,14 @@ export const choose = ({ label, options, showTextFilter = false, selectedColor =
             resolve(null);
             closed.val = true;
         }
-        else if (e.key === "ArrowDown")
+        else if (e.key === "ArrowDown") {
             index.val = index.val + 1 < filtered.val.length ? index.val + 1 : (cyclicalNav ? 0 : index.val);
-        else if (e.key === "ArrowUp")
+            scrollIntoView();
+        }
+        else if (e.key === "ArrowUp") {
             index.val = index.val > 0 ? index.val - 1 : (cyclicalNav ? filtered.val.length - 1 : index.val);
+            scrollIntoView();
+        }
     };
     document.addEventListener("keydown", navByKey);
     van.derive(() => closed.val && document.removeEventListener("keydown", navByKey));

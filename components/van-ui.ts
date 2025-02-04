@@ -52,6 +52,7 @@ export interface ModalProps {
   readonly closed: State<boolean>
   readonly backgroundColor?: string
   readonly blurBackground?: boolean
+  readonly clickBackgroundToClose?: boolean
 
   readonly backgroundClass?: string
   readonly backgroundStyleOverrides?: CSSPropertyBag
@@ -64,6 +65,7 @@ export const Modal = (
     closed,
     backgroundColor = "rgba(0,0,0,.5)",
     blurBackground = false,
+    clickBackgroundToClose = false,
     backgroundClass = "",
     backgroundStyleOverrides = {},
     modalClass = "",
@@ -96,14 +98,12 @@ export const Modal = (
   document.activeElement instanceof HTMLElement && document.activeElement.blur()
   return () => {
       if (closed.val) return null
-      const backdrop = div(
+      const bgDom = div(
           {class: backgroundClass, style: toStyleStr(backgroundStyle)},
           div({class: modalClass, style: toStyleStr(modalStyle)}, children),
       )
-      backdrop.addEventListener("click", function (e) {
-          if (e.target == this) closed.val = true
-      })
-      return backdrop
+      clickBackgroundToClose && bgDom.addEventListener("click", e => closed.val = e.target === bgDom)
+      return bgDom
   }
 }
 
@@ -880,26 +880,21 @@ export const choose = (
   }
 
   const selectedStyle = {
+    ...optionStyle,
     "background-color": selectedColor,
     ...selectedStyleOverrides,
   }
-
-  van.add(document.head, () => closed.val ? null :
-    van.tags["style"](
-      `.vanui-choose-selected { ${toStyleStr(selectedStyle)} }`)
-  )
 
   van.add(document.body, Modal(modalProps,
     div(label),
     showTextFilter ? div(textFilterDom) : null,
     () => div({class: optionsContainerClass, style: toStyleStr(optionsContainerStyle)},
       filtered.val.map((o, i) => div({
-        class: () => ["vanui-choose-option"].concat(
-          optionClass ? optionClass : [],
+        class: () => (optionClass ? [optionClass] : []).concat(
           i === index.val ? "vanui-choose-selected" : [],
           i === index.val && selectedClass ? selectedClass : [],
         ).join(" "),
-        style: toStyleStr(optionStyle),
+        style: i === index.val ? toStyleStr(selectedStyle) : toStyleStr(optionStyle),
         onclick: () => (resolve(o), closed.val = true),
         onmousemove: () => index.val = i,
       }, o))
