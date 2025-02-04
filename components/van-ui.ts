@@ -879,7 +879,7 @@ export const choose = (
 
   van.add(document.head, () => closed.val ? null :
     van.tags["style"](
-      `.vanui-choose-selected, .vanui-choose-option:hover { ${toStyleStr(selectedStyle)} }`)
+      `.vanui-choose-selected { ${toStyleStr(selectedStyle)} }`)
   )
 
   van.add(document.body, Modal(modalProps,
@@ -894,16 +894,14 @@ export const choose = (
         ).join(" "),
         style: toStyleStr(optionStyle),
         onclick: () => (resolve(o), closed.val = true),
-        onmouseover: () => index.val = i,
+        onmousemove: () => index.val = i,
       }, o))
     ),
   ))
   textFilterDom?.focus()
 
-  van.derive(() => {
-    index.val
+  const scrollIntoView = () =>
     setTimeout(() => document.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10)
-  })
 
   const navByKey = (e: KeyboardEvent) => {
     if (e.key === "Enter" && index.val < filtered.val.length) {
@@ -912,10 +910,13 @@ export const choose = (
     } else if (e.key === "Escape") {
       resolve(null)
       closed.val = true
-    } else if (e.key === "ArrowDown")
+    } else if (e.key === "ArrowDown") {
       index.val = index.val + 1 < filtered.val.length ? index.val + 1 : (cyclicalNav ? 0 : index.val)
-    else if (e.key === "ArrowUp")
+      scrollIntoView()
+    } else if (e.key === "ArrowUp") {
       index.val = index.val > 0 ? index.val - 1 : (cyclicalNav ? filtered.val.length - 1 : index.val)
+      scrollIntoView()
+    }
   }
   document.addEventListener("keydown", navByKey)
   van.derive(() => closed.val && document.removeEventListener("keydown", navByKey))
