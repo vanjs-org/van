@@ -94,10 +94,17 @@ export const Modal = (
   }
 
   document.activeElement instanceof HTMLElement && document.activeElement.blur()
-  return () => closed.val ? null : div(
-    {class: backgroundClass, style: toStyleStr(backgroundStyle)},
-    div({class: modalClass, style: toStyleStr(modalStyle)}, children),
-  )
+  return () => {
+      if (closed.val) return null
+      const backdrop = div(
+          {class: backgroundClass, style: toStyleStr(backgroundStyle)},
+          div({class: modalClass, style: toStyleStr(modalStyle)}, children),
+      )
+      backdrop.addEventListener("click", function (e) {
+          if (e.target == this) closed.val = true
+      })
+      return backdrop
+  }
 }
 
 export interface TabsProps {
