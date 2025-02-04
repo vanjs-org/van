@@ -237,6 +237,7 @@ van.add(document.body, Modal({closed, blurBackground: true, clickBackgroundToClo
 * `closed`: Type `State<boolean>`. Required. A `State` object used to close the created modal window. Basically, setting `closed.val = true` will close the created modal window. You can also subscribe the closing event of the modal window via [`van.derive`](https://vanjs.org/tutorial#api-derive).
 * `backgroundColor`: Type `string`. Default `"rgba(0,0,0,.5)"`. Optional. The color of the background overlay when the modal is activated.
 * `blurBackground`: Type `boolean`. Default `false`. Optional. Whether to blur the background.
+* `clickBackgroundToClose`: Type `boolean`. Default `false`. Optional. If `true`, clicking the background will close the created modal.
 * `backgroundClass`: Type `string`. Default `""`. Optional. The `class` attribute of the background overlay. You can specify multiple CSS classes separated by `" "`.
 * `backgroundStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the background overlay.
 * `modalClass`: Type `string`. Default `""`. Optional. The `class` attribute of the created modal element. You can specify multiple CSS classes separated by `" "`.
