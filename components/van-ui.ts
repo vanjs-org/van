@@ -894,6 +894,7 @@ export const choose = (
         ).join(" "),
         style: toStyleStr(optionStyle),
         onclick: () => (resolve(o), closed.val = true),
+        onmouseover: () => index.val = i,
       }, o))
     ),
   ))
