@@ -45,7 +45,8 @@
           if (closed.val)
               return null;
           const bgDom = div({ class: backgroundClass, style: toStyleStr(backgroundStyle) }, div({ class: modalClass, style: toStyleStr(modalStyle) }, children));
-          clickBackgroundToClose && bgDom.addEventListener("click", e => closed.val = e.target === bgDom);
+          clickBackgroundToClose &&
+              bgDom.addEventListener("click", e => e.target === bgDom && (closed.val = true));
           return bgDom;
       };
   };
