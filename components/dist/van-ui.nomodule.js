@@ -359,15 +359,6 @@
                   height: "10px",
                   "background-color": grabAreaBgColor,
               },
-              ".vanui-window-resize-lefttop": {
-                  cursor: "nw-resize",
-                  position: "absolute",
-                  left: "0",
-                  top: "0",
-                  width: "10px",
-                  height: "10px",
-                  "background-color": grabAreaBgColor,
-              },
               ".vanui-window-resize-right": {
                   cursor: "e-resize",
                   position: "absolute",
@@ -383,6 +374,33 @@
                   left: "0",
                   bottom: "0",
                   width: "100%",
+                  height: "10px",
+                  "background-color": grabAreaBgColor,
+              },
+              ".vanui-window-resize-lefttop": {
+                  cursor: "nw-resize",
+                  position: "absolute",
+                  left: "0",
+                  top: "0",
+                  width: "10px",
+                  height: "10px",
+                  "background-color": grabAreaBgColor,
+              },
+              ".vanui-window-resize-leftbottom": {
+                  cursor: "sw-resize",
+                  position: "absolute",
+                  left: "0",
+                  bottom: "0",
+                  width: "10px",
+                  height: "10px",
+                  "background-color": grabAreaBgColor,
+              },
+              ".vanui-window-resize-righttop": {
+                  cursor: "ne-resize",
+                  position: "absolute",
+                  right: "0",
+                  top: "0",
+                  width: "10px",
                   height: "10px",
                   "background-color": grabAreaBgColor,
               },
@@ -471,16 +489,24 @@
               onmousedown: onResizeMouseDown("top"),
           }),
           div({
-              class: "vanui-window-resize-lefttop",
-              onmousedown: onResizeMouseDown("lefttop"),
-          }),
-          div({
               class: "vanui-window-resize-right",
               onmousedown: onResizeMouseDown("right"),
           }),
           div({
               class: "vanui-window-resize-bottom",
               onmousedown: onResizeMouseDown("bottom"),
+          }),
+          div({
+              class: "vanui-window-resize-lefttop",
+              onmousedown: onResizeMouseDown("lefttop"),
+          }),
+          div({
+              class: "vanui-window-resize-leftbottom",
+              onmousedown: onResizeMouseDown("leftbottom"),
+          }),
+          div({
+              class: "vanui-window-resize-righttop",
+              onmousedown: onResizeMouseDown("righttop"),
           }),
           div({
               class: "vanui-window-resize-rightbottom",
