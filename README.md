@@ -246,6 +246,9 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/zakarialaoui10/ziko.js"><img src="https://avatars.githubusercontent.com/u/63521765?v=4?s=100" width="100px;" alt="ZAKARIA ELALAOUI"/><br /><sub><b>ZAKARIA ELALAOUI</b></sub></a><br /><a href="#plugin-zakarialaoui10" title="Plugin/utility libraries">🔌</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/maburdi94"><img src="https://avatars.githubusercontent.com/u/7775641?v=4?s=100" width="100px;" alt="Michael Burdi"/><br /><sub><b>Michael Burdi</b></sub></a><br /><a href="https://github.com/vanjs-org/van/commits?author=maburdi94" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/carlosmintfan"><img src="https://avatars.githubusercontent.com/u/118076740?v=4?s=100" width="100px;" alt="carlosmintfan"/><br /><sub><b>carlosmintfan</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Acarlosmintfan" title="Bug reports">🐛</a></td>
+    </tr>
   </tbody>
 </table>
 

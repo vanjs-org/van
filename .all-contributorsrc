@@ -609,6 +609,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "carlosmintfan",
+      "name": "carlosmintfan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/118076740?v=4",
+      "profile": "https://github.com/carlosmintfan",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "repoType": "github"
