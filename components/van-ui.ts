@@ -643,6 +643,14 @@ export const FloatingWindow = (
       const deltaX = e.clientX - startX.val
       const deltaY = e.clientY - startY.val
 
+      if (resizingDirection.val.includes("left")) {
+        xState.val = startX.val + deltaX
+        widthState.val = startWidth.val - deltaX
+      }
+      if (resizingDirection.val.includes("top")) {
+        yState.val = startY.val + deltaY
+        heightState.val = startHeight.val - deltaY
+      }
       if (resizingDirection.val.includes("right")) widthState.val = startWidth.val + deltaX
       if (resizingDirection.val.includes("bottom")) heightState.val = startHeight.val + deltaY
     }
@@ -674,6 +682,33 @@ export const FloatingWindow = (
         top: "0",
         width: "100%",
         height: "1rem",
+      },
+      ".vanui-window-resize-left": {
+        cursor: "w-resize",
+        position: "absolute",
+        left: "0",
+        top: "0",
+        width: "10px",
+        height: "100%",
+        "background-color": grabAreaBgColor,
+      },
+      ".vanui-window-resize-top": {
+        cursor: "n-resize",
+        position: "absolute",
+        left: "0",
+        top: "0",
+        width: "100%",
+        height: "10px",
+        "background-color": grabAreaBgColor,
+      },
+      ".vanui-window-resize-lefttop": {
+        cursor: "nw-resize",
+        position: "absolute",
+        left: "0",
+        top: "0",
+        width: "10px",
+        height: "10px",
+        "background-color": grabAreaBgColor,
       },
       ".vanui-window-resize-right": {
         cursor: "e-resize",
@@ -777,6 +812,18 @@ export const FloatingWindow = (
       onmousedown,
     }),
     disableResize ? [] : [
+      div({
+        class: "vanui-window-resize-left",
+        onmousedown: onResizeMouseDown("left"),
+      }),
+      div({
+        class: "vanui-window-resize-top",
+        onmousedown: onResizeMouseDown("top"),
+      }),
+      div({
+        class: "vanui-window-resize-lefttop",
+        onmousedown: onResizeMouseDown("lefttop"),
+      }),
       div({
         class: "vanui-window-resize-right",
         onmousedown: onResizeMouseDown("right"),
