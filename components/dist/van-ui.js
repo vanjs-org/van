@@ -273,6 +273,7 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
         zIndexState.val = topMostZIndex();
     const dragging = van.state(false), resizingDirection = van.state(null);
     const startX = van.state(0), startY = van.state(0);
+    const startXState = van.state(0), startYState = van.state(0);
     const startWidth = van.state(0), startHeight = van.state(0);
     const crossHover = crossHoverClass || Object.keys(crossHoverStyleOverrides) ?
         van.state(false) : null;
@@ -288,6 +289,8 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
         resizingDirection.val = direction;
         startX.val = e.clientX;
         startY.val = e.clientY;
+        startXState.val = xState.val;
+        startYState.val = yState.val;
         startWidth.val = widthState.val;
         startHeight.val = heightState.val;
         document.body.style.userSelect = "none";
@@ -303,11 +306,11 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
             const deltaX = e.clientX - startX.val;
             const deltaY = e.clientY - startY.val;
             if (resizingDirection.val.includes("left")) {
-                xState.val = startX.val + deltaX;
+                xState.val = startXState.val + deltaX;
                 widthState.val = startWidth.val - deltaX;
             }
             if (resizingDirection.val.includes("top")) {
-                yState.val = startY.val + deltaY;
+                yState.val = startYState.val + deltaY;
                 heightState.val = startHeight.val - deltaY;
             }
             if (resizingDirection.val.includes("right"))
