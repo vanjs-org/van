@@ -153,6 +153,10 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [vanrx](https://github.com/MeddahAbdellah/vanrx) | An ultra-lightweight Redux addon for **VanJS** | [Meddah Abdallah](https://github.com/MeddahAbdellah) |
 | [VanFS](https://github.com/ken-okabe/vanfs) | 1:1 bindings from F# to **VanJS** | [Ken Okabe](https://github.com/ken-okabe) |
 | [Van-wrapper](https://github.com/zakarialaoui10/van-wrapper) | A tool that facilitates the rendering of **VanJS** elements within other popular frameworks | [Zakaria Elalaoui](https://github.com/zakarialaoui10) |
+| [Create VanJS](https://github.com/thednp/create-vanjs) | The fastest way to kickstart your first **VanJS** Project: `npm create vanjs@latest` | [thednp](https://github.com/thednp) |
+| [Vite Plugin for VanJS](https://github.com/thednp/vite-plugin-vanjs) | A mini meta-framework for **VanJS** featuring routing, metadata, isomorphic rendering and JSX transformation | [thednp](https://github.com/thednp) |
+| [Vite VanJS SVG](https://github.com/thednp/vite-vanjs-svg) | A Vite plugin to transform SVG files to **VanJS** components on the fly | [thednp](https://github.com/thednp) |
+| [VanJS Lucide](https://thednp.github.io/vanjs-lucide) | Lucide Icons for **VanJS** | [thednp](https://github.com/thednp) |
 
 ## Contributors (64)
 
