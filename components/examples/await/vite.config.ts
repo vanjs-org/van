@@ -21,6 +21,6 @@ export default defineConfig({
   },
 
   server: {
-    allowedHosts: ["csb.app"],
+    allowedHosts: true,
   },
 })
