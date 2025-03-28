@@ -877,7 +877,7 @@ export const FloatingWindow = (
 }
 
 export interface ChooseProps {
-  readonly label: string
+  readonly label: string | HTMLElement
   readonly options: readonly string[]
   readonly showTextFilter?: boolean
   readonly selectedColor?: string
