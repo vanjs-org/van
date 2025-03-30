@@ -153,7 +153,7 @@ export interface FloatingWindowProps {
 export declare const topMostZIndex: () => number;
 export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, customStacking, zIndex, disableMove, disableResize, headerColor, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, crossHoverClass, crossHoverStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
 export interface ChooseProps {
-    readonly label: string;
+    readonly label: ChildDom;
     readonly options: readonly string[];
     readonly showTextFilter?: boolean;
     readonly selectedColor?: string;

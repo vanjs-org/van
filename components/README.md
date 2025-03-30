@@ -52,10 +52,10 @@ import { <components you want to import> } from "vanjs-ui"
 Alternatively, you can import **VanUI** from CDN via a `<script type="text/javascript">` tag:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.10/dist/van-ui.nomodule.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.11/dist/van-ui.nomodule.min.js"></script>
 ```
 
-`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.10/dist/van-ui.nomodule.js` can be used for the non-minified version.
+`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.11/dist/van-ui.nomodule.js` can be used for the non-minified version.
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
@@ -817,7 +817,7 @@ Example 2:
 
 #### Property Reference
 
-* `label`: Type `string`. Required. The label you want to show.
+* `label`: Type `ChildDom`. Required. One `ChildDom` or multiple `ChildDom` as an `Array` for the label you want to show.
 * `options`: Type `string[]`. Required. The options of the choice.
 * `showTextFilter`: Type `boolean`. Default `false`. Optional. Whether to show a text filter for the options.
 * `selectedColor`: Type `string`. Default `"#f5f5f5"`. Optional. The background color of the currently selected option.
