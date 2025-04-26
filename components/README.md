@@ -128,7 +128,7 @@ const Example1 = () => {
 
   return [
     () => h2(
-      "Github Star: ",
+      "GitHub Stars: ",
       Await({
         value: data.val, container: span,
         Loading: () => "🌀 Loading...",
