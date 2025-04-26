@@ -633,6 +633,15 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>")
     },
 
+    add_toDocumentFragment: () => {
+      const dom = div()
+      const fragment = document.createDocumentFragment()
+      van.add(fragment, div("Line 1"))
+      van.add(fragment, div("Line 2"))
+      dom.append(fragment)
+      assertEq(dom.innerHTML, "<div>Line 1</div><div>Line 2</div>")
+    },
+
     state_valAndOldVal: withHiddenDom(async hiddenDom => {
       const s = van.state("State Version 1")
       assertEq(s.val, "State Version 1")

@@ -13,7 +13,7 @@
     "vite": "^6.2.2"
   },
   "dependencies": {
-    "vanjs-core": "^1.5.3",
+    "vanjs-core": "^1.5.5",
     "vanjs-ext": "^0.6.2"
   }
 }

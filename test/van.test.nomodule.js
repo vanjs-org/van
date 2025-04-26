@@ -461,6 +461,14 @@
         await sleep(waitMsForDerivations);
         assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>");
       },
+      add_toDocumentFragment: () => {
+        const dom = div2();
+        const fragment = document.createDocumentFragment();
+        van2.add(fragment, div2("Line 1"));
+        van2.add(fragment, div2("Line 2"));
+        dom.append(fragment);
+        assertEq(dom.innerHTML, "<div>Line 1</div><div>Line 2</div>");
+      },
       state_valAndOldVal: withHiddenDom(async (hiddenDom) => {
         const s = van2.state("State Version 1");
         assertEq(s.val, "State Version 1");
