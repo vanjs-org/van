@@ -617,18 +617,18 @@ export const FloatingWindow = (
   const crossHover = crossHoverClass || Object.keys(crossHoverStyleOverrides) ?
     van.state(false) : null
 
-  const onmousedown = (e: MouseEvent) => {
-    if (e.button !== 0) return
+  const onmousedown = (e: MouseEvent | TouchEvent) => {
+    if (e instanceof MouseEvent && e.button !== 0) return
     dragging.val = true
-    startX.val = e.clientX
-    startY.val = e.clientY
+    startX.val = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX
+    startY.val = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY
     document.body.style.userSelect = "none"
   }
 
-  const onResizeMouseDown = (direction: string) => (e: MouseEvent) => {
+  const onResizeMouseDown = (direction: string) => (e: MouseEvent | TouchEvent) => {
     resizingDirection.val = direction
-    startX.val = e.clientX
-    startY.val = e.clientY
+    startX.val = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX
+    startY.val = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY
     startXState.val = xState.val
     startYState.val = yState.val
     startWidth.val = widthState.val
@@ -636,15 +636,17 @@ export const FloatingWindow = (
     document.body.style.userSelect = "none"
   }
 
-  const onMouseMove = (e: MouseEvent) => {
+  const onMouseMove = (e: MouseEvent | TouchEvent) => {
+    const clientX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX
+    const clientY = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY
     if (dragging.val) {
-      xState.val += e.clientX - startX.val
-      yState.val += e.clientY - startY.val
-      startX.val = e.clientX
-      startY.val = e.clientY
+      xState.val += clientX - startX.val
+      yState.val += clientY - startY.val
+      startX.val = clientX
+      startY.val = clientY
     } else if (resizingDirection.val) {
-      const deltaX = e.clientX - startX.val
-      const deltaY = e.clientY - startY.val
+      const deltaX = clientX - startX.val
+      const deltaY = clientY - startY.val
 
       if (resizingDirection.val.includes("left")) {
         xState.val = startXState.val + deltaX
@@ -666,7 +668,9 @@ export const FloatingWindow = (
   }
 
   document.addEventListener("mousemove", onMouseMove)
+  document.addEventListener("touchmove", onMouseMove)
   document.addEventListener("mouseup", onMouseUp)
+  document.addEventListener("touchend", onMouseUp)
   const grabAreaBgColor = "transparent"
 
   if (!document.getElementById("vanui-window-style")) {
@@ -799,7 +803,10 @@ export const FloatingWindow = (
         "z-index": zIndexState.val,
         ...windowStyleOverrides,
       }),
-      ...(customStacking ? {} : {onmousedown: () => zIndexState.val = topMostZIndex()}),
+      ...(customStacking ? {} : {
+        onmousedown: () => zIndexState.val = topMostZIndex(),
+        ontouchstart: () => zIndexState.val = topMostZIndex(),
+      }),
     },
     title ? header(
       {
@@ -809,7 +816,7 @@ export const FloatingWindow = (
           ...(disableMove ? {cursor: "auto"} : {}),
           ...headerStyleOverrides,
         }),
-        ...(disableMove ? {} : {onmousedown}),
+        ...(disableMove ? {} : {onmousedown, ontouchstart: onmousedown}),
       },
       title,
       closeCross ? span({
@@ -831,39 +838,48 @@ export const FloatingWindow = (
     ) : disableMove ? null : div({
       class: "vanui-window-dragarea",
       onmousedown,
+      ontouchstart: onmousedown,
     }),
     disableResize ? [] : [
       div({
         class: "vanui-window-resize-left",
         onmousedown: onResizeMouseDown("left"),
+        ontouchstart: onResizeMouseDown("left"),
       }),
       div({
         class: "vanui-window-resize-top",
         onmousedown: onResizeMouseDown("top"),
+        ontouchstart: onResizeMouseDown("top"),
       }),
       div({
         class: "vanui-window-resize-right",
         onmousedown: onResizeMouseDown("right"),
+        ontouchstart: onResizeMouseDown("right"),
       }),
       div({
         class: "vanui-window-resize-bottom",
         onmousedown: onResizeMouseDown("bottom"),
+        ontouchstart: onResizeMouseDown("bottom"),
       }),
       div({
         class: "vanui-window-resize-lefttop",
         onmousedown: onResizeMouseDown("lefttop"),
+        ontouchstart: onResizeMouseDown("lefttop"),
       }),
       div({
         class: "vanui-window-resize-leftbottom",
         onmousedown: onResizeMouseDown("leftbottom"),
+        ontouchstart: onResizeMouseDown("leftbottom"),
       }),
       div({
         class: "vanui-window-resize-righttop",
         onmousedown: onResizeMouseDown("righttop"),
+        ontouchstart: onResizeMouseDown("righttop"),
       }),
       div({
         class: "vanui-window-resize-rightbottom",
         onmousedown: onResizeMouseDown("rightbottom"),
+        ontouchstart: onResizeMouseDown("rightbottom"),
       }),
     ],
     div(
