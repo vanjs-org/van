@@ -158,7 +158,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [Vite VanJS SVG](https://github.com/thednp/vite-vanjs-svg) | A Vite plugin to transform SVG files to **VanJS** components on the fly | [thednp](https://github.com/thednp) |
 | [VanJS Lucide](https://thednp.github.io/vanjs-lucide) | Lucide Icons for **VanJS** | [thednp](https://github.com/thednp) |
 
-## Contributors (64)
+## Contributors (65)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
