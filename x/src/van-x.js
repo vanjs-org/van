@@ -3,7 +3,7 @@ import van from "vanjs-core"
 // This file consistently uses `let` keyword instead of `const` for reducing the bundle size.
 
 // Global variables - aliasing some builtin symbols to reduce the bundle size.
-let {fromEntries, entries, keys, hasOwn, getPrototypeOf} = Object
+let {fromEntries, entries, keys, hasOwn, getPrototypeOf, create, assign} = Object
 let {get: refGet, set: refSet, deleteProperty: refDelete, ownKeys: refOwnKeys} = Reflect
 let {state, derive, add} = van
 let statesToGc, gcCycleInMs = 1000, _undefined, replacing
@@ -145,6 +145,8 @@ let replace = (obj, replacement) => {
 }
 
 let compact = obj => Array.isArray(obj) ? obj.filter(_ => 1).map(compact) :
-  isObject(obj) ? fromEntries(entries(obj).map(([k, v]) => [k, compact(v)])) : obj
+  isObject(obj) ?
+    assign(create(getPrototypeOf(obj)), fromEntries(entries(obj).map(([k, v]) => [k, compact(v)])))
+    : obj
 
 export {calc, reactive, noreactive, stateFields, raw, list, replace, compact}
