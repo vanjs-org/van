@@ -77,8 +77,15 @@ let derive = (f, s = state(), dom) => {
   let deps = {_getters: new Set, _setters: new Set}, listener = {f, s}
   listener._dom = dom ?? curNewDerives?.push(listener) ?? alwaysConnectedDom
   s.val = runAndCaptureDeps(f, deps, s.rawVal)
-  for (let d of deps._getters)
-    deps._setters.has(d) || (addStatesToGc(d), d._listeners.push(listener))
+  let srcs = []
+  for (let d of deps._getters) !deps._setters.has(d) && (addStatesToGc(d), d._listeners.push(listener), srcs.push(d))
+
+  s.dispose = () => (
+    srcs.forEach(src => src._listeners = src._listeners.filter(l => l !== listener)),
+    srcs.length = 0,
+    listener.f = listener.s = _undefined,
+    s.dispose = () => {}
+  )
   return s
 }
 
