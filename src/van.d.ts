@@ -16,7 +16,13 @@ export type PropValue = Primitive | ((e: any) => void) | null
 
 export type PropValueOrDerived = PropValue | StateView<PropValue> | (() => PropValue)
 
-export type Props = Record<string, PropValueOrDerived> & { class?: PropValueOrDerived; is?: string }
+export type PropValueXmlNS =
+  | "http://www.w3.org/1999/xhtml"
+  | "http://www.w3.org/2000/svg"
+  | "http://www.w3.org/1998/Math/MathML"
+  | (string & {})
+
+export type Props = Record<string, PropValueOrDerived> & { xmlns?: PropValueXmlNS; class?: PropValueOrDerived; is?: string }
 
 export type PropsWithKnownKeys<ElementType> = Partial<{[K in keyof ElementType]: PropValueOrDerived}>
 
@@ -39,7 +45,8 @@ export interface Van {
   readonly state: typeof state
   readonly derive: <T>(f: () => T) => State<T>
   readonly add: (dom: Element | DocumentFragment, ...children: readonly ChildDom[]) => Element
-  readonly tags: Tags & ((namespaceURI: string) => Readonly<Record<string, TagFunc<Element>>>)
+  readonly tags: Tags & (<K extends keyof Tags>(name: K, ...rest: Parameters<Tags[K]>) => ReturnType<Tags[K]>)
+  readonly withNS: <T>(ns: PropValueXmlNS, f: (ns: PropValueXmlNS) => T) => T;
   readonly hydrate: <T extends Node>(dom: T, f: (dom: T) => T | null | undefined) => T
 }
 
