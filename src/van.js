@@ -5,6 +5,7 @@ let protoOf = Object.getPrototypeOf
 let changedStates, derivedStates, curDeps, curNewDerives, alwaysConnectedDom = {isConnected: 1}
 let gcCycleInMs = 1000, statesToGc, propSetterCache = {}
 let objProto = protoOf(alwaysConnectedDom), funcProto = protoOf(protoOf), _undefined
+let curNS;
 
 let addAndScheduleOnFirst = (set, s, f, waitMs) =>
   (set ?? (setTimeout(f, waitMs), new Set)).add(s)
@@ -92,9 +93,9 @@ let add = (dom, ...children) => {
   return dom
 }
 
-let tag = (ns, name, ...args) => {
+let tag = (name, ...args) => {
   let [{is, ...props}, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
-  let dom = ns ? document.createElementNS(ns, name, {is}) : document.createElement(name, {is})
+  let dom = curNS ? document.createElementNS(curNS, name, {is}) : document.createElement(name, {is})
   for (let [k, v] of Object.entries(props)) {
     let getPropDescriptor = proto => proto ?
       Object.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) :
@@ -115,7 +116,13 @@ let tag = (ns, name, ...args) => {
   return add(dom, children)
 }
 
-let handler = ns => ({get: (_, name) => tag.bind(_undefined, ns, name)})
+let withNS = (ns, f) => {
+  let prevNS = curNS
+  curNS = ns
+  let res = f(ns)
+  curNS = prevNS
+  return res
+}
 
 let update = (dom, newDom) => newDom ? newDom !== dom && dom.replaceWith(newDom) : dom.remove()
 
@@ -134,7 +141,7 @@ let updateDoms = () => {
 }
 
 export default {
-  tags: new Proxy(ns => new Proxy(tag, handler(ns)), handler()),
+  tags: new Proxy(tag, {get: (f, name) => f.bind(_undefined, name)}), withNS,
   hydrate: (dom, f) => update(dom, bind(f, dom)),
   add, state, derive,
 }
