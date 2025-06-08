@@ -253,6 +253,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/carlosmintfan"><img src="https://avatars.githubusercontent.com/u/118076740?v=4?s=100" width="100px;" alt="carlosmintfan"/><br /><sub><b>carlosmintfan</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Acarlosmintfan" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/reserved-word"><img src="https://avatars.githubusercontent.com/u/15527386?v=4?s=100" width="100px;" alt="reserved-word"/><br /><sub><b>reserved-word</b></sub></a><br /><a href="https://github.com/vanjs-org/van/issues?q=author%3Areserved-word" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://binhtran432k.com"><img src="https://avatars.githubusercontent.com/u/26183671?v=4?s=100" width="100px;" alt="Binh Tran"/><br /><sub><b>Binh Tran</b></sub></a><br /><a href="#ideas-binhtran432k" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>
