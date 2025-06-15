@@ -20,6 +20,7 @@ class PrerenderElement {
   children = []
   isRemoved
   overrideOuterHTML
+  overrideInnerHTML
   constructor(namespaceURI, tagName) {
     this.namespaceURI = namespaceURI
     this.tagName = tagName
@@ -27,6 +28,8 @@ class PrerenderElement {
   get innerHTML() {
     if (this.isRemoved)
       return ""
+    if (this.overrideInnerHTML)
+      return this.overrideInnerHTML
     const grpChildren = []
     for (const child of this.children) {
       if (
@@ -50,7 +53,7 @@ class PrerenderElement {
       .join("")
   }
   set innerHTML(v) {
-    this.children = [v]
+    this.overrideInnerHTML = v
   }
   get outerHTML() {
     return this.isRemoved ? "" : this.overrideOuterHTML ?? `<${
@@ -72,6 +75,12 @@ class PrerenderElement {
   }
   set outerHTML(v) {
     this.overrideOuterHTML = v
+  }
+  get className() {
+    return this.attributes["class"]
+  }
+  set className(name) {
+    this.attributes["class"] = name
   }
   setAttribute(name, value) {
     this.attributes[name] = value

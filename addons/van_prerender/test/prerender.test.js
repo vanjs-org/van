@@ -210,3 +210,9 @@ test("example: van-plate-server", () => {
   assert.equal(prerender(() => button({onclick: 'alert("Hello")'}, "Click")), `<button onclick="alert(&quot;Hello&quot;)">Click</button>`)
   assert.equal(prerender(() => input({type: "text", value: "value"})), `<input type="text" value="value">`)
 })
+
+test("elements with client side only attributes", () => {
+  assert.equal(prerender(() => div({className: "main"}, "Main")), `<div class="main">Main</div>`)
+  assert.equal(prerender(() => div({innerHTML: "<h1>Head</h1>"}, "Main")), `<div><h1>Head</h1></div>`)
+  assert.equal(prerender(() => div({outerHTML: "<h1>Head</h1>"}, "Main")), `<h1>Head</h1>`)
+})
