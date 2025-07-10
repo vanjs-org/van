@@ -158,6 +158,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [Vite Plugin for VanJS](https://github.com/thednp/vite-plugin-vanjs) | A mini meta-framework for **VanJS** featuring routing, metadata, isomorphic rendering and JSX transformation | [thednp](https://github.com/thednp) |
 | [Vite VanJS SVG](https://github.com/thednp/vite-vanjs-svg) | A Vite plugin to transform SVG files to **VanJS** components on the fly | [thednp](https://github.com/thednp) |
 | [VanJS Lucide](https://thednp.github.io/vanjs-lucide) | Lucide Icons for **VanJS** | [thednp](https://github.com/thednp) |
+| [P5.wrapper](https://github.com/zakarialaoui10/p5.wrapper) | A p5.js wrapper for **VanJS** built on top of ZikoJS	| [Zakaria Elalaoui](https://github.com/zakarialaoui10) |
 
 ## Contributors (66)
 
