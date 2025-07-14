@@ -93,8 +93,8 @@ let add = (dom, ...children) => {
 }
 
 let tag = (ns, name, ...args) => {
-  let [props, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
-  let dom = ns ? document.createElementNS(ns, name) : document.createElement(name)
+  let [{is, ...props}, ...children] = protoOf(args[0] ?? 0) === objProto ? args : [{}, ...args]
+  let dom = ns ? document.createElementNS(ns, name, {is}) : document.createElement(name, {is})
   for (let [k, v] of Object.entries(props)) {
     let getPropDescriptor = proto => proto ?
       Object.getOwnPropertyDescriptor(proto, k) ?? getPropDescriptor(protoOf(proto)) :

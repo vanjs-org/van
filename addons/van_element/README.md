@@ -8,7 +8,7 @@ Create VanJS web components with ease. [See it in action on CodePen!](https://co
 
 ## Main repository
 
-See the source code, contribute and raise issues:  
+See the source code, contribute and raise issues:
 https://github.com/Atmos4/van-element
 
 ## Documentation

@@ -1,0 +1,28 @@
+{
+  "name": "vanjs-prerender",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "prerender for vanjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "default": "./src/index.js",
+      "types": "./src/index.d.ts"
+    }
+  },
+  "files": ["src"],
+  "scripts": {
+    "test": "node test/prerender.test.js"
+  },
+  "author": {
+    "name": "Binh Tran",
+    "email": "binhtran432k@gmail.com"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "vanjs-core": "^1.5.5"
+  },
+  "devDependencies": {
+    "vanjs-core": "^1.5.5"
+  }
+}

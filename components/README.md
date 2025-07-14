@@ -52,10 +52,10 @@ import { <components you want to import> } from "vanjs-ui"
 Alternatively, you can import **VanUI** from CDN via a `<script type="text/javascript">` tag:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.5/dist/van-ui.nomodule.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.12/dist/van-ui.nomodule.min.js"></script>
 ```
 
-`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.5/dist/van-ui.nomodule.js` can be used for the non-minified version.
+`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.12/dist/van-ui.nomodule.js` can be used for the non-minified version.
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
@@ -128,7 +128,7 @@ const Example1 = () => {
 
   return [
     () => h2(
-      "Github Star: ",
+      "GitHub Stars: ",
       Await({
         value: data.val, container: span,
         Loading: () => "🌀 Loading...",
@@ -222,7 +222,7 @@ const onOk = () => {
   closed.val = true
 }
 
-van.add(document.body, Modal({closed, blurBackground: true},
+van.add(document.body, Modal({closed, blurBackground: true, clickBackgroundToClose: true},
   p("What's your favorite programming language?"),
   formDom,
   p({style: "display: flex; justify-content: space-evenly;"},
@@ -237,6 +237,7 @@ van.add(document.body, Modal({closed, blurBackground: true},
 * `closed`: Type `State<boolean>`. Required. A `State` object used to close the created modal window. Basically, setting `closed.val = true` will close the created modal window. You can also subscribe the closing event of the modal window via [`van.derive`](https://vanjs.org/tutorial#api-derive).
 * `backgroundColor`: Type `string`. Default `"rgba(0,0,0,.5)"`. Optional. The color of the background overlay when the modal is activated.
 * `blurBackground`: Type `boolean`. Default `false`. Optional. Whether to blur the background.
+* `clickBackgroundToClose`: Type `boolean`. Default `false`. Optional. If `true`, clicking the background will close the created modal.
 * `backgroundClass`: Type `string`. Default `""`. Optional. The `class` attribute of the background overlay. You can specify multiple CSS classes separated by `" "`.
 * `backgroundStyleOverrides`: Type `Record<string, string | number>`. Default `{}`. Optional. A [property bag](#property-bag-for-style-overrides) for the styles you want to override for the background overlay.
 * `modalClass`: Type `string`. Default `""`. Optional. The `class` attribute of the created modal element. You can specify multiple CSS classes separated by `" "`.
@@ -807,6 +808,7 @@ Example 2:
     customModalProps: {
       blurBackground: true,
       modalStyleOverrides: {height: "300px"},
+      clickBackgroundToClose: true,
     },
     selectedStyleOverrides: {color: "white"},
   })
@@ -815,7 +817,7 @@ Example 2:
 
 #### Property Reference
 
-* `label`: Type `string`. Required. The label you want to show.
+* `label`: Type `ChildDom`. Required. One `ChildDom` or multiple `ChildDom` as an `Array` for the label you want to show.
 * `options`: Type `string[]`. Required. The options of the choice.
 * `showTextFilter`: Type `boolean`. Default `false`. Optional. Whether to show a text filter for the options.
 * `selectedColor`: Type `string`. Default `"#f5f5f5"`. Optional. The background color of the currently selected option.

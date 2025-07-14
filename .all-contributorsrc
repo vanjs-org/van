@@ -11,7 +11,7 @@
     {
       "login": "Tao-VanJS",
       "name": "Tao Xin",
-      "avatar_url": "https://avatars.githubusercontent.com/u/132854319?v=4",
+      "avatar_url": "https://vanjs.org/vanjs-logo-big.jpeg",
       "profile": "http://vanjs.org",
       "contributions": [
         "design",
@@ -254,7 +254,9 @@
       "profile": "https://github.com/eevleevs",
       "contributions": [
         "content",
-        "bug"
+        "bug",
+        "code",
+        "plugin"
       ]
     },
     {
@@ -446,7 +448,8 @@
       "profile": "https://github.com/sirenkovladd",
       "contributions": [
         "example",
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -519,7 +522,8 @@
       "profile": "https://github.com/thednp",
       "contributions": [
         "plugin",
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -586,6 +590,53 @@
         "code",
         "plugin",
         "bug"
+      ]
+    },
+    {
+      "login": "zakarialaoui10",
+      "name": "ZAKARIA ELALAOUI",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63521765?v=4",
+      "profile": "https://github.com/zakarialaoui10/ziko.js",
+      "contributions": [
+        "plugin"
+      ]
+    },
+    {
+      "login": "maburdi94",
+      "name": "Michael Burdi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7775641?v=4",
+      "profile": "https://github.com/maburdi94",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "carlosmintfan",
+      "name": "carlosmintfan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/118076740?v=4",
+      "profile": "https://github.com/carlosmintfan",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "reserved-word",
+      "name": "reserved-word",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15527386?v=4",
+      "profile": "https://github.com/reserved-word",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "binhtran432k",
+      "name": "Binh Tran",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26183671?v=4",
+      "profile": "https://binhtran432k.com",
+      "contributions": [
+        "ideas",
+        "code",
+        "plugin"
       ]
     }
   ],

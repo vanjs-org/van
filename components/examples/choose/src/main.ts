@@ -24,6 +24,7 @@ const example2 = async () => {
     customModalProps: {
       blurBackground: true,
       modalStyleOverrides: {height: "300px"},
+      clickBackgroundToClose: true,
     },
     selectedStyleOverrides: {color: "white"},
   })

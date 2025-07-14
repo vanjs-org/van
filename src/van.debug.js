@@ -75,7 +75,8 @@ const checkChildren = children => children.flat(Infinity).map(c => {
 })
 
 const add = (dom, ...children) => {
-  expect(dom instanceof Element, "1st argument of `van.add` function must be a DOM Element object")
+  expect(dom instanceof Element || dom instanceof DocumentFragment,
+     "1st argument of `van.add` function must be a DOM Element object")
   return van.add(dom, ...checkChildren(children))
 }
 

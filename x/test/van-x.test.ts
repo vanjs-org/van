@@ -1949,7 +1949,18 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
 
       delete data.listOfObjs[1]
       assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[15]},"listOfLists":[[],[1,2]],"listOfObjs":[{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}')
-    }
+    },
+
+    compact_keepPrototype: () => {
+      class Point {
+        constructor(public x: number, public y: number) {}
+        toJSON() { return `${this.x},${this.y}` }
+      }
+
+      const points = vanX.reactive([new Point(1, 2), , new Point(3, 4)])
+      assertEq(JSON.stringify(points), '["1,2",null,"3,4"]')
+      assertEq(JSON.stringify(vanX.compact(points)), '["1,2","3,4"]')
+    },
   }
 
   const gcTests = {

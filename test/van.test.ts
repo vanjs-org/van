@@ -1,6 +1,12 @@
 import type {Van, State} from "../src/van.d.ts"
 
-(<any>window).numTests = 0
+declare global {
+  interface Window {
+    numTests: number
+  }
+}
+
+window.numTests = 0
 
 interface BundleOptions {
   readonly debug: boolean
@@ -112,8 +118,19 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
     },
 
     tags_nullPropValue: () => {
-      const dom = button({onclick: null})
-      assert(dom.onclick === null)
+      {
+        const dom = button({onclick: null})
+        assert(dom.onclick === null)
+      }
+      {
+        const dom = div({id: null})
+        assertEq(dom.outerHTML, '<div id="null"></div>')
+      }
+    },
+
+    tags_undefinedPropValue_excludeDebug: () => {
+      const dom = div({id: <any>undefined})
+      assertEq(dom.outerHTML, '<div id="undefined"></div>')
     },
 
     tags_stateAsProp_connected: withHiddenDom(async hiddenDom => {
@@ -496,6 +513,45 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       assertEq(dom.outerHTML, '<math><msup><mi>e</mi><mrow><mi>i</mi><mi>π</mi></mrow></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>0</mn></math>')
     },
 
+    tags_isOption: withHiddenDom(async hiddenDom => {
+      class MyButton extends HTMLButtonElement {
+        connectedCallback() {
+          this.addEventListener("click", () => this.textContent = "MyButton clicked!")
+        }
+      }
+      const tagName = "my-button-" + window.numTests
+      customElements.define(tagName, MyButton, {extends: "button"})
+
+      van.add(hiddenDom, button({class: "myButton", is: tagName}, "Test Button"))
+
+      const buttonDom = hiddenDom.querySelector("button")!
+      buttonDom.click()
+      await sleep(waitMsForDerivations)
+      assertEq(buttonDom.textContent!, "MyButton clicked!")
+      // Validate other props are passed in as well.
+      assert(buttonDom.className === "myButton")
+    }),
+
+    tags_isOption_ns: withHiddenDom(async hiddenDom => {
+      class MyButton extends HTMLButtonElement {
+        connectedCallback() {
+          this.addEventListener("click", () => this.textContent = "MyButton clicked!")
+        }
+      }
+      const tagName = "my-button-" + window.numTests
+      customElements.define(tagName, MyButton, {extends: "button"})
+
+      const {button} = van.tags("http://www.w3.org/1999/xhtml")
+      van.add(hiddenDom, button({class: "myButton", is: tagName}, "Test Button"))
+
+      const buttonDom = hiddenDom.querySelector("button")!
+      buttonDom.click()
+      await sleep(waitMsForDerivations)
+      assertEq(buttonDom.textContent!, "MyButton clicked!")
+      // Validate other props are passed in as well.
+      assert(buttonDom.className === "myButton")
+    }),
+
     add_basic: () => {
       const dom = ul()
       assertEq(van.add(dom, li("Item 1"), li("Item 2")), dom)
@@ -575,6 +631,15 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       await sleep(waitMsForDerivations)
       // Content won't change as dom is not connected to document
       assertEq(dom.outerHTML, "<div><pre>Line 1</pre><pre>Line 2</pre><pre>Line 3</pre></div>")
+    },
+
+    add_toDocumentFragment: () => {
+      const dom = div()
+      const fragment = document.createDocumentFragment()
+      van.add(fragment, div("Line 1"))
+      van.add(fragment, div("Line 2"))
+      dom.append(fragment)
+      assertEq(dom.innerHTML, "<div>Line 1</div><div>Line 2</div>")
     },
 
     state_valAndOldVal: withHiddenDom(async hiddenDom => {
@@ -2248,7 +2313,7 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
     for (const [name, func] of Object.entries(v)) {
       if (skipLong && name.startsWith("long_")) continue
       if (debug && name.endsWith("_excludeDebug")) continue
-      ++(<any>window).numTests
+      ++window.numTests
       const result = van.state(""), msg = van.state("")
       van.add(msgDom, div(
         pre(`Running ${k}.${name}...`),

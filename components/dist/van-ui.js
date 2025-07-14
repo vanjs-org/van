@@ -18,7 +18,7 @@ export const Await = ({ value, container = div, Loading, Error }, children) => {
         data.val.status === "rejected" ? Error?.(data.val.value) :
             children(data.val.value));
 };
-export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackground = false, backgroundClass = "", backgroundStyleOverrides = {}, modalClass = "", modalStyleOverrides = {}, }, ...children) => {
+export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackground = false, clickBackgroundToClose = false, backgroundClass = "", backgroundStyleOverrides = {}, modalClass = "", modalStyleOverrides = {}, }, ...children) => {
     const backgroundStyle = {
         display: "flex",
         "align-items": "center",
@@ -41,7 +41,14 @@ export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackgrou
         ...modalStyleOverrides,
     };
     document.activeElement instanceof HTMLElement && document.activeElement.blur();
-    return () => closed.val ? null : div({ class: backgroundClass, style: toStyleStr(backgroundStyle) }, div({ class: modalClass, style: toStyleStr(modalStyle) }, children));
+    return () => {
+        if (closed.val)
+            return null;
+        const bgDom = div({ class: backgroundClass, style: toStyleStr(backgroundStyle) }, div({ class: modalClass, style: toStyleStr(modalStyle) }, children));
+        clickBackgroundToClose &&
+            bgDom.addEventListener("click", e => e.target === bgDom && (closed.val = true));
+        return bgDom;
+    };
 };
 let tabsId = 0;
 export const Tabs = ({ activeTab, resultClass = "", style = "", tabButtonRowColor = "#f1f1f1", tabButtonBorderStyle = "1px solid #000", tabButtonHoverColor = "#ddd", tabButtonActiveColor = "#ccc", transitionSec = 0.3, tabButtonRowClass = "", tabButtonRowStyleOverrides = {}, tabButtonClass = "", tabButtonStyleOverrides = {}, tabContentClass = "", tabContentStyleOverrides = {}, }, contents) => {
@@ -266,35 +273,48 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
         zIndexState.val = topMostZIndex();
     const dragging = van.state(false), resizingDirection = van.state(null);
     const startX = van.state(0), startY = van.state(0);
+    const startXState = van.state(0), startYState = van.state(0);
     const startWidth = van.state(0), startHeight = van.state(0);
     const crossHover = crossHoverClass || Object.keys(crossHoverStyleOverrides) ?
         van.state(false) : null;
     const onmousedown = (e) => {
-        if (e.button !== 0)
+        if (e instanceof MouseEvent && e.button !== 0)
             return;
         dragging.val = true;
-        startX.val = e.clientX;
-        startY.val = e.clientY;
+        startX.val = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
+        startY.val = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY;
         document.body.style.userSelect = "none";
     };
     const onResizeMouseDown = (direction) => (e) => {
         resizingDirection.val = direction;
-        startX.val = e.clientX;
-        startY.val = e.clientY;
+        startX.val = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
+        startY.val = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY;
+        startXState.val = xState.val;
+        startYState.val = yState.val;
         startWidth.val = widthState.val;
         startHeight.val = heightState.val;
         document.body.style.userSelect = "none";
     };
     const onMouseMove = (e) => {
+        const clientX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
+        const clientY = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY;
         if (dragging.val) {
-            xState.val += e.clientX - startX.val;
-            yState.val += e.clientY - startY.val;
-            startX.val = e.clientX;
-            startY.val = e.clientY;
+            xState.val += clientX - startX.val;
+            yState.val += clientY - startY.val;
+            startX.val = clientX;
+            startY.val = clientY;
         }
         else if (resizingDirection.val) {
-            const deltaX = e.clientX - startX.val;
-            const deltaY = e.clientY - startY.val;
+            const deltaX = clientX - startX.val;
+            const deltaY = clientY - startY.val;
+            if (resizingDirection.val.includes("left")) {
+                xState.val = startXState.val + deltaX;
+                widthState.val = startWidth.val - deltaX;
+            }
+            if (resizingDirection.val.includes("top")) {
+                yState.val = startYState.val + deltaY;
+                heightState.val = startHeight.val - deltaY;
+            }
             if (resizingDirection.val.includes("right"))
                 widthState.val = startWidth.val + deltaX;
             if (resizingDirection.val.includes("bottom"))
@@ -307,7 +327,9 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
         document.body.style.userSelect = "";
     };
     document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("touchmove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("touchend", onMouseUp);
     const grabAreaBgColor = "transparent";
     if (!document.getElementById("vanui-window-style")) {
         const staticStyles = style({ type: "text/css", id: "vanui-window-style" }, toStyleSheet({
@@ -326,6 +348,24 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
                 width: "100%",
                 height: "1rem",
             },
+            ".vanui-window-resize-left": {
+                cursor: "w-resize",
+                position: "absolute",
+                left: "0",
+                top: "0",
+                width: "10px",
+                height: "100%",
+                "background-color": grabAreaBgColor,
+            },
+            ".vanui-window-resize-top": {
+                cursor: "n-resize",
+                position: "absolute",
+                left: "0",
+                top: "0",
+                width: "100%",
+                height: "10px",
+                "background-color": grabAreaBgColor,
+            },
             ".vanui-window-resize-right": {
                 cursor: "e-resize",
                 position: "absolute",
@@ -341,6 +381,33 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
                 left: "0",
                 bottom: "0",
                 width: "100%",
+                height: "10px",
+                "background-color": grabAreaBgColor,
+            },
+            ".vanui-window-resize-lefttop": {
+                cursor: "nw-resize",
+                position: "absolute",
+                left: "0",
+                top: "0",
+                width: "10px",
+                height: "10px",
+                "background-color": grabAreaBgColor,
+            },
+            ".vanui-window-resize-leftbottom": {
+                cursor: "sw-resize",
+                position: "absolute",
+                left: "0",
+                bottom: "0",
+                width: "10px",
+                height: "10px",
+                "background-color": grabAreaBgColor,
+            },
+            ".vanui-window-resize-righttop": {
+                cursor: "ne-resize",
+                position: "absolute",
+                right: "0",
+                top: "0",
+                width: "10px",
                 height: "10px",
                 "background-color": grabAreaBgColor,
             },
@@ -392,7 +459,10 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
             "z-index": zIndexState.val,
             ...windowStyleOverrides,
         }),
-        ...(customStacking ? {} : { onmousedown: () => zIndexState.val = topMostZIndex() }),
+        ...(customStacking ? {} : {
+            onmousedown: () => zIndexState.val = topMostZIndex(),
+            ontouchstart: () => zIndexState.val = topMostZIndex(),
+        }),
     }, title ? header({
         class: ["vanui-window-header"].concat(headerClass ? headerClass : []).join(" "),
         style: toStyleStr({
@@ -400,7 +470,7 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
             ...(disableMove ? { cursor: "auto" } : {}),
             ...headerStyleOverrides,
         }),
-        ...(disableMove ? {} : { onmousedown }),
+        ...(disableMove ? {} : { onmousedown, ontouchstart: onmousedown }),
     }, title, closeCross ? span({
         class: () => ["vanui-window-cross"]
             .concat(crossClass ? crossClass : [])
@@ -419,18 +489,47 @@ export const FloatingWindow = ({ title, closed = van.state(false), x = 100, y = 
     }, closeCross) : null) : disableMove ? null : div({
         class: "vanui-window-dragarea",
         onmousedown,
+        ontouchstart: onmousedown,
     }), disableResize ? [] : [
+        div({
+            class: "vanui-window-resize-left",
+            onmousedown: onResizeMouseDown("left"),
+            ontouchstart: onResizeMouseDown("left"),
+        }),
+        div({
+            class: "vanui-window-resize-top",
+            onmousedown: onResizeMouseDown("top"),
+            ontouchstart: onResizeMouseDown("top"),
+        }),
         div({
             class: "vanui-window-resize-right",
             onmousedown: onResizeMouseDown("right"),
+            ontouchstart: onResizeMouseDown("right"),
         }),
         div({
             class: "vanui-window-resize-bottom",
             onmousedown: onResizeMouseDown("bottom"),
+            ontouchstart: onResizeMouseDown("bottom"),
+        }),
+        div({
+            class: "vanui-window-resize-lefttop",
+            onmousedown: onResizeMouseDown("lefttop"),
+            ontouchstart: onResizeMouseDown("lefttop"),
+        }),
+        div({
+            class: "vanui-window-resize-leftbottom",
+            onmousedown: onResizeMouseDown("leftbottom"),
+            ontouchstart: onResizeMouseDown("leftbottom"),
+        }),
+        div({
+            class: "vanui-window-resize-righttop",
+            onmousedown: onResizeMouseDown("righttop"),
+            ontouchstart: onResizeMouseDown("righttop"),
         }),
         div({
             class: "vanui-window-resize-rightbottom",
             onmousedown: onResizeMouseDown("rightbottom"),
+            ontouchstart: onResizeMouseDown("rightbottom"),
         }),
     ], div({
         class: ["vanui-window-children"].concat(childrenContainerClass ? childrenContainerClass : []).join(" "),
@@ -476,21 +575,18 @@ export const choose = ({ label, options, showTextFilter = false, selectedColor =
         ...optionStyleOverrides,
     };
     const selectedStyle = {
+        ...optionStyle,
         "background-color": selectedColor,
         ...selectedStyleOverrides,
     };
-    van.add(document.head, () => closed.val ? null :
-        van.tags["style"](`.vanui-choose-selected, .vanui-choose-option:hover { ${toStyleStr(selectedStyle)} }`));
     van.add(document.body, Modal(modalProps, div(label), showTextFilter ? div(textFilterDom) : null, () => div({ class: optionsContainerClass, style: toStyleStr(optionsContainerStyle) }, filtered.val.map((o, i) => div({
-        class: () => ["vanui-choose-option"].concat(optionClass ? optionClass : [], i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
-        style: toStyleStr(optionStyle),
+        class: () => (optionClass ? [optionClass] : []).concat(i === index.val ? "vanui-choose-selected" : [], i === index.val && selectedClass ? selectedClass : []).join(" "),
+        style: i === index.val ? toStyleStr(selectedStyle) : toStyleStr(optionStyle),
         onclick: () => (resolve(o), closed.val = true),
+        onmousemove: () => index.val = i,
     }, o)))));
     textFilterDom?.focus();
-    van.derive(() => {
-        index.val;
-        setTimeout(() => document.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10);
-    });
+    const scrollIntoView = () => setTimeout(() => document.querySelector(".vanui-choose-selected")?.scrollIntoView(false), 10);
     const navByKey = (e) => {
         if (e.key === "Enter" && index.val < filtered.val.length) {
             resolve(filtered.val[index.val]);
@@ -500,10 +596,14 @@ export const choose = ({ label, options, showTextFilter = false, selectedColor =
             resolve(null);
             closed.val = true;
         }
-        else if (e.key === "ArrowDown")
+        else if (e.key === "ArrowDown") {
             index.val = index.val + 1 < filtered.val.length ? index.val + 1 : (cyclicalNav ? 0 : index.val);
-        else if (e.key === "ArrowUp")
+            scrollIntoView();
+        }
+        else if (e.key === "ArrowUp") {
             index.val = index.val > 0 ? index.val - 1 : (cyclicalNav ? filtered.val.length - 1 : index.val);
+            scrollIntoView();
+        }
     };
     document.addEventListener("keydown", navByKey);
     van.derive(() => closed.val && document.removeEventListener("keydown", navByKey));

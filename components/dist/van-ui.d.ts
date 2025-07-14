@@ -21,12 +21,13 @@ export interface ModalProps {
     readonly closed: State<boolean>;
     readonly backgroundColor?: string;
     readonly blurBackground?: boolean;
+    readonly clickBackgroundToClose?: boolean;
     readonly backgroundClass?: string;
     readonly backgroundStyleOverrides?: CSSPropertyBag;
     readonly modalClass?: string;
     readonly modalStyleOverrides?: CSSPropertyBag;
 }
-export declare const Modal: ({ closed, backgroundColor, blurBackground, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
+export declare const Modal: ({ closed, backgroundColor, blurBackground, clickBackgroundToClose, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
 export interface TabsProps {
     readonly activeTab?: State<string>;
     readonly resultClass?: string;
@@ -152,7 +153,7 @@ export interface FloatingWindowProps {
 export declare const topMostZIndex: () => number;
 export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, customStacking, zIndex, disableMove, disableResize, headerColor, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, crossHoverClass, crossHoverStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
 export interface ChooseProps {
-    readonly label: string;
+    readonly label: ChildDom;
     readonly options: readonly string[];
     readonly showTextFilter?: boolean;
     readonly selectedColor?: string;

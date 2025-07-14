@@ -1448,7 +1448,21 @@ window.runTests = async (van, vanX, file) => {
             assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[15]},"listOfLists":[[],[1,2]],"listOfObjs":[{"first":"Vanilla","last":"JavaScript"},{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}');
             delete data.listOfObjs[1];
             assertEq(JSON.stringify(vanX.compact(data)), '{"list":[1,2,3,5],"group":{"list1":[11,12],"list2":[15]},"listOfLists":[[],[1,2]],"listOfObjs":[{"first":"Van","last":"JS"}],"others":{"line1":"This is irrelevant","line2":56789}}');
-        }
+        },
+        compact_keepPrototype: () => {
+            class Point {
+                x;
+                y;
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                }
+                toJSON() { return `${this.x},${this.y}`; }
+            }
+            const points = vanX.reactive([new Point(1, 2), , new Point(3, 4)]);
+            assertEq(JSON.stringify(points), '["1,2",null,"3,4"]');
+            assertEq(JSON.stringify(vanX.compact(points)), '["1,2","3,4"]');
+        },
     };
     const gcTests = {
         list_activeGc_array: withHiddenDom(async (hiddenDom) => {

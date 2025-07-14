@@ -16,7 +16,7 @@ export type PropValue = Primitive | ((e: any) => void) | null
 
 export type PropValueOrDerived = PropValue | StateView<PropValue> | (() => PropValue)
 
-export type Props = Record<string, PropValueOrDerived> & { class?: PropValueOrDerived }
+export type Props = Record<string, PropValueOrDerived> & { class?: PropValueOrDerived; is?: string }
 
 export type PropsWithKnownKeys<ElementType> = Partial<{[K in keyof ElementType]: PropValueOrDerived}>
 
@@ -38,7 +38,7 @@ declare function state<T>(initVal: T): State<T>
 export interface Van {
   readonly state: typeof state
   readonly derive: <T>(f: () => T) => State<T>
-  readonly add: (dom: Element, ...children: readonly ChildDom[]) => Element
+  readonly add: (dom: Element | DocumentFragment, ...children: readonly ChildDom[]) => Element
   readonly tags: Tags & ((namespaceURI: string) => Readonly<Record<string, TagFunc<Element>>>)
   readonly hydrate: <T extends Node>(dom: T, f: (dom: T) => T | null | undefined) => T
 }
