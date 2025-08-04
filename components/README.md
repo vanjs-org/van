@@ -52,10 +52,10 @@ import { <components you want to import> } from "vanjs-ui"
 Alternatively, you can import **VanUI** from CDN via a `<script type="text/javascript">` tag:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.12/dist/van-ui.nomodule.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.13/dist/van-ui.nomodule.min.js"></script>
 ```
 
-`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.12/dist/van-ui.nomodule.js` can be used for the non-minified version.
+`https://cdn.jsdelivr.net/npm/vanjs-ui@0.11.13/dist/van-ui.nomodule.js` can be used for the non-minified version.
 
 Note that: **VanJS** needs to be imported via a `<script type="text/javascript">` tag for **VanUI** to work properly.
 
@@ -288,6 +288,7 @@ van.add(document.body, Tabs(
 #### Property Reference
 
 * `activeTab`: Type `State<string>`. Optional. If specified, you can activate a tab via the specified `State` object with `activeTab.val = "<tab title>"`, and subscribe to the changes of active tab via [`van.derive`](https://vanjs.org/tutorial#api-derive).
+* `activeTabDisplay`: Type `string`. Default `"block"`. Optional. The `display` CSS property for the content of the active tab.
 * `resultClass`: Type `string`. Default `""`. Optional. The `class` attribute of the result DOM element. You can specify multiple CSS classes separated by `" "`.
 * `style`: Type `string`. Default `""`. Optional. The `style` property of the result DOM element.
 * `tabButtonRowColor`: Type `string`. Default `"#f1f1f1"`. Optional. The background color of the container of tab buttons.

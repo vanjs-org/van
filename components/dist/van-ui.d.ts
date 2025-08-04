@@ -30,6 +30,7 @@ export interface ModalProps {
 export declare const Modal: ({ closed, backgroundColor, blurBackground, clickBackgroundToClose, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
 export interface TabsProps {
     readonly activeTab?: State<string>;
+    readonly activeTabDisplay?: string;
     readonly resultClass?: string;
     readonly style?: string;
     readonly tabButtonRowColor?: string;
@@ -44,7 +45,7 @@ export interface TabsProps {
     readonly tabContentClass?: string;
     readonly tabContentStyleOverrides?: CSSPropertyBag;
 }
-export declare const Tabs: ({ activeTab, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: Record<string, ChildDom>) => HTMLDivElement;
+export declare const Tabs: ({ activeTab, activeTabDisplay, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: Record<string, ChildDom>) => HTMLDivElement;
 export interface ToggleProps {
     readonly on?: boolean | State<boolean>;
     readonly size?: number;

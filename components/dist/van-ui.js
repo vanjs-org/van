@@ -51,7 +51,7 @@ export const Modal = ({ closed, backgroundColor = "rgba(0,0,0,.5)", blurBackgrou
     };
 };
 let tabsId = 0;
-export const Tabs = ({ activeTab, resultClass = "", style = "", tabButtonRowColor = "#f1f1f1", tabButtonBorderStyle = "1px solid #000", tabButtonHoverColor = "#ddd", tabButtonActiveColor = "#ccc", transitionSec = 0.3, tabButtonRowClass = "", tabButtonRowStyleOverrides = {}, tabButtonClass = "", tabButtonStyleOverrides = {}, tabContentClass = "", tabContentStyleOverrides = {}, }, contents) => {
+export const Tabs = ({ activeTab, activeTabDisplay = "block", resultClass = "", style = "", tabButtonRowColor = "#f1f1f1", tabButtonBorderStyle = "1px solid #000", tabButtonHoverColor = "#ddd", tabButtonActiveColor = "#ccc", transitionSec = 0.3, tabButtonRowClass = "", tabButtonRowStyleOverrides = {}, tabButtonClass = "", tabButtonStyleOverrides = {}, tabContentClass = "", tabContentStyleOverrides = {}, }, contents) => {
     const activeTabState = activeTab ?? van.state(Object.keys(contents)[0]);
     const tabButtonRowStylesStr = toStyleStr({
         overflow: "hidden",
@@ -83,7 +83,7 @@ export const Tabs = ({ activeTab, resultClass = "", style = "", tabButtonRowColo
         onclick: () => activeTabState.val = k,
     }, k))), Object.entries(contents).map(([k, v]) => div({
         class: tabContentClass,
-        style: () => `display: ${k === activeTabState.val ? "block" : "none"}; ${tabContentStylesStr}`,
+        style: () => `display: ${k === activeTabState.val ? activeTabDisplay : "none"}; ${tabContentStylesStr};`,
     }, v)));
 };
 export const Toggle = ({ on = false, size = 1, cursor = "pointer", offColor = "#ccc", onColor = "#2196F3", circleColor = "white", toggleClass = "", toggleStyleOverrides = {}, sliderClass = "", sliderStyleOverrides = {}, circleClass = "", circleStyleOverrides = {}, circleWhenOnStyleOverrides = {}, }) => {

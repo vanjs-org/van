@@ -110,6 +110,7 @@ export const Modal = (
 
 export interface TabsProps {
   readonly activeTab?: State<string>
+  readonly activeTabDisplay?: string
   readonly resultClass?: string
   readonly style?: string
   readonly tabButtonRowColor?: string
@@ -131,6 +132,7 @@ let tabsId = 0
 export const Tabs = (
   {
     activeTab,
+    activeTabDisplay = "block",
     resultClass = "",
     style = "",
     tabButtonRowColor = "#f1f1f1",
@@ -191,7 +193,7 @@ export const Tabs = (
     Object.entries(contents).map(([k, v]) => div(
       {
         class: tabContentClass,
-        style: () => `display: ${k === activeTabState.val ? "block" : "none"}; ${tabContentStylesStr}`,
+        style: () => `display: ${k === activeTabState.val ? activeTabDisplay : "none"}; ${tabContentStylesStr};`,
       },
       v,
     ))
