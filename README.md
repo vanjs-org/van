@@ -162,7 +162,7 @@ Contact us: [@taoxin](https://twitter.com/intent/follow?region=follow_link&scree
 | [Van-Mdx](https://github.com/zakarialaoui10/van-mdx) | A Markdown preprocessor for **VanJS** | [Zakaria Elalaoui](https://github.com/zakarialaoui10) |
 | [Van-Server](https://github.com/zakarialaoui10/van-server) | Server-side rendering for **VanJS** with file-based routing and client-side hydration | [Zakaria Elalaoui](https://github.com/zakarialaoui10) |
 
-## Contributors (66)
+## Contributors (67)
 
 *If I miss anyone's contribution here, apologies for my oversight 🙏, please comment on [#87](https://github.com/vanjs-org/van/issues/87) to let me know.*
 
