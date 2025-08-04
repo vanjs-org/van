@@ -638,6 +638,15 @@
         "code",
         "plugin"
       ]
+    },
+    {
+      "login": "ttyridal",
+      "name": "Torbjorn Tyridal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7912255?v=4",
+      "profile": "https://torbjorn.tyridal.no",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "repoType": "github"
