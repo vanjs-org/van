@@ -16,7 +16,7 @@ export type AwaitState<Value> = {
     status: "rejected";
     value: Error;
 };
-export declare const Await: <T>({ value, container, Loading, Error }: AwaitProps<T>, children: (data: T) => ValidChildDomValue) => Element;
+export declare const Await: <T>({ value, container, Loading, Error }: AwaitProps<T>, children: (data: T) => ValidChildDomValue) => any;
 export interface ModalProps {
     readonly closed: State<boolean>;
     readonly backgroundColor?: string;
@@ -27,7 +27,7 @@ export interface ModalProps {
     readonly modalClass?: string;
     readonly modalStyleOverrides?: CSSPropertyBag;
 }
-export declare const Modal: ({ closed, backgroundColor, blurBackground, clickBackgroundToClose, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
+export declare const Modal: ({ closed, backgroundColor, blurBackground, clickBackgroundToClose, backgroundClass, backgroundStyleOverrides, modalClass, modalStyleOverrides, }: ModalProps, ...children: readonly ChildDom[]) => () => any;
 export interface TabsProps {
     readonly activeTab?: State<string>;
     readonly activeTabDisplay?: string;
@@ -45,7 +45,7 @@ export interface TabsProps {
     readonly tabContentClass?: string;
     readonly tabContentStyleOverrides?: CSSPropertyBag;
 }
-export declare const Tabs: ({ activeTab, activeTabDisplay, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: Record<string, ChildDom>) => HTMLDivElement;
+export declare const Tabs: ({ activeTab, activeTabDisplay, resultClass, style, tabButtonRowColor, tabButtonBorderStyle, tabButtonHoverColor, tabButtonActiveColor, transitionSec, tabButtonRowClass, tabButtonRowStyleOverrides, tabButtonClass, tabButtonStyleOverrides, tabContentClass, tabContentStyleOverrides, }: TabsProps, contents: Record<string, ChildDom>) => any;
 export interface ToggleProps {
     readonly on?: boolean | State<boolean>;
     readonly size?: number;
@@ -61,7 +61,7 @@ export interface ToggleProps {
     readonly circleStyleOverrides?: CSSPropertyBag;
     readonly circleWhenOnStyleOverrides?: CSSPropertyBag;
 }
-export declare const Toggle: ({ on, size, cursor, offColor, onColor, circleColor, toggleClass, toggleStyleOverrides, sliderClass, sliderStyleOverrides, circleClass, circleStyleOverrides, circleWhenOnStyleOverrides, }: ToggleProps) => HTMLLabelElement;
+export declare const Toggle: ({ on, size, cursor, offColor, onColor, circleColor, toggleClass, toggleStyleOverrides, sliderClass, sliderStyleOverrides, circleClass, circleStyleOverrides, circleWhenOnStyleOverrides, }: ToggleProps) => any;
 export interface MessageBoardProps {
     readonly top?: string;
     readonly bottom?: string;
@@ -89,7 +89,7 @@ export declare class MessageBoard {
     private _closerStylesStr;
     private _dom;
     constructor({ top, bottom, backgroundColor, fontColor, fadeOutSec, boardClass, boardStyleOverrides, messageClass, messageStyleOverrides, closerClass, closerStyleOverrides, }: MessageBoardProps, parentDom?: HTMLElement);
-    show({ message, closer, durationSec, closed, }: MessageProps): HTMLDivElement;
+    show({ message, closer, durationSec, closed, }: MessageProps): any;
     remove(): void;
 }
 export interface TooltipProps {
@@ -104,7 +104,7 @@ export interface TooltipProps {
     readonly triangleClass?: string;
     readonly triangleStyleOverrides?: CSSPropertyBag;
 }
-export declare const Tooltip: ({ text, show, width, backgroundColor, fontColor, fadeInSec, tooltipClass, tooltipStyleOverrides, triangleClass, triangleStyleOverrides, }: TooltipProps) => HTMLSpanElement;
+export declare const Tooltip: ({ text, show, width, backgroundColor, fontColor, fadeInSec, tooltipClass, tooltipStyleOverrides, triangleClass, triangleStyleOverrides, }: TooltipProps) => any;
 export interface OptionGroupProps {
     readonly selected: State<string>;
     readonly normalColor?: string;
@@ -118,7 +118,7 @@ export interface OptionGroupProps {
     readonly optionClass?: string;
     readonly optionStyleOverrides?: CSSPropertyBag;
 }
-export declare const OptionGroup: ({ selected, normalColor, hoverColor, selectedColor, selectedHoverColor, fontColor, transitionSec, optionGroupClass, optionGroupStyleOverrides, optionClass, optionStyleOverrides, }: OptionGroupProps, options: readonly string[]) => HTMLDivElement;
+export declare const OptionGroup: ({ selected, normalColor, hoverColor, selectedColor, selectedHoverColor, fontColor, transitionSec, optionGroupClass, optionGroupStyleOverrides, optionClass, optionStyleOverrides, }: OptionGroupProps, options: readonly string[]) => any;
 export interface BannerProps {
     readonly backgroundColor?: string;
     readonly fontColor?: string;
@@ -126,7 +126,7 @@ export interface BannerProps {
     readonly bannerClass?: string;
     readonly bannerStyleOverrides?: CSSPropertyBag;
 }
-export declare const Banner: ({ backgroundColor, fontColor, sticky, bannerClass, bannerStyleOverrides, }: BannerProps, ...children: readonly ChildDom[]) => HTMLElement;
+export declare const Banner: ({ backgroundColor, fontColor, sticky, bannerClass, bannerStyleOverrides, }: BannerProps, ...children: readonly ChildDom[]) => any;
 export interface FloatingWindowProps {
     readonly title?: ChildDom;
     readonly closed?: State<boolean>;
@@ -152,7 +152,7 @@ export interface FloatingWindowProps {
     readonly crossHoverStyleOverrides?: CSSPropertyBag;
 }
 export declare const topMostZIndex: () => number;
-export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, customStacking, zIndex, disableMove, disableResize, headerColor, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, crossHoverClass, crossHoverStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => HTMLDivElement | null;
+export declare const FloatingWindow: ({ title, closed, x, y, width, height, closeCross, customStacking, zIndex, disableMove, disableResize, headerColor, windowClass, windowStyleOverrides, headerClass, headerStyleOverrides, childrenContainerClass, childrenContainerStyleOverrides, crossClass, crossStyleOverrides, crossHoverClass, crossHoverStyleOverrides, }: FloatingWindowProps, ...children: readonly ChildDom[]) => () => any;
 export interface ChooseProps {
     readonly label: ChildDom;
     readonly options: readonly string[];
