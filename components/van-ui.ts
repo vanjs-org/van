@@ -103,7 +103,7 @@ export const Modal = (
           div({class: modalClass, style: toStyleStr(modalStyle)}, children),
       )
       clickBackgroundToClose &&
-        bgDom.addEventListener("click", e => e.target === bgDom && (closed.val = true))
+        bgDom.addEventListener("mousedown", e => e.target === bgDom && (closed.val = true))
       return bgDom
   }
 }
