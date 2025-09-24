@@ -7,7 +7,7 @@ let gcCycleInMs = 1000, statesToGc, propSetterCache = {}
 let objProto = protoOf(alwaysConnectedDom), funcProto = protoOf(protoOf), _undefined
 
 let addAndScheduleOnFirst = (set, s, f, waitMs) =>
-  (set ?? (setTimeout(f, waitMs), new Set)).add(s)
+  (set ?? (waitMs ? setTimeout(f, waitMs) : queueMicrotask(f), new Set)).add(s)
 
 let runAndCaptureDeps = (f, deps, arg) => {
   let prevDeps = curDeps

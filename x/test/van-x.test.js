@@ -18,7 +18,6 @@ window.runTests = async (van, vanX, file) => {
         }
         return output;
     };
-    const waitMsForDerivations = 5;
     const withHiddenDom = (func) => async () => {
         const dom = div({ class: "hidden" });
         van.add(document.body, dom);
@@ -65,25 +64,25 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<div><div><code>1 * 2 = 2</code></div><div><code>1<sup>2</sup> = 1</code></div><div><code>2 * 2 = 4</code></div><div><code>2<sup>2</sup> = 4</code></div><div>Name: Tao Xin</div><div>Full name: Tao Xin</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>');
             base.a = 5;
             base.b = 10;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Tao Xin</div><div>Full name: Tao Xin</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>');
             base.name = { first: "Vanilla", last: "JavaScript" };
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>');
             base.name.first = "Van";
             base.name.last = "JS";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3 is 3.</div><div>The sum of 1,2,3 is 6.</div></div>');
             base.list = [1, 2, 3, 4, 5];
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,3,4,5 is 5.</div><div>The sum of 1,2,3,4,5 is 15.</div></div>');
             base.list[2] = 5;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 20</code></div><div><code>10<sup>2</sup> = 100</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,5,4,5 is 5.</div><div>The sum of 1,2,5,4,5 is 17.</div></div>');
             // Validate we can alter the values deeply under `derived` object
             derived.b.double = 21;
             derived.b.squared = 101;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div><code>5 * 2 = 10</code></div><div><code>5<sup>2</sup> = 25</code></div><div><code>10 * 2 = 21</code></div><div><code>10<sup>2</sup> = 101</code></div><div>Name: Van JS</div><div>Full name: Van JS</div><div>The length of 1,2,5,4,5 is 5.</div><div>The sum of 1,2,5,4,5 is 17.</div></div>');
         }),
         reactive_insertNewField: withHiddenDom(async (hiddenDom) => {
@@ -101,14 +100,14 @@ window.runTests = async (van, vanX, file) => {
             div("Full name: ", vanX.stateFields(derived).fullName));
             assertEq(hiddenDom.innerHTML, '<div>Name: Tao Xin</div><div>Full name: Tao Xin</div>');
             base.name.first = "Alexander";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Name: Alexander Xin</div><div>Full name: Alexander Xin</div>');
             base.name = { first: "Vanilla", last: "JavaScript" };
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div>');
             base.name.first = "Van";
             base.name.last = "JS";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>');
         }),
         reactive_existingClassWithMethod: withHiddenDom(async (hiddenDom) => {
@@ -126,11 +125,11 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<div>Name: Tao Xin</div><div>Full name: Tao Xin</div>');
             person.firstName = "Vanilla";
             person.lastName = "JavaScript";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div>');
             person.firstName = "Van";
             person.lastName = "JS";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>');
         }),
         reactive_existingClassWithCustomGet: withHiddenDom(async (hiddenDom) => {
@@ -148,11 +147,11 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<div>Name: Tao Xin</div><div>Full name: Tao Xin</div>');
             person.firstName = "Vanilla";
             person.lastName = "JavaScript";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Name: Vanilla JavaScript</div><div>Full name: Vanilla JavaScript</div>');
             person.firstName = "Van";
             person.lastName = "JS";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Name: Van JS</div><div>Full name: Van JS</div>');
         }),
         reactive_existingClassWithCustomSet: withHiddenDom(async (hiddenDom) => {
@@ -168,10 +167,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, div("x: ", () => data.x), div("y: ", () => data.y));
             assertEq(hiddenDom.innerHTML, "<div>x: 5</div><div>y: 10</div>");
             data.x = 10;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, "<div>x: 10</div><div>y: 20</div>");
             data.y = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, "<div>x: 3</div><div>y: 6</div>");
         }),
         reactive_deleteProperty: () => {
@@ -193,39 +192,39 @@ window.runTests = async (van, vanX, file) => {
             assertEq(json.val, '[1,2]');
             assertEq(numDerivations, 1);
             data[0] = 3;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '[3,2]');
             assertEq(numDerivations, 2);
             data.push(4);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '[3,2,4]');
             assertEq(numDerivations, 3);
             delete data[1];
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '[3,null,4]');
             assertEq(numDerivations, 4);
             vanX.replace(data, _ => [1, 2, 3, 4]);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '[1,2,3,4]');
             assertEq(numDerivations, 5);
             vanX.replace(data, _ => [1, 2]);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '[1,2]');
             assertEq(numDerivations, 6);
             vanX.replace(data, _ => []);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '[]');
             assertEq(numDerivations, 7);
             vanX.replace(data, [1, 2, 3, 4]);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '[1,2,3,4]');
             assertEq(numDerivations, 8);
             vanX.replace(data, [1, 2]);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '[1,2]');
             assertEq(numDerivations, 9);
             vanX.replace(data, []);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '[]');
             assertEq(numDerivations, 10);
         },
@@ -239,27 +238,27 @@ window.runTests = async (van, vanX, file) => {
             assertEq(json.val, '{"a":1,"b":2}');
             assertEq(numDerivations, 1);
             data.a = 3;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '{"a":3,"b":2}');
             assertEq(numDerivations, 2);
             data.c = 4;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '{"a":3,"b":2,"c":4}');
             assertEq(numDerivations, 3);
             delete data.b;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '{"a":3,"c":4}');
             assertEq(numDerivations, 4);
             vanX.replace(data, _ => [["a", 1], ["b", 2], ["c", 3], ["d", 4]]);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '{"a":1,"b":2,"c":3,"d":4}');
             assertEq(numDerivations, 5);
             vanX.replace(data, _ => [["a", 1], ["b", 2]]);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '{"a":1,"b":2}');
             assertEq(numDerivations, 6);
             vanX.replace(data, _ => []);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(json.val, '{}');
             assertEq(numDerivations, 7);
         },
@@ -274,7 +273,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<div>a: null</div><div>b: undefined</div><div>c: 1</div><div>d: 2</div>');
             data.c = null;
             data.d = undefined;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>a: null</div><div>b: undefined</div><div>c: null</div><div>d: undefined</div>');
         }),
         reactive_deletedFields: withHiddenDom(async (hiddenDom) => {
@@ -287,7 +286,7 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, () => data.a);
             assertEq(hiddenDom.innerHTML, "2");
             data.a = 3;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, "3");
         }),
         reactive_arrayLength: async () => {
@@ -300,51 +299,51 @@ window.runTests = async (van, vanX, file) => {
             assertEq(length.val, 0);
             assertEq(numLengthDerived, 1);
             data.push(1);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 1);
             assertEq(numLengthDerived, 2);
             data.push(2);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 2);
             assertEq(numLengthDerived, 3);
             data.push(3);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 3);
             assertEq(numLengthDerived, 4);
             data.push(4);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 4);
             assertEq(numLengthDerived, 5);
             data.push(5);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 5);
             assertEq(numLengthDerived, 6);
             data[5] = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 6);
             assertEq(numLengthDerived, 7);
             data.pop();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 5);
             assertEq(numLengthDerived, 8);
             data.pop();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 4);
             assertEq(numLengthDerived, 9);
             data.pop();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 3);
             assertEq(numLengthDerived, 10);
             data.pop();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 2);
             assertEq(numLengthDerived, 11);
             data.pop();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 1);
             assertEq(numLengthDerived, 12);
             data.pop();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(length.val, 0);
             assertEq(numLengthDerived, 13);
         },
@@ -353,10 +352,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, () => data.func());
             assertEq(hiddenDom.innerHTML, "abc");
             data.func = () => "def";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, "def");
             vanX.replace(data, { func: () => "ghi" });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, "ghi");
         }),
         noreactive_array: withHiddenDom(async (hiddenDom) => {
@@ -367,10 +366,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(div, data, v => div(v.val.byteLength)));
             assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>16</div></div>");
             data.push(vanX.noreactive(new ArrayBuffer(24)));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>16</div><div>24</div></div>");
             delete data[1];
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>24</div></div>");
         }),
         noreactive_obj: withHiddenDom(async (hiddenDom) => {
@@ -381,10 +380,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(div, data, v => div(v.val.byteLength)));
             assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>16</div></div>");
             data.c = vanX.noreactive(new ArrayBuffer(24));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>16</div><div>24</div></div>");
             delete data.b;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, "<div><div>8</div><div>24</div></div>");
         }),
         raw_basic: withHiddenDom(async (hiddenDom) => {
@@ -397,13 +396,13 @@ window.runTests = async (van, vanX, file) => {
             // Changing `base.a` won't trigger any derivations, as `base.a` is accessed via
             // `vanX.raw(base).a`.
             ++base.a;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("div").innerText, "8");
             assertEq(hiddenDom.querySelector("input").value, "8");
             assertEq(hiddenDom.querySelector("p").innerText, "8");
             // Changing `base.b` will trigger all the derivations, as `base.b` is accessed via `base.b`.
             ++base.b;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("div").innerText, "10");
             assertEq(hiddenDom.querySelector("input").value, "10");
             assertEq(hiddenDom.querySelector("p").innerText, "10");
@@ -418,42 +417,42 @@ window.runTests = async (van, vanX, file) => {
             // Changing `base.a.a` won't trigger any derivations, as `base.a.a` is accessed via
             // `vanX.raw(base).a.a`.
             ++base.a.a;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("div").innerText, "10");
             assertEq(hiddenDom.querySelector("input").value, "4");
             assertEq(hiddenDom.querySelector("p").innerText, "6");
             // Changing `base.b.a` will trigger all the relevant derivations, as `base.b.a` is accessed
             // via `base.b.a`.
             ++base.b.a;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("div").innerText, "12");
             assertEq(hiddenDom.querySelector("input").value, "6");
             assertEq(hiddenDom.querySelector("p").innerText, "6");
             // Changing `base.a.b` won't trigger any derivations, as `base.a.b` is accessed via
             // `vanX.raw(base).a.b`.
             ++base.a.b;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("div").innerText, "12");
             assertEq(hiddenDom.querySelector("input").value, "6");
             assertEq(hiddenDom.querySelector("p").innerText, "6");
             // Changing `base.b.b` will trigger all the relevant derivations, as `base.b.b` is accessed
             // via `base.b.b`.
             ++base.b.b;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("div").innerText, "14");
             assertEq(hiddenDom.querySelector("input").value, "6");
             assertEq(hiddenDom.querySelector("p").innerText, "8");
             // Changing the entire object of `base.a` won't trigger any derivations, as `base.a` is
             // accessed via `vanX.raw(base).a`.
             base.a = { a: 11, b: 12 };
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("div").innerText, "14");
             assertEq(hiddenDom.querySelector("input").value, "6");
             assertEq(hiddenDom.querySelector("p").innerText, "8");
             // Changing the entire object of `base.b` will trigger all the derivations, as `base.b` is
             // accessed via `vanX.raw(base).b`.
             base.b = { a: 13, b: 14 };
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("div").innerText, "50");
             assertEq(hiddenDom.querySelector("input").value, "24");
             assertEq(hiddenDom.querySelector("p").innerText, "26");
@@ -473,7 +472,7 @@ window.runTests = async (van, vanX, file) => {
             // But the nodes in the 2nd <div> tree won't be updated, as the reactive array is accessed
             // via `vanX.raw`.
             arr.push(4, 5);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div>Length is: 5</div><div>Elements are: 0: 1, 1: 2, 2: 3, 3: 4, 4: 5</div><div>Mapped elements are: 0: 2, 1: 4, 2: 6, 3: 8, 4: 10</div></div><div><div>Length is: 3</div><div>Elements are: 0: 1, 1: 2, 2: 3</div><div>Mapped elements are: 0: 2, 1: 4, 2: 6</div></div>');
         }),
         raw_existingClassWithMethod: withHiddenDom(async (hiddenDom) => {
@@ -493,7 +492,7 @@ window.runTests = async (van, vanX, file) => {
             // won't be updated, as the object array is accessed via `vanX.raw`.
             person.firstName = "Van";
             person.lastName = "JS";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Van JS</div><div>Tao Xin</div>');
         }),
         raw_existingClassWithCustomGet: withHiddenDom(async (hiddenDom) => {
@@ -513,7 +512,7 @@ window.runTests = async (van, vanX, file) => {
             // won't be updated, as the object array is accessed via `vanX.raw`.
             person.firstName = "Van";
             person.lastName = "JS";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Van JS</div><div>Tao Xin</div>');
         }),
         list_arraySetItem: withHiddenDom(async (hiddenDom) => {
@@ -521,10 +520,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul, items, v => li(v)));
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
             items[1] = 5;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>');
             items[2] = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>');
         }),
         list_objSetItem: withHiddenDom(async (hiddenDom) => {
@@ -532,10 +531,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul, items, v => li(v)));
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
             items.b = 5;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>3</li></ul>');
             items.c = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li><li>6</li></ul>');
         }),
         list_arrayAdd: withHiddenDom(async (hiddenDom) => {
@@ -543,10 +542,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul, items, (v, deleter) => li(v, button({ onclick: deleter }, "❌"))));
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>');
             items.push(4);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li></ul>');
             items.push(5);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li><li>5<button>❌</button></li></ul>');
             const deleteBtns = hiddenDom.querySelectorAll("button");
             deleteBtns[3].click();
@@ -559,10 +558,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul, items, (v, deleter) => li(v, button({ onclick: deleter }, "❌"))));
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>');
             items.d = 4;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li></ul>');
             items.e = 5;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li><li>4<button>❌</button></li><li>5<button>❌</button></li></ul>');
             const deleteBtns = hiddenDom.querySelectorAll("button");
             deleteBtns[3].click();
@@ -576,15 +575,15 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li></ul>');
             const deleteBtns = hiddenDom.querySelectorAll("button");
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>c<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "0,2");
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>c<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "2");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -594,15 +593,15 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li></ul>');
             const deleteBtns = hiddenDom.querySelectorAll("button");
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>c<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "a,c");
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>c<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "c");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -611,22 +610,22 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul, items, v => li(v)));
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li></ul>');
             delete items[2];
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>4</li><li>5</li></ul>');
             delete items[3];
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>5</li></ul>');
             delete items[1];
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>5</li></ul>');
             items[2] = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>6</li><li>5</li></ul>');
             items[3] = 7;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>6</li><li>7</li><li>5</li></ul>');
             items[1] = 8;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>8</li><li>6</li><li>7</li><li>5</li></ul>');
         }),
         list_arrayShiftUnshift: withHiddenDom(async (hiddenDom) => {
@@ -635,15 +634,15 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>');
             const deleteBtns = hiddenDom.querySelectorAll("button");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "0,1,3,4");
             items.shift();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>b<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "0,2,3");
             items.unshift("f");
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>f<button>❌</button></li><li>b<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "0,1,3,4");
         }),
@@ -653,15 +652,15 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>c<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>');
             const deleteBtns = hiddenDom.querySelectorAll("button");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>b<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "0,1,3,4");
             assertEq(items.splice(1, 1).toString(), "b");
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>d<button>❌</button></li><li>e<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "0,2,3");
             assertEq(items.splice(1, 2, "f").toString(), ",d");
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❌</button></li><li>f<button>❌</button></li><li>e<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "0,1,2");
         }),
@@ -670,10 +669,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul({ class: "number-list" }), items, v => li(v)));
             assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>2</li><li>3</li></ul>');
             items[1] = 5;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>5</li><li>3</li></ul>');
             items[2] = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>5</li><li>6</li></ul>');
         }),
         list_elementAs1stArgument_object: withHiddenDom(async (hiddenDom) => {
@@ -681,10 +680,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul({ class: "number-list" }), items, v => li(v)));
             assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>2</li><li>3</li></ul>');
             items.b = 5;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>5</li><li>3</li></ul>');
             items.c = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul class="number-list"><li>1</li><li>5</li><li>6</li></ul>');
         }),
         list_array_multipleBindings: withHiddenDom(async (hiddenDom) => {
@@ -694,10 +693,10 @@ window.runTests = async (van, vanX, file) => {
             const incBtns = hiddenDom.querySelectorAll("div button");
             const deleteBtns = hiddenDom.querySelectorAll("ul button");
             incBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div>2<button>👍</button></div><div>2<button>👍</button></div><div>3<button>👍</button></div></div><ul><li>2<button>❌</button></li><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>');
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div>2<button>👍</button></div><div>3<button>👍</button></div></div><ul><li>2<button>❌</button></li><li>3<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "0,2");
         }),
@@ -708,10 +707,10 @@ window.runTests = async (van, vanX, file) => {
             const incBtns = hiddenDom.querySelectorAll("div button");
             const deleteBtns = hiddenDom.querySelectorAll("ul button");
             incBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div>1<button>👍</button></div><div>2<button>👍</button></div><div>4<button>👍</button></div></div><ul><li>1<button>❌</button></li><li>2<button>❌</button></li><li>4<button>❌</button></li></ul>');
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><div>1<button>👍</button></div><div>4<button>👍</button></div></div><ul><li>1<button>❌</button></li><li>4<button>❌</button></li></ul>');
             assertEq(Object.keys(items).toString(), "a,c");
         }),
@@ -720,10 +719,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul, items, (v, _deleter, k) => li(v.val, " - ", k)));
             assertEq(hiddenDom.innerHTML, '<ul><li>2 - 0</li><li>1 - 1</li><li>3 - 2</li></ul>');
             items[1] = 5;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2 - 0</li><li>5 - 1</li><li>3 - 2</li></ul>');
             items[2] = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2 - 0</li><li>5 - 1</li><li>6 - 2</li></ul>');
         }),
         list_obj_keyInBindingFunc: withHiddenDom(async (hiddenDom) => {
@@ -731,10 +730,10 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul, items, (v, _deleter, k) => li(v.val, " - ", k)));
             assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>1 - b</li><li>3 - c</li></ul>');
             items.b = 5;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>5 - b</li><li>3 - c</li></ul>');
             items.c = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2 - a</li><li>5 - b</li><li>6 - c</li></ul>');
         }),
         list_forCalcField_array: withHiddenDom(async (hiddenDom) => {
@@ -750,11 +749,11 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina</li><li>Bolivia</li><li>Brazil</li><li>Chile</li><li>Colombia</li><li>Ecuador</li><li>Guyana</li><li>Paraguay</li><li>Peru</li><li>Suriname</li><li>Uruguay</li><li>Venezuela</li>");
             hiddenDom.querySelector("input").value = "i";
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina</li><li>Bolivia</li><li>Brazil</li><li>Chile</li><li>Colombia</li><li>Suriname</li>");
             hiddenDom.querySelector("input").value = "il";
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Brazil</li><li>Chile</li>");
         }),
         list_forCalcField_obj: withHiddenDom(async (hiddenDom) => {
@@ -780,11 +779,11 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina: 45195777</li><li>Bolivia: 11673029</li><li>Brazil: 213993437</li><li>Chile: 19116209</li><li>Colombia: 50882884</li><li>Ecuador: 17643060</li><li>Guyana: 786559</li><li>Paraguay: 7132530</li><li>Peru: 32971846</li><li>Suriname: 586634</li><li>Uruguay: 3473727</li><li>Venezuela: 28435943</li>");
             hiddenDom.querySelector("input").value = "i";
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina: 45195777</li><li>Bolivia: 11673029</li><li>Brazil: 213993437</li><li>Chile: 19116209</li><li>Colombia: 50882884</li><li>Suriname: 586634</li>");
             hiddenDom.querySelector("input").value = "il";
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Brazil: 213993437</li><li>Chile: 19116209</li>");
         }),
         replace_filterArray: withHiddenDom(async (hiddenDom) => {
@@ -794,27 +793,27 @@ window.runTests = async (van, vanX, file) => {
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[0].click();
             incBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>');
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>');
             vanX.replace(items, l => l.filter(v => v % 2 === 0));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0,1");
             // Validate increment and delete buttons still work in the new DOM tree
             incBtns = hiddenDom.querySelectorAll("button");
             const deleteBtns = hiddenDom.querySelectorAll("a");
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>5<button>👍</button><a>❌</a></li></ul>');
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>5<button>👍</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "1");
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -825,27 +824,27 @@ window.runTests = async (van, vanX, file) => {
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[0].click();
             incBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>');
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>');
             vanX.replace(items, l => l.filter(([_, v]) => v % 2 === 0));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>4<button>👍</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a,c");
             // Validate increment and delete buttons still work in the new DOM tree
             incBtns = hiddenDom.querySelectorAll("button");
             const deleteBtns = hiddenDom.querySelectorAll("a");
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>5<button>👍</button><a>❌</a></li></ul>');
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>5<button>👍</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "c");
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -855,28 +854,28 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>');
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>');
             vanX.replace(items, l => l.map(v => v * 2));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li></ul>');
             // Validate increment and delete buttons still work in the new DOM tree
             incBtns = hiddenDom.querySelectorAll("button");
             const deleteBtns = hiddenDom.querySelectorAll("a");
             incBtns[0].click();
             incBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>');
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0,2");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0");
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -886,28 +885,28 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>2<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>');
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li><li>3<button>👍</button><a>❌</a></li></ul>');
             vanX.replace(items, l => l.map(([k, v]) => [k, v * 2]));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li></ul>');
             // Validate increment and delete buttons still work in the new DOM tree
             incBtns = hiddenDom.querySelectorAll("button");
             const deleteBtns = hiddenDom.querySelectorAll("a");
             incBtns[0].click();
             incBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>6<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>');
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li><li>7<button>👍</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a,c");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>3<button>👍</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a");
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -917,10 +916,10 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b<button>❗</button><a>❌</a></li></ul>');
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
             vanX.replace(items, l => l.flatMap(v => [v, v + "-2"]));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>a-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0,1,2,3");
             // Validate increment and delete buttons still work in the new DOM tree
@@ -930,22 +929,22 @@ window.runTests = async (van, vanX, file) => {
             incBtns[3].click();
             incBtns[2].click();
             incBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>a-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>');
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0,2,3");
             deleteBtns[3].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0,2");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0");
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -955,10 +954,10 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b<button>❗</button><a>❌</a></li></ul>');
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
             vanX.replace(items, l => l.flatMap(([k, v]) => [[k, v], [k + "-2", v + "-2"]]));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>a-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a,a-2,b,b-2");
             // Validate increment and delete buttons still work in the new DOM tree
@@ -968,22 +967,22 @@ window.runTests = async (van, vanX, file) => {
             incBtns[3].click();
             incBtns[2].click();
             incBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>a-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>');
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a,b,b-2");
             deleteBtns[3].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a,b");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a");
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -993,10 +992,10 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b<button>❗</button><a>❌</a></li></ul>');
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
             vanX.replace(items, l => l.flatMap(v => [v + "-2", v]));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2<button>❗</button><a>❌</a></li><li>a<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
             // Validate increment and delete buttons still work in the new DOM tree
             incBtns = hiddenDom.querySelectorAll("button");
@@ -1005,22 +1004,22 @@ window.runTests = async (van, vanX, file) => {
             incBtns[3].click();
             incBtns[2].click();
             incBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>a!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>');
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0,2,3");
             deleteBtns[3].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0,2");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "0");
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -1030,10 +1029,10 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b<button>❗</button><a>❌</a></li></ul>');
             let incBtns = hiddenDom.querySelectorAll("button");
             incBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
             vanX.replace(items, l => l.flatMap(([k, v]) => [[k + "-2", v + "-2"], [k, v]]));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2<button>❗</button><a>❌</a></li><li>a<button>❗</button><a>❌</a></li><li>b!-2<button>❗</button><a>❌</a></li><li>b!<button>❗</button><a>❌</a></li></ul>');
             // Validate increment and delete buttons still work in the new DOM tree
             incBtns = hiddenDom.querySelectorAll("button");
@@ -1042,22 +1041,22 @@ window.runTests = async (van, vanX, file) => {
             incBtns[3].click();
             incBtns[2].click();
             incBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>a!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>');
             deleteBtns[1].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li><li>b!!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a-2,b-2,b");
             deleteBtns[3].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li><li>b!-2!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a-2,b-2");
             deleteBtns[2].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>a-2!<button>❗</button><a>❌</a></li></ul>');
             assertEq(Object.keys(items).toString(), "a-2");
             deleteBtns[0].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul></ul>');
             assertEq(Object.keys(items).toString(), "");
         }),
@@ -1070,18 +1069,18 @@ window.runTests = async (van, vanX, file) => {
             hiddenDom.querySelector("a").click();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [...shuffled].toString());
             vanX.replace(items, l => l.toSorted());
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), arr.toString());
             // Validate increment and delete buttons still work in the new DOM tree
             const incBtns = hiddenDom.querySelectorAll("button");
             const deleteBtns = hiddenDom.querySelectorAll("a");
             incBtns[2].click();
             incBtns[5].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,6,7,8,9");
             deleteBtns[6].click();
             deleteBtns[8].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,7,9");
         }),
         replace_sortObj: withHiddenDom(async (hiddenDom) => {
@@ -1093,18 +1092,18 @@ window.runTests = async (van, vanX, file) => {
             hiddenDom.querySelector("a").click();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), [...shuffled].toString());
             vanX.replace(items, kvs => kvs.toSorted(([_1, v1], [_2, v2]) => v1.localeCompare(v2)));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), arr.toString());
             // Validate increment and delete buttons still work in the new DOM tree
             const incBtns = hiddenDom.querySelectorAll("button");
             const deleteBtns = hiddenDom.querySelectorAll("a");
             incBtns[2].click();
             incBtns[5].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,6,7,8,9");
             deleteBtns[6].click();
             deleteBtns[8].click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,7,9");
         }),
         replace_nestedArray: withHiddenDom(async (hiddenDom) => {
@@ -1115,16 +1114,16 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul, items, ({ val: v }) => li(v.baz.kind)));
             assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>');
             items[0].baz.kind = "candy";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>');
             vanX.replace(items, () => [{
                     foo: 'bar',
                     baz: { kind: 'dessert', amount: 'lots' }
                 }]);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>');
             items[0].baz.kind = "candy";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>');
         }),
         replace_nestedObj: withHiddenDom(async (hiddenDom) => {
@@ -1137,16 +1136,16 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, vanX.list(ul, items, ({ val: v }) => li(v.baz.kind)));
             assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>');
             items.a.baz.kind = "candy";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>');
             vanX.replace(items, () => [["a", {
                         foo: 'bar',
                         baz: { kind: 'dessert', amount: 'lots' }
                     }]]);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>dessert</li></ul>');
             items.a.baz.kind = "candy";
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>candy</li></ul>');
         }),
         replaceInSideEffect_array: withHiddenDom(async (hiddenDom) => {
@@ -1161,11 +1160,11 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina</li><li>Bolivia</li><li>Brazil</li><li>Chile</li><li>Colombia</li><li>Ecuador</li><li>Guyana</li><li>Paraguay</li><li>Peru</li><li>Suriname</li><li>Uruguay</li><li>Venezuela</li>");
             hiddenDom.querySelector("input").value = "i";
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina</li><li>Bolivia</li><li>Brazil</li><li>Chile</li><li>Colombia</li><li>Suriname</li>");
             hiddenDom.querySelector("input").value = "il";
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Brazil</li><li>Chile</li>");
         }),
         replaceInSideEffect_obj: withHiddenDom(async (hiddenDom) => {
@@ -1190,11 +1189,11 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina: 45195777</li><li>Bolivia: 11673029</li><li>Brazil: 213993437</li><li>Chile: 19116209</li><li>Colombia: 50882884</li><li>Ecuador: 17643060</li><li>Guyana: 786559</li><li>Paraguay: 7132530</li><li>Peru: 32971846</li><li>Suriname: 586634</li><li>Uruguay: 3473727</li><li>Venezuela: 28435943</li>");
             hiddenDom.querySelector("input").value = "i";
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Argentina: 45195777</li><li>Bolivia: 11673029</li><li>Brazil: 213993437</li><li>Chile: 19116209</li><li>Colombia: 50882884</li><li>Suriname: 586634</li>");
             hiddenDom.querySelector("input").value = "il";
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.querySelector("ul").innerHTML, "<li>Brazil: 213993437</li><li>Chile: 19116209</li>");
         }),
         replace_smartUpdate: withHiddenDom(async (hiddenDom) => {
@@ -1209,28 +1208,28 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<div>Enter your name...</div>');
             assertEq(numDivRendered, 1);
             vanX.replace(data, { name: { first: "Tao", last: "Xin" } });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Tao Xin</div>');
             // <div> will be re-rendered as the entire `base.name` was assigned to some value from
             // `undefined`.
             assertEq(numDivRendered, 2);
             vanX.replace(data, { name: { first: "Oliver", last: "Xin" } });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Oliver Xin</div>');
             // <div> won't be re-rendered as `vanX.replace` only replaces leaf-level fields
             assertEq(numDivRendered, 2);
             vanX.replace(data, { name: { first: "Oliver", last: "Smith" } });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Oliver Smith</div>');
             // <div> won't be re-rendered as `vanX.replace` only replaces leaf-level fields
             assertEq(numDivRendered, 2);
             vanX.replace(data, { name: undefined });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Enter your name...</div>');
             // <div> will be re-rendered as the entire `base.name` became `undefined`
             assertEq(numDivRendered, 3);
             vanX.replace(data, { name: { first: "Tao", last: "Xin" } });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div>Tao Xin</div>');
             // <div> will be re-rendered as the entire `base.name` was assigned to some value from
             // `undefined`.
@@ -1249,11 +1248,11 @@ window.runTests = async (van, vanX, file) => {
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
             assertEq(data.newItem, "Item 6");
             vanX.replace(data, { ...data, newItem: "Item 7" });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>Item 1</span><a>❌</a></div><div><input type="checkbox"><span>Item 2</span><a>❌</a></div><div><input type="checkbox"><span>Item 3</span><a>❌</a></div><div><input type="checkbox"><span>Item 4</span><a>❌</a></div><div><input type="checkbox"><span>Item 5</span><a>❌</a></div></div></div>');
             assertEq(hiddenDom.querySelector("input").value, "Item 7");
             hiddenDom.querySelector("button").click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>Item 1</span><a>❌</a></div><div><input type="checkbox"><span>Item 2</span><a>❌</a></div><div><input type="checkbox"><span>Item 3</span><a>❌</a></div><div><input type="checkbox"><span>Item 4</span><a>❌</a></div><div><input type="checkbox"><span>Item 5</span><a>❌</a></div><div><input type="checkbox"><span>Item 7</span><a>❌</a></div></div></div>');
             assertEq(hiddenDom.querySelector("input").value, "Item 7");
             // Delete 2 items randomly
@@ -1265,7 +1264,7 @@ window.runTests = async (van, vanX, file) => {
                 const deleteBtns = [...hiddenDom.querySelectorAll("a")];
                 deleteBtns[Math.floor(Math.random() * deleteBtns.length)].click();
             }
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(Object.keys(data.items).length, 4);
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).join(","), data.items.map(i => i.text).filter(_ => 1).join(","));
             assertEq(hiddenDom.querySelector("input").value, "Item 7");
@@ -1274,7 +1273,7 @@ window.runTests = async (van, vanX, file) => {
                 newItem: "",
                 items: sampleItems.map(t => ({ text: t, done: false })),
             });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>Item 1</span><a>❌</a></div><div><input type="checkbox"><span>Item 2</span><a>❌</a></div><div><input type="checkbox"><span>Item 3</span><a>❌</a></div><div><input type="checkbox"><span>Item 4</span><a>❌</a></div><div><input type="checkbox"><span>Item 5</span><a>❌</a></div></div></div>');
             assertEq(hiddenDom.querySelector("input").value, "");
             const rowDoms = [...hiddenDom.querySelectorAll("div div div div")];
@@ -1284,7 +1283,7 @@ window.runTests = async (van, vanX, file) => {
                     newItem: "",
                     items: sampleItems.map(t => ({ text: t, done: Math.random() >= 0.5 })),
                 });
-                await sleep(waitMsForDerivations);
+                await Promise.resolve();
                 // Validate the DOM elements for rows aren't changed
                 const newRowDoms = [...hiddenDom.querySelectorAll("div div div div")];
                 assertEq(newRowDoms.length, rowDoms.length);
@@ -1318,11 +1317,11 @@ window.runTests = async (van, vanX, file) => {
             hiddenDom.querySelector("input").dispatchEvent(new Event("input"));
             assertEq(data.newItem, "Item 6");
             vanX.replace(data, { ...data, newItem: "Item 7" });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>k0 - Item 1</span><a>❌</a></div><div><input type="checkbox"><span>k1 - Item 2</span><a>❌</a></div><div><input type="checkbox"><span>k2 - Item 3</span><a>❌</a></div><div><input type="checkbox"><span>k3 - Item 4</span><a>❌</a></div><div><input type="checkbox"><span>k4 - Item 5</span><a>❌</a></div></div></div>');
             assertEq(hiddenDom.querySelector("input").value, "Item 7");
             hiddenDom.querySelector("button").click();
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>k0 - Item 1</span><a>❌</a></div><div><input type="checkbox"><span>k1 - Item 2</span><a>❌</a></div><div><input type="checkbox"><span>k2 - Item 3</span><a>❌</a></div><div><input type="checkbox"><span>k3 - Item 4</span><a>❌</a></div><div><input type="checkbox"><span>k4 - Item 5</span><a>❌</a></div><div><input type="checkbox"><span>k11 - Item 7</span><a>❌</a></div></div></div>');
             assertEq(hiddenDom.querySelector("input").value, "Item 7");
             // Delete 2 items randomly
@@ -1334,7 +1333,7 @@ window.runTests = async (van, vanX, file) => {
                 const deleteBtns = [...hiddenDom.querySelectorAll("a")];
                 deleteBtns[Math.floor(Math.random() * deleteBtns.length)].click();
             }
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(Object.keys(data.items).length, 4);
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).join(","), Object.entries(data.items).map(([k, { text }]) => `${k} - ${text}`).join(","));
             assertEq(hiddenDom.querySelector("input").value, "Item 7");
@@ -1343,7 +1342,7 @@ window.runTests = async (van, vanX, file) => {
                 newItem: "",
                 items: Object.fromEntries(sampleItems.map((t, i) => ["k" + i, { text: t, done: false }])),
             });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<div><input type="text"><button>Add</button><div><div><input type="checkbox"><span>k0 - Item 1</span><a>❌</a></div><div><input type="checkbox"><span>k1 - Item 2</span><a>❌</a></div><div><input type="checkbox"><span>k2 - Item 3</span><a>❌</a></div><div><input type="checkbox"><span>k3 - Item 4</span><a>❌</a></div><div><input type="checkbox"><span>k4 - Item 5</span><a>❌</a></div></div></div>');
             assertEq(hiddenDom.querySelector("input").value, "");
             const rowDoms = [...hiddenDom.querySelectorAll("div div div div")];
@@ -1353,7 +1352,7 @@ window.runTests = async (van, vanX, file) => {
                     newItem: "",
                     items: Object.fromEntries(sampleItems.map((t, i) => ["k" + i, { text: t, done: Math.random() >= 0.5 }])),
                 });
-                await sleep(waitMsForDerivations);
+                await Promise.resolve();
                 // Validate the DOM elements for rows aren't changed
                 const newRowDoms = [...hiddenDom.querySelectorAll("div div div div")];
                 assertEq(newRowDoms.length, rowDoms.length);
@@ -1379,7 +1378,7 @@ window.runTests = async (van, vanX, file) => {
                     newItem: "",
                     items: Object.fromEntries(shuffle(sampleItems.map((t, i) => ["k" + i, { text: t, done: Math.random() >= 0.5 }]))),
                 });
-                await sleep(waitMsForDerivations);
+                await Promise.resolve();
                 const newRowDoms = [...hiddenDom.querySelectorAll("div div div div")];
                 assertEq(newRowDoms.length, rowDoms.length);
                 for (let i = 0; i < newRowDoms.length; ++i) {
@@ -1473,14 +1472,14 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
             for (let i = 0; i < 10; ++i) {
                 ordered.val = !ordered.val;
-                await sleep(waitMsForDerivations);
+                await Promise.resolve();
                 assertEq(hiddenDom.innerHTML, ordered.val ?
                     '<ol><li>1</li><li>2</li><li>3</li></ol>' :
                     '<ul><li>1</li><li>2</li><li>3</li></ul>');
             }
             // Trigger the GC
             vanX.replace(items, [...items]);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
             assertEq(states[bindingSymbol].length, 1);
         }),
@@ -1492,14 +1491,14 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
             for (let i = 0; i < 10; ++i) {
                 ordered.val = !ordered.val;
-                await sleep(waitMsForDerivations);
+                await Promise.resolve();
                 assertEq(hiddenDom.innerHTML, ordered.val ?
                     '<ol><li>1</li><li>2</li><li>3</li></ol>' :
                     '<ul><li>1</li><li>2</li><li>3</li></ul>');
             }
             // Trigger the GC
             vanX.replace(items, { b: 2, a: 1, c: 3 });
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<ul><li>2</li><li>1</li><li>3</li></ul>');
             assertEq(states[bindingSymbol].length, 1);
         }),
@@ -1510,21 +1509,21 @@ window.runTests = async (van, vanX, file) => {
             assertEq(dom.innerHTML, '<li>1</li><li>2</li><li>3</li><li>4</li><li>5</li>');
             const childDom = [...dom.childNodes][1];
             items[1] = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>3</li><li>4</li><li>5</li>');
             assert([...dom.childNodes][1] !== childDom);
             assertEq(dom[keyToChildSym][1], [...dom.childNodes][1]);
             assertEq(Object.keys(dom[keyToChildSym]).join(","), "0,1,2,3,4");
             delete items[2];
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>4</li><li>5</li>');
             assertEq(Object.keys(dom[keyToChildSym]).join(","), "0,1,3,4");
             delete items[3];
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>5</li>');
             assertEq(Object.keys(dom[keyToChildSym]).join(","), "0,1,4");
             items.push(7);
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>5</li><li>7</li>');
             assertEq(Object.keys(dom[keyToChildSym]).join(","), "0,1,4,5");
         }),
@@ -1535,21 +1534,21 @@ window.runTests = async (van, vanX, file) => {
             assertEq(dom.innerHTML, '<li>1</li><li>2</li><li>3</li><li>4</li><li>5</li>');
             const childDom = [...dom.childNodes][1];
             items.b = 6;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>3</li><li>4</li><li>5</li>');
             assert([...dom.childNodes][1] !== childDom);
             assertEq(dom[keyToChildSym]["b"], [...dom.childNodes][1]);
             assertEq(Object.keys(dom[keyToChildSym]).join(","), "a,b,c,d,e");
             delete items.c;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>4</li><li>5</li>');
             assertEq(Object.keys(dom[keyToChildSym]).join(","), "a,b,d,e");
             delete items.d;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>5</li>');
             assertEq(Object.keys(dom[keyToChildSym]).join(","), "a,b,e");
             items.f = 7;
-            await sleep(waitMsForDerivations);
+            await Promise.resolve();
             assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>5</li><li>7</li>');
             assertEq(Object.keys(dom[keyToChildSym]).join(","), "a,b,e,f");
         }),
@@ -1561,7 +1560,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
             for (let i = 0; i < 10; ++i) {
                 ordered.val = !ordered.val;
-                await sleep(waitMsForDerivations);
+                await Promise.resolve();
                 assertEq(hiddenDom.innerHTML, ordered.val ?
                     '<ol><li>1</li><li>2</li><li>3</li></ol>' :
                     '<ul><li>1</li><li>2</li><li>3</li></ul>');
@@ -1579,7 +1578,7 @@ window.runTests = async (van, vanX, file) => {
             assertEq(hiddenDom.innerHTML, '<ul><li>1</li><li>2</li><li>3</li></ul>');
             for (let i = 0; i < 10; ++i) {
                 ordered.val = !ordered.val;
-                await sleep(waitMsForDerivations);
+                await Promise.resolve();
                 assertEq(hiddenDom.innerHTML, ordered.val ?
                     '<ol><li>1</li><li>2</li><li>3</li></ol>' :
                     '<ul><li>1</li><li>2</li><li>3</li></ul>');

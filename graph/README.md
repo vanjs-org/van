@@ -44,7 +44,7 @@ Alternatively, you can import **VanGraph** from CDN via a `<script type="text/ja
 Note that: you need to import **VanJS** and `@viz-js/viz` before **VanGraph** for it to be used properly:
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-1.5.5.nomodule.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-1.6.0.nomodule.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@viz-js/viz@3.8.0/lib/viz-standalone.js"></script>
 ```
 

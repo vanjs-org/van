@@ -1,6 +1,6 @@
 {
   "name": "vanjs-core",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "description": "VanJS. A minimalist React-like UI library based on vanilla JavaScript and DOM.",
   "files": [
     "src/van.js",
