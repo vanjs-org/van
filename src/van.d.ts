@@ -24,7 +24,7 @@ export type ValidChildDomValue = Primitive | Node | null | undefined
 
 export type BindingFunc = ((dom?: Node) => ValidChildDomValue) | ((dom?: Element) => Element)
 
-export type ChildDom = ValidChildDomValue | StateView<Primitive | null | undefined> | BindingFunc | readonly ChildDom[]
+export type ChildDom = ValidChildDomValue | StateView<Primitive | null | undefined> | BindingFunc | readonly ChildDom[] | (() => ChildDom)
 
 export type TagFunc<Result> = (first?: Props & PropsWithKnownKeys<Result> | ChildDom, ...rest: readonly ChildDom[]) => Result
 
