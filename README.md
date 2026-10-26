@@ -1,5 +1,3 @@
-[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20VanJS%20Guru-006BFF)](https://gurubase.io/g/vanjs)
-
 # 🍦 **VanJS**: The Smallest Reactive UI Framework in the World
 
 📣 [Introducing VanX →](https://github.com/vanjs-org/van/discussions/144) <br>
@@ -117,7 +115,6 @@ Simplicity at its core. Only 5 functions (`van.tags`, `van.add`, `van.state`, `v
 * Debugging complex dependencies in your app? checkout [**VanGraph**](https://github.com/vanjs-org/van/tree/main/graph)
 * For questions, feedback or general discussions, visit our [Discussions](https://github.com/vanjs-org/van/discussions) page
 * [How did **VanJS** get its name?](https://vanjs.org/about#name)
-* ✨ [Ask **VanJS** Guru](https://gurubase.io/g/vanjs) - a **VanJS**-focused AI to answer your questions
 
 ## IDE Plug-ins
 
