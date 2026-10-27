@@ -86,6 +86,10 @@ const debugHandler = {
     return (...args) => {
       const [props, ...children] = protoOf(args[0] ?? 0) === Object.prototype ? args : [{}, ...args]
       const debugProps =  {}
+      let dom
+      // Property validation is registered before the element is constructed.
+      const owner = {get isConnected() { return dom?.isConnected }}
+      const checked = f => van.derive(f, undefined, owner)
       for (const [k, v] of Object.entries(props)) {
         const validatePropValue = k.startsWith("on") ?
           (k.toLowerCase() === k ?
@@ -98,13 +102,13 @@ const debugHandler = {
             `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`), v)
 
         if (isState(v))
-          debugProps[k] = van.derive(() => validatePropValue(v.val))
+          debugProps[k] = checked(() => validatePropValue(v.val))
         else if (typeof v === "function" && (!k.startsWith("on") || v._isBindingFunc))
-          debugProps[k] = van.derive(() => validatePropValue(v()))
+          debugProps[k] = checked(() => validatePropValue(v()))
         else
           debugProps[k] = validatePropValue(v)
       }
-      return vanTag(debugProps, ...checkChildren(children))
+      return dom = vanTag(debugProps, ...checkChildren(children))
     }
   },
 }

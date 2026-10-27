@@ -110,7 +110,7 @@ let tag = (ns, name, ...args) => {
       } :
       propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k)
     let protoOfV = protoOf(v ?? 0)
-    isEvent || protoOfV === funcProto && (v = derive(v), protoOfV = stateProto)
+    isEvent || protoOfV === funcProto && (v = derive(v, _undefined, dom), protoOfV = stateProto)
     protoOfV === stateProto ? bind(() => (setter(v.val, v._oldVal), dom)) : setter(v)
   }
   return add(dom, children)

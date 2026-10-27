@@ -156,14 +156,64 @@ const runTests = async (van, msgDom, { debug }) => {
         tags_stateDerivedProp_disconnected: async () => {
             const host = van.state("example.com");
             const path = van.state("/hello");
-            const dom = a({ href: () => `https://${host.val}${path.val}` }, "Test Link");
+            let calls = 0;
+            const dom = a({ href: () => (++calls, `https://${host.val}${path.val}`) }, "Test Link");
             assertEq(dom.href, "https://example.com/hello");
             host.val = "vanjs.org";
             path.val = "/start";
             await Promise.resolve();
             // href won't change as dom is not connected to document
             assertEq(dom.href, "https://example.com/hello");
+            assertEq(calls, 1);
         },
+        tags_propertyBindings_removed: withHiddenDom(async (hiddenDom) => {
+            const value = van.state("A"), visible = van.state(true);
+            let titleCalls = 0, deriveCalls = 0, childCalls = 0;
+            const label = van.derive(() => (++deriveCalls, value.val));
+            const row = div({ title: () => (++titleCalls, value.val) }, "Row");
+            const stateRow = div({ title: value }), labelRow = div({ title: label });
+            const childHost = div(() => (++childCalls, value.val));
+            van.add(hiddenDom, () => visible.val ? row : null, stateRow, labelRow, childHost);
+            value.val = "B";
+            await Promise.resolve();
+            assertEq(titleCalls, 2);
+            assertEq(deriveCalls, 2);
+            assertEq(childCalls, 2);
+            for (const dom of [row, stateRow, labelRow])
+                assertEq(dom.title, "B");
+            visible.val = false;
+            await Promise.resolve();
+            stateRow.remove();
+            labelRow.remove();
+            childHost.firstChild.remove();
+            for (const next of ["C", "D"]) {
+                value.val = next;
+                await Promise.resolve();
+                assertEq(titleCalls, 2);
+                assertEq(childCalls, 2);
+                for (const dom of [row, stateRow, labelRow])
+                    assertEq(dom.title, "B");
+                assertEq(label.val, next);
+            }
+            // Explicit top-level derivations can be shared and outlive their DOM consumers.
+            assertEq(deriveCalls, 4);
+            assert(childHost.isConnected);
+        }),
+        tags_stateDerivedProp_removedFromBinding: withHiddenDom(async (hiddenDom) => {
+            const value = van.state("A");
+            let row, calls = 0;
+            van.add(hiddenDom, () => div(row = div({ title: () => (++calls, value.val) })));
+            value.val = "B";
+            await Promise.resolve();
+            assertEq(calls, 2);
+            row.remove();
+            value.val = "C";
+            await Promise.resolve();
+            // The property belongs to the removed row, not its still-connected enclosing binding.
+            assert(hiddenDom.firstChild.isConnected);
+            assertEq(calls, 2);
+            assertEq(row.title, "B");
+        }),
         tags_stateDerivedProp_nonStateDeps_connected: withHiddenDom(async (hiddenDom) => {
             const host = van.state("example.com");
             const path = "/hello";
@@ -1060,6 +1110,31 @@ const runTests = async (van, msgDom, { debug }) => {
         }),
     };
     const debugTests = {
+        tags_propertyValidation_removed: withHiddenDom(async (hiddenDom) => {
+            const title = van.state("A");
+            const onclick = van.state(() => { });
+            const rows = [div({ title }), div({ title: () => title.val }), button({ onclick })];
+            van.add(hiddenDom, rows);
+            rows.forEach(row => row.remove());
+            await capturingErrors(/Invalid property value/, 0, async () => {
+                title.val = {};
+                onclick.val = "invalid handler";
+                await Promise.resolve();
+            });
+        }),
+        tags_propertyValidation_failedConstruction: withHiddenDom(async (hiddenDom) => {
+            const title = van.state("A");
+            let calls = 0;
+            assertError(/Only.*are valid child of a DOM Element/, () => div({ title, id: () => (++calls, title.val) }, {}));
+            const progress = van.state("A"), live = div(progress);
+            van.add(hiddenDom, live);
+            title.val = "B";
+            progress.val = "B";
+            await Promise.resolve();
+            assertEq(calls, 1);
+            // An unfinished element's cleanup must not throw and interrupt other updates.
+            assertEq(live.textContent, "B");
+        }),
         tags_invalidProp_nonFuncOnHandler: async () => {
             const counter = van.state(0);
             assertError("Only functions and null are allowed", () => button({ onclick: ++counter.val }, "Increment"));
@@ -1625,6 +1700,24 @@ const runTests = async (van, msgDom, { debug }) => {
     // We want to test the garbage-collection process is in place to ensure obsolete bindings and
     // derivations can be cleaned up.
     const gcTests = {
+        long_propertyBindings_removed: withHiddenDom(async (hiddenDom) => {
+            const value = van.state("A");
+            let calls = 0;
+            for (let i = 0; i < 20; ++i) {
+                const row = div({ title: () => (++calls, value.val), id: value });
+                van.add(hiddenDom, row);
+                row.remove();
+            }
+            // Check scheduled GC without relying on a state update to filter the listeners.
+            await sleep(1000);
+            const subscriptions = Object.values(value).filter(Array.isArray);
+            assertEq(subscriptions.length, 2);
+            for (const entries of subscriptions)
+                assertEq(entries.length, 0);
+            value.val = "B";
+            await Promise.resolve();
+            assertEq(calls, 20);
+        }),
         bindingBasic: withHiddenDom(async (hiddenDom) => {
             const counter = van.state(0);
             const bindingsPropKey = Object.entries(counter)

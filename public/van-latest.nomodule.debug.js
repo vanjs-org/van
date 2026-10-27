@@ -95,7 +95,7 @@
         dom.addEventListener(event, v2);
       } : propSetter ? propSetter.bind(dom) : dom.setAttribute.bind(dom, k);
       let protoOfV = protoOf(v ?? 0);
-      isEvent || protoOfV === funcProto && (v = derive(v), protoOfV = stateProto);
+      isEvent || protoOfV === funcProto && (v = derive(v, _undefined, dom), protoOfV = stateProto);
       protoOfV === stateProto ? bind(() => (setter(v.val, v._oldVal), dom)) : setter(v);
     }
     return add(dom, children);
@@ -193,6 +193,11 @@
       return (...args) => {
         const [props, ...children] = protoOf2(args[0] ?? 0) === Object.prototype ? args : [{}, ...args];
         const debugProps = {};
+        let dom;
+        const owner = { get isConnected() {
+          return dom?.isConnected;
+        } };
+        const checked = (f) => van_default.derive(f, void 0, owner);
         for (const [k, v] of Object.entries(props)) {
           const validatePropValue = k.startsWith("on") ? k.toLowerCase() === k ? (v2) => (expect(
             typeof v2 === "function" || v2 === null,
@@ -205,13 +210,13 @@
             `Invalid property value for ${k}: Only string, number, boolean, bigint and null are valid prop value types`
           ), v2);
           if (isState(v))
-            debugProps[k] = van_default.derive(() => validatePropValue(v.val));
+            debugProps[k] = checked(() => validatePropValue(v.val));
           else if (typeof v === "function" && (!k.startsWith("on") || v._isBindingFunc))
-            debugProps[k] = van_default.derive(() => validatePropValue(v()));
+            debugProps[k] = checked(() => validatePropValue(v()));
           else
             debugProps[k] = validatePropValue(v);
         }
-        return vanTag(debugProps, ...checkChildren(children));
+        return dom = vanTag(debugProps, ...checkChildren(children));
       };
     }
   };

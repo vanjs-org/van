@@ -151,13 +151,61 @@
       tags_stateDerivedProp_disconnected: async () => {
         const host = van2.state("example.com");
         const path2 = van2.state("/hello");
-        const dom = a({ href: () => `https://${host.val}${path2.val}` }, "Test Link");
+        let calls = 0;
+        const dom = a({ href: () => (++calls, `https://${host.val}${path2.val}`) }, "Test Link");
         assertEq(dom.href, "https://example.com/hello");
         host.val = "vanjs.org";
         path2.val = "/start";
         await Promise.resolve();
         assertEq(dom.href, "https://example.com/hello");
+        assertEq(calls, 1);
       },
+      tags_propertyBindings_removed: withHiddenDom(async (hiddenDom) => {
+        const value = van2.state("A"), visible = van2.state(true);
+        let titleCalls = 0, deriveCalls = 0, childCalls = 0;
+        const label = van2.derive(() => (++deriveCalls, value.val));
+        const row = div2({ title: () => (++titleCalls, value.val) }, "Row");
+        const stateRow = div2({ title: value }), labelRow = div2({ title: label });
+        const childHost = div2(() => (++childCalls, value.val));
+        van2.add(hiddenDom, () => visible.val ? row : null, stateRow, labelRow, childHost);
+        value.val = "B";
+        await Promise.resolve();
+        assertEq(titleCalls, 2);
+        assertEq(deriveCalls, 2);
+        assertEq(childCalls, 2);
+        for (const dom of [row, stateRow, labelRow])
+          assertEq(dom.title, "B");
+        visible.val = false;
+        await Promise.resolve();
+        stateRow.remove();
+        labelRow.remove();
+        childHost.firstChild.remove();
+        for (const next of ["C", "D"]) {
+          value.val = next;
+          await Promise.resolve();
+          assertEq(titleCalls, 2);
+          assertEq(childCalls, 2);
+          for (const dom of [row, stateRow, labelRow])
+            assertEq(dom.title, "B");
+          assertEq(label.val, next);
+        }
+        assertEq(deriveCalls, 4);
+        assert(childHost.isConnected);
+      }),
+      tags_stateDerivedProp_removedFromBinding: withHiddenDom(async (hiddenDom) => {
+        const value = van2.state("A");
+        let row, calls = 0;
+        van2.add(hiddenDom, () => div2(row = div2({ title: () => (++calls, value.val) })));
+        value.val = "B";
+        await Promise.resolve();
+        assertEq(calls, 2);
+        row.remove();
+        value.val = "C";
+        await Promise.resolve();
+        assert(hiddenDom.firstChild.isConnected);
+        assertEq(calls, 2);
+        assertEq(row.title, "B");
+      }),
       tags_stateDerivedProp_nonStateDeps_connected: withHiddenDom(async (hiddenDom) => {
         const host = van2.state("example.com");
         const path2 = "/hello";
@@ -994,6 +1042,31 @@
       })
     };
     const debugTests = {
+      tags_propertyValidation_removed: withHiddenDom(async (hiddenDom) => {
+        const title = van2.state("A");
+        const onclick = van2.state(() => {
+        });
+        const rows = [div2({ title }), div2({ title: () => title.val }), button({ onclick })];
+        van2.add(hiddenDom, rows);
+        rows.forEach((row) => row.remove());
+        await capturingErrors(/Invalid property value/, 0, async () => {
+          title.val = {};
+          onclick.val = "invalid handler";
+          await Promise.resolve();
+        });
+      }),
+      tags_propertyValidation_failedConstruction: withHiddenDom(async (hiddenDom) => {
+        const title = van2.state("A");
+        let calls = 0;
+        assertError(/Only.*are valid child of a DOM Element/, () => div2({ title, id: () => (++calls, title.val) }, {}));
+        const progress = van2.state("A"), live = div2(progress);
+        van2.add(hiddenDom, live);
+        title.val = "B";
+        progress.val = "B";
+        await Promise.resolve();
+        assertEq(calls, 1);
+        assertEq(live.textContent, "B");
+      }),
       tags_invalidProp_nonFuncOnHandler: async () => {
         const counter = van2.state(0);
         assertError("Only functions and null are allowed", () => button({ onclick: ++counter.val }, "Increment"));
@@ -1538,6 +1611,23 @@
       })
     };
     const gcTests = {
+      long_propertyBindings_removed: withHiddenDom(async (hiddenDom) => {
+        const value = van2.state("A");
+        let calls = 0;
+        for (let i2 = 0; i2 < 20; ++i2) {
+          const row = div2({ title: () => (++calls, value.val), id: value });
+          van2.add(hiddenDom, row);
+          row.remove();
+        }
+        await sleep(1e3);
+        const subscriptions = Object.values(value).filter(Array.isArray);
+        assertEq(subscriptions.length, 2);
+        for (const entries of subscriptions)
+          assertEq(entries.length, 0);
+        value.val = "B";
+        await Promise.resolve();
+        assertEq(calls, 20);
+      }),
       bindingBasic: withHiddenDom(async (hiddenDom) => {
         const counter = van2.state(0);
         const bindingsPropKey = Object.entries(counter).find(([_, v]) => Array.isArray(v))[0];
