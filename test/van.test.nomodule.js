@@ -160,38 +160,6 @@
         assertEq(dom.href, "https://example.com/hello");
         assertEq(calls, 1);
       },
-      tags_propertyBindings_removed: withHiddenDom(async (hiddenDom) => {
-        const value = van2.state("A"), visible = van2.state(true);
-        let titleCalls = 0, deriveCalls = 0, childCalls = 0;
-        const label = van2.derive(() => (++deriveCalls, value.val));
-        const row = div2({ title: () => (++titleCalls, value.val) }, "Row");
-        const stateRow = div2({ title: value }), labelRow = div2({ title: label });
-        const childHost = div2(() => (++childCalls, value.val));
-        van2.add(hiddenDom, () => visible.val ? row : null, stateRow, labelRow, childHost);
-        value.val = "B";
-        await Promise.resolve();
-        assertEq(titleCalls, 2);
-        assertEq(deriveCalls, 2);
-        assertEq(childCalls, 2);
-        for (const dom of [row, stateRow, labelRow])
-          assertEq(dom.title, "B");
-        visible.val = false;
-        await Promise.resolve();
-        stateRow.remove();
-        labelRow.remove();
-        childHost.firstChild.remove();
-        for (const next of ["C", "D"]) {
-          value.val = next;
-          await Promise.resolve();
-          assertEq(titleCalls, 2);
-          assertEq(childCalls, 2);
-          for (const dom of [row, stateRow, labelRow])
-            assertEq(dom.title, "B");
-          assertEq(label.val, next);
-        }
-        assertEq(deriveCalls, 4);
-        assert(childHost.isConnected);
-      }),
       tags_stateDerivedProp_removedFromBinding: withHiddenDom(async (hiddenDom) => {
         const value = van2.state("A");
         let row, calls = 0;
@@ -990,6 +958,39 @@
         num.val = 1;
         await Promise.resolve();
         assertEq(hiddenDom.innerHTML, "1<span>ok</span>1");
+      }),
+      // Binding lifecycle across properties, children, and explicit derivations.
+      bindings_removedDom: withHiddenDom(async (hiddenDom) => {
+        const value = van2.state("A"), visible = van2.state(true);
+        let titleCalls = 0, deriveCalls = 0, childCalls = 0;
+        const label = van2.derive(() => (++deriveCalls, value.val));
+        const row = div2({ title: () => (++titleCalls, value.val) }, "Row");
+        const stateRow = div2({ title: value }), labelRow = div2({ title: label });
+        const childHost = div2(() => (++childCalls, value.val));
+        van2.add(hiddenDom, () => visible.val ? row : null, stateRow, labelRow, childHost);
+        value.val = "B";
+        await Promise.resolve();
+        assertEq(titleCalls, 2);
+        assertEq(deriveCalls, 2);
+        assertEq(childCalls, 2);
+        for (const dom of [row, stateRow, labelRow])
+          assertEq(dom.title, "B");
+        visible.val = false;
+        await Promise.resolve();
+        stateRow.remove();
+        labelRow.remove();
+        childHost.firstChild.remove();
+        for (const next of ["C", "D"]) {
+          value.val = next;
+          await Promise.resolve();
+          assertEq(titleCalls, 2);
+          assertEq(childCalls, 2);
+          for (const dom of [row, stateRow, labelRow])
+            assertEq(dom.title, "B");
+          assertEq(label.val, next);
+        }
+        assertEq(deriveCalls, 4);
+        assert(childHost.isConnected);
       }),
       hydrate_normal: withHiddenDom(async (hiddenDom) => {
         const Counter2 = (init) => {

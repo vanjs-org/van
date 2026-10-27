@@ -211,40 +211,6 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       assertEq(calls, 1)
     },
 
-    tags_propertyBindings_removed: withHiddenDom(async hiddenDom => {
-      const value = van.state("A"), visible = van.state(true)
-      let titleCalls = 0, deriveCalls = 0, childCalls = 0
-      const label = van.derive(() => (++deriveCalls, value.val))
-      const row = div({title: () => (++titleCalls, value.val)}, "Row")
-      const stateRow = div({title: value}), labelRow = div({title: label})
-      const childHost = div(() => (++childCalls, value.val))
-      van.add(hiddenDom, () => visible.val ? row : null, stateRow, labelRow, childHost)
-
-      value.val = "B"
-      await Promise.resolve()
-      assertEq(titleCalls, 2)
-      assertEq(deriveCalls, 2)
-      assertEq(childCalls, 2)
-      for (const dom of [row, stateRow, labelRow]) assertEq(dom.title, "B")
-
-      visible.val = false
-      await Promise.resolve()
-      stateRow.remove()
-      labelRow.remove()
-      childHost.firstChild!.remove()
-      for (const next of ["C", "D"]) {
-        value.val = next
-        await Promise.resolve()
-        assertEq(titleCalls, 2)
-        assertEq(childCalls, 2)
-        for (const dom of [row, stateRow, labelRow]) assertEq(dom.title, "B")
-        assertEq(label.val, next)
-      }
-      // Explicit top-level derivations can be shared and outlive their DOM consumers.
-      assertEq(deriveCalls, 4)
-      assert(childHost.isConnected)
-    }),
-
     tags_stateDerivedProp_removedFromBinding: withHiddenDom(async hiddenDom => {
       const value = van.state("A")
       let row: HTMLDivElement, calls = 0
@@ -1335,6 +1301,41 @@ const runTests = async (van: VanForTesting, msgDom: Element, {debug}: BundleOpti
       // We want to validate the 2nd child won't be updated because of the error,
       // but other DOM nodes are updated as usual
       assertEq(hiddenDom.innerHTML, "1<span>ok</span>1")
+    }),
+
+    // Binding lifecycle across properties, children, and explicit derivations.
+    bindings_removedDom: withHiddenDom(async hiddenDom => {
+      const value = van.state("A"), visible = van.state(true)
+      let titleCalls = 0, deriveCalls = 0, childCalls = 0
+      const label = van.derive(() => (++deriveCalls, value.val))
+      const row = div({title: () => (++titleCalls, value.val)}, "Row")
+      const stateRow = div({title: value}), labelRow = div({title: label})
+      const childHost = div(() => (++childCalls, value.val))
+      van.add(hiddenDom, () => visible.val ? row : null, stateRow, labelRow, childHost)
+
+      value.val = "B"
+      await Promise.resolve()
+      assertEq(titleCalls, 2)
+      assertEq(deriveCalls, 2)
+      assertEq(childCalls, 2)
+      for (const dom of [row, stateRow, labelRow]) assertEq(dom.title, "B")
+
+      visible.val = false
+      await Promise.resolve()
+      stateRow.remove()
+      labelRow.remove()
+      childHost.firstChild!.remove()
+      for (const next of ["C", "D"]) {
+        value.val = next
+        await Promise.resolve()
+        assertEq(titleCalls, 2)
+        assertEq(childCalls, 2)
+        for (const dom of [row, stateRow, labelRow]) assertEq(dom.title, "B")
+        assertEq(label.val, next)
+      }
+      // Explicit top-level derivations can be shared and outlive their DOM consumers.
+      assertEq(deriveCalls, 4)
+      assert(childHost.isConnected)
     }),
 
     hydrate_normal: withHiddenDom(async hiddenDom => {
