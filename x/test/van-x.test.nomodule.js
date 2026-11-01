@@ -697,6 +697,7 @@ window.runTests = async (van, vanX, file) => {
             await Promise.resolve();
             for (const dom of [unordered, ordered])
                 assertEq(dom.innerHTML, '<li>A</li><li>E</li>');
+            // Truncation removes out-of-range rows from both lists and preserves retained nodes.
             items.length = 3;
             await Promise.resolve();
             assertEq(items.length, 3);
@@ -710,6 +711,7 @@ window.runTests = async (van, vanX, file) => {
             await Promise.resolve();
             for (const dom of [unordered, ordered])
                 assertEq(dom.innerHTML, '<li>A</li><li>B</li><li>C</li>');
+            // Clearing the array removes all rows from both lists.
             items.length = 0;
             await Promise.resolve();
             assertEq(unordered.childNodes.length, 0);
