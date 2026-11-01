@@ -467,7 +467,7 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       assertEq(numLengthDerived, 15)
     },
 
-    reactive_arrayLength_unchanged: withHiddenDom(async hiddenDom => {
+    reactive_arrayLength_coercion: withHiddenDom(async hiddenDom => {
       const items = vanX.reactive(["A", "B"])
       let calls = 0
       van.add(hiddenDom, p(() => (++calls, items.length)), vanX.list(ul, items, v => li(v)))
