@@ -660,6 +660,7 @@ window.runTests = async (van, vanX, file) => {
             await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<p>["C"]</p><ul><li>C</li></ul>');
             items.length = 0;
+            assertEq(hiddenDom.querySelector("ul").innerHTML, "");
             items.push("D");
             await Promise.resolve();
             assertEq(hiddenDom.innerHTML, '<p>["D"]</p><ul><li>D</li></ul>');
