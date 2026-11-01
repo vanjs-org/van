@@ -362,12 +362,12 @@ window.runTests = async (van, vanX, file) => {
             van.add(hiddenDom, p(() => (++calls, items.length)), vanX.list(ul, items, v => li(v)));
             // JavaScript accepts numeric strings as array lengths.
             for (const length of [2, "2"]) {
-                assert(Reflect.set(items, "length", length));
+                items.length = length;
                 await Promise.resolve();
                 assertEq(calls, 1);
                 assertEq(hiddenDom.innerHTML, '<p>2</p><ul><li>A</li><li>B</li></ul>');
             }
-            assert(Reflect.set(items, "length", "1"));
+            items.length = "1";
             await Promise.resolve();
             assertEq(calls, 2);
             assertEq(hiddenDom.innerHTML, '<p>1</p><ul><li>A</li></ul>');
