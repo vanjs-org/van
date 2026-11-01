@@ -126,8 +126,7 @@ let objectsIn = (v, old, seen = new Map) => {
   if (isObject(v) && !seen.has(v)) {
     seen.set(v, old?.has(v))
     let states = v[statesSym]
-    for (let k of keys(states ?? v))
-      objectsIn(states ? states[k].rawVal : v[k], old, seen)
+    for (let k of keys(states ?? v)) objectsIn(states ? states[k].rawVal : v[k], old, seen)
   }
   return seen
 }
