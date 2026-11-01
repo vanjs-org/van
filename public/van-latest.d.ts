@@ -40,7 +40,7 @@ export interface Van {
   readonly derive: <T>(f: () => T) => State<T>
   readonly add: (dom: Element | DocumentFragment, ...children: readonly ChildDom[]) => Element
   readonly tags: Tags & ((namespaceURI: string) => Readonly<Record<string, TagFunc<Element>>>)
-  readonly hydrate: <T extends Node>(dom: T, f: (dom: T) => T | null | undefined) => T
+  readonly hydrate: <T extends Node>(dom: T, f: (dom: T) => T | null | undefined) => void
 }
 
 declare const van: Van
