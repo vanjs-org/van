@@ -32,6 +32,19 @@ let buildStates = srcObj => {
   return states
 }
 
+let resize = (states, v) => {
+  let oldLength = states.length
+  // Let the array convert and validate the length before changing any bindings.
+  states.length = v
+  let length = states.length
+  if (length < oldLength) for (let {_containerDom} of filterBindings(states)) {
+    let rows = _containerDom[keyToChildSym]
+    for (let i = length; i < oldLength; ++i) removeRow(rows, i)
+  }
+  length !== oldLength && ++states[keysGenSym].val
+  return 1
+}
+
 let reactiveHandler = {
   get: (states, name, proxy) =>
     name === statesSym ? states :
@@ -43,7 +56,7 @@ let reactiveHandler = {
   set: (states, name, v, proxy) =>
     hasOwn(states, name) ?
       Array.isArray(states) && name === "length" ?
-        (v !== states.length && ++states[keysGenSym].val, states.length = v, 1) :
+        resize(states, v) :
         (states[name].val = reactive(v), 1) :
     name in states ? refSet(states, name, v, proxy) :
       refSet(states, name, toState(v)) && (
@@ -85,12 +98,13 @@ let addToContainer = (items, k, v, skipReorder, {_containerDom, f}) => {
       _containerDom[keyToChildSym][keys(items).find(key => Number(key) > typedK)])
 }
 
+let removeRow = (rows, k) => {
+  rows[k]?.remove()
+  delete rows[k]
+}
+
 let onDelete = (states, k) => {
-  for (let b of filterBindings(states)) {
-    let keyToChild = b._containerDom[keyToChildSym]
-    keyToChild[k]?.remove()
-    delete keyToChild[k]
-  }
+  for (let {_containerDom} of filterBindings(states)) removeRow(_containerDom[keyToChildSym], k)
 }
 
 let addStatesToGc = states => (statesToGc ?? (statesToGc = (

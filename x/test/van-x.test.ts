@@ -454,7 +454,53 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       await Promise.resolve()
       assertEq(length.val, 0)
       assertEq(numLengthDerived, 13)
+
+      data.length = 3
+      await Promise.resolve()
+      assertEq(length.val, 3)
+      assertEq(Object.keys(data).toString(), "")
+      assertEq(numLengthDerived, 14)
+
+      data.length = 0
+      await Promise.resolve()
+      assertEq(length.val, 0)
+      assertEq(numLengthDerived, 15)
     },
+
+    reactive_arrayLength_unchanged: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive(["A", "B"])
+      let calls = 0
+      van.add(hiddenDom, p(() => (++calls, items.length)), vanX.list(ul, items, v => li(v)))
+
+      // JavaScript accepts numeric strings as array lengths.
+      for (const length of [2, "2"]) {
+        assert(Reflect.set(items, "length", length))
+        await Promise.resolve()
+        assertEq(calls, 1)
+        assertEq(hiddenDom.innerHTML, '<p>2</p><ul><li>A</li><li>B</li></ul>')
+      }
+
+      assert(Reflect.set(items, "length", "1"))
+      await Promise.resolve()
+      assertEq(calls, 2)
+      assertEq(hiddenDom.innerHTML, '<p>1</p><ul><li>A</li></ul>')
+    }),
+
+    reactive_arrayLength_invalid: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive(["A", "B"])
+      let calls = 0
+      van.add(hiddenDom, p(() => (++calls, items.length)), vanX.list(ul, items, v => li(v)))
+
+      for (const length of [-1, 1.5, NaN, 2 ** 32]) {
+        let error: unknown
+        try { items.length = length } catch (e) { error = e }
+        assert(error instanceof RangeError)
+        await Promise.resolve()
+        assertEq(JSON.stringify(items), '["A","B"]')
+        assertEq(hiddenDom.innerHTML, '<p>2</p><ul><li>A</li><li>B</li></ul>')
+        assertEq(calls, 1)
+      }
+    }),
 
     reactive_functionField: withHiddenDom(async hiddenDom => {
       const data = vanX.reactive({func: () => <string>"abc"})
@@ -788,6 +834,85 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       await Promise.resolve()
       assertEq(hiddenDom.innerHTML, '<ul></ul>')
       assertEq(Object.keys(items).toString(), "")
+    }),
+
+    // Direct array length assignments must update every mounted list.
+    list_arrayLength_clear: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive(["A", "B"])
+      van.add(hiddenDom,
+        p(() => JSON.stringify(items)), vanX.list(ul, items, v => li(v)))
+
+      items.length = 0
+      await Promise.resolve()
+      assertEq(hiddenDom.innerHTML, '<p>[]</p><ul></ul>')
+
+      items.push("C")
+      await Promise.resolve()
+      assertEq(hiddenDom.innerHTML, '<p>["C"]</p><ul><li>C</li></ul>')
+
+      items.length = 0
+      items.push("D")
+      await Promise.resolve()
+      assertEq(hiddenDom.innerHTML, '<p>["D"]</p><ul><li>D</li></ul>')
+    }),
+
+    list_arrayLength_truncate: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive(["A", "B", "C", "D", "E"])
+      const dom = hiddenDom.appendChild(vanX.list(ul, items, v => li(v)))
+      const [a, b, c, d, e] = dom.childNodes
+
+      items.length = 3
+      await Promise.resolve()
+      assertEq(dom.innerHTML, '<li>A</li><li>B</li><li>C</li>')
+      assertEq(dom.childNodes[0], a)
+      assertEq(dom.childNodes[1], b)
+      assertEq(dom.childNodes[2], c)
+      assert(!d.isConnected && !e.isConnected)
+
+      --items.length
+      await Promise.resolve()
+      assertEq(dom.innerHTML, '<li>A</li><li>B</li>')
+      assert(!c.isConnected)
+
+      // pop deletes the row before writing length; cleanup must tolerate that.
+      assertEq(items.pop(), "B")
+      await Promise.resolve()
+      assertEq(dom.innerHTML, '<li>A</li>')
+      assertEq(dom.firstChild, a)
+    }),
+
+    list_arrayLength_sparseAndMultipleBindings: withHiddenDom(async hiddenDom => {
+      const items = vanX.reactive(["A"])
+      items[4] = "E"
+      const unordered = hiddenDom.appendChild(vanX.list(ul, items, v => li(v)))
+      const ordered = hiddenDom.appendChild(vanX.list(ol, items, v => li(v)))
+      const firstRows = [unordered.firstChild, ordered.firstChild]
+
+      // Growing length adds holes, not rows.
+      items.length = 10
+      await Promise.resolve()
+      for (const dom of [unordered, ordered])
+        assertEq(dom.innerHTML, '<li>A</li><li>E</li>')
+
+      items.length = 3
+      await Promise.resolve()
+      assertEq(items.length, 3)
+      assertEq(Object.keys(items).toString(), "0")
+      for (const [i, dom] of [unordered, ordered].entries()) {
+        assertEq(dom.innerHTML, '<li>A</li>')
+        assertEq(dom.firstChild, firstRows[i])
+      }
+
+      items[2] = "C"
+      items[1] = "B"
+      await Promise.resolve()
+      for (const dom of [unordered, ordered])
+        assertEq(dom.innerHTML, '<li>A</li><li>B</li><li>C</li>')
+
+      items.length = 0
+      await Promise.resolve()
+      assertEq(unordered.childNodes.length, 0)
+      assertEq(ordered.childNodes.length, 0)
     }),
 
     list_arrayRefillHoles: withHiddenDom(async hiddenDom => {
@@ -2179,6 +2304,21 @@ window.runTests = async (van: Van, vanX: typeof vanXObj, file: string) => {
       await Promise.resolve()
       assertEq(dom.innerHTML, '<li>1</li><li>6</li><li>5</li><li>7</li>')
       assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "0,1,4,5")
+
+      items.length = 2
+      await Promise.resolve()
+      assertEq(dom.innerHTML, '<li>1</li><li>6</li>')
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "0,1")
+
+      items.length = 0
+      await Promise.resolve()
+      assertEq(dom.innerHTML, '')
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "")
+
+      items.push(8)
+      await Promise.resolve()
+      assertEq(dom.innerHTML, '<li>8</li>')
+      assertEq(Object.keys((<any>dom)[keyToChildSym]).join(","), "0")
     }),
 
     list_keyToChild_obj: withHiddenDom(async hiddenDom => {
