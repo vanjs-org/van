@@ -1106,6 +1106,112 @@ window.runTests = async (van, vanX, file) => {
             await Promise.resolve();
             assertEq([...hiddenDom.querySelectorAll("span")].map(e => e.innerText).toString(), "0,1,2!,3,4,5!,7,9");
         }),
+        // Replacements that reuse existing objects must preserve their identity and data.
+        replace_reusedObjects_sortArray: () => {
+            for (const useCallback of [false, true]) {
+                const rows = vanX.reactive([{ text: "B" }, { text: "A" }]);
+                const [b, a] = rows;
+                const sorted = rows.toSorted((a, b) => a.text.localeCompare(b.text));
+                vanX.replace(rows, useCallback ? xs => xs.toSorted((a, b) => a.text.localeCompare(b.text)) : sorted);
+                assertEq(rows.map(row => row.text).join(), "A,B");
+                assertEq(sorted.map(row => row.text).join(), "A,B");
+                assert(rows[0] === a && rows[1] === b);
+                assertEq(b.text, "B");
+            }
+        },
+        replace_reusedObjects_filterArray: () => {
+            const rows = vanX.reactive([{ text: "B" }, { text: "A" }]);
+            const [b, a] = rows;
+            vanX.replace(rows, xs => xs.filter(row => row === a));
+            assertEq(rows.length, 1);
+            assert(rows[0] === a);
+            assertEq(b.text, "B");
+        },
+        replace_reusedObjects_insertAndMove: () => {
+            const rows = vanX.reactive([{ text: "B" }, { text: "A" }]);
+            const b = rows[0];
+            vanX.replace(rows, [{ text: "C" }, b]);
+            assertEq(rows.map(row => row.text).join(), "C,B");
+            assert(rows[1] === b);
+            assertEq(b.text, "B");
+        },
+        replace_reusedObjects_swapValues: () => {
+            const rows = vanX.reactive({ k1: { text: "B" }, k2: { text: "A" } });
+            const { k1: b, k2: a } = rows;
+            vanX.replace(rows, { k1: a, k2: b });
+            assertEq(rows.k1.text + "," + rows.k2.text, "A,B");
+            assert(rows.k1 === a && rows.k2 === b);
+            // Sorting entries keeps each object under its original key.
+            vanX.replace(rows, entries => entries.toReversed());
+            assertEq(Object.keys(rows).join(), "k2,k1");
+            assert(rows.k1 === a && rows.k2 === b);
+        },
+        replace_reusedObjects_moveAcrossBranches: () => {
+            const obj = vanX.reactive({
+                left: { text: "B" }, right: {},
+            });
+            const b = obj.left, right = obj.right;
+            vanX.replace(obj, { left: { text: "C" }, right: { saved: b } });
+            assertEq(obj.left.text, "C");
+            assertEq(b.text, "B");
+            assert(obj.right.saved === b);
+            assert(obj.right === right);
+        },
+        replace_reusedObjects_multiplePaths: () => {
+            const rows = vanX.reactive([{ text: "B" }, { text: "A" }]);
+            const [b, a] = rows;
+            vanX.replace(rows, [a, b, a]);
+            assertEq(rows.map(row => row.text).join(), "A,B,A");
+            assert(rows[0] === a && rows[1] === b && rows[2] === a);
+            vanX.replace(rows, [b, a]);
+            assertEq(rows.map(row => row.text).join(), "B,A");
+            assert(rows[0] === b && rows[1] === a);
+        },
+        replace_reusedObjects_noExtraDeps: async () => {
+            const obj = vanX.reactive({ row: { text: "A" } });
+            const row = obj.row;
+            let calls = 0;
+            van.derive(() => {
+                ++calls;
+                vanX.replace(obj, {});
+            });
+            row.text = "B";
+            row.extra = "C";
+            await Promise.resolve();
+            assertEq(calls, 1);
+        },
+        replace_reusedObjects_freshSnapshot: withHiddenDom(async (hiddenDom) => {
+            const rows = vanX.reactive([{ text: "A", done: false }]);
+            const a = rows[0];
+            let textCalls = 0, doneCalls = 0;
+            van.add(hiddenDom, span(() => (++textCalls, rows[0].text)), span(() => (++doneCalls, String(rows[0].done))));
+            vanX.replace(rows, [{ text: "A", done: true }]);
+            await Promise.resolve();
+            assert(rows[0] === a);
+            assertEq(hiddenDom.textContent, "Atrue");
+            assertEq(textCalls, 1);
+            assertEq(doneCalls, 2);
+        }),
+        replace_reusedObjects_listBindings: withHiddenDom(async (hiddenDom) => {
+            const rows = vanX.reactive([{ text: "B" }, { text: "A" }]);
+            const [b, aRow] = rows;
+            van.add(hiddenDom, vanX.list(ul, rows, ({ val: row }, deleter) => li(span(() => row.text), button({ onclick: () => row.text += "!" }, "Edit"), a({ onclick: deleter }, "Delete"))));
+            const labels = () => [...hiddenDom.querySelectorAll("span")].map(e => e.textContent).join();
+            vanX.replace(rows, xs => xs.toSorted((a, b) => a.text.localeCompare(b.text)));
+            await Promise.resolve();
+            assertEq(labels(), "A,B");
+            assert(rows[0] === aRow && rows[1] === b);
+            b.text = "B!";
+            hiddenDom.querySelector("button").click();
+            await Promise.resolve();
+            assertEq(labels(), "A!,B!");
+            assertEq(aRow.text, "A!");
+            hiddenDom.querySelector("a").click();
+            await Promise.resolve();
+            assertEq(labels(), "B!");
+            assertEq(Object.keys(rows).join(), "1");
+            assert(rows[1] === b);
+        }),
         replace_nestedArray: withHiddenDom(async (hiddenDom) => {
             const items = vanX.reactive([{
                     foo: 'bar',

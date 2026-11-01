@@ -108,10 +108,23 @@ let list = (container, items, itemFunc) => {
   return binding._containerDom
 }
 
-let replaceInternal = (obj, replacement) => {
+let objectsIn = (v, old, seen = new Map) => {
+  if (isObject(v) && !seen.has(v)) {
+    seen.set(v, old?.has(v))
+    let states = v[statesSym]
+    for (let k of keys(states ?? v))
+      objectsIn(states ? states[k].rawVal : v[k], old, seen)
+  }
+  return seen
+}
+
+let replaceInternal = (obj, replacement, retained = objectsIn(replacement, objectsIn(obj))) => {
   for (let [k, v] of entries(replacement)) {
     let existingV = obj[k]
-    isObject(existingV) && isObject(v) ? replaceInternal(existingV, v) : obj[k] = v
+    if (isObject(existingV) && existingV === v) continue
+    if (isObject(existingV) && isObject(v) && !retained.get(existingV) && !retained.get(v))
+      replaceInternal(existingV, v, retained)
+    else obj[k] = v
   }
   for (let k in obj) hasOwn(replacement, k) || delete obj[k]
   let newKeys = keys(replacement), isArray = Array.isArray(obj)
