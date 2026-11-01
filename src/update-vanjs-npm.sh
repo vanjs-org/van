@@ -15,7 +15,7 @@ cd ../../demo/terminal
 deno run --allow-read --allow-write ../../components/scripts/upgrade-dep-version.ts package.json vanjs-core $VER
 npm update vanjs-core -S
 npm prune
-npm audit fix --force
+# npm audit fix --force
 
 cd ../../components
 deno run --allow-read --allow-write ../components/scripts/upgrade-dep-version.ts package.json vanjs-core $VER

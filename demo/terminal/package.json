@@ -7,7 +7,7 @@
     "dev": "deno run --allow-net --allow-run --allow-read server.ts --allowRemote --skipLogin"
   },
   "devDependencies": {
-    "deno-bin": "^0.20.0",
+    "deno-bin": "^1.43.1",
     "vanjs-core": "^1.6.2"
   }
 }
