@@ -1,9 +1,9 @@
-set -e
+set -ex
 
 npm prune
 npm audit fix --force
 
-VER=$(../node_modules/node-jq/bin/jq -r '.version' ../package.json)
+VER=$(node -p "require('../package.json').version")
 
 cd ../npm-examples/hello
 deno run --allow-read --allow-write ../../components/scripts/upgrade-dep-version.ts package.json vanjs-core $VER

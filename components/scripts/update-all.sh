@@ -3,7 +3,7 @@ set -e
 npm prune
 npm audit fix
 
-VER=$(node_modules/node-jq/bin/jq -r '.version' package.json)
+VER=$(node -p "require('./package.json').version")
 
 for d in $(ls examples); do(
   cd examples/$d
